@@ -1,0 +1,10 @@
+services:
+  agentasia-api:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    env_file:
+      - ../server/.env
+    ports:
+      - "8787:8787"
+    restart: unless-stopped
