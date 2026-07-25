@@ -1,5 +1,6 @@
 import http from 'node:http'
 import { randomUUID } from 'node:crypto'
+import { configuredProviders, routeChat } from './model-router.mjs'
 
 const port = Number(process.env.PORT || 8787)
 const allowedOrigin = process.env.APP_ORIGIN || ''
@@ -7,6 +8,13 @@ const allowedOrigin = process.env.APP_ORIGIN || ''
 function json(res, status, body) {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' })
   res.end(JSON.stringify(body))
+}
+
+async function readJson(req) {
+  let raw = ''
+  for await (const chunk of req) raw += chunk
+  if (raw.length > 1_000_000) throw new Error('request_too_large')
+  return raw ? JSON.parse(raw) : {}
 }
 
 const server = http.createServer(async (req, res) => {
@@ -27,9 +35,22 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && url.pathname === '/v1/config') {
     return json(res, 200, {
       localWebGpuEnabled: true,
-      cloudRoutingEnabled: Boolean(process.env.MODEL_GATEWAY_ENABLED === 'true'),
-      scheduledTasksEnabled: Boolean(process.env.SCHEDULER_ENABLED === 'true'),
+      cloudRoutingEnabled: process.env.MODEL_GATEWAY_ENABLED === 'true',
+      configuredProviders: configuredProviders(),
+      scheduledTasksEnabled: process.env.SCHEDULER_ENABLED === 'true',
     })
+  }
+  if (req.method === 'POST' && url.pathname === '/v1/models/chat') {
+    if (process.env.MODEL_GATEWAY_ENABLED !== 'true') {
+      return json(res, 503, { error: 'model_gateway_disabled', requestId })
+    }
+    try {
+      const result = await routeChat(await readJson(req))
+      return json(res, 200, result)
+    } catch (error) {
+      const status = error.statusCode || (error.message === 'unsupported_provider' ? 400 : 502)
+      return json(res, status, { error: error.message, requestId })
+    }
   }
 
   return json(res, 404, { error: 'not_found', requestId })
