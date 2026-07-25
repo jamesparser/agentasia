@@ -21,7 +21,10 @@ function bearer(apiKey?: string): Record<string, string> {
 }
 
 /** Validate a key against an OpenAI-style `GET {base}/models`. */
-async function openAiStyleValidate(base: string, apiKey?: string): Promise<boolean> {
+async function openAiStyleValidate(
+  base: string,
+  apiKey?: string,
+): Promise<boolean> {
   try {
     const res = await fetch(`${base}/models`, { headers: bearer(apiKey) })
     return res.ok
@@ -31,7 +34,10 @@ async function openAiStyleValidate(base: string, apiKey?: string): Promise<boole
 }
 
 /** List models from an OpenAI-style `GET {base}/models` (`data[].id`). */
-async function openAiStyleList(base: string, apiKey?: string): Promise<string[]> {
+async function openAiStyleList(
+  base: string,
+  apiKey?: string,
+): Promise<string[]> {
   try {
     const res = await fetch(`${base}/models`, { headers: bearer(apiKey) })
     if (!res.ok) return []
@@ -224,7 +230,9 @@ export function makeCompatBinding(opts: CompatOptions): AiSdkBinding {
     defaultModel: opts.defaultModel,
     async createModel(config: AiSdkModelConfig) {
       const baseURL = resolveNormalized(config)
-      const { createOpenAICompatible } = await import('@ai-sdk/openai-compatible')
+      const { createOpenAICompatible } = await import(
+        '@ai-sdk/openai-compatible'
+      )
       const provider = createOpenAICompatible({
         name: opts.name,
         baseURL,
@@ -264,6 +272,20 @@ export const openRouterBinding = makeCompatBinding({
   resolveBase: () => 'https://openrouter.ai/api/v1',
 })
 
+// Both providers expose OpenAI-compatible APIs. Keeping these as first-class
+// bindings prevents users from having to guess the custom endpoint format.
+export const deepSeekBinding = makeCompatBinding({
+  name: 'deepseek',
+  defaultModel: 'deepseek-chat',
+  resolveBase: () => 'https://api.deepseek.com/v1',
+})
+
+export const veniceBinding = makeCompatBinding({
+  name: 'venice',
+  defaultModel: 'venice-uncensored',
+  resolveBase: () => 'https://api.venice.ai/api/v1',
+})
+
 export const ollamaBinding = makeCompatBinding({
   name: 'ollama',
   defaultModel: 'llama3.2',
@@ -271,7 +293,9 @@ export const ollamaBinding = makeCompatBinding({
   resolveBase: (c) => c.baseUrl || OLLAMA_DEFAULT_HOST,
   // Ollama lists installed models via its native /api/tags endpoint.
   list: async (config) => {
-    const host = trimTrailingSlash(ensureAbsolute(config?.baseUrl || OLLAMA_DEFAULT_HOST))
+    const host = trimTrailingSlash(
+      ensureAbsolute(config?.baseUrl || OLLAMA_DEFAULT_HOST),
+    )
     try {
       const res = await fetch(`${host}/api/tags`)
       if (!res.ok) return []
@@ -284,7 +308,8 @@ export const ollamaBinding = makeCompatBinding({
   validate: async (apiKey, baseUrl) => {
     const host = trimTrailingSlash(
       ensureAbsolute(
-        baseUrl || (apiKey && apiKey !== 'ollama-no-key' ? apiKey : OLLAMA_DEFAULT_HOST),
+        baseUrl ||
+          (apiKey && apiKey !== 'ollama-no-key' ? apiKey : OLLAMA_DEFAULT_HOST),
       ),
     )
     try {

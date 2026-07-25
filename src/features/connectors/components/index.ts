@@ -9,6 +9,7 @@ export { ConnectorWizard } from './ConnectorWizard'
 export { ConnectorSettingsModal } from './ConnectorSettingsModal'
 export { ConnectorWizardInline } from './ConnectorWizardInline'
 export { ConnectorSettingsInline } from './ConnectorSettingsInline'
+export { CustomMcpWizard } from './CustomMcpWizard'
 
 // Sync status components
 export { ConnectorSyncStatus } from './ConnectorSyncStatus'

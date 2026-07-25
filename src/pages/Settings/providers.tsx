@@ -226,6 +226,20 @@ export const PROVIDERS = (lang: Lang, t: any): ProviderConfig[] => [
     apiKeyPage: 'https://openrouter.ai/settings/keys',
   },
   {
+    provider: 'deepseek',
+    name: 'DeepSeek',
+    models: ['deepseek-chat', 'deepseek-reasoner'],
+    icon: 'OpenAI',
+    apiKeyPage: 'https://platform.deepseek.com/api_keys',
+  },
+  {
+    provider: 'venice',
+    name: 'Venice AI',
+    models: ['venice-uncensored'],
+    icon: 'OpenAI',
+    apiKeyPage: 'https://venice.ai/settings/api',
+  },
+  {
     provider: 'huggingface',
     name: 'Hugging Face',
     models: getModelsForProviderAsync('huggingface'),

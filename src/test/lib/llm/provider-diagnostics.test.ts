@@ -16,7 +16,8 @@ describe('provider diagnostics', () => {
 
   it('explains privacy mode blocking', () => {
     expect(
-      explainProviderError('venice', new Error('Blocked by Privacy Mode')).message,
+      explainProviderError('venice', new Error('Blocked by Privacy Mode'))
+        .message,
     ).toContain('Privacy Mode')
   })
 })

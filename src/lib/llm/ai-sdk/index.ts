@@ -24,6 +24,8 @@ const BINDINGS: Partial<Record<LLMProvider, () => Promise<AiSdkBinding>>> = {
   google: () => import('./bindings').then((m) => m.googleBinding),
   mistral: () => import('./bindings').then((m) => m.mistralBinding),
   openrouter: () => import('./bindings').then((m) => m.openRouterBinding),
+  deepseek: () => import('./bindings').then((m) => m.deepSeekBinding),
+  venice: () => import('./bindings').then((m) => m.veniceBinding),
   ollama: () => import('./bindings').then((m) => m.ollamaBinding),
   'lm-studio': () => import('./bindings').then((m) => m.lmStudioBinding),
   'openai-compatible': () =>

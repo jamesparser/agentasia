@@ -27,9 +27,13 @@ export function ConnectorCard({ connector, onClick }: ConnectorCardProps) {
 
   // Get provider config for icon and name
   const providerConfig = getProvider(connector.provider as AppConnectorProvider)
-  const providerName = providerConfig?.name || connector.name
-  const providerIcon = providerConfig?.icon || 'AppWindow'
-  const providerColor = providerConfig?.color || '#888888'
+  const providerName = connector.name || providerConfig?.name || 'Custom App'
+  const providerIcon =
+    providerConfig?.icon ||
+    (connector.category === 'mcp' ? 'Server' : 'AppWindow')
+  const providerColor =
+    providerConfig?.color ||
+    (connector.category === 'mcp' ? '#6366f1' : '#888888')
 
   // Get status indicator config (includes 'syncing' for display purposes only)
   const getStatusConfig = (status: ConnectorStatus | 'syncing') => {

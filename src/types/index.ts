@@ -258,6 +258,8 @@ export type LLMProvider =
   | 'vertex-ai'
   | 'mistral'
   | 'openrouter'
+  | 'deepseek'
+  | 'venice'
   | 'huggingface'
   | 'openai-compatible'
   | 'lm-studio'
@@ -1124,7 +1126,13 @@ export interface HitlResponse {
 // ============================================================================
 
 /** The resolved intent for a session or turn */
-export type SessionIntent = 'chat' | 'conversation' | 'task' | 'media' | 'app' | 'agent'
+export type SessionIntent =
+  | 'chat'
+  | 'conversation'
+  | 'task'
+  | 'media'
+  | 'app'
+  | 'agent'
 
 /** A single turn within a session (user prompt → agent work → artifacts) */
 export interface SessionTurn {

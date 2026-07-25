@@ -116,7 +116,8 @@ export interface ApiConfig {
  */
 export interface McpConfig {
   serverUrl: string
-  transport: 'stdio' | 'sse' | 'websocket'
+  /** Browser clients support remote streamable HTTP and legacy SSE only. */
+  transport: 'streamable-http' | 'sse' | 'websocket'
   capabilities?: string[]
   discoveredTools?: McpTool[]
   discoveredResources?: McpResource[]

@@ -8,6 +8,7 @@ import {
   ConnectorCard,
   ConnectorWizard,
   ConnectorSettingsModal,
+  CustomMcpWizard,
 } from '../components'
 import type {
   ConnectorCategory,
@@ -191,7 +192,7 @@ export function ConnectorsPage() {
       </Section>
 
       {/* Add/Edit Connector Wizard */}
-      {showWizard && (
+      {showWizard && selectedTab === 'app' && (
         <ConnectorWizard
           isOpen={showWizard}
           onClose={() => {
@@ -200,6 +201,13 @@ export function ConnectorsPage() {
           }}
           category={selectedTab}
           initialProvider={selectedProvider}
+        />
+      )}
+
+      {showWizard && selectedTab === 'mcp' && (
+        <CustomMcpWizard
+          isOpen={showWizard}
+          onClose={() => setShowWizard(false)}
         />
       )}
 
@@ -269,9 +277,11 @@ function EmptyState({
       </div>
       <h3 className="text-lg font-medium mb-2">{info.title}</h3>
       <p className="text-default-500 max-w-md mb-6">{info.description}</p>
-      {category === 'app' && (
+      {(category === 'app' || category === 'mcp') && (
         <Button color="primary" onPress={onAdd}>
-          {t('Add your first connector')}
+          {category === 'mcp'
+            ? t('Add Custom App')
+            : t('Add your first connector')}
         </Button>
       )}
     </div>

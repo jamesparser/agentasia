@@ -4,6 +4,7 @@ import {
   estimateTokenUsage,
 } from '@/features/traces/trace-service'
 import { assertProviderAllowed } from '@/lib/privacy'
+import { explainProviderError } from './provider-diagnostics'
 import {
   ToolDefinition,
   ToolChoice,
@@ -263,16 +264,17 @@ export class LLMService {
 
       return response
     } catch (error) {
-      // End span and trace with error
+      const diagnosed = explainProviderError(config.provider, error)
+      // End span and trace with an actionable, user-safe error.
       await TraceService.endSpan(span.id, {
         status: 'error',
-        statusMessage: error instanceof Error ? error.message : String(error),
+        statusMessage: diagnosed.message,
       })
       await TraceService.endTrace(trace.id, {
         status: 'error',
-        statusMessage: error instanceof Error ? error.message : String(error),
+        statusMessage: diagnosed.message,
       })
-      throw error
+      throw diagnosed
     } finally {
       progressTracker.endRequest(requestId)
     }
@@ -354,16 +356,17 @@ export class LLMService {
         output: fullResponse,
       })
     } catch (error) {
-      // End span and trace with error
+      const diagnosed = explainProviderError(config.provider, error)
+      // End span and trace with an actionable, user-safe error.
       await TraceService.endSpan(span.id, {
         status: 'error',
-        statusMessage: error instanceof Error ? error.message : String(error),
+        statusMessage: diagnosed.message,
       })
       await TraceService.endTrace(trace.id, {
         status: 'error',
-        statusMessage: error instanceof Error ? error.message : String(error),
+        statusMessage: diagnosed.message,
       })
-      throw error
+      throw diagnosed
     } finally {
       progressTracker.endRequest(requestId)
     }
@@ -419,6 +422,8 @@ for (const name of [
   'google',
   'mistral',
   'openrouter',
+  'deepseek',
+  'venice',
   'ollama',
   'lm-studio',
   'openai-compatible',
