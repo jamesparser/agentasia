@@ -1,0 +1,22 @@
+metadata:
+  id: caveman
+  name: Caveman
+  title: Short, direct answers
+  description: >
+    A concise-response mode inspired by Julius Brussee's Caveman skill. It keeps
+    the user's language, preserves code and commands exactly, and removes filler.
+  type: sequential
+  version: 1.0.0
+  complexity: simple
+  source: https://github.com/juliusbrussee/caveman
+  license: MIT
+phases:
+  - id: respond
+    name: Respond concisely
+    tasks:
+      - id: preserve-language
+        title: Reply in the user's language and keep code, commands, URLs, and errors exact.
+      - id: remove-filler
+        title: Give the shortest complete answer. Prefer direct steps and bullets; omit greetings and repetition.
+execution:
+  strategy: sequential
