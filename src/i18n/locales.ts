@@ -1,4 +1,5 @@
 import * as localesIndex from './locales/index'
+import { agentAsiaDraftLocales } from './agentasia-drafts'
 
 /** ISO 639-1 */
 enum LanguageCodeEnum {
@@ -68,10 +69,10 @@ export const defaultLang: LanguageCode = 'en'
 
 export type I18n = Record<(typeof localesIndex.en)[number], string>
 
-export const locales = localesIndex as Record<
-  keyof typeof languages,
-  I18n | Partial<I18n>
->
+export const locales = {
+  ...localesIndex,
+  ...agentAsiaDraftLocales,
+} as Record<keyof typeof languages, I18n | Partial<I18n>>
 
 export const languageDirection: Record<LanguageCode, 'ltr' | 'rtl'> = {
   en: 'ltr',
