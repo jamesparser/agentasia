@@ -1,5 +1,6 @@
-// AgentAsia Model Router — multi-provider gateway with fallback, aliasing, and dynamic provider registry
-// Phase 1: All provider integrations + Naga model aliases + runtime provider management
+// AgentAsia Model Router — multi-provider gateway with fallback, aliasing, and runtime provider registry
+// AgentAsia runs as a browser-first agentic harness — providers are selected in the UI, not via env vars.
+// The 'openai-compatible' slot accepts baseUrl + apiKey from the request body for fully dynamic routing.
 
 const PROVIDERS = {
   // ── Primary managed routes ──────────────────────────────────
@@ -8,12 +9,6 @@ const PROVIDERS = {
     baseUrl: 'https://api.deepseek.com/v1',
     keyEnv: 'DEEPSEEK_API_KEY',
     defaultModel: 'deepseek-chat',
-    aliases: {
-      'naga1-large': 'deepseek-v4-pro',
-      'naga1-pro': 'deepseek-v4-pro',
-      'naga1-chat': 'deepseek-chat',
-      'naga1-flash': 'deepseek-v4-flash',
-    },
     models: ['deepseek-chat', 'deepseek-v4-pro', 'deepseek-v4-flash'],
   },
 
@@ -22,9 +17,6 @@ const PROVIDERS = {
     baseUrl: 'https://openrouter.ai/api/v1',
     keyEnv: 'OPENROUTER_API_KEY',
     defaultModel: 'deepseek/deepseek-chat',
-    aliases: {
-      'naga1-router': 'deepseek/deepseek-chat',
-    },
     models: ['deepseek/deepseek-chat', 'anthropic/claude-sonnet-4', 'google/gemini-2.5-pro'],
   },
 
@@ -33,9 +25,6 @@ const PROVIDERS = {
     baseUrl: 'https://api.venice.ai/api/v1',
     keyEnv: 'VENICE_API_KEY',
     defaultModel: 'deepseek-v4-flash',
-    aliases: {
-      'naga1-venice': 'deepseek-v4-flash',
-    },
     models: ['deepseek-v4-flash', 'qwen3-vl-235b-a22b', 'google-gemma-4-31b-it'],
   },
 
@@ -45,10 +34,6 @@ const PROVIDERS = {
     baseUrl: 'https://inference.asicloud.cudos.org/v1',
     keyEnv: 'CUDOS_ASI_KEY',
     defaultModel: 'asi1-mini',
-    aliases: {
-      'naga1-mini': 'asi1-mini',
-      'naga1-free': 'asi1-mini',
-    },
     models: ['asi1-mini'],
     free: true,
   },
@@ -58,7 +43,6 @@ const PROVIDERS = {
     baseUrl: 'https://api.asi1.ai/v1',
     keyEnv: 'ASI1_API_KEY',
     defaultModel: 'asi1',
-    aliases: {},
     models: ['asi1'],
     free: true,
   },
@@ -69,7 +53,6 @@ const PROVIDERS = {
     baseUrl: 'https://api.redpill.ai/v1',
     keyEnv: 'REDPILL_API_KEY',
     defaultModel: 'openai/gpt-oss-120b',
-    aliases: {},
     models: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3-vl-30b-a3b-instruct'],
   },
 
@@ -78,7 +61,6 @@ const PROVIDERS = {
     baseUrl: 'https://api.z.ai/api/paas/v4',
     keyEnv: 'ZHIPU_API_KEY',
     defaultModel: 'zai/glm-4.7-flash',
-    aliases: {},
     models: ['zai/glm-4.7-flash', 'zai/glm-4.6v-flash'],
     free: true,
   },
@@ -88,7 +70,6 @@ const PROVIDERS = {
     baseUrl: 'https://api.groq.com/openai/v1',
     keyEnv: 'GROQ_API_KEY',
     defaultModel: 'llama-3.1-8b-instant',
-    aliases: {},
     models: ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'mixtral-8x7b-32768'],
   },
 
@@ -97,7 +78,6 @@ const PROVIDERS = {
     baseUrl: 'https://api.mistral.ai/v1',
     keyEnv: 'MISTRAL_API_KEY',
     defaultModel: 'mistral-large-latest',
-    aliases: {},
     models: ['mistral-large-latest', 'mistral-small-latest', 'pixtral-large-latest'],
   },
 
@@ -106,7 +86,6 @@ const PROVIDERS = {
     baseUrl: 'https://agentrouter.org/v1',
     keyEnv: 'AGENTROUTER_API_KEY',
     defaultModel: 'deepseek-v3.2',
-    aliases: {},
     models: ['deepseek-v3.2', 'claude-haiku-4-5', 'glm-5.1'],
   },
 
@@ -115,7 +94,6 @@ const PROVIDERS = {
     baseUrl: 'https://crowllm.com/v1',
     keyEnv: 'CROWLLM_API_KEY',
     defaultModel: 'gemma-4-e2b',
-    aliases: {},
     models: ['gemma-4-e2b'],
   },
 
@@ -124,11 +102,10 @@ const PROVIDERS = {
     baseUrl: 'https://api.inceptionlabs.ai/v1',
     keyEnv: 'INCEPTION_API_KEY',
     defaultModel: 'inception/mercury-2',
-    aliases: {},
     models: ['inception/mercury-2'],
   },
 
-  // ── Reverse-engineered DeepSeek proxies (free chat.deepseek.com) ──
+  // ── Reverse-engineered DeepSeek proxies ──────────────────────
   deeperseeker: {
     name: 'DeeperSeeker (DeepSeek Web Proxy)',
     baseUrl: process.env.DEEPERSKER_URL || 'http://localhost:4000',
@@ -149,7 +126,7 @@ const PROVIDERS = {
     local: true,
   },
 
-  // ── LiteLLM router tiers (naga-litellm-router fork) ──────────
+  // ── LiteLLM router tiers ─────────────────────────────────────
   'litellm-freemium': {
     name: 'LiteLLM Freemium',
     baseUrl: process.env.LITELLM_FREEMIUM_URL || 'http://localhost:4001',
@@ -224,22 +201,24 @@ const PROVIDERS = {
     local: true,
   },
 
-  // ── OpenAI Compatible (user-configurable custom provider) ────
+  // ── OpenAI Compatible (UI-driven custom provider slot) ───────
+  // No env vars needed — the browser UI sends baseUrl + apiKey per request.
+  // Always shows in the provider list so the user can select it and type their own endpoint.
   'openai-compatible': {
     name: 'OpenAI Compatible',
-    baseUrl: process.env.OPENAI_COMPATIBLE_URL || '',
-    keyEnv: 'OPENAI_COMPATIBLE_API_KEY',
-    defaultModel: process.env.OPENAI_COMPATIBLE_MODEL || 'default',
+    baseUrl: '',  // set per-request from request body
+    keyEnv: null, // set per-request from request body
+    defaultModel: '',  // set per-request from request body
     models: [],
-    description: 'Point at any OpenAI-compatible endpoint — set OPENAI_COMPATIBLE_URL + OPENAI_COMPATIBLE_API_KEY + OPENAI_COMPATIBLE_MODEL in .env',
+    description: 'Point at any OpenAI-compatible API — provide baseUrl, apiKey, and model in the request',
     local: true,
+    alwaysConfigured: true,
   },
 }
 
-// ── Dynamic provider registry (runtime add/remove) ────────────
+// ── Dynamic provider registry (runtime add/remove via API) ─────
 let dynamicProviders = {}
 try {
-  // Persisted dynamic providers from disk
   const fs = await import('node:fs')
   const path = await import('node:path')
   const dynamicFile = path.join('/data', 'dynamic-providers.json')
@@ -247,7 +226,7 @@ try {
     dynamicProviders = JSON.parse(fs.readFileSync(dynamicFile, 'utf-8'))
   }
 } catch {
-  // No persistence available (e.g., /data not mounted) — memory-only
+  // Memory-only mode if /data not available
 }
 
 function saveDynamicProviders() {
@@ -272,13 +251,13 @@ export function registerProvider(id, config) {
   dynamicProviders[id] = {
     name: config.name,
     baseUrl: config.baseUrl,
-    keyEnv: config.keyEnv || `DYNAMIC_${id.toUpperCase()}_KEY`,
+    keyEnv: config.keyEnv || null,
     defaultModel: config.defaultModel || config.models?.[0] || 'default',
-    aliases: config.aliases || {},
     models: config.models || [],
     description: config.description || '',
     local: true,
     dynamic: true,
+    alwaysConfigured: true,
   }
   saveDynamicProviders()
   return dynamicProviders[id]
@@ -302,26 +281,21 @@ function resolveModel(providerId, model) {
   const allProviders = getAllProviders()
   const provider = allProviders[providerId]
   if (!provider) throw new Error('unsupported_provider')
-  // Check aliases first
   if (provider.aliases && provider.aliases[model]) {
     return provider.aliases[model]
   }
-  // Use default if no model specified
   if (!model) return provider.defaultModel
   return model
 }
 
 // ── Public API ─────────────────────────────────────────────────
 
-/** List provider IDs that have API keys configured */
+/** List provider IDs that are available (configured or always-configured) */
 export function configuredProviders(env = process.env) {
   const allProviders = getAllProviders()
   return Object.entries(allProviders)
     .filter(([, config]) => {
-      // openai-compatible only shows when URL is set
-      if (config.keyEnv === 'OPENAI_COMPATIBLE_API_KEY') {
-        return Boolean(env.OPENAI_COMPATIBLE_URL)
-      }
+      if (config.alwaysConfigured) return true
       if (config.local || config.dynamic) return true
       return Boolean(env[config.keyEnv])
     })
@@ -339,9 +313,11 @@ export function providerCatalog(env = process.env) {
         models: config.models,
         defaultModel: config.defaultModel,
         aliases: config.aliases || {},
-        configured: config.keyEnv === 'OPENAI_COMPATIBLE_API_KEY'
-          ? Boolean(env.OPENAI_COMPATIBLE_URL)
-          : config.local || config.dynamic ? true : Boolean(env[config.keyEnv]),
+        configured: config.alwaysConfigured
+          ? true
+          : config.local || config.dynamic
+            ? true
+            : Boolean(env[config.keyEnv]),
         free: config.free || false,
         local: config.local || false,
         dynamic: config.dynamic || false,
@@ -358,8 +334,13 @@ export async function healthCheck(providerId, env = process.env) {
   const config = allProviders[providerId]
   if (!config) throw new Error('unsupported_provider')
 
-  const apiKey = (config.local || config.dynamic) ? (env[config.keyEnv] || 'no-auth') : env[config.keyEnv]
-  if (!apiKey && !(config.local || config.dynamic)) {
+  // openai-compatible and dynamic providers have no fixed URL — skip
+  if (config.alwaysConfigured) {
+    return { provider: providerId, healthy: null, reason: 'endpoint_is_per-request' }
+  }
+
+  const apiKey = config.local ? (env[config.keyEnv] || 'no-auth') : env[config.keyEnv]
+  if (!apiKey && !config.local) {
     return { provider: providerId, healthy: false, reason: 'not_configured' }
   }
 
@@ -369,7 +350,6 @@ export async function healthCheck(providerId, env = process.env) {
     const timeout = setTimeout(() => controller.abort(), 10000)
 
     let headers = config.local && !apiKey ? {} : { authorization: `Bearer ${apiKey}` }
-    // LiteLLM instances sometimes use different auth header
     if (providerId.startsWith('litellm-')) {
       headers = apiKey ? { authorization: `Bearer ${apiKey}` } : {}
     }
@@ -402,19 +382,23 @@ export async function healthCheckAll(env = process.env) {
   return results.map((r, i) => (r.status === 'fulfilled' ? r.value : { provider: providers[i], healthy: false, reason: r.reason?.message }))
 }
 
-/** Route a chat completion to a provider with fallback */
+/**
+ * Route a chat completion to a provider with optional fallback.
+ * The 'openai-compatible' and dynamic providers accept baseUrl + apiKey from the request body
+ * so the browser UI can pass them without any env-var setup.
+ */
 export async function routeChat(
-  { provider, model, messages, temperature = 0.7, maxTokens, stream = false },
+  { provider, model, messages, temperature = 0.7, maxTokens, stream = false, baseUrl, apiKey },
   env = process.env,
 ) {
   const allProviders = getAllProviders()
   const config = allProviders[provider]
   if (!config) throw new Error('unsupported_provider')
 
-  // Handle naga1 aliases by scanning all providers if model is an alias
+  // Resolve model through aliases or default
   let resolvedModel = model
   let targetProvider = provider
-  if (model && !config.models.includes(model) && !Object.values(config.aliases || {}).includes(model)) {
+  if (model && config.models?.length && !config.models.includes(model) && !Object.values(config.aliases || {}).includes(model)) {
     for (const [pid, pconfig] of Object.entries(allProviders)) {
       if (pconfig.aliases && pconfig.aliases[model]) {
         targetProvider = pid
@@ -427,13 +411,35 @@ export async function routeChat(
   }
 
   const target = allProviders[targetProvider]
-  const isLocal = target.local || target.dynamic
-  const apiKey = isLocal ? (env[target.keyEnv] || 'no-auth') : env[target.keyEnv]
-  if (!apiKey && !isLocal) throw new Error('provider_not_configured')
+
+  // Determine the actual URL and key to use
+  let effectiveBaseUrl = target.baseUrl
+  let effectiveApiKey = target.local || target.dynamic ? (env[target.keyEnv] || '') : (env[target.keyEnv] || '')
+
+  // Per-request overrides for openai-compatible and alwaysConfigured providers
+  if (target.alwaysConfigured) {
+    // Use request body values if provided, otherwise fall back to env/config
+    effectiveBaseUrl = baseUrl || target.baseUrl || env.OPENAI_COMPATIBLE_URL || ''
+    effectiveApiKey = apiKey || (target.keyEnv ? env[target.keyEnv] : '') || ''
+  } else {
+    // For fixed providers, request-level overrides also work (useful for proxies)
+    if (baseUrl) effectiveBaseUrl = baseUrl
+    if (apiKey) effectiveApiKey = apiKey
+  }
+
+  // Guard: cloud providers need an API key
+  if (!target.alwaysConfigured && !target.local && !target.dynamic && !effectiveApiKey) {
+    throw new Error('provider_not_configured')
+  }
+
+  if (!effectiveBaseUrl) throw new Error('no_base_url')
   if (!Array.isArray(messages) || messages.length === 0) throw new Error('messages_required')
 
+  const effectiveModel = resolvedModel || target.defaultModel
+  if (!effectiveModel) throw new Error('no_model')
+
   const payload = {
-    model: resolvedModel,
+    model: effectiveModel,
     messages,
     temperature,
     ...(maxTokens ? { max_tokens: maxTokens } : {}),
@@ -442,10 +448,11 @@ export async function routeChat(
 
   const headers = {
     'content-type': 'application/json',
-    ...(apiKey && apiKey !== 'no-auth' ? { authorization: `Bearer ${apiKey}` } : {}),
+    ...(effectiveApiKey ? { authorization: `Bearer ${effectiveApiKey}` } : {}),
   }
 
-  const response = await fetch(`${target.baseUrl}/chat/completions`, {
+  const endpoint = effectiveBaseUrl.replace(/\/+$/, '') + '/chat/completions'
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers,
     body: JSON.stringify(payload),
@@ -458,7 +465,7 @@ export async function routeChat(
       error.statusCode = response.status
       throw error
     }
-    return { stream: response.body, provider: targetProvider, model: resolvedModel }
+    return { stream: response.body, provider: targetProvider, model: effectiveModel }
   }
 
   const body = await response.json().catch(() => ({}))
@@ -467,7 +474,7 @@ export async function routeChat(
     error.statusCode = response.status
     throw error
   }
-  return { ...body, _provider: targetProvider, _model: resolvedModel }
+  return { ...body, _provider: targetProvider, _model: effectiveModel }
 }
 
 /** Route with automatic fallback across configured providers */
