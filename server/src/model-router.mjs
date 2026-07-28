@@ -134,10 +134,6 @@ const PROVIDERS = {
     baseUrl: process.env.DEEPERSKER_URL || 'http://localhost:4000',
     keyEnv: 'DEEPERSKER_API_KEY',
     defaultModel: 'instant',
-    aliases: {
-      'naga1-large': 'instant',
-      'naga1-proxy': 'instant',
-    },
     models: ['instant', 'vision', 'expert'],
     description: 'LiteLLM-based reverse proxy for chat.deepseek.com — free, no API key needed',
     local: true,
@@ -148,9 +144,6 @@ const PROVIDERS = {
     baseUrl: process.env.DEEPSEEK_REVERSE_URL || 'http://localhost:4010/v1',
     keyEnv: 'DEEPSEEK_REVERSE_KEY',
     defaultModel: 'deepseek-chat',
-    aliases: {
-      'naga1-reverse': 'deepseek-chat',
-    },
     models: ['deepseek-chat', 'deepseek-v4-pro', 'deepseek-v4-flash'],
     description: 'Reverse-engineered DeepSeek web chat → OpenAI API (needs wrapper server)',
     local: true,
@@ -162,9 +155,6 @@ const PROVIDERS = {
     baseUrl: process.env.LITELLM_FREEMIUM_URL || 'http://localhost:4001',
     keyEnv: 'LITELLM_FREEMIUM_KEY',
     defaultModel: 'gpt-3.5-turbo',
-    aliases: {
-      'naga1-lite': 'gpt-3.5-turbo',
-    },
     models: [],
     description: 'LiteLLM router — freemium tier (rate-limited, shared models)',
     local: true,
@@ -175,9 +165,6 @@ const PROVIDERS = {
     baseUrl: process.env.LITELLM_AGENT_URL || 'http://localhost:4002',
     keyEnv: 'LITELLM_AGENT_KEY',
     defaultModel: 'deepseek-chat',
-    aliases: {
-      'naga1-agent': 'deepseek-chat',
-    },
     models: [],
     description: 'LiteLLM router — agent tier (higher limits, function calling)',
     local: true,
@@ -188,9 +175,6 @@ const PROVIDERS = {
     baseUrl: process.env.LITELLM_FABLE_URL || 'http://localhost:4003',
     keyEnv: 'LITELLM_FABLE_KEY',
     defaultModel: 'claude-haiku',
-    aliases: {
-      'naga1-fable': 'claude-haiku',
-    },
     models: [],
     description: 'LiteLLM router — fable tier (creative/storytelling models)',
     local: true,
@@ -202,9 +186,6 @@ const PROVIDERS = {
     baseUrl: process.env.LILYPAD_MCP_URL || 'http://localhost:4200/v1',
     keyEnv: 'LILYPAD_MCP_KEY',
     defaultModel: 'lilypad-mcp',
-    aliases: {
-      'naga1-lily': 'lilypad-mcp',
-    },
     models: ['lilypad-mcp'],
     description: 'Lilypad decentralized GPU MCP — needs MCP-to-OpenAI bridge',
     local: true,
@@ -217,9 +198,6 @@ const PROVIDERS = {
     baseUrl: process.env.MLX_GEMMA_URL || 'http://localhost:11434/v1',
     keyEnv: 'MLX_GEMMA_KEY',
     defaultModel: 'gemma-4',
-    aliases: {
-      'naga1-gemma': 'gemma-4',
-    },
     models: ['gemma-4', 'gemma-4-4b', 'gemma-4-27b'],
     description: 'Google Gemma 4 running on Apple MLX — local Mac inference',
     local: true,
@@ -246,19 +224,15 @@ const PROVIDERS = {
     local: true,
   },
 
-  // ── Generic / custom provider (OpenRouter-compatible ingress) ──
-  // Registered via POST /v1/providers at runtime
-  // Acts as the "Agnes" layer — user-defined providers & models
-  generic: {
-    name: 'Generic Provider',
-    baseUrl: process.env.GENERIC_PROVIDER_URL || 'http://localhost:4090/v1',
-    keyEnv: 'GENERIC_PROVIDER_KEY',
-    defaultModel: 'default',
-    aliases: {},
+  // ── OpenAI Compatible (user-configurable custom provider) ────
+  'openai-compatible': {
+    name: 'OpenAI Compatible',
+    baseUrl: process.env.OPENAI_COMPATIBLE_URL || '',
+    keyEnv: 'OPENAI_COMPATIBLE_API_KEY',
+    defaultModel: process.env.OPENAI_COMPATIBLE_MODEL || 'default',
     models: [],
-    description: 'OpenRouter-compatible ingress for user-defined providers',
+    description: 'Point at any OpenAI-compatible endpoint — set OPENAI_COMPATIBLE_URL + OPENAI_COMPATIBLE_API_KEY + OPENAI_COMPATIBLE_MODEL in .env',
     local: true,
-    dynamic: true,
   },
 }
 
@@ -344,6 +318,10 @@ export function configuredProviders(env = process.env) {
   const allProviders = getAllProviders()
   return Object.entries(allProviders)
     .filter(([, config]) => {
+      // openai-compatible only shows when URL is set
+      if (config.keyEnv === 'OPENAI_COMPATIBLE_API_KEY') {
+        return Boolean(env.OPENAI_COMPATIBLE_URL)
+      }
       if (config.local || config.dynamic) return true
       return Boolean(env[config.keyEnv])
     })
@@ -361,7 +339,9 @@ export function providerCatalog(env = process.env) {
         models: config.models,
         defaultModel: config.defaultModel,
         aliases: config.aliases || {},
-        configured: config.local || config.dynamic ? true : Boolean(env[config.keyEnv]),
+        configured: config.keyEnv === 'OPENAI_COMPATIBLE_API_KEY'
+          ? Boolean(env.OPENAI_COMPATIBLE_URL)
+          : config.local || config.dynamic ? true : Boolean(env[config.keyEnv]),
         free: config.free || false,
         local: config.local || false,
         dynamic: config.dynamic || false,

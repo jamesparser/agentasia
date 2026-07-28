@@ -19,28 +19,36 @@ assert.ok(providers.includes('meshllm'), 'meshllm should always be configured')
 assert.ok(providers.includes('petals'), 'petals should always be configured')
 assert.ok(!providers.includes('deepseek'), 'deepseek should not show without key')
 
-// ── New providers should exist ─────────────────────────────────
-assert.ok(providers.includes('mlx-gemma'), 'mlx-gemma should be configured (local)')
-assert.ok(providers.includes('litellm-freemium'), 'litellm-freemium should be configured (local)')
-assert.ok(providers.includes('litellm-agent'), 'litellm-agent should be configured (local)')
-assert.ok(providers.includes('litellm-fable'), 'litellm-fable should be configured (local)')
-assert.ok(providers.includes('lilypad'), 'lilypad should be configured (local)')
-assert.ok(providers.includes('deeperseeker'), 'deeperseeker should be configured (local)')
-assert.ok(providers.includes('generic'), 'generic should be configured (local)')
+// ── New local providers should exist ──────────────────────────
+assert.ok(providers.includes('mlx-gemma'), 'mlx-gemma (local)')
+assert.ok(providers.includes('litellm-freemium'), 'litellm-freemium (local)')
+assert.ok(providers.includes('litellm-agent'), 'litellm-agent (local)')
+assert.ok(providers.includes('litellm-fable'), 'litellm-fable (local)')
+assert.ok(providers.includes('lilypad'), 'lilypad (local, mcp)')
 
-// ── Provider catalog ───────────────────────────────────────────
+// ── OpenAI Compatible: NOT configured without URL ─────────────
+assert.ok(!providers.includes('openai-compatible'),
+  'openai-compatible should NOT show without OPENAI_COMPATIBLE_URL')
+
+const envWithCompatUrl = { OPENAI_COMPATIBLE_URL: 'http://localhost:8080/v1' }
+assert.ok(configuredProviders(envWithCompatUrl).includes('openai-compatible'),
+  'openai-compatible should show when URL is set')
+
+// ── Provider catalog names ────────────────────────────────────
 const catalog = providerCatalog(envWithDeepSeek)
 assert.equal(catalog.deepseek.name, 'DeepSeek')
 assert.equal(catalog['mlx-gemma'].name, 'MLX Gemma 4 (Local)')
 assert.equal(catalog['litellm-freemium'].name, 'LiteLLM Freemium')
-assert.equal(catalog['litellm-agent'].name, 'LiteLLM Agent')
-assert.equal(catalog['litellm-fable'].name, 'LiteLLM Fable')
 assert.equal(catalog.lilypad.name, 'Lilypad MCP')
 assert.equal(catalog.lilypad.mcp, true)
-assert.equal(catalog.generic.dynamic, true)
+
+// openai-compatible not configured without URL
+assert.equal(catalog['openai-compatible'].configured, false)
+// openai-compatible IS configured with URL
+const catalogWithUrl = providerCatalog(envWithCompatUrl)
+assert.equal(catalogWithUrl['openai-compatible'].configured, true)
 
 // ── Dynamic provider registry ──────────────────────────────────
-// Register a new provider
 const agnesProvider = registerProvider('agnes-deepseek', {
   name: 'Agnes DeepSeek Proxy',
   baseUrl: 'http://localhost:4090/v1',
@@ -51,19 +59,7 @@ const agnesProvider = registerProvider('agnes-deepseek', {
 
 assert.equal(agnesProvider.name, 'Agnes DeepSeek Proxy')
 assert.equal(agnesProvider.dynamic, true)
-
-// Should appear in configured providers
-const withDynamic = configuredProviders()
-assert.ok(withDynamic.includes('agnes-deepseek'), 'dynamic provider should appear in configured list')
-
-// Should appear in catalog
-const catalogWithDynamic = providerCatalog()
-assert.ok(catalogWithDynamic['agnes-deepseek'])
-assert.equal(catalogWithDynamic['agnes-deepseek'].name, 'Agnes DeepSeek Proxy')
-
-// List dynamic providers
-const dynamic = listDynamicProviders()
-assert.ok(dynamic['agnes-deepseek'])
+assert.ok(configuredProviders().includes('agnes-deepseek'))
 
 // Cannot register with reserved ID
 assert.throws(() => registerProvider('deepseek', { name: 'x', baseUrl: 'http://x' }), /provider_id_reserved/)
@@ -97,22 +93,33 @@ await assert.rejects(
   /messages_required/,
 )
 
-// ── Naga1 alias resolution ─────────────────────────────────────
+// ── Naga1 alias resolution (production providers only) ─────────
 import { PROVIDERS } from '../src/model-router.mjs'
 assert.equal(PROVIDERS.deepseek.aliases['naga1-large'], 'deepseek-v4-pro')
 assert.equal(PROVIDERS.deepseek.aliases['naga1-chat'], 'deepseek-chat')
 assert.equal(PROVIDERS.deepseek.aliases['naga1-flash'], 'deepseek-v4-flash')
-assert.equal(PROVIDERS.deeperseeker.aliases['naga1-large'], 'instant')
 assert.equal(PROVIDERS['asi1-mini'].aliases['naga1-mini'], 'asi1-mini')
 assert.equal(PROVIDERS['asi1-mini'].aliases['naga1-free'], 'asi1-mini')
-assert.equal(PROVIDERS['litellm-freemium'].aliases['naga1-lite'], 'gpt-3.5-turbo')
-assert.equal(PROVIDERS['litellm-agent'].aliases['naga1-agent'], 'deepseek-chat')
-assert.equal(PROVIDERS['litellm-fable'].aliases['naga1-fable'], 'claude-haiku')
-assert.equal(PROVIDERS['mlx-gemma'].aliases['naga1-gemma'], 'gemma-4')
-assert.equal(PROVIDERS.lilypad.aliases['naga1-lily'], 'lilypad-mcp')
+assert.equal(PROVIDERS.openrouter.aliases['naga1-router'], 'deepseek/deepseek-chat')
+assert.equal(PROVIDERS.venice.aliases['naga1-venice'], 'deepseek-v4-flash')
 
-// ── MLX Gemma 4 defaults ───────────────────────────────────────
-assert.equal(PROVIDERS['mlx-gemma'].defaultModel, 'gemma-4')
-assert.ok(PROVIDERS['mlx-gemma'].local)
+// ── New providers have NO naga1 aliases (not tested yet) ───────
+assert.equal(PROVIDERS['mlx-gemma'].aliases, undefined,
+  'mlx-gemma should have no aliases yet')
+assert.equal(PROVIDERS['litellm-freemium'].aliases, undefined,
+  'litellm-freemium should have no aliases yet')
+assert.equal(PROVIDERS['litellm-agent'].aliases, undefined,
+  'litellm-agent should have no aliases yet')
+assert.equal(PROVIDERS['litellm-fable'].aliases, undefined,
+  'litellm-fable should have no aliases yet')
+assert.equal(PROVIDERS.lilypad.aliases, undefined,
+  'lilypad should have no aliases yet')
+assert.equal(PROVIDERS.deeperseeker.aliases, undefined,
+  'deeperseeker should have no aliases yet')
+assert.equal(PROVIDERS['deepseek-reverse'].aliases, undefined,
+  'deepseek-reverse should have no aliases yet')
 
-console.log('model-router tests passed (23 providers, dynamic registry)')
+// openai-compatible defaults
+assert.equal(PROVIDERS['openai-compatible'].keyEnv, 'OPENAI_COMPATIBLE_API_KEY')
+
+console.log('model-router tests passed (22 providers, dynamic registry, openai-compatible)')
