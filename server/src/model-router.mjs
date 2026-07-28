@@ -1,5 +1,5 @@
-// AgentAsia Model Router — multi-provider gateway with fallback and aliasing
-// Phase 1: All provider integrations + Naga model aliases
+// AgentAsia Model Router — multi-provider gateway with fallback, aliasing, and dynamic provider registry
+// Phase 1: All provider integrations + Naga model aliases + runtime provider management
 
 const PROVIDERS = {
   // ── Primary managed routes ──────────────────────────────────
@@ -156,6 +156,75 @@ const PROVIDERS = {
     local: true,
   },
 
+  // ── LiteLLM router tiers (naga-litellm-router fork) ──────────
+  'litellm-freemium': {
+    name: 'LiteLLM Freemium',
+    baseUrl: process.env.LITELLM_FREEMIUM_URL || 'http://localhost:4001',
+    keyEnv: 'LITELLM_FREEMIUM_KEY',
+    defaultModel: 'gpt-3.5-turbo',
+    aliases: {
+      'naga1-lite': 'gpt-3.5-turbo',
+    },
+    models: [],
+    description: 'LiteLLM router — freemium tier (rate-limited, shared models)',
+    local: true,
+  },
+
+  'litellm-agent': {
+    name: 'LiteLLM Agent',
+    baseUrl: process.env.LITELLM_AGENT_URL || 'http://localhost:4002',
+    keyEnv: 'LITELLM_AGENT_KEY',
+    defaultModel: 'deepseek-chat',
+    aliases: {
+      'naga1-agent': 'deepseek-chat',
+    },
+    models: [],
+    description: 'LiteLLM router — agent tier (higher limits, function calling)',
+    local: true,
+  },
+
+  'litellm-fable': {
+    name: 'LiteLLM Fable',
+    baseUrl: process.env.LITELLM_FABLE_URL || 'http://localhost:4003',
+    keyEnv: 'LITELLM_FABLE_KEY',
+    defaultModel: 'claude-haiku',
+    aliases: {
+      'naga1-fable': 'claude-haiku',
+    },
+    models: [],
+    description: 'LiteLLM router — fable tier (creative/storytelling models)',
+    local: true,
+  },
+
+  // ── Lily MCP fork (MCP → OpenAI bridge needed) ───────────────
+  lilypad: {
+    name: 'Lilypad MCP',
+    baseUrl: process.env.LILYPAD_MCP_URL || 'http://localhost:4200/v1',
+    keyEnv: 'LILYPAD_MCP_KEY',
+    defaultModel: 'lilypad-mcp',
+    aliases: {
+      'naga1-lily': 'lilypad-mcp',
+    },
+    models: ['lilypad-mcp'],
+    description: 'Lilypad decentralized GPU MCP — needs MCP-to-OpenAI bridge',
+    local: true,
+    mcp: true,
+  },
+
+  // ── MLX Gemma 4 (local Mac MLX) ──────────────────────────────
+  'mlx-gemma': {
+    name: 'MLX Gemma 4 (Local)',
+    baseUrl: process.env.MLX_GEMMA_URL || 'http://localhost:11434/v1',
+    keyEnv: 'MLX_GEMMA_KEY',
+    defaultModel: 'gemma-4',
+    aliases: {
+      'naga1-gemma': 'gemma-4',
+    },
+    models: ['gemma-4', 'gemma-4-4b', 'gemma-4-27b'],
+    description: 'Google Gemma 4 running on Apple MLX — local Mac inference',
+    local: true,
+  },
+
   // ── Local / self-hosted routes ───────────────────────────────
   meshllm: {
     name: 'MeshLLM (Local GPU Mesh)',
@@ -176,11 +245,88 @@ const PROVIDERS = {
     models: [],
     local: true,
   },
+
+  // ── Generic / custom provider (OpenRouter-compatible ingress) ──
+  // Registered via POST /v1/providers at runtime
+  // Acts as the "Agnes" layer — user-defined providers & models
+  generic: {
+    name: 'Generic Provider',
+    baseUrl: process.env.GENERIC_PROVIDER_URL || 'http://localhost:4090/v1',
+    keyEnv: 'GENERIC_PROVIDER_KEY',
+    defaultModel: 'default',
+    aliases: {},
+    models: [],
+    description: 'OpenRouter-compatible ingress for user-defined providers',
+    local: true,
+    dynamic: true,
+  },
+}
+
+// ── Dynamic provider registry (runtime add/remove) ────────────
+let dynamicProviders = {}
+try {
+  // Persisted dynamic providers from disk
+  const fs = await import('node:fs')
+  const path = await import('node:path')
+  const dynamicFile = path.join('/data', 'dynamic-providers.json')
+  if (fs.existsSync(dynamicFile)) {
+    dynamicProviders = JSON.parse(fs.readFileSync(dynamicFile, 'utf-8'))
+  }
+} catch {
+  // No persistence available (e.g., /data not mounted) — memory-only
+}
+
+function saveDynamicProviders() {
+  try {
+    const fs = require('node:fs')
+    fs.mkdirSync('/data', { recursive: true })
+    fs.writeFileSync('/data/dynamic-providers.json', JSON.stringify(dynamicProviders, null, 2))
+  } catch {
+    // Silent — memory-only mode
+  }
+}
+
+/** Get merged provider map (built-in + dynamic) */
+export function getAllProviders() {
+  return { ...PROVIDERS, ...dynamicProviders }
+}
+
+/** Register a new provider at runtime */
+export function registerProvider(id, config) {
+  if (PROVIDERS[id]) throw new Error('provider_id_reserved')
+  if (!config.name || !config.baseUrl) throw new Error('name_and_baseUrl_required')
+  dynamicProviders[id] = {
+    name: config.name,
+    baseUrl: config.baseUrl,
+    keyEnv: config.keyEnv || `DYNAMIC_${id.toUpperCase()}_KEY`,
+    defaultModel: config.defaultModel || config.models?.[0] || 'default',
+    aliases: config.aliases || {},
+    models: config.models || [],
+    description: config.description || '',
+    local: true,
+    dynamic: true,
+  }
+  saveDynamicProviders()
+  return dynamicProviders[id]
+}
+
+/** Remove a runtime provider */
+export function unregisterProvider(id) {
+  if (!dynamicProviders[id]) throw new Error('provider_not_found')
+  delete dynamicProviders[id]
+  saveDynamicProviders()
+  return { removed: id }
+}
+
+/** List only runtime providers */
+export function listDynamicProviders() {
+  return dynamicProviders
 }
 
 // ── Model alias resolver ───────────────────────────────────────
 function resolveModel(providerId, model) {
-  const provider = PROVIDERS[providerId]
+  const allProviders = getAllProviders()
+  const provider = allProviders[providerId]
   if (!provider) throw new Error('unsupported_provider')
   // Check aliases first
   if (provider.aliases && provider.aliases[model]) {
@@ -195,10 +341,10 @@ function resolveModel(providerId, model) {
 
 /** List provider IDs that have API keys configured */
 export function configuredProviders(env = process.env) {
-  return Object.entries(PROVIDERS)
+  const allProviders = getAllProviders()
+  return Object.entries(allProviders)
     .filter(([, config]) => {
-      // Local providers always show as configured
-      if (config.local) return true
+      if (config.local || config.dynamic) return true
       return Boolean(env[config.keyEnv])
     })
     .map(([id]) => id)
@@ -206,17 +352,21 @@ export function configuredProviders(env = process.env) {
 
 /** Full provider metadata for the /v1/config endpoint */
 export function providerCatalog(env = process.env) {
+  const allProviders = getAllProviders()
   return Object.fromEntries(
-    Object.entries(PROVIDERS).map(([id, config]) => [
+    Object.entries(allProviders).map(([id, config]) => [
       id,
       {
         name: config.name,
         models: config.models,
         defaultModel: config.defaultModel,
         aliases: config.aliases || {},
-        configured: config.local ? true : Boolean(env[config.keyEnv]),
+        configured: config.local || config.dynamic ? true : Boolean(env[config.keyEnv]),
         free: config.free || false,
         local: config.local || false,
+        dynamic: config.dynamic || false,
+        mcp: config.mcp || false,
+        description: config.description || '',
       },
     ]),
   )
@@ -224,11 +374,12 @@ export function providerCatalog(env = process.env) {
 
 /** Health-check a single provider endpoint */
 export async function healthCheck(providerId, env = process.env) {
-  const config = PROVIDERS[providerId]
+  const allProviders = getAllProviders()
+  const config = allProviders[providerId]
   if (!config) throw new Error('unsupported_provider')
 
-  const apiKey = config.local ? (env[config.keyEnv] || 'dummy') : env[config.keyEnv]
-  if (!apiKey && !config.local) {
+  const apiKey = (config.local || config.dynamic) ? (env[config.keyEnv] || 'no-auth') : env[config.keyEnv]
+  if (!apiKey && !(config.local || config.dynamic)) {
     return { provider: providerId, healthy: false, reason: 'not_configured' }
   }
 
@@ -236,8 +387,15 @@ export async function healthCheck(providerId, env = process.env) {
   try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 10000)
+
+    let headers = config.local && !apiKey ? {} : { authorization: `Bearer ${apiKey}` }
+    // LiteLLM instances sometimes use different auth header
+    if (providerId.startsWith('litellm-')) {
+      headers = apiKey ? { authorization: `Bearer ${apiKey}` } : {}
+    }
+
     const res = await fetch(`${config.baseUrl}/models`, {
-      headers: { authorization: `Bearer ${apiKey}` },
+      headers,
       signal: controller.signal,
     })
     clearTimeout(timeout)
@@ -269,15 +427,15 @@ export async function routeChat(
   { provider, model, messages, temperature = 0.7, maxTokens, stream = false },
   env = process.env,
 ) {
-  const config = PROVIDERS[provider]
+  const allProviders = getAllProviders()
+  const config = allProviders[provider]
   if (!config) throw new Error('unsupported_provider')
 
   // Handle naga1 aliases by scanning all providers if model is an alias
   let resolvedModel = model
   let targetProvider = provider
   if (model && !config.models.includes(model) && !Object.values(config.aliases || {}).includes(model)) {
-    // Scan all providers for this alias
-    for (const [pid, pconfig] of Object.entries(PROVIDERS)) {
+    for (const [pid, pconfig] of Object.entries(allProviders)) {
       if (pconfig.aliases && pconfig.aliases[model]) {
         targetProvider = pid
         resolvedModel = pconfig.aliases[model]
@@ -288,9 +446,10 @@ export async function routeChat(
     resolvedModel = resolveModel(provider, model)
   }
 
-  const target = PROVIDERS[targetProvider]
-  const apiKey = target.local ? (env[target.keyEnv] || 'dummy') : env[target.keyEnv]
-  if (!apiKey && !target.local) throw new Error('provider_not_configured')
+  const target = allProviders[targetProvider]
+  const isLocal = target.local || target.dynamic
+  const apiKey = isLocal ? (env[target.keyEnv] || 'no-auth') : env[target.keyEnv]
+  if (!apiKey && !isLocal) throw new Error('provider_not_configured')
   if (!Array.isArray(messages) || messages.length === 0) throw new Error('messages_required')
 
   const payload = {
@@ -301,12 +460,14 @@ export async function routeChat(
     ...(stream ? { stream: true } : {}),
   }
 
+  const headers = {
+    'content-type': 'application/json',
+    ...(apiKey && apiKey !== 'no-auth' ? { authorization: `Bearer ${apiKey}` } : {}),
+  }
+
   const response = await fetch(`${target.baseUrl}/chat/completions`, {
     method: 'POST',
-    headers: {
-      authorization: `Bearer ${apiKey}`,
-      'content-type': 'application/json',
-    },
+    headers,
     body: JSON.stringify(payload),
   })
 
@@ -340,7 +501,7 @@ export async function routeChatWithFallback(params, env = process.env) {
       return await routeChat({ ...params, provider: pid }, env)
     } catch (error) {
       errors.push({ provider: pid, error: error.message })
-      if (error.statusCode === 401 || error.statusCode === 403) continue // auth error, try next
+      if (error.statusCode === 401 || error.statusCode === 403) continue
       if (error.message === 'provider_not_configured') continue
     }
   }

@@ -1,6 +1,16 @@
 import http from 'node:http'
 import { randomUUID } from 'node:crypto'
-import { configuredProviders, providerCatalog, routeChat, routeChatWithFallback, healthCheckAll, healthCheck } from './model-router.mjs'
+import {
+  configuredProviders,
+  providerCatalog,
+  routeChat,
+  routeChatWithFallback,
+  healthCheckAll,
+  healthCheck,
+  registerProvider,
+  unregisterProvider,
+  listDynamicProviders,
+} from './model-router.mjs'
 import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from './schedules.mjs'
 import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
 
@@ -20,7 +30,7 @@ function corsHeaders(res, origin) {
     res.setHeader('vary', 'Origin')
   }
   res.setHeader('access-control-allow-headers', 'content-type, authorization')
-  res.setHeader('access-control-allow-methods', 'GET, POST, PATCH, OPTIONS')
+  res.setHeader('access-control-allow-methods', 'GET, POST, PATCH, DELETE, OPTIONS')
 }
 async function readJson(req) {
   let raw = ''
@@ -60,6 +70,37 @@ const server = http.createServer(async (req, res) => {
         scheduledTasksEnabled: process.env.SCHEDULER_ENABLED === 'true',
         requestId,
       })
+    }
+
+    // ── Dynamic provider management (the "Agnes" layer) ────────
+    if (req.method === 'GET' && p === '/v1/providers/dynamic') {
+      return json(res, 200, { providers: listDynamicProviders(), requestId })
+    }
+
+    if (req.method === 'POST' && p === '/v1/providers') {
+      try {
+        const body = await readJson(req)
+        if (!body.id || !body.name || !body.baseUrl) {
+          return json(res, 400, { error: 'id, name, and baseUrl are required', requestId })
+        }
+        const provider = registerProvider(body.id, body)
+        return json(res, 201, { provider, requestId })
+      } catch (error) {
+        return json(res, 409, { error: error.message, requestId })
+      }
+    }
+
+    // Match /v1/providers/:id
+    const provMatch = p.match(/^\/v1\/providers\/([^/]+)$/)
+    if (provMatch && p !== '/v1/providers/health' && p !== '/v1/providers/dynamic') {
+      const providerId = provMatch[1]
+      if (req.method === 'DELETE') {
+        try {
+          return json(res, 200, { ...unregisterProvider(providerId), requestId })
+        } catch (error) {
+          return json(res, 404, { error: error.message, requestId })
+        }
+      }
     }
 
     // ── Provider health ────────────────────────────────────────
@@ -136,5 +177,5 @@ server.listen(port, '0.0.0.0', () => {
   console.log(`AgentAsia API listening on :${port}`)
   console.log(`  Model Gateway: ${process.env.MODEL_GATEWAY_ENABLED === 'true' ? 'ENABLED' : 'disabled'}`)
   console.log(`  Scheduler:     ${process.env.SCHEDULER_ENABLED === 'true' ? 'ENABLED' : 'disabled'}`)
-  console.log(`  Providers:     ${configuredProviders().join(', ') || 'none configured'}`)
+  console.log(`  Providers:     ${configuredProviders().length} configured (${Object.keys(providerCatalog()).length} total)`)
 })
