@@ -82,6 +82,11 @@ _Last updated: April 2026_
 - [ ] Agent skills system (installable capability bundles)
 - [ ] AgentAsia hosted mode routing: Auto → Chat/Code/Agent capability selection
 - [ ] Freemium fallback health, 429 handling, and daily aggregate email audit
+- [x] First-run language chooser for anonymous/new users with synced preferred language
+- [x] Add Portuguese and Polish to UI language options
+- [ ] Integrate language route policy into hosted Freemium gateway: common-language lane vs `freemium-language` Qwen/translation bridge for extended languages
+- [x] Create Qwen 3.8 / AgentAsia handover document with paths, modes, language policy, laptop controls, and finish checklist
+- [ ] Update Google LiteLLM spreadsheet language-capability row after column confirmation
 - [ ] BYOK connection testing for MeshLLM/Petals/GPU Mesh
 
 ### Planned

@@ -2,18 +2,19 @@ import type { Lang } from '@/i18n/locales'
 
 /** Languages covered by the broadest shared hosted-model lane. */
 export const COMMON_LLM_LANGUAGES = new Set<Lang>([
-  'en', 'es', 'pt', 'ja', 'zh-CN', 'zh-TW', 'yue', 'de', 'fr', 'ru', 'pl', 'ko',
+  // English plus common Asian languages supported by most general models.
+  'en', 'zh-CN', 'zh-TW', 'yue', 'hi', 'ja', 'ko', 'vi', 'th', 'id', 'ms', 'bn', 'ur',
 ])
 
-/** Prefer Qwen or a translation bridge for languages outside the common lane. */
+/** Route less-common Asian languages through the dedicated language lane. */
 export function resolveLanguageRoute(language: Lang): {
-  preferred: 'freemium' | 'qwen' | 'translation-bridge'
+  preferred: 'freemium' | 'freemium-language'
   reason: 'common-language' | 'extended-language'
 } {
   if (COMMON_LLM_LANGUAGES.has(language)) {
     return { preferred: 'freemium', reason: 'common-language' }
   }
-  return { preferred: 'qwen', reason: 'extended-language' }
+  return { preferred: 'freemium-language', reason: 'extended-language' }
 }
 
 export function languageSystemInstruction(language: Lang, languageName: string): string {
