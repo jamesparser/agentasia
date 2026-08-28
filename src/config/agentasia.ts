@@ -12,10 +12,23 @@ export const AGENTASIA = {
     enterprise: { label: 'Enterprise', priceUsdMonthly: 200 },
   },
   modelRouting: {
+    defaultMode: 'auto',
+    modes: {
+      chat: { model: 'freemium-chat', tools: false, vision: false },
+      code: { model: 'freemium-coding', tools: false, vision: false },
+      agent: { model: 'freemium-agentic-vision', tools: true, vision: true },
+    },
+    fallbackChain: {
+      chat: ['freemium-chat', 'freemium-multilingual'],
+      code: ['freemium-coding', 'freemium-chat'],
+      agent: ['freemium-agentic-vision', 'freemium-agentic'],
+    },
     plannedModels: ['naga1-mini', 'naga1-large'],
     capabilities: ['chat', 'vision', 'agentic-tools', 'multilingual-tts'],
     localFallback: 'webgpu',
     futureFreeCompute: 'gpucloud',
+    auditEmail: 'redacted@users.noreply.github.com',
+    browserOnlyFreeTier: true,
   },
   integrations: {
     composio: 'planned-server-side',

@@ -77,10 +77,19 @@ const defaultDevsTeam: Agent = {
   },
 }
 
-// Initialize the default DEVS agent in Yjs if not present
+// Initialize/migrate the default AgentAsia agent in Yjs. Existing browser
+// storage may contain the old DEVS label, so update the public name on startup
+// without changing the stable `devs` id used by saved conversations.
 whenReady.then(() => {
-  if (!agents.has('devs')) {
+  const existing = agents.get('devs')
+  if (!existing) {
     agents.set('devs', defaultDevsTeam)
+  } else if (existing.name !== PRODUCT.displayName) {
+    existing.name = PRODUCT.displayName
+    existing.desc = defaultDevsTeam.desc
+    existing.role = defaultDevsTeam.role
+    existing.instructions = defaultDevsTeam.instructions
+    agents.set('devs', existing)
   }
 })
 

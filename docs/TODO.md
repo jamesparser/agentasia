@@ -79,6 +79,9 @@ _Last updated: April 2026_
 
 ### In Progress
 - [ ] Agent skills system (installable capability bundles)
+- [ ] AgentAsia hosted mode routing: Auto → Chat/Code/Agent capability selection
+- [ ] Freemium fallback health, 429 handling, and daily aggregate email audit
+- [ ] BYOK connection testing for MeshLLM/Petals/GPU Mesh
 
 ### Planned
 - [ ] Agent capability discovery (auto-detect what an agent can do)
@@ -116,6 +119,20 @@ _Last updated: April 2026_
 - [ ] Orchestration replay — re-run a workflow with different parameters
 
 ### Future
+- [ ] Bonsai Ternary 27B + DSpark v7 integration; benchmark/package after AgentAsia core is tested  
+- [ ] Do not start Lillypad until AgentAsia is verified 100%
+- [ ] Lillypad integration for future n0-token compute phase
+- [x] Fix Casey desktop LLM Off control remotely: disable relaunch tasks, stop Llama/Qwen/Bonsai processes, and verify GPU-release state
+- [x] Test LLM On→Off when the gaming laptop is not being used for a game; verify Bonsai Ternary vision/DSpark and Llama/Qwen launch/stop while LiteLLM remains on
+- [ ] Repeat On test during a safe maintenance window with a real chat/vision/DSpark request
+- [ ] Maintain desktop connect-to-gaming-laptop instructions outside the browser-only devs.new app
+- [ ] Windows LLM on/off control and desktop connect-to-gaming-laptop actions
+- [ ] Heartbeat and scheduled task workers
+- [ ] Daily aggregate provider audit email to redacted@users.noreply.github.com (test email sent; production scheduler/mail delivery pending)
+- [ ] Finish Bonsai Ternary 27B + DSpark integration (v7 available); benchmark and add vision when ready
+- [ ] User accounts, Stripe subscriptions, and NOWPayments
+- [ ] Make/Zapier MCP catalog connection and ClawHub skill import with sandbox/permission review
+- [ ] Mobile-responsive polish and cross-device testing
 - [ ] Distributed orchestration across P2P-connected devices
 - [ ] Custom methodology builder
 
