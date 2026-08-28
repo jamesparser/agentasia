@@ -29,6 +29,10 @@ export const AGENTASIA = {
     futureFreeCompute: 'gpucloud',
     auditEmail: 'redacted@users.noreply.github.com',
     browserOnlyFreeTier: true,
+    languageRouting: {
+      common: ['en', 'es', 'pt', 'ja', 'zh-CN', 'zh-TW', 'yue', 'de', 'fr', 'ru', 'pl', 'ko'],
+      extended: 'prefer-qwen-or-translation-bridge',
+    },
   },
   integrations: {
     composio: 'planned-server-side',

@@ -33,6 +33,7 @@ _Last updated: April 2026_
 ### Planned
 - [ ] PWA install prompt improvements
 - [ ] Prerendering for SEO on static pages
+- [ ] Assign `devs.new` custom domain to the latest AgentAsia Vercel deployment after SSL certificate provisioning; currently domain serves older DEVS build
 
 ---
 

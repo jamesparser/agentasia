@@ -56,6 +56,8 @@ export interface SyncedSettings {
   huggingfaceBaseUrl?: string
   // Privacy mode — blocks all outgoing network requests, only local providers allowed
   privacyMode?: boolean
+  // Preferred response/UI language, synced with the user's account/room
+  preferredLanguage?: Lang
 }
 
 /**
@@ -73,6 +75,8 @@ export interface LocalSettings {
   pwaInstallPromptDismissed: boolean
   /** Active space id (local per device) */
   activeSpaceId: string
+  /** True after the first-run language chooser has been completed */
+  languageOnboardingComplete: boolean
 }
 
 export interface UserSettings extends Omit<SyncedSettings, 'theme' | 'colorTheme'>, LocalSettings {}
@@ -98,6 +102,7 @@ const defaultLocalSettings: LocalSettings = {
   speechToTextEnabled: false,
   pwaInstallPromptDismissed: false,
   activeSpaceId: 'default',
+  languageOnboardingComplete: false,
 }
 
 // ============================================================================
@@ -266,7 +271,10 @@ export const userSettings = create<UserSettingsStore>()(
       // ========================================
       setTheme: (theme: ThemeMode) => set({ theme }),
       setColorTheme: (colorTheme: string) => set({ colorTheme }),
-      setLanguage: (language: Lang) => set({ language }),
+      setLanguage: (language: Lang) => {
+        setSyncedSetting('preferredLanguage', language)
+        set({ language, languageOnboardingComplete: true })
+      },
       toggleDrawer: () =>
         set((state) => ({ isDrawerCollapsed: !state.isDrawerCollapsed })),
       toggleV2Sidebar: () =>
@@ -299,8 +307,13 @@ export const userSettings = create<UserSettingsStore>()(
         // Exclude theme and colorTheme — those are only used as space-level
         // overrides via spaceSettings, not as global synced values.
         // The local (device-level) theme/colorTheme from LocalSettings take precedence.
-        const { theme: _t, colorTheme: _ct, ...rest } = settings
-        set(rest)
+        const { theme: _t, colorTheme: _ct, preferredLanguage, ...rest } = settings
+        set({
+          ...rest,
+          ...(preferredLanguage
+            ? { language: preferredLanguage, languageOnboardingComplete: true }
+            : {}),
+        })
       },
     }),
     {
@@ -320,6 +333,7 @@ export const userSettings = create<UserSettingsStore>()(
         speechToTextEnabled: state.speechToTextEnabled,
         pwaInstallPromptDismissed: state.pwaInstallPromptDismissed,
         activeSpaceId: state.activeSpaceId,
+        languageOnboardingComplete: state.languageOnboardingComplete,
         // Synced settings (cached for fast startup)
         platformName: state.platformName,
         backgroundImage: state.backgroundImage,
@@ -340,6 +354,7 @@ export const userSettings = create<UserSettingsStore>()(
         thinkingModel: state.thinkingModel,
         pptxTheme: state.pptxTheme,
         huggingfaceBaseUrl: state.huggingfaceBaseUrl,
+        preferredLanguage: state.preferredLanguage,
       }),
     },
   ),
