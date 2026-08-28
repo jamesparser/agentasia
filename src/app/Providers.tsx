@@ -25,6 +25,7 @@ import { useSyncStore } from '@/features/sync'
 import { SyncPasswordModal } from '@/features/sync/components/SyncPasswordModal'
 import { ServiceWorkerUpdatePrompt } from '@/components/ServiceWorkerUpdatePrompt'
 import { AddLLMProviderModal } from '@/components/AddLLMProviderModal'
+import { LanguageOnboardingModal } from '@/components/LanguageOnboardingModal'
 import { I18nProvider, languageDirection } from '@/i18n'
 
 // Expose sync debug tools in browser console
@@ -208,6 +209,7 @@ function ProvidersInner({ children }: { children: React.ReactNode }) {
       </main>
       <ServiceWorkerUpdatePrompt />
       <AddLLMProviderModal lang={lang} />
+      <LanguageOnboardingModal />
       <SyncPasswordModal />
     </>
   )
