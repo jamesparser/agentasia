@@ -19,10 +19,13 @@ export const AGENTASIA = {
       code: { model: 'freemium-coding', tools: false, vision: false },
       agent: { model: 'freemium-agentic-vision', tools: true, vision: true },
     },
+    // The language lane is selected explicitly for extended languages; it is
+    // not a fallback for common-language Chat, Code, or Agent requests.
     fallbackChain: {
-      chat: ['freemium-chat', 'freemium-language', 'freemium-multilingual'],
-      code: ['freemium-coding', 'freemium-language', 'freemium-chat'],
-      agent: ['freemium-agentic-vision', 'freemium-language', 'freemium-agentic'],
+      chat: ['freemium-chat'],
+      code: ['freemium-coding'],
+      agent: ['freemium-agentic-vision'],
+      language: ['freemium-language'],
     },
     plannedModels: ['naga1-mini', 'naga1-large'],
     capabilities: ['chat', 'vision', 'agentic-tools', 'multilingual-tts'],

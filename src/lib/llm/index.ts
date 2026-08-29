@@ -422,7 +422,6 @@ for (const name of [
   'google',
   'mistral',
   'openrouter',
-  'deepseek',
   'venice',
   'ollama',
   'lm-studio',
