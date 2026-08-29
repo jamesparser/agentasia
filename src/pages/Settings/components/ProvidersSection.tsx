@@ -21,9 +21,10 @@ export function ProvidersSection() {
   const { activeElement } = useHashHighlight()
 
   // Resolve provider config when on the form sub-route
-  const providerKey = activeElement?.startsWith('add/')
+  const providerRoute = activeElement?.startsWith('add/')
     ? activeElement.slice(4)
     : null
+  const [providerKey, preset] = providerRoute?.split('?') ?? [null, null]
   const providerConfig = providerKey
     ? PROVIDERS(lang, t).find((p) => p.provider === providerKey)
     : null
@@ -41,7 +42,7 @@ export function ProvidersSection() {
   }
 
   if (providerKey) {
-    return <ProviderForm provider={providerKey} />
+    return <ProviderForm provider={providerKey} preset={preset} />
   }
 
   // Fallback to list for unknown sub-routes

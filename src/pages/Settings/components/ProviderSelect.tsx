@@ -5,7 +5,7 @@
  */
 
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Card, CardBody } from '@heroui/react'
+import { Card, CardBody, Button } from '@heroui/react'
 import { Icon } from '@/components'
 import { useI18n } from '@/i18n'
 import type { LLMProvider } from '@/types'
@@ -32,6 +32,28 @@ export function ProviderSelect() {
 
   return (
     <div data-testid="llm-providers" className="space-y-4">
+      <Card className="border border-primary-200 bg-primary-50/40 dark:bg-primary-50/10">
+        <CardBody className="flex flex-row items-center justify-between gap-4 p-4">
+          <div className="min-w-0">
+            <p className="font-semibold">AgentAsia Freemium</p>
+            <p className="text-xs text-default-600">
+              Hosted multilingual models for Chat, Code, and Agent mode.
+            </p>
+          </div>
+          <Button
+            color="primary"
+            size="sm"
+            onPress={() =>
+              navigate(
+                `${location.pathname}#settings/providers/add/openai-compatible?preset=agentasia-freemium`,
+                { replace: true },
+              )
+            }
+          >
+            One-click setup
+          </Button>
+        </CardBody>
+      </Card>
       <div className="grid grid-cols-3 gap-2">
         {providers.map((provider) => (
           <Card

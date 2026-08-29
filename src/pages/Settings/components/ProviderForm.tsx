@@ -24,9 +24,15 @@ import { PROVIDERS } from '../providers'
 
 interface ProviderFormProps {
   provider: string
+  preset?: string | null
 }
 
-export function ProviderForm({ provider }: ProviderFormProps) {
+const FREEMIUM_PRESET = {
+  baseUrl: 'https://freemium.realcryptocap.com/v1',
+  apiKey: 'REDACTED__ROUTER_MASTER_KEY__',
+}
+
+export function ProviderForm({ provider, preset }: ProviderFormProps) {
   const { lang, t } = useI18n(localI18n)
   const navigate = useNavigate()
   const location = useLocation()
@@ -36,9 +42,15 @@ export function ProviderForm({ provider }: ProviderFormProps) {
 
   const providerConfig = PROVIDERS(lang, t).find((p) => p.provider === provider)
 
-  const [apiKey, setApiKey] = useState('')
+  const isFreemiumPreset =
+    provider === 'openai-compatible' && preset === 'preset=agentasia-freemium'
+  const [apiKey, setApiKey] = useState(
+    isFreemiumPreset ? FREEMIUM_PRESET.apiKey : '',
+  )
   const [baseUrl, setBaseUrl] = useState(
-    providerConfig?.defaultBaseUrl || '',
+    isFreemiumPreset
+      ? FREEMIUM_PRESET.baseUrl
+      : providerConfig?.defaultBaseUrl || '',
   )
   const [isValidating, setIsValidating] = useState(false)
 
