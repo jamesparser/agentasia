@@ -183,9 +183,10 @@ export const userSettings = create<UserSettingsStore>()(
       // ========================================
       // Synced Settings (write to Yjs)
       // ========================================
-      setPlatformName: (platformName: string) => {
-        setSyncedSetting('platformName', platformName)
-        set({ platformName })
+      // AgentAsia: platformName locked per handover - users cannot change platform name
+      setPlatformName: (_platformName: string) => {
+        // Intentionally disabled - platform name is fixed to AgentAsia
+        return
       },
       setBackgroundImage: (backgroundImage: string | undefined) => {
         setSyncedSetting('backgroundImage', backgroundImage)

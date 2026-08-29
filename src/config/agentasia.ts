@@ -1,5 +1,6 @@
 export const AGENTASIA = {
   slogan: 'AI that speaks your language',
+  logo: '/naga-logo.svg',
   plans: {
     free: {
       label: 'Free',

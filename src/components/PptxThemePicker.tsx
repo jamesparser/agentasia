@@ -16,6 +16,8 @@ interface PptxThemePickerProps {
 }
 
 export function PptxThemePicker({ value, onChange }: PptxThemePickerProps = {}) {
+  // AgentAsia: presentation theme removed per handover
+  return null
   const storePptxTheme = userSettings((s) => s.pptxTheme) ?? PPTX_THEME_AUTO
   const storeSetPptxTheme = userSettings((s) => s.setPptxTheme)
   const pptxTheme = value ?? storePptxTheme

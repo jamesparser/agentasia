@@ -101,7 +101,8 @@ function useThemeToggle() {
 function BrandHeader({ trailing }: { trailing: React.ReactNode }) {
   const { lang } = useI18n()
   const url = useUrl(lang)
-  const customPlatformName = userSettings((state) => state.platformName)
+  // AgentAsia: fixed branding - platform name not user-configurable
+  const customPlatformName = 'AgentAsia'
 
   return (
     <>
@@ -560,19 +561,7 @@ export const Sidebar = memo(function Sidebar({
               <Tooltip.Content placement="right">{t('Tasks')}</Tooltip.Content>
             </Tooltip>
 
-            {/* Agents */}
-            <Tooltip delay={0}>
-              <Button
-                isIconOnly
-                variant={activeNavItem === 'agents' ? 'secondary' : 'ghost'}
-                size="sm"
-                onPress={() => handleFilterChange('agents')}
-                aria-label={t('Agents')}
-              >
-                <Icon name="Group" />
-              </Button>
-              <Tooltip.Content placement="right">{t('Agents')}</Tooltip.Content>
-            </Tooltip>
+            {/* AgentAsia: Agents button hidden per handover (preserved for future use) */}
 
             <Separator className="my-1 w-8" />
 
@@ -604,22 +593,7 @@ export const Sidebar = memo(function Sidebar({
                 </Tooltip>
               )
             })}
-            <Tooltip delay={0}>
-              <Button
-                isIconOnly
-                variant={
-                  activeNavItem === 'marketplace' ? 'secondary' : 'ghost'
-                }
-                size="sm"
-                onPress={() => navigate(url('/marketplace'))}
-                aria-label={t('Marketplace')}
-              >
-                <Icon name="HexagonPlus" className="text-warning" />
-              </Button>
-              <Tooltip.Content placement="right">
-                {t('Marketplace')}
-              </Tooltip.Content>
-            </Tooltip>
+            {/* AgentAsia: Marketplace removed per handover */}
           </div>
         ) : (
           <ExpandedNav onFilterChange={handleFilterChange} />

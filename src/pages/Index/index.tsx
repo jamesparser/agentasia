@@ -371,8 +371,8 @@ export const IndexPage = () => {
             />
           </motion.div>
 
-          <motion.div {...motionVariants.agentSection}>
-            {/* Use Cases Section */}
+          {/* AgentAsia: Life/Art/Coding/Learn/Writing theme buttons removed per handover */}
+          {false && <motion.div {...motionVariants.agentSection}>
             {!isLoadingAgents && (
               <Container size={7} className="mt-0 sm:-mt-8">
                 <div className="flex gap-2 flex-wrap justify-center">
@@ -519,7 +519,7 @@ export const IndexPage = () => {
               </div>
             </Container>
           )} */}
-          </motion.div>
+          </motion.div>}
 
           <motion.div {...motionVariants.agentSection}>
             <RecentActivity />

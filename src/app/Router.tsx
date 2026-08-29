@@ -145,9 +145,10 @@ const routes = {
   'session/:sessionId': SessionPage,
   library: LibraryRedirect,
   terms: TermsPage,
-  marketplace: MarketplacePage,
-  'marketplace/new': NewExtensionPage,
-  'marketplace/extensions/:extensionId/edit': ExtensionEditorPage,
+  // AgentAsia: Marketplace hidden per handover
+  // marketplace: MarketplacePage,
+  // 'marketplace/new': NewExtensionPage,
+  // 'marketplace/extensions/:extensionId/edit': ExtensionEditorPage,
   live: LivePage,
   tour: TourPage,
   'tour/:videoId': TourVideoPage,

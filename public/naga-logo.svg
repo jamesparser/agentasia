@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Naga serpent icon for AgentAsia -->
+  <circle cx="32" cy="32" r="30" fill="#6366f1" opacity="0.1"/>
+  <path d="M32 8 C20 8 12 18 12 28 C12 38 20 44 28 44 C32 44 34 42 34 38 C34 34 30 32 28 34 C26 36 24 34 24 30 C24 22 28 16 32 16 C40 16 44 22 44 30 C44 42 36 52 28 52 C18 52 10 44 10 32" stroke="#6366f1" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="28" cy="26" r="2" fill="#6366f1"/>
+  <path d="M36 12 L40 8 L38 14 Z" fill="#6366f1"/>
+</svg>
