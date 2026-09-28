@@ -5,6 +5,7 @@
 // request BEFORE it reaches Nebius once we are out of the budget we decided on.
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { sendAlert } from './alerts.mjs'
 
 // Verified against Token Factory /v1/models + published rates, USD per 1M tokens.
 export const PRICES = {
@@ -86,6 +87,36 @@ export function guardStatus(env = process.env) {
   return { enabled, dailyCapUsd: daily, totalCapUsd: total }
 }
 
+/** Full state for GET /v1/spend - caps, spend to date, and ledger health. */
+export async function spendSummary(env = process.env) {
+  const { enabled, daily, total } = limits(env)
+  const state = await load(env)
+  const today = state.days?.[DAY()] || 0
+  const spent = Number(state.totalUsd || 0)
+  return {
+    guarded: enabled,
+    ledgerHealthy: !ledgerDegraded,
+    ledgerPath: ledgerPath(env),
+    day: DAY(),
+    todayUsd: Number(today.toFixed(8)),
+    totalUsd: Number(spent.toFixed(8)),
+    caps: { dailyUsd: daily, totalUsd: total },
+    remaining: {
+      dailyUsd: daily > 0 ? Number(Math.max(0, daily - today).toFixed(8)) : null,
+      totalUsd: total > 0 ? Number(Math.max(0, total - spent).toFixed(8)) : null,
+    },
+    lastModel: state.lastModel || null,
+    // Estimated headroom at the observed average turn cost (measured ~$0.0000020
+    // for a Nano 30B voice turn with reasoning off).
+    approxRemainingTurns: (() => {
+      const avg = Number(state.avgTurnCostUsd) || 0.000002
+      const room = total > 0 ? Math.max(0, total - spent)
+        : daily > 0 ? Math.max(0, daily - today) : 0
+      return avg > 0 ? Math.floor(room / avg) : null
+    })(),
+  }
+}
+
 // If we cannot meter, we must not spend: a ledger that fails to write would
 // otherwise reset to zero on every request and silently disable the guard.
 let ledgerDegraded = false
@@ -100,18 +131,44 @@ export function ledgerHealthy() { return !ledgerDegraded }
 export async function assertWithinBudget(env = process.env) {
   const { enabled, daily, total } = limits(env)
   if (!enabled) return { guarded: false }
+  // One email per reason per window the moment a cap trips - the operator learns
+  // from us, not from a card statement. Never blocks the 402 itself.
+  const alert = async (subject, text, key) => {
+    try { await sendAlert({ key: key || subject.toLowerCase().replace(/\W+/g, '-'), subject, text }) } catch {}
+  }
   if (ledgerDegraded) {
+    alert('AgentAsia: spend ledger broken - gateway blocking',
+      `The spend ledger at ${ledgerPath(env)} is unwritable, so the gateway cannot meter and is now refusing\n` +
+      `traffic (503 spend_ledger_unavailable) instead of spending untracked. Fix the path or set SPEND_FILE.\n\n` +
+      `Host: ${env.HOSTNAME || 'unknown'}  Time: ${new Date().toISOString()}`)
     const e = new Error('spend_ledger_unavailable'); e.statusCode = 503; throw e
   }
   const state = await load(env)
   const today = state.days?.[DAY()] || 0
   if (total > 0 && state.totalUsd >= total) {
+    alert('AgentAsia: TOTAL spend cap reached - Nebius not being called',
+      `Total cap $${total} reached (spent $${Number(state.totalUsd || 0).toFixed(6)}).\n` +
+      `The gateway is now answering 402 and is NOT contacting Token Factory, so no card\n` +
+      `charge can be triggered. Raise TOTAL_SPEND_CAP_USD or reset ${ledgerPath(env)} to resume.\n\n` +
+      `Top model: ${state.lastModel || 'n/a'}  Time: ${new Date().toISOString()}`)
     const e = new Error('budget_exhausted_total'); e.statusCode = 402; e.budget = true; throw e
   }
   if (daily > 0 && today >= daily) {
+    alert('AgentAsia: daily spend cap reached - Nebius not being called',
+      `Today (UTC ${DAY()}) hit the $${daily} daily cap.\n` +
+      `Gateway answering 402; Token Factory is not contacted until the date rolls over.\n\n` +
+      `Spent: $${Number(today).toFixed(6)}  Model: ${state.lastModel || 'n/a'}`)
     const e = new Error('budget_exhausted_daily'); e.statusCode = 402; e.budget = true; throw e
   }
-  return { guarded: true, todayUsd: today, totalUsd: state.totalUsd || 0 }
+  const spent = Number(state.totalUsd || 0)
+  const nearDaily = daily > 0 && today >= daily * 0.8
+  const nearTotal = total > 0 && spent >= total * 0.8
+  if (nearDaily || nearTotal) {
+    alert(`AgentAsia: spend at ${Math.max(nearDaily ? today / (daily || 1) : 0, nearTotal ? spent / (total || 1) : 0).toFixed(0) * 100}% of cap`,
+      `Daily: $${Number(today).toFixed(6)} of $${daily}\nTotal: $${spent.toFixed(6)} of $${total}\n` +
+      `Model: ${state.lastModel || 'n/a'}\nCheck: ${env.SPEND_FILE || '/data/spend.json'} (GET /v1/spend)`)
+  }
+  return { guarded: true, todayUsd: today, totalUsd: spent }
 }
 
 /** Record what a completed call cost. Best-effort: never breaks the response. */
@@ -124,6 +181,9 @@ export async function recordSpend(model, usage, env = process.env) {
     state.days = state.days || {}
     state.days[DAY()] = Number(((state.days[DAY()] || 0) + cost).toFixed(8))
     state.lastModel = model
+    const n = Number(state.turns || 0)
+    state.turns = n + 1
+    state.avgTurnCostUsd = Number((((Number(state.avgTurnCostUsd) || 0) * n) + cost) / (n + 1)).toFixed(10)
     await save(state, env)
   } catch (error) {
     // Do not kill this response, but remember it: the next request is refused

@@ -12,7 +12,9 @@ import {
   listDynamicProviders,
 } from './model-router.mjs'
 import { webSearch, searchConfigured } from './tools/websearch.mjs'
-import { assertWithinBudget, recordSpend } from './spend-guard.mjs'
+import { assertWithinBudget, recordSpend, spendSummary } from './spend-guard.mjs'
+import { runAgentTurn } from './agent-loop.mjs'
+import { resolveGatewayTarget, getAllProviders } from './model-router.mjs'
 import { addMemory, searchMemory, deleteAllMemory } from './memory.mjs'
 import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from './schedules.mjs'
 import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
@@ -141,7 +143,36 @@ const server = http.createServer(async (req, res) => {
           throw budgetError
         }
 
-        const { result, provider, model } = await routeGatewayChat(body)
+        // Default model resolution mirrors routeGatewayChat so headers/ledger agree.
+        const defaultModelFor = (b) => getAllProviders()[resolveGatewayTarget({ ...b, messages: [{ role: 'user', content: '.' }] }, process.env).provider]?.defaultModel || ''
+
+        // Agentic path: Nemotron decides when a fact needs the live web, Tavily
+        // answers, citations come back with the reply. Falls back to a plain
+        // completion when no Tavily key is configured.
+        const useAgent = searchConfigured(process.env) && body.agentic !== false && body.stream !== true
+        let provider, model, result, agentMeta = null
+        if (useAgent) {
+          const turn = await runAgentTurn({
+            messages: body.messages,
+            model: body.model,
+            useFallback: body.fallback === true,
+            route: async (params) => (await routeGatewayChat({ ...body, ...params })).result,
+          })
+          result = turn.result
+          model = result?._model || body.model || defaultModelFor(body)
+          provider = result?._provider || resolveGatewayTarget({ ...body }, process.env).provider
+          agentMeta = {
+            citations: turn.citations,
+            search_trace: turn.searchTrace,
+            tool_rounds: turn.toolRounds,
+            search_available: turn.searchAvailable,
+          }
+        } else {
+          const routed = await routeGatewayChat(body)
+          provider = routed.provider
+          model = routed.model
+          result = routed.result
+        }
 
         // Streaming: pass the upstream SSE body straight through.
         if (result && result.stream && typeof result.stream[Symbol.asyncIterator] === 'function') {
@@ -177,10 +208,10 @@ const server = http.createServer(async (req, res) => {
           return
         }
 
-        res.setHeader('x-agentasia-provider', provider)
+        res.setHeader('x-agentasia-provider', provider || result?._provider || '')
         if (model) res.setHeader('x-agentasia-model', model)
-        await recordSpend(model || body.model || '', result?.usage || {})
-        return json(res, 200, result)
+        await recordSpend(model || result?._model || body.model || '', result?.usage || {})
+        return json(res, 200, agentMeta ? { ...result, agentasia: agentMeta } : result)
       } catch (error) {
         const status = error.statusCode || (error.message === 'unsupported_provider' ? 400 : 502)
         return json(res, status, {
@@ -250,6 +281,11 @@ const server = http.createServer(async (req, res) => {
       } catch (error) {
         return json(res, error.statusCode || 503, { error: error.message, requestId })
       }
+    }
+
+    // ── Spend status (caps, spend to date, ledger health) ─────────
+    if (req.method === 'GET' && p === '/v1/spend') {
+      return json(res, 200, { ...(await spendSummary()), requestId })
     }
 
     // ── Schedules ──────────────────────────────────────────────

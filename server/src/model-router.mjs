@@ -428,7 +428,8 @@ export async function healthCheckAll(env = process.env) {
  * so the browser UI can pass them without any env-var setup.
  */
 export async function routeChat(
-  { provider, model, messages, temperature = 0.7, maxTokens, stream = false, baseUrl, apiKey, chatTemplateKwargs, reasoningEnabled },
+  { provider, model, messages, temperature = 0.7, maxTokens, stream = false, baseUrl, apiKey,
+    chatTemplateKwargs, reasoningEnabled, tools, toolChoice },
   env = process.env,
 ) {
   const allProviders = getAllProviders()
@@ -494,6 +495,9 @@ export async function routeChat(
     ...(maxTokens ? { max_tokens: maxTokens } : {}),
     ...(stream ? { stream: true } : {}),
     ...(thinkingOff ? { chat_template_kwargs: { enable_thinking: false } } : {}),
+    // Tool calling must survive the gateway or the Tavily loop cannot run.
+    ...(Array.isArray(tools) && tools.length ? { tools } : {}),
+    ...(toolChoice ? { tool_choice: toolChoice } : {}),
   }
 
   const headers = {
@@ -592,6 +596,14 @@ export function resolveGatewayTarget(body = {}, env = process.env) {
       stream: body.stream === true,
       baseUrl: body.baseUrl,
       apiKey: body.apiKey,
+      // Tools and tool_choice MUST survive this mapping. They were silently
+      // dropped here, which made the gateway advertise search to the client while
+      // never actually offering it to the model - a loop that looks wired up and
+      // quietly never runs.
+      tools: body.tools,
+      toolChoice: body.tool_choice ?? body.toolChoice,
+      chatTemplateKwargs: body.chat_template_kwargs ?? body.chatTemplateKwargs,
+      reasoningEnabled: body.reasoning_enabled ?? body.reasoningEnabled,
     },
     useFallback: body.fallback === true,
   }

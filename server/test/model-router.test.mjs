@@ -185,3 +185,16 @@ assert.equal(resolveGatewayTarget({ model: 'm', messages: [], max_tokens: 512 },
 console.log('gateway resolver tests passed')
 
 console.log('model-router tests passed (nebius lane first, no naga1 aliases, openai-compatible per-request)')
+
+// ── Tools must survive target resolution (regression: they were silently dropped) ─
+const withTools = resolveGatewayTarget({
+  messages: [{ role: 'user', content: 'hi' }],
+  tools: [{ type: 'function', function: { name: 'web_search', parameters: {} } }],
+  tool_choice: 'auto',
+  max_tokens: 64,
+}, { NEBIUS_API_KEY: 'k' })
+assert.ok(Array.isArray(withTools.params.tools) && withTools.params.tools[0].function.name === 'web_search',
+  'tools must reach routeChat params')
+assert.equal(withTools.params.toolChoice, 'auto')
+assert.equal(withTools.params.maxTokens, 64)
+console.log('tool passthrough regression test passed')
