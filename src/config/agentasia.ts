@@ -57,7 +57,20 @@ export const AGENTASIA = {
      * never ship visible to a customer again.
      */
     get managedGatewayEnabled(): boolean {
-      return import.meta.env.VITE_SHOW_BYOK !== '1'
+      if (import.meta.env.VITE_SHOW_BYOK === '1') return false
+      // Safety valve: hiding every provider is only correct when a managed lane
+      // actually exists to replace them. In a production build we trust the
+      // deploy-time config; in dev we refuse to leave the picker empty.
+      const gateway = (import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || ''
+      if (gateway) return true
+      return !import.meta.env.DEV
+    },
+    /** Console warning when BYOK is hidden but nothing replaces it. */
+    get gatewayMissingWhileHidden(): boolean {
+      return (
+        this.managedGatewayEnabled &&
+        !(import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string)
+      )
     },
     // Providers users may never see in a picker (BYOK + in-browser LLM chat).
     hiddenProviders: [
