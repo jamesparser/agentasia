@@ -11,6 +11,8 @@ import {
   unregisterProvider,
   listDynamicProviders,
 } from './model-router.mjs'
+import { webSearch, searchConfigured } from './tools/websearch.mjs'
+import { addMemory, searchMemory, deleteAllMemory } from './memory.mjs'
 import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from './schedules.mjs'
 import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
 
@@ -170,6 +172,38 @@ const server = http.createServer(async (req, res) => {
           errors: error.errors,
           requestId,
         })
+      }
+    }
+
+    // ── Tavily web search (spoken facts must be cited, not remembered) ─
+    if (req.method === 'POST' && p === '/v1/search') {
+      if (!searchConfigured(process.env)) {
+        return json(res, 503, { error: 'tavily_not_configured', requestId })
+      }
+      try {
+        const body = await readJson(req)
+        return json(res, 200, await webSearch(body))
+      } catch (error) {
+        return json(res, error.statusCode || 502, { error: error.message, requestId })
+      }
+    }
+
+    // ── Memory (Crest Gem) — per-uid, exportable, erasable ────────────
+    if (p === '/v1/memory') {
+      try {
+        const body = await readJson(req)
+        if (req.method === 'POST') return json(res, 201, await addMemory(body))
+        if (req.method === 'DELETE') return json(res, 200, await deleteAllMemory(body))
+        return json(res, 405, { error: 'method_not_allowed', requestId })
+      } catch (error) {
+        return json(res, error.statusCode || 503, { error: error.message, requestId })
+      }
+    }
+    if (req.method === 'POST' && p === '/v1/memory/search') {
+      try {
+        return json(res, 200, await searchMemory(await readJson(req)))
+      } catch (error) {
+        return json(res, error.statusCode || 503, { error: error.message, requestId })
       }
     }
 
