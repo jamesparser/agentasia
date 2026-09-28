@@ -12,6 +12,7 @@ import {
   listDynamicProviders,
 } from './model-router.mjs'
 import { webSearch, searchConfigured } from './tools/websearch.mjs'
+import { assertWithinBudget, recordSpend } from './spend-guard.mjs'
 import { addMemory, searchMemory, deleteAllMemory } from './memory.mjs'
 import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from './schedules.mjs'
 import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
@@ -124,6 +125,22 @@ const server = http.createServer(async (req, res) => {
       }
       try {
         const body = await readJson(req)
+
+        // Spend circuit-breaker: check BEFORE contacting Nebius, so an exhausted
+        // budget never reaches the provider and never triggers card charging.
+        try {
+          await assertWithinBudget()
+        } catch (budgetError) {
+          if (budgetError.budget) {
+            return json(res, 402, {
+              error: budgetError.message,
+              hint: 'gateway spend cap reached; provider was not contacted',
+              requestId,
+            })
+          }
+          throw budgetError
+        }
+
         const { result, provider, model } = await routeGatewayChat(body)
 
         // Streaming: pass the upstream SSE body straight through.
@@ -137,12 +154,32 @@ const server = http.createServer(async (req, res) => {
             'x-agentasia-model': model || '',
             'x-request-id': requestId,
           })
-          for await (const chunk of result.stream) res.write(chunk)
-          return res.end()
+          // Ledger for streams: capture usage if the provider emits it, and bound
+          // the worst case by the requested max_tokens so a cap can't be evaded
+          // by choosing streaming.
+          let tail = ''
+          let usage = null
+          for await (const chunk of result.stream) {
+            const text = typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString('utf8')
+            res.write(chunk)
+            tail = (tail + text).slice(-4000)
+            const u = tail.lastIndexOf('"usage":')
+            if (u >= 0) {
+              try { usage = JSON.parse(tail.slice(u + 8).match(/^[\s\S]*?\}/)?.[0] || 'null') } catch {}
+            }
+          }
+          res.end()
+          const bounded = usage || {
+            prompt_tokens: 0,
+            completion_tokens: Number(body.max_tokens || body.maxTokens || 0),
+          }
+          await recordSpend(model || body.model || '', bounded)  // model is now always resolved upstream
+          return
         }
 
         res.setHeader('x-agentasia-provider', provider)
         if (model) res.setHeader('x-agentasia-model', model)
+        await recordSpend(model || body.model || '', result?.usage || {})
         return json(res, 200, result)
       } catch (error) {
         const status = error.statusCode || (error.message === 'unsupported_provider' ? 400 : 502)
@@ -160,10 +197,18 @@ const server = http.createServer(async (req, res) => {
       }
       try {
         const body = await readJson(req)
+        // Same spend breaker as /v1/chat/completions — every billable path is guarded.
+        try {
+          await assertWithinBudget()
+        } catch (budgetError) {
+          if (budgetError.budget) return json(res, 402, { error: budgetError.message, requestId })
+          throw budgetError
+        }
         const useFallback = body.fallback === true
         const result = useFallback
           ? await routeChatWithFallback(body)
           : await routeChat(body)
+        await recordSpend(result?._model || body.model || '', result?.usage || {})
         return json(res, 200, result)
       } catch (error) {
         const status = error.statusCode || (error.message === 'unsupported_provider' ? 400 : 502)

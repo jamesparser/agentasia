@@ -28,6 +28,9 @@ const PROVIDERS = {
       'nemotron-3-super': 'nvidia/nemotron-3-super-120b-a12b',
       'nemotron-3-ultra': 'nvidia/Nemotron-3-Ultra-550b-a55b',
     },
+    // Default off for this lane: chain-of-thought is wrong for a voice assistant
+    // (latency + cost) and callers can re-enable per request.
+    thinkingDefaultOff: true,
     // Vision is NOT available from Nemotron on Token Factory today (no Omni/VL
     // entry in the catalog). Agents needing image input route to these instead.
     visionFallback: ['openbmb/MiniCPM-V-4_5', 'zai-org/GLM-5.3-Flash'],
@@ -425,7 +428,7 @@ export async function healthCheckAll(env = process.env) {
  * so the browser UI can pass them without any env-var setup.
  */
 export async function routeChat(
-  { provider, model, messages, temperature = 0.7, maxTokens, stream = false, baseUrl, apiKey },
+  { provider, model, messages, temperature = 0.7, maxTokens, stream = false, baseUrl, apiKey, chatTemplateKwargs, reasoningEnabled },
   env = process.env,
 ) {
   const allProviders = getAllProviders()
@@ -475,12 +478,22 @@ export async function routeChat(
   const effectiveModel = resolvedModel || target.defaultModel
   if (!effectiveModel) throw new Error('no_model')
 
+  // Voice turns must not pay for, or wait on, a hidden chain of thought. Measured
+  // on Token Factory 2026-09-28: reasoning left on burned 380-1377 chars of
+  // thinking before answering (and returned content:null when max_tokens ran out
+  // mid-thought); enable_thinking:false answered correctly with 0 reasoning chars,
+  // ~0.9s vs ~2-4s, and ~4x lower cost per turn.
+  const thinkingOff = chatTemplateKwargs?.enable_thinking === false
+    || reasoningEnabled === false
+    || (target.thinkingDefaultOff === true && chatTemplateKwargs?.enable_thinking !== true)
+
   const payload = {
     model: effectiveModel,
     messages,
     temperature,
     ...(maxTokens ? { max_tokens: maxTokens } : {}),
     ...(stream ? { stream: true } : {}),
+    ...(thinkingOff ? { chat_template_kwargs: { enable_thinking: false } } : {}),
   }
 
   const headers = {
@@ -584,6 +597,10 @@ export function resolveGatewayTarget(body = {}, env = process.env) {
   }
 }
 
+function allProvidersForDefault(id) {
+  try { return getAllProviders()[id] } catch { return null }
+}
+
 /** Route a chat completion using the gateway's preferred strategy. */
 export async function routeGatewayChat(body = {}, env = process.env) {
   const target = resolveGatewayTarget(body, env)
@@ -599,7 +616,14 @@ export async function routeGatewayChat(body = {}, env = process.env) {
   const result = target.useFallback
     ? await routeChatWithFallback(target.params, env)
     : await routeChat(target.params, env)
-  return { result, provider: target.provider, model: target.params.model }
+  // Always report the model that ACTUALLY ran. Falling back to '' when a caller
+  // omits `model` would leave the spend ledger blind, and an unpriced turn is an
+  // uncapped turn.
+  const effective = result?._model
+    || target.params.model
+    || allProvidersForDefault(target.provider)?.defaultModel
+    || ''
+  return { result, provider: target.provider, model: effective }
 }
 
 export { PROVIDERS }

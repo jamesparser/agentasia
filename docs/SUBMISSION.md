@@ -70,7 +70,15 @@ data, and it is what makes the assistant dependable enough to talk to your famil
 | NVIDIA open source model | Nemotron 3 chat lane **+** Nemotron 3.5 ASR **+** Magpie TTS **+** Parakeet ASR = four, not one |
 | Nebius | every text turn is a Token Factory runtime call; Serverless [pending] |
 
-## 3. Testing instructions **[pending]**
+## 3. Testing instructions **[partly pending: deploy URL + judge logins]**
+
+- **Already true and verifiable today:** the AgentAsia gateway routes chat to
+  `https://api.tokenfactory.nebius.com/v1` with `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`
+  as the free-tier default, `chat_template_kwargs.enable_thinking=false`, and
+  responds with `x-agentasia-provider: nebius` / `x-agentasia-model: nvidia/…`
+  headers so routing can be checked without reading our code. Live request IDs from
+  this account: `chatcmpl-12657a8a-4b0e-4…`, `chatcmpl-e65a1118-8f11-4…`,
+  `chatcmpl-6798942f-68c3-4…`.
 
 - URL: **[deploy URL]** (keep live and free until **15 Dec 2026**)
 - Judge login: **[create unmetered judge accounts — never rate-limit a judge]**
@@ -114,6 +122,15 @@ data, and it is what makes the assistant dependable enough to talk to your famil
   thousands of turns, not days.
 - Playground + `?models=` deep links are genuinely useful for sanity-checking a
   model id before wiring it.
+- **Measured on this account, same prompt, 64-token cap:** thinking **off** →
+  Nano 30B **0.91 s / 2 output tokens / $0.0000020 per turn**; thinking **on** →
+  1.09 s / 64 tokens (hit the cap, `content:null` because it never stopped
+  thinking) / $0.0000169. **Lightning 3.5 at 0.77 s.** Super 120B: 1.33 s /
+  $0.0000102 with thinking off. So ~$50 ≈ **tens of millions of voice turns**, and
+  the reasoning toggle is the single biggest cost lever for agent traffic.
+- A model that **declined to state a live price** ("I cannot fetch real-time
+  prices") on the first try — independent evidence that retrieval is mandatory for
+  a spoken assistant, not a feature we bolted on for a prize.
 
 **What needs work (naming the tool)**
 1. **The Nemotron family is split across platforms.** `Nemotron 3 Nano 4B` —

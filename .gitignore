@@ -17,3 +17,6 @@ node_modules
 /test-results*
 /work
 .vercel
+
+server/data/*.json
+data/spend.json
