@@ -494,3 +494,34 @@ decoupled from the deleted `OpenAIProvider`).
 ---
 
 **Related:** [ARCHITECTURE.md](./ARCHITECTURE.md), [CONVENTIONS.md](./CONVENTIONS.md), [VISION.md](./VISION.md), [revamp/REPORT.md](./revamp/REPORT.md)
+
+## D-xx: user memory is never hosted by us; connectors are one endpoint, not a hundred
+**Date** 2026-09-28 · **Status** accepted
+**Context.** The obvious build is "add Mem0, point it at our server key, store everyone's
+memories in our database." That makes us the custodian of every user's life details, on
+infrastructure we can read — contrary to the Personal AI brief, an audit surface we do
+not need, and a cost we would carry for data that is not ours. Separately, wiring a
+hundred per-app MCP servers for customers is unbuildable and unmaintainable.
+**Decision.**
+1. **No server-side memory store.** Default = local-first: AES-GCM-256 field-level
+   encryption at rest in the user's own browser (`lib/crypto/content-encryption.ts`,
+   IndexedDB + OPFS local-backup), which already exists. Cross-device = **BYOK**
+   (their Mem0 key, used per request, cleared in `finally`, never stored/logged) or
+   **their own memory MCP server**. `GET /v1/memory/policy` publishes
+   `hostedByAgentAsia:false, defaultBackend:'local-encrypted', keyRetention:'none'`.
+2. **One aggregator MCP per user.** The user connects a single endpoint from their own
+   account (Composio default: ~1,000-1,500+ toolkits behind one URL, managed OAuth,
+   free tier 100,000 tool calls + 50,000 triggers/month, **hard-capped, no card**,
+   unlimited connected accounts free, SOC 2 Type II / ISO 27001 + DPA; alternatives:
+   Pipedream MCP ~2,800 apps/10,000+ tools free personal but acquired by Workday;
+   Zapier MCP 9,000+ apps but ~2 tasks per call and 100 tasks/mo; Activepieces MIT
+   self-hosted). Their OAuth tokens live in **their** tenant; the gateway forwards the
+   model's tool *request* to the client (`userToolCalls[]`) and never executes it or
+   sees a credential.
+3. **Only two shared keys stay ours:** Nebius (per-plan budget) and Tavily (search
+   queries, not personal data).
+**Consequences.** We can truthfully claim "we cannot read your memory"; erasure is
+trivially honoured; there is no per-user SaaS bill. Cost: cross-device memory is a
+user setup step, not free-by-default; if we later want branded in-app "connect your
+Gmail", that needs an embedded product (Pipedream Connect / Composio embedded /
+self-hosted Nango or Activepieces) rather than personal-use gateways.
