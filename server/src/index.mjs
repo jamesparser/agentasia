@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import {
   configuredProviders,
   providerCatalog,
-  routeChat,
+  routeGatewayChat, routeChat,
   routeChatWithFallback,
   healthCheckAll,
   healthCheck,
@@ -113,6 +113,42 @@ const server = http.createServer(async (req, res) => {
       const providerId = p.split('/')[3]
       const result = await healthCheck(providerId)
       return json(res, result.healthy ? 200 : 503, { ...result, requestId })
+    }
+
+    // ── OpenAI-compatible chat (browser clients point here; Nebius-first) ─
+    if (req.method === 'POST' && p === '/v1/chat/completions') {
+      if (process.env.MODEL_GATEWAY_ENABLED !== 'true') {
+        return json(res, 503, { error: 'model_gateway_disabled', requestId })
+      }
+      try {
+        const body = await readJson(req)
+        const { result, provider, model } = await routeGatewayChat(body)
+
+        // Streaming: pass the upstream SSE body straight through.
+        if (result && result.stream && typeof result.stream[Symbol.asyncIterator] === 'function') {
+          res.writeHead(200, {
+            ...corsHeaders(res, allowedOrigin),
+            'content-type': 'text/event-stream; charset=utf-8',
+            'cache-control': 'no-cache, no-transform',
+            connection: 'keep-alive',
+            'x-agentasia-provider': provider,
+            'x-agentasia-model': model || '',
+            'x-request-id': requestId,
+          })
+          for await (const chunk of result.stream) res.write(chunk)
+          return res.end()
+        }
+
+        res.setHeader('x-agentasia-provider', provider)
+        if (model) res.setHeader('x-agentasia-model', model)
+        return json(res, 200, result)
+      } catch (error) {
+        const status = error.statusCode || (error.message === 'unsupported_provider' ? 400 : 502)
+        return json(res, status, {
+          error: { message: error.message, type: 'agentasia_gateway_error', provider_errors: error.errors },
+          requestId,
+        })
+      }
     }
 
     // ── Model chat ─────────────────────────────────────────────

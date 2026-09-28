@@ -3,7 +3,26 @@
 // The 'openai-compatible' slot accepts baseUrl + apiKey from the request body for fully dynamic routing.
 
 const PROVIDERS = {
-  // ── Primary managed routes ──────────────────────────────────
+  // ── Nebius Token Factory — NVIDIA Nemotron (hackathon-required lane, ordered first) ──
+  // Compliance: "runs on Nebius" == a runtime call to the Token Factory inference API.
+  // Every turn that hits this provider satisfies that requirement.
+  nebius: {
+    name: 'Nebius Token Factory',
+    baseUrl: 'https://api.tokenfactory.nebius.com/v1',
+    keyEnv: 'NEBIUS_API_KEY',
+    defaultModel: 'nvidia/nemotron-3-nano-30b-a3b',
+    models: [
+      'nvidia/nemotron-3-nano-30b-a3b',
+      'nvidia/nemotron-3-nano-omni-30b-a3b',
+      'nvidia/nemotron-3-super-120b-a12b',
+      'nvidia/nemotron-3-ultra-550b-a55b',
+    ],
+    aliases: {},
+    description:
+      'NVIDIA Nemotron 3 open-weight models served on Nebius Token Factory. Free tier = Nano 30B; Pro = Super 120B; Enterprise = Ultra 550B or a dedicated endpoint.',
+  },
+
+  // ── Primary managed routes ────────────────────────────────── ──────────────────────────────────
   deepseek: {
     name: 'DeepSeek',
     baseUrl: 'https://api.deepseek.com/v1',
@@ -293,13 +312,18 @@ function resolveModel(providerId, model) {
 /** List provider IDs that are available (configured or always-configured) */
 export function configuredProviders(env = process.env) {
   const allProviders = getAllProviders()
-  return Object.entries(allProviders)
+  const ids = Object.entries(allProviders)
     .filter(([, config]) => {
       if (config.alwaysConfigured) return true
       if (config.local || config.dynamic) return true
       return Boolean(env[config.keyEnv])
     })
     .map(([id]) => id)
+  // Nebius is the guaranteed lane: ordered first so it is preferred and so
+  // non-Nebius/free lanes become fallbacks instead of the default path.
+  return ids.includes('nebius')
+    ? ['nebius', ...ids.filter((id) => id !== 'nebius')]
+    : ids
 }
 
 /** Full provider metadata for the /v1/config endpoint */
@@ -496,6 +520,73 @@ export async function routeChatWithFallback(params, env = process.env) {
   error.errors = errors
   error.statusCode = 502
   throw error
+}
+
+/**
+ * Resolve an OpenAI-style /chat/completions body into a gateway target.
+ * Lets the browser app point a standard OpenAI-compatible client at AgentAsia's
+ * own gateway, where Nebius Token Factory is the preferred lane.
+ *
+ * Rules:
+ *  - `model` may be bare ("nvidia/nemotron-3-nano-30b-a3b") or gateway-prefixed
+ *    ("nebius/nvidia/nemotron-3-nano-30b-a3b"). A prefix that matches a known
+ *    provider id selects that provider and is stripped from the model.
+ *  - explicit `provider` in the body always wins.
+ *  - otherwise: env.GATEWAY_DEFAULT_PROVIDER, else 'nebius' if it is configured,
+ *    else the first configured provider.
+ */
+export function resolveGatewayTarget(body = {}, env = process.env) {
+  const allProviders = getAllProviders()
+  const rawModel = String(body.model || '').trim()
+  let provider = String(body.provider || '').trim()
+  let model = rawModel
+
+  if (!provider && rawModel.includes('/')) {
+    const [head, ...rest] = rawModel.split('/')
+    if (allProviders[head] && rest.length) {
+      provider = head
+      model = rest.join('/')
+    }
+  }
+
+  if (!provider) {
+    const configured = configuredProviders(env)
+    provider = env.GATEWAY_DEFAULT_PROVIDER || (configured.includes('nebius') ? 'nebius' : configured[0]) || 'nebius'
+  }
+
+  return {
+    provider,
+    model,
+    params: {
+      provider,
+      model,
+      messages: body.messages,
+      temperature: body.temperature,
+      maxTokens: body.max_tokens ?? body.maxTokens,
+      stream: body.stream === true,
+      baseUrl: body.baseUrl,
+      apiKey: body.apiKey,
+    },
+    useFallback: body.fallback === true,
+  }
+}
+
+/** Route a chat completion using the gateway's preferred strategy. */
+export async function routeGatewayChat(body = {}, env = process.env) {
+  const target = resolveGatewayTarget(body, env)
+  if (!Array.isArray(target.params.messages) || target.params.messages.length === 0) {
+    const error = new Error('messages_required')
+    error.statusCode = 400
+    throw error
+  }
+  if (!target.params.model && target.provider !== 'openai-compatible') {
+    // allow the provider default model to apply
+    delete target.params.model
+  }
+  const result = target.useFallback
+    ? await routeChatWithFallback(target.params, env)
+    : await routeChat(target.params, env)
+  return { result, provider: target.provider, model: target.params.model }
 }
 
 export { PROVIDERS }

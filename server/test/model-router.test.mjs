@@ -9,6 +9,7 @@ import {
   getAllProviders,
 } from '../src/model-router.mjs'
 import { PROVIDERS } from '../src/model-router.mjs'
+import { resolveGatewayTarget } from '../src/model-router.mjs'
 
 // ── No naga1 aliases anywhere ──────────────────────────────────
 for (const [id, config] of Object.entries(PROVIDERS)) {
@@ -53,6 +54,27 @@ assert.equal(catalog['openai-compatible'].configured, true,
   'openai-compatible should always be configured')
 assert.equal(catalog.deepseek.configured, false,
   'deepseek should NOT be configured without key')
+
+// ── Nebius lane = hackathon compliance spine (must never regress) ─
+assert.ok(PROVIDERS.nebius, 'nebius provider must exist')
+assert.equal(PROVIDERS.nebius.baseUrl, 'https://api.tokenfactory.nebius.com/v1',
+  'nebius must call the Token Factory inference API')
+assert.equal(PROVIDERS.nebius.keyEnv, 'NEBIUS_API_KEY')
+assert.ok(PROVIDERS.nebius.defaultModel.startsWith('nvidia/nemotron-3'),
+  'default model must be an NVIDIA Nemotron 3 open-weight model')
+assert.ok(PROVIDERS.nebius.models.every((m) => m.startsWith('nvidia/')),
+  'every nebius model must be an NVIDIA open source model')
+assert.ok(PROVIDERS.nebius.models.includes('nvidia/nemotron-3-super-120b-a12b'))
+
+// With a key present, nebius is configured AND first (preferred lane).
+const envNebius = { NEBIUS_API_KEY: 'nf-test', DEEPSEEK_API_KEY: 'sk-test' }
+const order = configuredProviders(envNebius)
+assert.equal(order[0], 'nebius', 'nebius must be the preferred (first) lane')
+assert.equal(providerCatalog(envNebius).nebius.configured, true)
+// Without a key it must not masquerade as available.
+assert.equal(providerCatalog({}).nebius.configured, false,
+  'nebius must report unconfigured without NEBIUS_API_KEY')
+assert.ok(!configuredProviders({}).includes('nebius'))
 
 // ── openai-compatible: accepts baseUrl + apiKey per request ────
 // Should throw "no_base_url" if nothing provided
@@ -134,4 +156,23 @@ assert.equal(PROVIDERS['openai-compatible'].baseUrl, '')
 assert.equal(PROVIDERS['openai-compatible'].defaultModel, '')
 assert.equal(PROVIDERS['openai-compatible'].alwaysConfigured, true)
 
-console.log('model-router tests passed (22 providers, no naga1, openai-compatible per-request)')
+
+// ── Gateway target resolution (OpenAI-compatible facade) ───────
+assert.equal(resolveGatewayTarget({ model: 'nvidia/nemotron-3-nano-30b-a3b', messages: [] }, { NEBIUS_API_KEY: 'k' }).provider,
+  'nebius', 'bare model + nebius key -> nebius')
+assert.equal(resolveGatewayTarget({ model: 'openrouter/deepseek/deepseek-chat', messages: [] }, {}).provider,
+  'openrouter', 'provider-prefixed model selects that provider')
+assert.equal(resolveGatewayTarget({ model: 'openrouter/deepseek/deepseek-chat', messages: [] }, {}).model,
+  'deepseek/deepseek-chat', 'prefix is stripped from the model')
+assert.equal(resolveGatewayTarget({ provider: 'venice', model: 'x', messages: [] }, {}).provider, 'venice',
+  'explicit provider wins')
+assert.equal(resolveGatewayTarget({ model: 'm', messages: [] }, { GATEWAY_DEFAULT_PROVIDER: 'deepseek' }).provider,
+  'deepseek', 'GATEWAY_DEFAULT_PROVIDER is honoured')
+assert.equal(resolveGatewayTarget({ model: 'm', messages: [], stream: true }, { NEBIUS_API_KEY: 'k' }).params.stream,
+  true, 'stream is passed through')
+assert.equal(resolveGatewayTarget({ model: 'm', messages: [], max_tokens: 512 }, {}).params.maxTokens, 512,
+  'max_tokens maps to maxTokens')
+
+console.log('gateway resolver tests passed')
+
+console.log('model-router tests passed (nebius lane first, no naga1 aliases, openai-compatible per-request)')

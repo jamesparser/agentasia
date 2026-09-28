@@ -16,7 +16,7 @@ import {
 import { create } from 'zustand'
 
 import { Icon } from './Icon'
-import { PROVIDERS } from '@/pages/Settings/providers'
+import { PROVIDERS, visibleProviders } from '@/pages/Settings/providers'
 import { useLLMModelStore } from '@/stores/llmModelStore'
 import { useI18n, type Lang } from '@/i18n'
 import localI18n from '@/pages/Settings/i18n'
@@ -222,7 +222,7 @@ export function AddLLMProviderModal({ lang }: AddLLMProviderModalProps) {
             <ModalBody>
               {!selectedProvider ? (
                 <div className="grid grid-cols-3 gap-2">
-                  {PROVIDERS(lang, t).map((provider) => (
+                  {visibleProviders(lang, t).map((provider) => (
                     <Card
                       key={provider.provider}
                       className="h-20 hover:bg-primary-50"

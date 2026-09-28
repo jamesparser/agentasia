@@ -14,7 +14,7 @@ import {
 
 import { Icon } from '../Icon'
 import { useModelPicker } from './useModelPicker'
-import { PROVIDERS, getModelIds } from '@/pages/Settings/providers'
+import { PROVIDERS, getModelIds, isProviderVisible } from '@/pages/Settings/providers'
 import { LLMService } from '@/lib/llm'
 import { getModel as getModelFromModelsDev } from '@/lib/models-dev'
 import type { NormalizedModel } from '@/lib/models-dev/types'
@@ -137,8 +137,11 @@ export function ModelSelector({ lang }: ModelSelectorProps) {
         providerName: config?.name || cred.provider,
       } as ProviderWithModels
     })
+    // Managed beta: never surface providers the product hides (BYOK, in-browser
+    // LLM chat) even if a credential for them already exists.
+    const visible = providers.filter((pr) => isProviderVisible(pr.credential.provider))
     // Sort to put 'local' provider first
-    return providers.sort((a, b) => {
+    return visible.sort((a, b) => {
       if (a.credential.provider === 'local') return -1
       if (b.credential.provider === 'local') return 1
       return 0

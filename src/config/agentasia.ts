@@ -38,6 +38,40 @@ export const AGENTASIA = {
       extended: 'freemium-language',
     },
   },
+  // UI exposure policy. Beta is free and fully managed: users do not choose a
+  // model provider, an API key, or a voice engine. The gate only tightens once a
+  // managed gateway URL is actually configured, so it can never leave a user
+  // with an empty model picker.
+  ui: {
+    managedGatewayUrl: (import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || '',
+    get managedGatewayEnabled(): boolean {
+      return Boolean((import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || '')
+    },
+    // Providers users may never see in a picker (BYOK + in-browser LLM chat).
+    hiddenProviders: [
+      'local',
+      'openai',
+      'anthropic',
+      'google',
+      'vertex-ai',
+      'mistral',
+      'openrouter',
+      'deepseek',
+      'venice',
+      'huggingface',
+      'github-copilot',
+      'claude-code',
+      'chatjimmy',
+      'custom',
+      'stability',
+      'replicate',
+      'together',
+      'fal',
+    ] as string[],
+    // Voice engine identity (Kokoro/Supertonic/Magpie/WebGPU) stays invisible.
+    showVoiceEngine: false,
+  },
+
   integrations: {
     composio: 'planned-server-side',
     agensi: 'planned-server-side',

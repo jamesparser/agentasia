@@ -11,7 +11,7 @@ import { useI18n } from '@/i18n'
 import type { LLMProvider } from '@/types'
 import type { IconName } from '@/lib/types'
 import localI18n from '../i18n'
-import { PROVIDERS } from '../providers'
+import { PROVIDERS, isProviderVisible } from '../providers'
 import { usePrivacyMode } from '@/hooks/usePrivacyMode'
 
 export function ProviderSelect() {
@@ -26,8 +26,10 @@ export function ProviderSelect() {
     })
   }
 
+  // Two independent gates: product exposure (hide BYOK / in-browser LLM in the
+  // managed beta) and privacy mode (trust level). Both must pass.
   const providers = PROVIDERS(lang, t).filter(
-    (p) => isProviderAllowed(p.provider),
+    (p) => isProviderAllowed(p.provider) && isProviderVisible(p.provider),
   )
 
   return (

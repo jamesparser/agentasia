@@ -1,3 +1,4 @@
+import { AGENTASIA } from '@/config/agentasia'
 import type { Lang } from '@/i18n'
 import type { IconName } from '@/lib/types'
 import type { LLMModel, LLMProvider } from '@/types'
@@ -43,6 +44,25 @@ export function getModelIds(models: LLMModel[] | string[]): string[] {
     return models as string[]
   }
   return (models as LLMModel[]).map((m) => m.id)
+}
+
+/**
+ * Single source of truth for which providers a user may see in a picker.
+ *
+ * Returns true for everything until a managed gateway is configured, then hides
+ * bring-your-own-key and in-browser-LLM entries so the beta shows only the
+ * hosted AgentAsia lane. Lookups by provider id keep using PROVIDERS() directly
+ * so an already-configured provider still resolves in settings/forms.
+ */
+export function isProviderVisible(provider: LLMProvider | string): boolean {
+  const ui = AGENTASIA.ui
+  if (!ui.managedGatewayEnabled) return true
+  return !ui.hiddenProviders.includes(String(provider))
+}
+
+/** PROVIDERS() filtered to what may be *listed* to the current user. */
+export function visibleProviders(lang: Lang, t: any): ProviderConfig[] {
+  return PROVIDERS(lang, t).filter((p) => isProviderVisible(p.provider))
 }
 
 export const PROVIDERS = (lang: Lang, t: any): ProviderConfig[] => [
