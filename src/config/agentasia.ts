@@ -1,17 +1,23 @@
 export const AGENTASIA = {
   slogan: 'AI that speaks your language',
   logo: '/naga-logo.svg',
+  // Plan -> model is a server decision, not a user setting: free users get
+  // Nemotron Nano and no model picker; paid plans get a larger Nemotron.
+  // IDs verified against Token Factory /v1/models on 2026-09-28.
   plans: {
     free: {
       label: 'Free',
       priceUsdMonthly: 0,
-      localWebGpuOnly: true,
+      model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B',
+      localWebGpuOnly: false,
       futureGpuCloudAccess: true,
+      // Token-clamped + text/voice only; see server gateway quota.
+      canChooseModel: false,
     },
-    pro: { label: 'Pro', priceUsdMonthly: 20 },
-    smallBusiness: { label: 'Small Business', priceUsdMonthly: 100 },
-    enterprise: { label: 'Enterprise', priceUsdMonthly: 200 },
-  },
+    pro: { label: 'Pro', priceUsdMonthly: 20, model: 'nvidia/nemotron-3-super-120b-a12b', canChooseModel: false },
+    smallBusiness: { label: 'Small Business', priceUsdMonthly: 100, model: 'nvidia/nemotron-3-super-120b-a12b', canChooseModel: false },
+    enterprise: { label: 'Enterprise', priceUsdMonthly: 200, model: 'nvidia/Nemotron-3-Ultra-550b-a55b', canChooseModel: false },
+  } as Record<string, { label: string; priceUsdMonthly: number; model: string; canChooseModel: boolean; localWebGpuOnly?: boolean; futureGpuCloudAccess?: boolean }>,
   modelRouting: {
     defaultMode: 'auto',
     modes: {
@@ -44,8 +50,14 @@ export const AGENTASIA = {
   // with an empty model picker.
   ui: {
     managedGatewayUrl: (import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || '',
+    /**
+     * Beta is free and fully managed: users never choose a provider or paste a key.
+     * Free tier = Nemotron Nano, paid tiers = a larger Nemotron, chosen by plan.
+     * BYOK stays reachable only for development via VITE_SHOW_BYOK=1 so it can
+     * never ship visible to a customer again.
+     */
     get managedGatewayEnabled(): boolean {
-      return Boolean((import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || '')
+      return import.meta.env.VITE_SHOW_BYOK !== '1'
     },
     // Providers users may never see in a picker (BYOK + in-browser LLM chat).
     hiddenProviders: [

@@ -60,11 +60,20 @@ assert.ok(PROVIDERS.nebius, 'nebius provider must exist')
 assert.equal(PROVIDERS.nebius.baseUrl, 'https://api.tokenfactory.nebius.com/v1',
   'nebius must call the Token Factory inference API')
 assert.equal(PROVIDERS.nebius.keyEnv, 'NEBIUS_API_KEY')
-assert.ok(PROVIDERS.nebius.defaultModel.startsWith('nvidia/nemotron-3'),
-  'default model must be an NVIDIA Nemotron 3 open-weight model')
+// Token Factory uses mixed casing for these ids (NVIDIA-Nemotron-3-Nano-30B-A3B),
+// so compare case-insensitively but still require the NVIDIA namespace + family.
+assert.match(PROVIDERS.nebius.defaultModel, /^nvidia\//i, 'default must be under the nvidia/ namespace')
+assert.match(PROVIDERS.nebius.defaultModel, /nemotron-3/i, 'default must be a Nemotron 3 model')
 assert.ok(PROVIDERS.nebius.models.every((m) => m.startsWith('nvidia/')),
   'every nebius model must be an NVIDIA open source model')
 assert.ok(PROVIDERS.nebius.models.includes('nvidia/nemotron-3-super-120b-a12b'))
+assert.ok(PROVIDERS.nebius.models.includes('nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B'),
+  'free tier must be served by Nemotron 3 Nano 30B (exact catalog id)')
+// Aliases must resolve to real catalog ids, never to invented ones.
+for (const [alias, target] of Object.entries(PROVIDERS.nebius.aliases)) {
+  assert.ok(!alias.startsWith('naga'), 'naga1 aliases remain banned')
+  assert.ok(PROVIDERS.nebius.models.includes(target), `alias ${alias} -> ${target} must exist in models`)
+}
 
 // With a key present, nebius is configured AND first (preferred lane).
 const envNebius = { NEBIUS_API_KEY: 'nf-test', DEEPSEEK_API_KEY: 'sk-test' }

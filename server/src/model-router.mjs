@@ -10,14 +10,27 @@ const PROVIDERS = {
     name: 'Nebius Token Factory',
     baseUrl: 'https://api.tokenfactory.nebius.com/v1',
     keyEnv: 'NEBIUS_API_KEY',
-    defaultModel: 'nvidia/nemotron-3-nano-30b-a3b',
+    // Model IDs verified against GET https://api.tokenfactory.nebius.com/v1/models
+    // on 2026-09-28 (25 models). Casing is significant: the lowercase variants
+    // many builders expect return 404 "model does not exist".
+    defaultModel: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B',
     models: [
-      'nvidia/nemotron-3-nano-30b-a3b',
-      'nvidia/nemotron-3-nano-omni-30b-a3b',
-      'nvidia/nemotron-3-super-120b-a12b',
-      'nvidia/nemotron-3-ultra-550b-a55b',
+      'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', // free tier
+      'nvidia/Nemotron-3_5-Lightning', // 1M ctx, same price band - voice candidate
+      'nvidia/nemotron-3-super-120b-a12b', // Pro tier
+      'nvidia/Nemotron-3-Ultra-550b-a55b', // enterprise / dedicated
     ],
-    aliases: {},
+    // Friendly aliases so callers (and a future catalog rename) keep working.
+    aliases: {
+      'nemotron-3-nano': 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B',
+      'nvidia/nemotron-3-nano-30b-a3b': 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B',
+      'nemotron-3-lightning': 'nvidia/Nemotron-3_5-Lightning',
+      'nemotron-3-super': 'nvidia/nemotron-3-super-120b-a12b',
+      'nemotron-3-ultra': 'nvidia/Nemotron-3-Ultra-550b-a55b',
+    },
+    // Vision is NOT available from Nemotron on Token Factory today (no Omni/VL
+    // entry in the catalog). Agents needing image input route to these instead.
+    visionFallback: ['openbmb/MiniCPM-V-4_5', 'zai-org/GLM-5.3-Flash'],
     description:
       'NVIDIA Nemotron 3 open-weight models served on Nebius Token Factory. Free tier = Nano 30B; Pro = Super 120B; Enterprise = Ultra 550B or a dedicated endpoint.',
   },

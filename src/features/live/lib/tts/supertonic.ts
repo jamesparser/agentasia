@@ -34,7 +34,25 @@ configureTransformersHost()
  * Language code mapping for Supertonic&apos;s XML-tag format.
  * Input BCP-47 codes are mapped to Supertonic language tags.
  */
-const SUPERTONIC_LANGUAGES = ['en', 'ko', 'es', 'pt', 'fr'] as const
+/**
+ * Coverage depends on which Supertonic checkpoint is loaded. Advertising a
+ * language the loaded model cannot speak is how an assistant ends up reading
+ * Japanese in an English voice, so the table is keyed by model, not wish-listed.
+ *  - Supertonic 2 (current default): en, ko, es, pt, fr
+ *  - Supertonic 3: + ja, vi, hi, id, ar and ~22 European languages (still no zh,
+ *    no th, no km/lo/my). Set SUPERTONIC_MODEL_ID to a v3 ONNX build to widen.
+ */
+export const SUPERTONIC_LANGUAGES_BY_MODEL: Record<string, readonly string[]> = {
+  'onnx-community/Supertonic-TTS-2-ONNX': ['en', 'ko', 'es', 'pt', 'fr'],
+  supertonic3: ['en', 'ko', 'ja', 'vi', 'hi', 'id', 'es', 'pt', 'fr', 'ar', 'de', 'fr', 'it', 'nl', 'pl', 'ru', 'tr', 'sv', 'da', 'fi', 'no', 'cs', 'el', 'hu', 'ro', 'sk', 'uk', 'bg', 'hr', 'sl'],
+}
+
+/** Languages for the model this provider will actually load. */
+export function supertonicLanguagesFor(modelId: string): readonly string[] {
+  return SUPERTONIC_LANGUAGES_BY_MODEL[modelId] ?? SUPERTONIC_LANGUAGES_BY_MODEL['supertonic3']
+}
+
+const SUPERTONIC_LANGUAGES = supertonicLanguagesFor('onnx-community/Supertonic-TTS-2-ONNX')
 type SupertonicLanguage = (typeof SUPERTONIC_LANGUAGES)[number]
 
 /**
@@ -139,13 +157,17 @@ export class SupertonicTTSProvider implements TTSProvider {
    * Detect language from BCP-47 code and map to Supertonic lang tag.
    * Falls back to 'en' if the language is not supported.
    */
-  private getLanguageTag(language?: string): SupertonicLanguage {
+  /**
+   * Returns null when the loaded checkpoint genuinely cannot speak this language.
+   * Callers must surface that (text-only + badge) rather than substituting English.
+   */
+  private getLanguageTag(language?: string): SupertonicLanguage | null {
     if (!language) return 'en'
     const code = language.split('-')[0].toLowerCase()
-    if (SUPERTONIC_LANGUAGES.includes(code as SupertonicLanguage)) {
-      return code as SupertonicLanguage
-    }
-    return 'en'
+    const supported = supertonicLanguagesFor(this.modelId)
+    return supported.includes(code as SupertonicLanguage)
+      ? (code as SupertonicLanguage)
+      : null
   }
 
   async synthesize(
@@ -165,6 +187,13 @@ export class SupertonicTTSProvider implements TTSProvider {
     const voiceId = config?.voiceId || 'F1'
     const speed = config?.rate || 1.05
     const lang = this.getLanguageTag(config?.language)
+    if (!lang) {
+      // Never fall back to English silently — an English reading of a Japanese
+      // answer looks like success and is the worst possible failure here.
+      const err = new Error(`supertonic_language_not_supported:${config?.language}`) as Error & { code?: string }
+      err.code = 'language_not_supported'
+      throw err
+    }
 
     // Supertonic uses XML-style language tags: <en>text</en>
     const taggedText = `<${lang}>${text}</${lang}>`
