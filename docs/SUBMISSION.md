@@ -13,6 +13,33 @@ guards treasure. In AgentAsia each head is a function, and what it guards is *yo
 data*. The name is the architecture: one head speaks, one works, one sees, one
 searches, one remembers.
 
+## Who owns what (the privacy model, and why it is not a marketing line)
+
+| Layer | Where it lives | Who holds the key |
+|---|---|---|
+| Reasoning | **Nebius Token Factory**, NVIDIA Nemotron 3 | user's own budget/plan; TF offers zero-retention inference |
+| Live facts | **Tavily**, called by the model as a tool | our shared Tavily key — search queries only, **no personal data** |
+| Memory | **the user's browser**: AES-GCM-256 at rest in IndexedDB/OPFS | the user; **we run no memory database** |
+| Personal data (local-first) | their device, and the user's own **aggregator MCP** connection | the user's own accounts, in **their** Composio/Pipedream/Zapier tenant — never our VPS |
+| Optional cross-device memory | the user's own Mem0 account (BYOK, per-request key, transient) or any memory MCP | the user |
+
+We deliberately **removed** the "host everyone's Mem0 on our server" design: one shared
+vendor key would put every user's life details on infrastructure we can read, which is
+the opposite of the Personal AI brief and a liability we don't want. Instead users
+connect **one** MCP endpoint that fronts hundreds of apps — we never add integrations
+on their behalf, and we never see their OAuth tokens. That is also why the naga's crest
+gem (memory) is a *guarded treasure* rather than a database row.
+
+**Connector decision (why one endpoint, not a hundred MCPs).** Verified September 2026:
+**Composio** — ~1,000-1,500+ toolkits behind **one managed MCP endpoint**, managed
+OAuth, **free Hobby tier = 100,000 tool calls + 50,000 triggers/month, hard-capped,
+no card**, unlimited connected accounts free on every tier, SOC 2 Type II + ISO 27001
++ DPA. **Pipedream MCP** — widest catalogue (~2,800+ apps / 10,000+ tools), free for
+personal use, caveat: acquired by Workday (Nov 2025). **Zapier MCP** — 9,000+ apps but
+~2 tasks per tool call and 100 tasks/month free. **Activepieces** — MIT, self-hostable,
+every piece is an MCP server. Default = **user's own Composio URL** (free, capped, no
+bill surprise); power users may point at Pipedream/Zapier/self-hosted instead.
+
 **Built with:** Nebius Token Factory · NVIDIA Nemotron 3 (Nano 30B-A3B, Nano Omni
 30B-A3B, Super 120B-A12B, Ultra 550B) · NVIDIA Nemotron 3.5 ASR Streaming 0.6B ·
 NVIDIA Magpie TTS Multilingual · Parakeet ASR · Tavily · Mem0 · MCP · Nebius AI

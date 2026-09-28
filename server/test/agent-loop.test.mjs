@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { runAgentTurn, WEB_SEARCH_TOOL } from '../src/agent-loop.mjs'
+import { runAgentTurn, WEB_SEARCH_TOOL, compactSearchForModel } from '../src/agent-loop.mjs'
 
 const okEnv = { TAVILY_API_KEY: 'tvly-test' }
 const fakeSearch = async ({ query }) => ({
@@ -8,10 +8,12 @@ const fakeSearch = async ({ query }) => ({
   source: 'tavily', retrievedAt: '2026-09-28T12:00:00.000Z', requiresCitation: true,
 })
 
+const callsSeen = []
 // 1) model asks to search, then answers -> citations + trace surfaced
 const calls = []
 const scripted = async (p) => {
   calls.push(p)
+  callsSeen.push(p)
   if (calls.length === 1) {
     assert.equal(p.tools[0].function.name, 'web_search', 'search tool offered on round 1')
     return { choices: [{ finish_reason: 'tool_calls', message: { role: 'assistant', content: null,
@@ -76,16 +78,40 @@ assert.ok(n <= 4, `loop must be bounded, got ${n} calls`)
 const lastRoute = null
 assert.equal(typeof r4.message.content, 'string')
 
-// 6) unknown tool name is answered, not thrown
-n = 0
+// 6) a tool we do not own is HANDED BACK to the client, never executed here,
+//    and never an error - the user's own MCP holds their credentials.
+const askedFor = []
+const calls5 = []
 const r5 = await runAgentTurn({
   messages: [{ role: 'user', content: 'x' }], model: 'm',
-  route: async (p) => p.messages.some((m) => m.role === 'tool')
-    ? { choices: [{ finish_reason: 'stop', message: { content: 'sorry' } }] }
-    : { choices: [{ finish_reason: 'tool_calls', message: { content: null, tool_calls: [{ id: 'u', function: { name: 'browse', arguments: '{}' } }] } }] },
+  route: async (p) => { calls5.push(p); return p.messages.some((m) => m.role === 'tool')
+    ? { choices: [{ finish_reason: 'stop', message: { content: 'ok' } }] }
+    : { choices: [{ finish_reason: 'tool_calls', message: { content: null, tool_calls: [{ id: 'u', function: { name: 'gmail_send', arguments: '{"to":"a@b.c"}' } }] } }] } },
   env: okEnv, search: fakeSearch,
+  userTools: [{ type: 'function', function: { name: 'gmail_send', parameters: {} } }],
+  onUserToolCall: (c) => askedFor.push(c),
 })
-assert.match(r5.searchTrace[0].error, /unknown_tool:browse/)
-assert.equal(WEB_SEARCH_TOOL.function.name, 'web_search')
+assert.equal(r5.userToolCalls.length, 1)
+assert.equal(r5.userToolCalls[0].name, 'gmail_send')
+assert.deepEqual(r5.userToolCalls[0].arguments, { to: 'a@b.c' })
+assert.equal(askedFor[0].name, 'gmail_send', 'caller notified so it can run it on its own connection')
+assert.equal(r5.searchTrace[0].userTool, true)
+assert.equal(r5.searchTrace[0].error, null, 'a user tool is not a failure')
+// user tools are offered alongside web_search
+assert.deepEqual(calls5[0].tools.map((t) => t.function.name), ['web_search', 'gmail_send'],
+  'our search tool and the user\'s connector tool are offered together')
 
+// 7) compaction: the model gets an answer + a few trimmed snippets, not the crawl
+const fat = {
+  answer: 'DOGE $0.0926', retrievedAt: 'now',
+  results: Array.from({ length: 8 }, (_, i) => ({ title: 'T' + i, url: 'https://x/' + i, content: 'y'.repeat(2000), publishedDate: null })),
+}
+const slim = compactSearchForModel(fat)
+assert.equal(slim.results.length, 3, 'only 3 results reach the model')
+assert.ok(slim.results.every((r) => r.content.length <= 320), 'snippets truncated')
+assert.equal(slim.results[0].url, 'https://x/0', 'URLs kept for citation')
+assert.match(slim.instruction, /Cite one source title/)
+assert.deepEqual(compactSearchForModel({ error: 'boom' }), { error: 'boom' })
+// the full citation list is still returned to the UI, untouched
+assert.equal(r1.citations.length, 1)
 console.log('agent-loop (Tavily in the chat path) tests passed')

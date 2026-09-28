@@ -15,7 +15,7 @@ import { webSearch, searchConfigured } from './tools/websearch.mjs'
 import { assertWithinBudget, recordSpend, spendSummary } from './spend-guard.mjs'
 import { runAgentTurn } from './agent-loop.mjs'
 import { resolveGatewayTarget, getAllProviders } from './model-router.mjs'
-import { addMemory, searchMemory, deleteAllMemory } from './memory.mjs'
+import { addMemory, searchMemory, deleteAllMemory, memoryPolicy } from './memory.mjs'
 import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from './schedules.mjs'
 import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
 
@@ -265,6 +265,9 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ── Memory (Crest Gem) — per-uid, exportable, erasable ────────────
+    if (req.method === 'GET' && p === '/v1/memory/policy') {
+      return json(res, 200, { ...memoryPolicy, requestId })
+    }
     if (p === '/v1/memory') {
       try {
         const body = await readJson(req)
@@ -272,14 +275,14 @@ const server = http.createServer(async (req, res) => {
         if (req.method === 'DELETE') return json(res, 200, await deleteAllMemory(body))
         return json(res, 405, { error: 'method_not_allowed', requestId })
       } catch (error) {
-        return json(res, error.statusCode || 503, { error: error.message, requestId })
+        return json(res, error.statusCode || 503, { error: error.message, hint: error.hint, requestId })
       }
     }
     if (req.method === 'POST' && p === '/v1/memory/search') {
       try {
         return json(res, 200, await searchMemory(await readJson(req)))
       } catch (error) {
-        return json(res, error.statusCode || 503, { error: error.message, requestId })
+        return json(res, error.statusCode || 503, { error: error.message, hint: error.hint, requestId })
       }
     }
 
