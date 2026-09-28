@@ -126,8 +126,8 @@ const server = http.createServer(async (req, res) => {
 
         // Streaming: pass the upstream SSE body straight through.
         if (result && result.stream && typeof result.stream[Symbol.asyncIterator] === 'function') {
+          corsHeaders(res, origin)   // sets CORS via res.setHeader (returns nothing)
           res.writeHead(200, {
-            ...corsHeaders(res, allowedOrigin),
             'content-type': 'text/event-stream; charset=utf-8',
             'cache-control': 'no-cache, no-transform',
             connection: 'keep-alive',
