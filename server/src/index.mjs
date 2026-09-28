@@ -20,7 +20,20 @@ import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from 
 import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
 
 const port = Number(process.env.PORT || 8787)
-const allowedOrigin = process.env.APP_ORIGIN || '*'
+// Bind localhost by default: this process is meant to sit behind a tunnel/proxy.
+// 0.0.0.0 on a machine with a public IP would expose the key-holding gateway.
+const host = process.env.BIND_HOST || '127.0.0.1'
+/** APP_ORIGIN accepts '*' or a comma-separated list, entries may be '*.example.com'. */
+function originAllowed(origin) {
+  if (!origin) return false
+  const raw = (process.env.APP_ORIGIN || '*').trim()
+  if (raw === '*') return true
+  return raw.split(',').map((s) => s.trim()).filter(Boolean).some((rule) => {
+    if (rule === '*') return true
+    if (rule.startsWith('*.')) return origin === rule.slice(2) || origin.endsWith(rule.slice(1))
+    return origin === rule
+  })
+}
 
 // ── Helpers ────────────────────────────────────────────────────
 function json(res, status, body) {
@@ -28,10 +41,10 @@ function json(res, status, body) {
   res.end(JSON.stringify(body))
 }
 function corsHeaders(res, origin) {
-  if (allowedOrigin === '*') {
-    res.setHeader('access-control-allow-origin', '*')
-  } else if (allowedOrigin && origin === allowedOrigin) {
-    res.setHeader('access-control-allow-origin', allowedOrigin)
+  const raw = (process.env.APP_ORIGIN || '*').trim()
+  if (raw === '*') res.setHeader('access-control-allow-origin', '*')
+  else if (originAllowed(origin)) {
+    res.setHeader('access-control-allow-origin', origin)
     res.setHeader('vary', 'Origin')
   }
   res.setHeader('access-control-allow-headers', 'content-type, authorization')
@@ -52,6 +65,13 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') return res.writeHead(204).end()
 
   const url = new URL(req.url || '/', `http://${req.headers.host}`)
+  // When published behind a shared hostname the app reaches us under a path
+  // prefix (e.g. https://host/agentasia/v1/chat/completions). Strip it once,
+  // here, so every route below stays root-relative.
+  const basePath = (process.env.GATEWAY_BASE_PATH || '').replace(/\/+$/, '')
+  if (basePath && url.pathname.startsWith(basePath)) {
+    url.pathname = url.pathname.slice(basePath.length) || '/'
+  }
   const p = url.pathname
 
   try {
@@ -327,8 +347,8 @@ const server = http.createServer(async (req, res) => {
 
 // ── Start ──────────────────────────────────────────────────────
 if (process.env.SCHEDULER_ENABLED === 'true') startScheduleWorker()
-server.listen(port, '0.0.0.0', () => {
-  console.log(`AgentAsia API listening on :${port}`)
+server.listen(port, host, () => {
+  console.log(`AgentAsia API listening on http://${host}:${port}`)
   console.log(`  Model Gateway: ${process.env.MODEL_GATEWAY_ENABLED === 'true' ? 'ENABLED' : 'disabled'}`)
   console.log(`  Scheduler:     ${process.env.SCHEDULER_ENABLED === 'true' ? 'ENABLED' : 'disabled'}`)
   console.log(`  Providers:     ${configuredProviders().length} configured (${Object.keys(providerCatalog()).length} total)`)
