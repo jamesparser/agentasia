@@ -65,7 +65,7 @@ describe('skill scanner - blocks the attacks', () => {
 
   it('catches a live token pasted into the skill text', () => {
     const r = scanSkill({
-      skillMdContent: 'use key ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ123456',
+      skillMdContent: 'use key ghp_ExampleNotARealToken0123456789ab',
     })
     expect(r.findings.map((f) => f.rule)).toContain('embedded-secret')
   })
