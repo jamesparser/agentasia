@@ -182,6 +182,41 @@ export function uninstallSkill(id: string): boolean {
  * Update an existing installed skill.
  * Merges the provided fields with the existing skill data.
  */
+/**
+ * The scanner is only a real gate if enabling is gated too. Without this,
+ * `installSkill()` refusing to auto-enable a blocked skill is cosmetic: flipping
+ * the toggle (or `updateSkill({ enabled: true })`) would enable it anyway, so a
+ * registry package that is clean at install and ships a payload later - or one
+ * that simply tripped a rule - could be switched on without a second thought.
+ *
+ * Re-scan on enable, because content can change after install. A blocked verdict
+ * therefore refuses, unless the caller passes an explicit acknowledgement: a
+ * pattern scanner produces false positives, and a silently bricked skill is worse
+ * than an overridable one. The acknowledgement is an argument, not a UI default,
+ * so a human has to decide deliberately.
+ */
+export type EnableGuard = {
+  ok: boolean
+  verdict: 'safe' | 'caution' | 'blocked'
+  reason?: string
+}
+
+function guardEnable(skill: InstalledSkill, acknowledgeBlocked = false): EnableGuard {
+  const report = scanSkill(skill)
+  const verdict = report.verdict
+  if (verdict === 'blocked' && !acknowledgeBlocked) {
+    const first = report.findings.find((f) => f.severity === 'blocked')
+    return {
+      ok: false,
+      verdict,
+      reason: first
+        ? `${first.rule} in ${first.file}:${first.line} - ${first.message}`
+        : 'blocked by the skill scanner',
+    }
+  }
+  return { ok: true, verdict }
+}
+
 export function updateSkill(
   id: string,
   updates: Partial<Omit<InstalledSkill, 'id' | 'installedAt'>>,
@@ -189,12 +224,36 @@ export function updateSkill(
   const existing = skills.get(id)
   if (!existing) return undefined
 
+  const contentChanged =
+    'skillMdContent' in updates ||
+    'scripts' in updates ||
+    'references' in updates
+
   const updated: InstalledSkill = {
     ...existing,
     ...updates,
     id: existing.id, // Never overwrite id
     installedAt: existing.installedAt, // Never overwrite installedAt
     updatedAt: new Date(),
+  }
+
+  if (contentChanged) {
+    // The previous verdict described the old bytes; restate it for the new ones.
+    const report = scanSkill(updated)
+    updated.security = {
+      verdict: report.verdict,
+      findings: report.findings,
+      scannedAt: report.scannedAt,
+      fingerprint: report.fingerprint,
+    }
+  }
+
+  // Enabling through an edit is still an enable, so it goes through the same
+  // gate. No acknowledgement flag here on purpose: `updateSkill` is an editing
+  // entry point, and overriding a blocked verdict belongs on the explicit
+  // toggle (`setSkillEnabled(id, true, true)`), where the intent is unambiguous.
+  if (updates.enabled === true && !guardEnable(updated).ok) {
+    updated.enabled = false
   }
 
   transact(() => {
@@ -207,9 +266,18 @@ export function updateSkill(
 /**
  * Enable or disable a skill.
  */
-export function setSkillEnabled(id: string, enabled: boolean): boolean {
-  const existing = skills.get(id)
+export function setSkillEnabled(
+  id: string,
+  enabled: boolean,
+  acknowledgeBlocked = false,
+): boolean {
+  const existing = skills.get(id) as InstalledSkill | undefined
   if (!existing) return false
+
+  if (enabled) {
+    const guard = guardEnable(existing, acknowledgeBlocked)
+    if (!guard.ok) return false
+  }
 
   transact(() => {
     skills.set(id, { ...existing, enabled, updatedAt: new Date() })
