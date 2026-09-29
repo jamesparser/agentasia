@@ -47,7 +47,9 @@ function sendIfHidden(title: string, options?: NotificationOptions): void {
   if (!document.hidden) return
 
   const notification = new Notification(title, {
-    icon: '/agents/devs.svg',
+    // PNG, not the old SVG: notification icons are raster-only in practice, so
+    // `/agents/devs.svg` rendered as a blank tile as well as being the wrong mark.
+    icon: '/brand/naga-bold-black-96.png',
     ...options,
   })
 

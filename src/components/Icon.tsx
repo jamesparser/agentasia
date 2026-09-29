@@ -2,8 +2,49 @@ import { IconName } from '@/lib/types'
 import * as IconoirIcons from 'iconoir-react'
 import { type ComponentProps } from 'react'
 import * as SimpleIcons from 'simple-icons'
-import DevsAnimatedIcon from '../../public/devs.svg?raw'
-import DevsStaticIcon from '../../public/devs-static.svg?raw'
+import clsx from 'clsx'
+
+/**
+ * The AgentAsia brand mark.
+ *
+ * Deliberately a raster <img>, not the upstream `devs.svg` triangle: we are not
+ * licensed to use the devs.new mark, and the brief also rules out SVG. Two PNGs
+ * are swapped by the `dark` class (tailwind `darkMode: 'class'`) because a single
+ * monochrome asset has to stay legible on both themes - the mark is drawn with
+ * transparent negative space, so it cannot simply be recoloured with
+ * `currentColor` the way the old inline SVG was.
+ *
+ * The bold simplified silhouette is used, not the detailed illustration: a
+ * vision-model review of both versions scored the detailed one 6/10 and this one
+ * 8/10 for favicon use, because hairline detail collapses at 16px.
+ */
+const NagaMark = ({
+  width = 24,
+  height = 24,
+  className = '',
+  ...rest
+}: any) => (
+  <span
+    className={clsx('inline-block shrink-0 align-middle', className)}
+    style={{ width, height, lineHeight: 0 }}
+    {...rest}
+  >
+    <img
+      src="/brand/naga-bold-black.png"
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+      className="h-full w-full object-contain dark:hidden"
+    />
+    <img
+      src="/brand/naga-bold-white.png"
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+      className="hidden h-full w-full object-contain dark:block"
+    />
+  </span>
+)
 
 const CustomIcons = {
   Cubes: (props: any) => (
@@ -35,30 +76,13 @@ const CustomIcons = {
     </svg>
   ),
 
-  Devs: (props: any) => (
-    <span
-      style={{
-        display: 'block',
-        width: props.width ?? 24,
-        height: props.height ?? 24,
-      }}
-      {...props}
-      dangerouslySetInnerHTML={{ __html: DevsStaticIcon }}
-    />
-  ),
-  DevsAnimated: (props: any) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 96 96"
-      {...props}
-      dangerouslySetInnerHTML={{
-        __html: DevsAnimatedIcon.replace(/<svg[^>]*>/, '').replace(
-          /<\/svg>/,
-          '',
-        ),
-      }}
-    />
-  ),
+  // Both names now resolve to the same raster Naga mark. `DevsAnimated` is kept
+  // as a name so the dozen existing call-sites (hero, loader, progress indicator,
+  // tour, index) switch in one place; it no longer animates internally because
+  // there is no inline SVG to animate - motion comes from the `animation` classes
+  // the Icon wrapper adds, which the mark still receives via className.
+  Devs: NagaMark,
+  DevsAnimated: NagaMark,
 
   DeepSeek: (props: any) => (
     <svg

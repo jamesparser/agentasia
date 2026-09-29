@@ -2,7 +2,10 @@
 <html lang="<%= lang %>" translate="no">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/brand/naga-bold-black-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/naga-bold-black-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/brand/naga-bold-black-48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta
@@ -14,23 +17,27 @@
 
     <!-- SEO Meta Tags -->
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="DEVS" />
+    <meta name="author" content="AgentAsia" />
     <meta name="language" content="<%= language %>" />
     <meta name="theme-color" content="#000000" />
-    <link rel="canonical" href="https://devs.new" />
+    <!-- Canonical was https://devs.new, which told search engines our pages are a
+         duplicate of the upstream product and would have suppressed our own
+         indexing. Ours is agentasia.vercel.app until a custom domain is bought. -->
+    <link rel="canonical" href="https://agentasia.vercel.app" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="DEVS" />
+    <meta property="og:site_name" content="AgentAsia" />
     <meta property="og:title" content="<%= title %>" />
     <meta property="og:description" content="<%= description %>" />
-    <meta property="og:url" content="https://devs.new" />
-    <meta
-      property="og:image"
-      content="https://devs.new/screenshots/devs-desktop-home.webp"
-    />
-    <meta property="og:image:width" content="1644" />
-    <meta property="og:image:height" content="1558" />
+    <meta property="og:url" content="https://agentasia.vercel.app" />
+    <!-- Our own share card. This used to point at
+         https://devs.new/screenshots/devs-desktop-home.webp, i.e. a screenshot of
+         the upstream product, so every X/LinkedIn share advertised devs.new with
+         their mark instead of ours. -->
+    <meta property="og:image" content="https://agentasia.vercel.app/og-cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="<%= lang %>" />
 
     <!-- Twitter Card -->
@@ -39,7 +46,7 @@
     <meta name="twitter:description" content="<%= description %>" />
     <meta
       name="twitter:image"
-      content="https://devs.new/screenshots/devs-desktop-home.webp"
+      content="https://agentasia.vercel.app/og-cover.png"
     />
 
     <!-- Prevent FOUC: Apply theme before render -->

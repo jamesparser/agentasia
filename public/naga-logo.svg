@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" aria-labelledby="t">
-  <title id="t">AgentAsia Naga logo placeholder</title>
-  <!-- Placeholder mark: replace with final Naga line-art logo -->
-  <circle cx="256" cy="256" r="200" stroke="#111111" stroke-width="24" fill="none"/>
-  <circle cx="256" cy="256" r="140" stroke="#111111" stroke-width="24" fill="none"/>
-  <text x="256" y="272" text-anchor="middle" font-family="system-ui, sans-serif" font-size="48" fill="#111111">NAGA LOGO</text>
-</svg>

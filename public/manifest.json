@@ -1,8 +1,8 @@
 {
-  "id": "devs",
-  "short_name": "𝐃𝐄𝐕𝐒",
-  "name": "𝐃𝐄𝐕𝐒",
-  "description": "Delegate complex tasks to a swarm of AI agents",
+  "id": "agentasia",
+  "short_name": "AgentAsia",
+  "name": "AgentAsia — AI that speaks your language",
+  "description": "A personal AI team that speaks Southeast Asia's languages. Powered by NVIDIA Nemotron on Nebius.",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -27,11 +27,6 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
-    },
-    {
-      "src": "/favicon.svg",
-      "type": "image/svg+xml",
-      "sizes": "any"
     }
   ],
   "screenshots": [
