@@ -1,6 +1,7 @@
 import { LLMConfig, Credential, LLMProvider } from '@/types'
 import { notifyError } from '@/features/notifications'
-import { useLLMModelStore } from '@/stores/llmModelStore'
+import { useLLMModelStore, HOSTED_LANE_CREDENTIAL_ID } from '@/stores/llmModelStore'
+import { gatewayBase, modelForPlan } from '@/lib/llm/managed-lane'
 
 /**
  * Providers that don't require API keys (local/browser-based)
@@ -20,7 +21,24 @@ export class CredentialService {
   ): Promise<LLMConfig | null> {
     const { credentials, selectedModels } = useLLMModelStore.getState()
     const credential = credentials.find((c) => c.id === credentialId)
-    if (!credential) return null
+    if (!credential) {
+      // The hosted AgentAsia lane is identified by a stable id but has no stored
+      // credential for an anonymous visitor: credentials persist through Yjs, and
+      // on the static deployment Yjs never syncs. Without this branch the lookup
+      // returns null here, the caller falls back to the in-browser model, and no
+      // Nebius call is ever made - which was exactly the failure measured on
+      // agentasia.vercel.app. There is nothing to decrypt: the Token Factory key
+      // lives on the gateway, so the client legitimately holds no secret.
+      if (credentialId === HOSTED_LANE_CREDENTIAL_ID && gatewayBase()) {
+        return {
+          provider: 'openai-compatible',
+          model:
+            selectedModels['openai-compatible'] || modelForPlan('free'),
+          baseUrl: `${gatewayBase()}/v1`,
+        }
+      }
+      return null
+    }
 
     try {
       // Get the selected model for this provider
