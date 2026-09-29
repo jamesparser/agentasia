@@ -22,6 +22,46 @@ export function isManagedLaneConfigured(): boolean {
 }
 
 /** Model is a plan decision, never a user choice (free = Nano; paid = larger). */
+/**
+ * Canonicalise a model name for the hosted gateway.
+ *
+ * The picker formats ids for display by dropping the org prefix and splitting on
+ * `-` ("nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B" -> "NVIDIA Nemotron 3 Nano 30B
+ * A3B"), and some selection paths write that label back as the model to use. The
+ * gateway resolves upstream by exact id, so a re-hyphenated display name answers
+ * `provider_http_404` and the task fails - which is what a fresh visitor hit on
+ * the deployed build. Every plan model id is known, so map display forms back to
+ * the canonical id before sending; an unknown id is passed through untouched so a
+ * model added to the gateway later still works.
+ */
+export function canonicalHostedModel(model: string): string {
+  const ids = Object.values(AGENTASIA.plans)
+    .map((p) => (p as { model?: string }).model)
+    .filter(Boolean) as string[]
+  const key = (v: string) => v.toLowerCase().replace(/[^a-z0-9]/g, "")
+  const orgs = new Set(ids.map((id) => key(id.split("/")[0] || "")))
+  let probe = key(model.includes("/") ? model.split("/").pop()! : model)
+  if (!probe) return model
+  // The formatted label keeps the vendor word the id's org prefix carried
+  // ("NVIDIA Nemotron 3 Nano 30B A3B" from "nvidia/NVIDIA-Nemotron-..."), so the
+  // probe can lead with it once or twice. Drop a leading org word before matching.
+  const stripOrg = (v: string) => {
+    let out = v
+    for (let i = 0; i < 2; i++) {
+      const lead = [...orgs].find((o) => o && out.startsWith(o) && out.length > o.length)
+      if (!lead) break
+      out = out.slice(lead.length)
+    }
+    return out
+  }
+  const target = stripOrg(probe)
+  const hit = ids.find((id) => {
+    const base = key(id.includes("/") ? id.split("/").pop()! : id)
+    return base === target || base === probe
+  })
+  return hit || model
+}
+
 export function modelForPlan(plan: PlanId = 'free'): string {
   const entry = (AGENTASIA.plans as Record<string, { model?: string }>)[plan]
   return entry?.model || AGENTASIA.plans.free.model

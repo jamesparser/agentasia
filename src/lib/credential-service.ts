@@ -1,7 +1,7 @@
 import { LLMConfig, Credential, LLMProvider } from '@/types'
 import { notifyError } from '@/features/notifications'
 import { useLLMModelStore, HOSTED_LANE_CREDENTIAL_ID } from '@/stores/llmModelStore'
-import { gatewayBase, modelForPlan } from '@/lib/llm/managed-lane'
+import { canonicalHostedModel, gatewayBase, modelForPlan } from '@/lib/llm/managed-lane'
 
 /**
  * Providers that don't require API keys (local/browser-based)
@@ -32,8 +32,9 @@ export class CredentialService {
       if (credentialId === HOSTED_LANE_CREDENTIAL_ID && gatewayBase()) {
         return {
           provider: 'openai-compatible',
-          model:
+          model: canonicalHostedModel(
             selectedModels['openai-compatible'] || modelForPlan('free'),
+          ),
           baseUrl: `${gatewayBase()}/v1`,
         }
       }
@@ -42,8 +43,12 @@ export class CredentialService {
 
     try {
       // Get the selected model for this provider
-      const model =
-        selectedModels[credential.provider] || credential.model || ''
+      let model = selectedModels[credential.provider] || credential.model || ''
+      // The hosted gateway resolves by exact id, so repair a display-name round-trip
+      // for the managed lane (see canonicalHostedModel).
+      if (!credential.baseUrl || credential.baseUrl.startsWith(gatewayBase())) {
+        model = canonicalHostedModel(model)
+      }
 
       // For local/browser providers that don't need API keys, skip decryption
       if (!this.requiresCredentials(credential.provider)) {

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
   buildBody, chatUrl, createSseAccumulator, describeGatewayError, extractExtras,
-  gatewayBase, isManagedLaneConfigured, modelForPlan,
+  canonicalHostedModel, gatewayBase, isManagedLaneConfigured, modelForPlan,
 } from '@/lib/llm/managed-lane'
 import { AGENTASIA, MANAGED_GATEWAY_DEFAULT } from '@/config/agentasia'
 
@@ -28,6 +28,21 @@ describe('managed lane', () => {
     expect(modelForPlan('pro')).toMatch(/super-120b/i)
     expect(modelForPlan('enterprise')).toMatch(/Ultra-550b/i)
     expect(modelForPlan('nonsense' as 'free')).toMatch(/Nano-30B/i)
+  })
+
+  it('repairs the display-name round-trip the gateway cannot resolve', () => {
+    // Measured on the deployed build: a fresh visitor sent "NVIDIA-Nemotron-3-Nano-
+    // 30B-A3B" (the picker label re-hyphenated, org prefix dropped) and the gateway
+    // answered provider_http_404, so the task failed. The canonical id carries the
+    // prefix, so both display forms must map back to it.
+    const canonical = 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B'
+    expect(canonicalHostedModel('NVIDIA-Nemotron-3-Nano-30B-A3B')).toBe(canonical)
+    expect(canonicalHostedModel('NVIDIA Nemotron 3 Nano 30B A3B')).toBe(canonical)
+    expect(canonicalHostedModel('nvidia nemotron 3 nano 30b a3b')).toBe(canonical)
+    expect(canonicalHostedModel(canonical)).toBe(canonical)
+    // unknown ids pass through, so a model added to the gateway later still works
+    expect(canonicalHostedModel('nvidia/some-new-model')).toBe('nvidia/some-new-model')
+    expect(canonicalHostedModel('')).toBe('')
   })
 
   it('disables the agentic loop for streaming (gateway only loops on non-stream)', () => {
