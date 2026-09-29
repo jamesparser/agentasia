@@ -1,5 +1,5 @@
 import http from 'node:http'
-import { randomUUID } from 'node:crypto'
+import { randomUUID, timingSafeEqual } from 'node:crypto'
 import {
   configuredProviders,
   providerCatalog,
@@ -23,6 +23,37 @@ const port = Number(process.env.PORT || 8787)
 // Bind localhost by default: this process is meant to sit behind a tunnel/proxy.
 // 0.0.0.0 on a machine with a public IP would expose the key-holding gateway.
 const host = process.env.BIND_HOST || '127.0.0.1'
+/**
+ * Public surface of the gateway. The tunnel publishes this process to the
+ * internet, and the browser app only ever calls POST /v1/chat/completions
+ * (src/lib/llm/managed-lane.ts builds exactly that one URL), so that plus the
+ * tunnel health probe is all a stranger is allowed to touch. GET
+ * /v1/memory/policy is public on purpose too: it is a static, secret-free
+ * statement of who holds user memory, and the submission says so out loud.
+ *
+ * Everything else is operator-only and needs GATEWAY_ADMIN_TOKEN, because an
+ * unauthenticated POST /v1/providers would let any visitor register a base URL
+ * and make the VPS send requests to it, DELETE /v1/providers/:id could unload a
+ * working provider, and GET /v1/spend / /v1/providers/health leak budget state
+ * and key health. /v1/search spends the shared Tavily quota outright.
+ */
+const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy'])
+
+/** Fail closed: if no token is configured, privileged routes are unavailable. */
+function privilegedAllowed(req) {
+  const secret = (process.env.GATEWAY_ADMIN_TOKEN || '').trim()
+  if (!secret) return { ok: false, reason: 'admin_not_configured' }
+  const header = String(req.headers.authorization || '')
+  const supplied = header.startsWith('Bearer ') ? header.slice(7) : ''
+  if (!supplied) return { ok: false, reason: 'admin_token_required' }
+  const a = Buffer.from(supplied)
+  const b = Buffer.from(secret)
+  // timingSafeEqual requires equal-length buffers; a length mismatch is already
+  // a rejection, and token length is not a secret worth a constant-time dance.
+  if (a.length !== b.length) return { ok: false, reason: 'admin_token_invalid' }
+  return { ok: timingSafeEqual(a, b), reason: 'admin_token_invalid' }
+}
+
 /** APP_ORIGIN accepts '*' or a comma-separated list, entries may be '*.example.com'. */
 function originAllowed(origin) {
   if (!origin) return false
@@ -73,6 +104,21 @@ const server = http.createServer(async (req, res) => {
     url.pathname = url.pathname.slice(basePath.length) || '/'
   }
   const p = url.pathname
+
+  // ── Public surface guard ─────────────────────────────────────
+  // This process is reachable from the internet through the tunnel, so anything
+  // the browser app does not call is closed unless GATEWAY_ADMIN_TOKEN is
+  // presented. Local operator calls work the same way; pass the token or use an
+  // ssh tunnel plus a token, never an unauthenticated exception.
+  if (!PUBLIC_ROUTES.has(`${req.method} ${p}`)) {
+    const auth = privilegedAllowed(req)
+    if (!auth.ok) {
+      return json(res, auth.reason === 'admin_not_configured' ? 503 : 401, {
+        error: auth.reason,
+        requestId,
+      })
+    }
+  }
 
   try {
     // ── Health ─────────────────────────────────────────────────
