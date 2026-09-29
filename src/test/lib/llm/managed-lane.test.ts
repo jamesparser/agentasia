@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
   buildBody, chatUrl, createSseAccumulator, describeGatewayError, extractExtras,
-  isManagedLaneConfigured, modelForPlan,
+  gatewayBase, isManagedLaneConfigured, modelForPlan,
 } from '@/lib/llm/managed-lane'
+import { AGENTASIA, MANAGED_GATEWAY_DEFAULT } from '@/config/agentasia'
 
 const env = import.meta.env as Record<string, string>
 let saved: Record<string, string | undefined> = {}
@@ -52,6 +53,29 @@ describe('managed lane', () => {
     expect(acc.text).toBe('にちはです')
     // a malformed frame is skipped, not fatal
     expect(acc.push('data: {not json}\n\n')).toBe('にちはです')
+  })
+
+
+  it('defaults to the deployed gateway when the env var is missing', () => {
+    // The July production build inlined an EMPTY VITE_AGENTASIA_GATEWAY_URL,
+    // which silently disabled the hosted lane while the visibility gate still
+    // hid every other provider - an empty model picker in production. The
+    // durable hostname is therefore the compiled-in default, overridable per
+    // environment, so a missing variable can never strand the app.
+    delete env.VITE_AGENTASIA_GATEWAY_URL
+    expect(gatewayBase()).toBe(MANAGED_GATEWAY_DEFAULT)
+    expect(isManagedLaneConfigured()).toBe(true)
+    expect(chatUrl()).toBe(`${MANAGED_GATEWAY_DEFAULT}/v1/chat/completions`)
+    env.VITE_AGENTASIA_GATEWAY_URL = 'https://staging.example.com/'
+    expect(gatewayBase()).toBe('https://staging.example.com')
+  })
+
+  it('keeps the hosted lane selectable when the gate hides bring-your-own-key', () => {
+    // The managed gateway speaks the OpenAI wire format, so the hosted lane IS
+    // an openai-compatible provider; hiding it left nothing selectable.
+    expect(AGENTASIA.ui.hiddenProviders).not.toContain('openai-compatible')
+    expect(AGENTASIA.ui.hiddenProviders).toContain('local')
+    expect(AGENTASIA.ui.managedGatewayUrl).toBe(MANAGED_GATEWAY_DEFAULT)
   })
 
   it('maps gateway errors to honest copy', () => {

@@ -5,6 +5,7 @@ import { SecureStorage, isCryptoAvailable } from '@/lib/crypto'
 import { LLMService, LocalLLMProvider } from '@/lib/llm'
 import { successToast, errorToast } from '@/lib/toast'
 import { credentials as credentialsYjs, isReady } from '@/lib/yjs'
+import { gatewayBase, modelForPlan } from '@/lib/llm/managed-lane'
 import { getT } from '@/i18n/utils'
 
 const t = getT()
@@ -292,6 +293,49 @@ export const useLLMModelStore = create<LLMModelStore>()(
           // mistakenly create a local provider that overrides the user's
           // real default.
           if (sortedCreds.length === 0 && isCryptoAvailable() && isReady()) {
+            // Fresh visitor default: the hosted AgentAsia lane, not an
+            // in-browser model. Two reasons, both measured on the deployed
+            // build: (1) the hackathon requires a Nebius Token Factory call in
+            // the demo path, and a default of `local` meant a judge's first
+            // message never left the device; (2) the visibility gate hides
+            // `local` anyway, so seeding it produced a picker showing a model
+            // the policy says the user may not have. The gateway holds the key,
+            // so the client stores only a non-secret placeholder bearer.
+            // Skipped when VITE_AGENTASIA_GATEWAY_URL is explicitly blank.
+            const gateway = gatewayBase()
+            if (gateway) {
+              try {
+                const hostedKey = 'agentasia-managed'
+                const { encrypted, iv, salt, mode } =
+                  await SecureStorage.encryptCredential(hostedKey)
+                const credential: Credential = {
+                  id: `agentasia-${Date.now()}`,
+                  provider: 'openai-compatible',
+                  encryptedApiKey: encrypted,
+                  iv,
+                  encryptionMode: mode,
+                  timestamp: new Date(),
+                  order: 0,
+                  baseUrl: `${gateway}/v1`,
+                }
+                localStorage.setItem(`${credential.id}-iv`, iv)
+                if (salt) localStorage.setItem(`${credential.id}-salt`, salt)
+                credentialsYjs.set(credential.id, credential)
+                set((state) => ({
+                  credentials: [credential],
+                  selectedModels: {
+                    ...state.selectedModels,
+                    'openai-compatible': modelForPlan('free'),
+                  },
+                  selectedProviderType:
+                    state.selectedProviderType ?? ('openai-compatible' as LLMProvider),
+                }))
+                return
+              } catch (error) {
+                console.error('Failed to create default hosted provider:', error)
+                // fall through to the local default rather than leave no provider
+              }
+            }
             try {
               const defaultModel = LocalLLMProvider.DEFAULT_MODEL
               const keyToEncrypt = 'local-no-key'

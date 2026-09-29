@@ -20,6 +20,7 @@ import type { LLMProvider } from '@/types'
 import { errorToast } from '@/lib/toast'
 import { useLLMModelStore } from '@/stores/llmModelStore'
 import localI18n from '../i18n'
+import { MANAGED_GATEWAY_DEFAULT } from '@/config/agentasia'
 import { PROVIDERS } from '../providers'
 
 interface ProviderFormProps {
@@ -27,9 +28,17 @@ interface ProviderFormProps {
   preset?: string | null
 }
 
+/**
+ * One-click setup for the hosted AgentAsia lane. This points at the Nebius
+ * gateway (plan model, Tavily loop, spend breaker run server-side) and carries
+ * NO secret: the gateway ignores the bearer on /v1/chat/completions and only
+ * requires the operator token on privileged routes. The previous value shipped
+ * a shared LiteLLM master key inside the browser bundle, which the public-repo
+ * step of the hackathon cannot survive.
+ */
 const FREEMIUM_PRESET = {
-  baseUrl: 'https://freemium.realcryptocap.com/v1',
-  apiKey: 'REDACTED__ROUTER_MASTER_KEY__',
+  baseUrl: `${MANAGED_GATEWAY_DEFAULT}/v1`,
+  apiKey: 'agentasia-managed',
 }
 
 export function ProviderForm({ provider, preset }: ProviderFormProps) {

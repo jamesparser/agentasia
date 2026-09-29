@@ -9,12 +9,12 @@
  * Kept dependency-free and pure so it is unit-testable and safe for another
  * agent to wire into the model picker / LLMService without re-deriving rules.
  */
-import { AGENTASIA } from '@/config/agentasia'
+import { AGENTASIA, MANAGED_GATEWAY_DEFAULT } from '@/config/agentasia'
 
 export type PlanId = 'free' | 'pro' | 'smallBusiness' | 'enterprise'
 
 export function gatewayBase(): string {
-  return ((import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || '').replace(/\/+$/, '')
+  return ((import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || MANAGED_GATEWAY_DEFAULT).replace(/\/+$/, '')
 }
 
 export function isManagedLaneConfigured(): boolean {

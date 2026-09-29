@@ -1,3 +1,17 @@
+/**
+ * The AgentAsia managed gateway: an OpenAI-compatible server on our own VPS
+ * that holds the Nebius Token Factory key, the Tavily search loop and the
+ * spend breaker. The browser only ever needs its public URL - no client secret,
+ * and `/v1/chat/completions` is the only billable route a visitor can reach
+ * (model list and memory policy are public; spend/providers/config need the
+ * operator token). Published through a named Cloudflare tunnel so the hostname
+ * survives connector restarts, unlike a quick tunnel.
+ *
+ * `VITE_AGENTASIA_GATEWAY_URL` overrides it per environment; the default keeps
+ * the managed lane working even if a deploy forgets to set the variable.
+ */
+export const MANAGED_GATEWAY_DEFAULT = 'https://agentasia-gateway.realcryptocap.com'
+
 export const AGENTASIA = {
   slogan: 'AI that speaks your language',
   logo: '/naga-logo.svg',
@@ -49,7 +63,7 @@ export const AGENTASIA = {
   // managed gateway URL is actually configured, so it can never leave a user
   // with an empty model picker.
   ui: {
-    managedGatewayUrl: (import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || '',
+    managedGatewayUrl: (import.meta.env.VITE_AGENTASIA_GATEWAY_URL as string) || MANAGED_GATEWAY_DEFAULT,
     /**
      * Beta is free and fully managed: users never choose a provider or paste a key.
      * Free tier = Nemotron Nano, paid tiers = a larger Nemotron, chosen by plan.
@@ -75,6 +89,10 @@ export const AGENTASIA = {
     // Providers users may never see in a picker (BYOK + in-browser LLM chat).
     hiddenProviders: [
       'local',
+      // 'openai-compatible' stays VISIBLE on purpose: that is the transport the
+      // managed lane itself uses (the gateway speaks the OpenAI wire format).
+      // Hiding it left the picker with no selectable hosted provider - every
+      // entry was hidden while nothing replaced them.
       'openai',
       'anthropic',
       'google',
