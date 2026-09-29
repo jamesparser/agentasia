@@ -311,8 +311,6 @@ export const useLLMModelStore = create<LLMModelStore>()(
             return a.order - b.order
           })
 
-          // Note: the pre-existing local-provider seeding below is unchanged and
-          // still only runs when there are no credentials at all.
           // The hosted AgentAsia lane is seeded whenever it is missing, not only
           // for brand-new visitors. Measured on the deployed build: gating this on
           // `sortedCreds.length === 0` meant any profile that already had a local
@@ -324,7 +322,12 @@ export const useLLMModelStore = create<LLMModelStore>()(
           const hasHostedLane = sortedCreds.some(
             (c: Credential) => c.provider === 'openai-compatible',
           )
-          if (gateway && !hasHostedLane && isCryptoAvailable() && isReady()) {
+          if (gateway && !hasHostedLane) {
+            // Persisting a credential needs both a device key and a synced Yjs
+            // doc. On the static deployment an anonymous visitor has neither, so
+            // this branch is opportunistic only - the selection below is what
+            // actually makes the lane usable.
+            if (isCryptoAvailable() && isReady()) {
             try {
               const hostedKey = 'agentasia-managed'
               const { encrypted, iv, salt, mode } =
@@ -364,7 +367,42 @@ export const useLLMModelStore = create<LLMModelStore>()(
                 // fall through rather than leave the user with no provider at all
               }
             }
-            if (sortedCreds.length === 0 && isCryptoAvailable() && isReady()) {
+            }
+            // Anonymous visitor on the static deployment: Yjs never syncs and the
+            // device key may be unavailable, so the credential above cannot be
+            // created or persisted. Select the lane anyway - with no stored
+            // credentials, getSelectedProvider()/getSelectedModel() resolve it from
+            // config and CredentialService builds a keyless config from
+            // gatewayBase(), which is all the managed gateway needs.
+            if (!hasHostedLane) {
+              set((state) => ({
+                selectedModels: {
+                  ...state.selectedModels,
+                  'openai-compatible':
+                    state.selectedModels['openai-compatible'] || modelForPlan('free'),
+                },
+                selectedProviderId:
+                  state.selectedProviderId || HOSTED_LANE_CREDENTIAL_ID,
+                selectedCredentialId:
+                  state.selectedCredentialId || HOSTED_LANE_CREDENTIAL_ID,
+                selectedProviderType:
+                  state.selectedProviderType == null ||
+                  state.selectedProviderType === 'local'
+                    ? ('openai-compatible' as LLMProvider)
+                    : state.selectedProviderType,
+              }))
+            }
+            // Skipped when the hosted AgentAsia gateway is configured. This block
+            // is why a fresh visitor defaulted to the in-browser model: it seeds a
+            // `local` credential for anybody with none, which then wins
+            // `credentials[0]` in getSelectedProvider() and the first message never
+            // reached Nebius. Users who want local can still add it themselves.
+            if (
+              sortedCreds.length === 0 &&
+              !gatewayBase() &&
+              isCryptoAvailable() &&
+              isReady()
+            ) {
             try {
               const defaultModel = LocalLLMProvider.DEFAULT_MODEL
               const keyToEncrypt = 'local-no-key'
