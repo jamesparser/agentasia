@@ -287,55 +287,58 @@ export const useLLMModelStore = create<LLMModelStore>()(
             return a.order - b.order
           })
 
-          // If no credentials exist, create a default local provider.
-          // Only do this when Yjs persistence is fully synced — otherwise
-          // we'd see an empty map before IndexedDB has loaded and
-          // mistakenly create a local provider that overrides the user's
-          // real default.
-          if (sortedCreds.length === 0 && isCryptoAvailable() && isReady()) {
-            // Fresh visitor default: the hosted AgentAsia lane, not an
-            // in-browser model. Two reasons, both measured on the deployed
-            // build: (1) the hackathon requires a Nebius Token Factory call in
-            // the demo path, and a default of `local` meant a judge's first
-            // message never left the device; (2) the visibility gate hides
-            // `local` anyway, so seeding it produced a picker showing a model
-            // the policy says the user may not have. The gateway holds the key,
-            // so the client stores only a non-secret placeholder bearer.
-            // Skipped when VITE_AGENTASIA_GATEWAY_URL is explicitly blank.
-            const gateway = gatewayBase()
-            if (gateway) {
-              try {
-                const hostedKey = 'agentasia-managed'
-                const { encrypted, iv, salt, mode } =
-                  await SecureStorage.encryptCredential(hostedKey)
-                const credential: Credential = {
-                  id: `agentasia-${Date.now()}`,
-                  provider: 'openai-compatible',
-                  encryptedApiKey: encrypted,
-                  iv,
-                  encryptionMode: mode,
-                  timestamp: new Date(),
-                  order: 0,
-                  baseUrl: `${gateway}/v1`,
-                }
-                localStorage.setItem(`${credential.id}-iv`, iv)
-                if (salt) localStorage.setItem(`${credential.id}-salt`, salt)
-                credentialsYjs.set(credential.id, credential)
-                set((state) => ({
-                  credentials: [credential],
-                  selectedModels: {
-                    ...state.selectedModels,
-                    'openai-compatible': modelForPlan('free'),
-                  },
-                  selectedProviderType:
-                    state.selectedProviderType ?? ('openai-compatible' as LLMProvider),
-                }))
-                return
+          // Note: the pre-existing local-provider seeding below is unchanged and
+          // still only runs when there are no credentials at all.
+          // The hosted AgentAsia lane is seeded whenever it is missing, not only
+          // for brand-new visitors. Measured on the deployed build: gating this on
+          // `sortedCreds.length === 0` meant any profile that already had a local
+          // credential (i.e. every earlier visit, and every judge who had used the
+          // app once) saw a picker with only the in-browser model and no way to
+          // reach Nebius at all. Guarded on "no openai-compatible credential" so a
+          // user's own endpoint is never touched.
+          const gateway = gatewayBase()
+          const hasHostedLane = sortedCreds.some(
+            (c: Credential) => c.provider === 'openai-compatible',
+          )
+          if (gateway && !hasHostedLane && isCryptoAvailable() && isReady()) {
+            try {
+              const hostedKey = 'agentasia-managed'
+              const { encrypted, iv, salt, mode } =
+                await SecureStorage.encryptCredential(hostedKey)
+              const credential: Credential = {
+                id: `agentasia-${Date.now()}`,
+                provider: 'openai-compatible',
+                encryptedApiKey: encrypted,
+                iv,
+                encryptionMode: mode,
+                timestamp: new Date(),
+                order: sortedCreds.length,
+                baseUrl: `${gateway}/v1`,
+              }
+              localStorage.setItem(`${credential.id}-iv`, iv)
+              if (salt) localStorage.setItem(`${credential.id}-salt`, salt)
+              credentialsYjs.set(credential.id, credential)
+              set((state) => ({
+                // KEEP existing credentials: this path also runs for returning
+                // users who already hold a local (or any other) credential.
+                credentials: [...sortedCreds, credential],
+                selectedModels: {
+                  ...state.selectedModels,
+                  'openai-compatible': modelForPlan('free'),
+                },
+                selectedProviderType:
+                  state.selectedProviderType == null ||
+                  state.selectedProviderType === 'local'
+                    ? ('openai-compatible' as LLMProvider)
+                    : state.selectedProviderType,
+              }))
+              return
               } catch (error) {
-                console.error('Failed to create default hosted provider:', error)
-                // fall through to the local default rather than leave no provider
+                console.error('Failed to create the hosted AgentAsia lane:', error)
+                // fall through rather than leave the user with no provider at all
               }
             }
+            if (sortedCreds.length === 0 && isCryptoAvailable() && isReady()) {
             try {
               const defaultModel = LocalLLMProvider.DEFAULT_MODEL
               const keyToEncrypt = 'local-no-key'
