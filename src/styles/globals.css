@@ -641,3 +641,13 @@ body {
     transform: translateY(0) scale(1);
   }
 }
+
+/* Touch devices: the composer's icon buttons render at 32px, below the 44px
+   platform guideline. Scoped to (pointer: coarse) so desktop layout is
+   byte-identical, and to .prompt-actions so no other control is affected. */
+@media (pointer: coarse) {
+  .prompt-actions button {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+}

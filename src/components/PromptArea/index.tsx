@@ -949,7 +949,7 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
             {...props}
           />
 
-          <div className="absolute z-10 bottom-0 inset-x-px p-1 sm:p-2 rounded-b-lg">
+          <div className="prompt-actions absolute z-10 bottom-0 inset-x-px p-1 sm:p-2 rounded-b-lg">
             <div className="flex flex-wrap justify-between items-end gap-1">
               <div className="flex items-center gap-1">
                 {!demo && withAttachmentSelector !== false && (

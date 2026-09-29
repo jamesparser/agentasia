@@ -8,9 +8,14 @@
     <link rel="icon" type="image/png" sizes="48x48" href="/brand/naga-bold-black-48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
+    <!-- Pinch-zoom is deliberately NOT disabled here. The old
+         `maximum-scale=1.0, user-scalable=0` suppressed accessibility zoom
+         (WCAG 1.4.4) and Apple rejects apps for it, which matters because the
+         phone and the TV kiosk are first-class demo surfaces for this product.
+         viewport-fit=cover is kept for the notch. -->
     <meta
       name="viewport"
-      content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0"
     />
     <title><%= title %></title>
     <meta name="description" content="<%= description %>" />

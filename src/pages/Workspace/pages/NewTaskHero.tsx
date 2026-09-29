@@ -20,6 +20,7 @@ import { uuidToBase64url } from '@/lib/url'
 import type { Agent, InstalledSkill, SessionIntent } from '@/types'
 import { userSettings } from '@/stores/userStore'
 import { PRODUCT } from '@/config/product'
+import { navigateWithTransition } from '@/lib/navigation-transition'
 
 export interface NewTaskHeroProps {
   /** When true the PromptArea receives autofocus. Default: true. */
@@ -203,11 +204,7 @@ export function NewTaskHero({
         sessionStorage.removeItem('pendingConnectors')
 
         const targetUrl = url(`/${intentToFilter(intent)}/${uuidToBase64url(session.id)}`)
-        if (document.startViewTransition) {
-          document.startViewTransition(() => navigate(targetUrl))
-        } else {
-          navigate(targetUrl)
-        }
+        navigateWithTransition(() => navigate(targetUrl))
 
         setPrompt('')
         setSelectedFiles([])
@@ -288,11 +285,7 @@ export function NewTaskHero({
         sessionStorage.removeItem('pendingConnectors')
 
         const targetUrl = url(`/${intentToFilter(intent)}/${uuidToBase64url(session.id)}`)
-        if (document.startViewTransition) {
-          document.startViewTransition(() => navigate(targetUrl))
-        } else {
-          navigate(targetUrl)
-        }
+        navigateWithTransition(() => navigate(targetUrl))
 
         setPrompt('')
         setSelectedFiles([])

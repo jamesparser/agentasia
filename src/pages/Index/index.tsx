@@ -31,6 +31,7 @@ import { agentThemeIcon, useCasesByThemes } from '@/lib/agents'
 import { PRODUCT } from '@/config/product'
 import { userSettings } from '@/stores/userStore'
 import { RecentActivity } from './RecentActivity'
+import { navigateWithTransition } from '@/lib/navigation-transition'
 
 export const IndexPage = () => {
   const { lang, t } = useI18n(localeI18n)
@@ -209,13 +210,7 @@ export const IndexPage = () => {
 
       // Navigate with View Transition
       const targetUrl = url(`/session/${session.id}`)
-      if (document.startViewTransition) {
-        document.startViewTransition(() => {
-          navigate(targetUrl)
-        })
-      } else {
-        navigate(targetUrl)
-      }
+      navigateWithTransition(() => navigate(targetUrl))
 
       setPrompt('')
       setSelectedFiles([])
@@ -278,13 +273,7 @@ export const IndexPage = () => {
 
       // Navigate with View Transition
       const targetUrl = url(`/session/${session.id}`)
-      if (document.startViewTransition) {
-        document.startViewTransition(() => {
-          navigate(targetUrl)
-        })
-      } else {
-        navigate(targetUrl)
-      }
+      navigateWithTransition(() => navigate(targetUrl))
 
       setPrompt('')
       setSelectedFiles([])
