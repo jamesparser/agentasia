@@ -8,6 +8,11 @@
  */
 
 import { nanoid } from 'nanoid'
+import {
+  scanSkill,
+  isAutoEnableAllowed,
+  type ScanReport,
+} from '@/lib/skills/skill-scanner'
 import { skills, transact, useLiveMap, useLiveValue } from '@/lib/yjs'
 import type { InstalledSkill, SkillScript, SkillFile } from '@/types'
 import { getActiveSpaceId, getCreationSpaceId, entityBelongsToSpace, useActiveSpaceId } from '@/stores/spaceStore'
@@ -87,6 +92,12 @@ export function createCustomSkill(data: CreateCustomSkillData): InstalledSkill {
  */
 export function installSkill(data: InstallSkillData): InstalledSkill {
   const now = new Date()
+  // SECURITY GATE. A skill's SKILL.md becomes agent instructions and its scripts
+  // come from a public registry, so installing one is a privilege grant. Scan
+  // first: a `blocked` verdict is still recorded (silently discarding the user's
+  // install would be worse) but lands DISABLED with the report attached, so they
+  // can read which rule fired and overrule it deliberately.
+  const report: ScanReport = scanSkill(data)
   const skill: InstalledSkill = {
     id: data.id || nanoid(),
     name: data.name,
@@ -102,7 +113,13 @@ export function installSkill(data: InstallSkillData): InstalledSkill {
     stars: data.stars,
     installedAt: now,
     updatedAt: now,
-    enabled: true,
+    enabled: isAutoEnableAllowed(report),
+    security: {
+      verdict: report.verdict,
+      findings: report.findings,
+      scannedAt: report.scannedAt,
+      fingerprint: report.fingerprint,
+    },
     assignedAgentIds: [],
     autoActivate: false,
     spaceId: getCreationSpaceId(),
@@ -113,6 +130,40 @@ export function installSkill(data: InstallSkillData): InstalledSkill {
   })
 
   return skill
+}
+
+/**
+ * Re-scan an installed skill. Registry content can change under a fixed id, and
+ * skills installed before the scanner existed carry no report at all, so this is
+ * the only way to tell "reviewed and clean" from "never looked at".
+ *
+ * A blocked verdict on re-scan DISABLES the skill even if the user had enabled
+ * it: a package that was clean at install and ships a payload later must not
+ * keep running.
+ */
+export function rescanSkill(id: string): InstalledSkill | null {
+  const existing = skills.get(id) as InstalledSkill | undefined
+  if (!existing) return null
+  const report = scanSkill(existing)
+  const updated: InstalledSkill = {
+    ...existing,
+    enabled: existing.enabled && isAutoEnableAllowed(report),
+    security: {
+      verdict: report.verdict,
+      findings: report.findings,
+      scannedAt: report.scannedAt,
+      fingerprint: report.fingerprint,
+    },
+  }
+  transact(() => {
+    skills.set(id, updated)
+  })
+  return updated
+}
+
+/** False for pre-scanner installs, which must not be presented as "safe". */
+export function isSkillReviewed(skill: InstalledSkill): boolean {
+  return Boolean(skill.security?.scannedAt)
 }
 
 /**

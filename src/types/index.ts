@@ -880,6 +880,24 @@ export interface InstalledSkill {
   autoActivate: boolean
   /** Space this skill belongs to (undefined / 'default' = Default Space) */
   spaceId?: string
+  /**
+   * Result of the skill scanner at install time. Optional because skills
+   * installed before the scanner existed have none, and those are treated as
+   * UNREVIEWED (see `ensureScanned` in the store) rather than as safe.
+   */
+  security?: {
+    verdict: 'safe' | 'caution' | 'blocked'
+    findings: Array<{
+      rule: string
+      severity: 'blocked' | 'warning' | 'info'
+      file: string
+      line: number
+      excerpt: string
+      message: string
+    }>
+    scannedAt: string
+    fingerprint: string
+  }
 }
 
 // ============================================================================

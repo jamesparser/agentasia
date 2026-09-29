@@ -7,6 +7,7 @@ import { ServiceWorkerManager } from '@/lib/service-worker'
 import { installPrivacyFetchGuard } from '@/lib/privacy-fetch-guard'
 import { whenReady, migrateFromIndexedDB } from '@/lib/yjs'
 import { SecureStorage } from '@/lib/crypto'
+import { ensureSkillCheckerInstalled } from '@/lib/skills/skill-checker-skill'
 import { loadModelRegistry } from '@/lib/llm/models'
 import {
   getColorTheme,
@@ -101,6 +102,16 @@ function ProvidersInner({ children }: { children: React.ReactNode }) {
         // Initialize sync (Yjs + P2P if enabled)
         // This initializes persistence and makes data available to reactive hooks
         await initializeSync()
+
+        // Seed the bundled Skill Checker. A skill's SKILL.md becomes agent
+        // instructions, so the reviewer has to exist before a user's first
+        // install rather than being something they must think to add. Mechanical
+        // scanning in installSkill() does not depend on this succeeding.
+        try {
+          ensureSkillCheckerInstalled()
+        } catch (error) {
+          console.error('Failed to seed the Skill Checker skill:', error)
+        }
 
         // Try to reconnect local backup if previously enabled
         const localBackupReconnected = await tryReconnectLocalBackup()
