@@ -55,6 +55,8 @@ interface LLMModelStore {
   getCredentialForProvider: (provider: LLMProvider) => Credential | null
 }
 
+export const HOSTED_LANE_CREDENTIAL_ID = 'agentasia-managed'
+
 export const useLLMModelStore = create<LLMModelStore>()(
   persist(
     (set, get) => ({
@@ -306,7 +308,7 @@ export const useLLMModelStore = create<LLMModelStore>()(
               const { encrypted, iv, salt, mode } =
                 await SecureStorage.encryptCredential(hostedKey)
               const credential: Credential = {
-                id: `agentasia-${Date.now()}`,
+                id: HOSTED_LANE_CREDENTIAL_ID,
                 provider: 'openai-compatible',
                 encryptedApiKey: encrypted,
                 iv,
@@ -331,6 +333,8 @@ export const useLLMModelStore = create<LLMModelStore>()(
                   state.selectedProviderType === 'local'
                     ? ('openai-compatible' as LLMProvider)
                     : state.selectedProviderType,
+                selectedProviderId: HOSTED_LANE_CREDENTIAL_ID,
+                selectedCredentialId: HOSTED_LANE_CREDENTIAL_ID,
               }))
               return
               } catch (error) {

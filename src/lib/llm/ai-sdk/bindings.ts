@@ -12,6 +12,7 @@
  */
 import type { LLMConfig } from '@/types'
 import { getHuggingFaceRouterHost } from '@/lib/huggingface'
+import { gatewayBase } from '@/lib/llm/managed-lane'
 import type { AiSdkBinding, AiSdkModelConfig, FullConfig } from './adapter'
 
 // ── Shared HTTP helpers (the only fetch code left in the LLM layer) ──────────
@@ -330,7 +331,15 @@ export const lmStudioBinding = makeCompatBinding({
 export const openAiCompatibleBinding = makeCompatBinding({
   name: 'openai-compatible',
   defaultModel: 'default',
-  resolveBase: (c) => c.baseUrl || undefined,
+  // Fall back to the hosted AgentAsia gateway when no base URL is configured,
+  // mirroring lm-studio's LMSTUDIO_DEFAULT_HOST above. Without this the lane is
+  // unusable for an anonymous visitor: the managed gateway holds the Nebius key,
+  // so it needs no client secret, but credentials only persist through Yjs, and
+  // on the deployed static build Yjs is never ready - the seeded credential is
+  // dropped and every call failed with "a base URL is required", leaving the app
+  // silently on the in-browser model. The gateway's own model id (not 'default')
+  // is what the app sends, so the model falls out of plan config.
+  resolveBase: (c) => c.baseUrl || gatewayBase() || undefined,
 })
 
 export const customBinding = makeCompatBinding({
