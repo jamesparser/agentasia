@@ -132,6 +132,22 @@ export const useLLMModelStore = create<LLMModelStore>()(
           } as Credential
         }
 
+        // No selection AND no stored credentials at all: an anonymous visitor on
+        // the static deployment, where Yjs never syncs so a seeded credential
+        // cannot persist (verified: the `custom` IndexedDB store stays empty).
+        // Resolve the hosted AgentAsia lane from config instead - it needs no
+        // client secret because the gateway holds the Nebius key - so a first
+        // message is a Token Factory call rather than an in-browser model.
+        if (!selected && credentials.length === 0 && gatewayBase()) {
+          return {
+            id: HOSTED_LANE_CREDENTIAL_ID,
+            provider: 'openai-compatible',
+            encryptedApiKey: '',
+            baseUrl: `${gatewayBase()}/v1`,
+            timestamp: new Date(),
+          } as Credential
+        }
+
         return selected || null
       },
 
@@ -160,7 +176,13 @@ export const useLLMModelStore = create<LLMModelStore>()(
           }
         }
 
-        if (!targetProvider) return null
+        if (!targetProvider) {
+          // Same anonymous-visitor case as getSelectedProvider above: nothing is
+          // selected and nothing persisted, so serve the plan model for the
+          // hosted lane instead of falling through to the in-browser default.
+          if (gatewayBase()) return modelForPlan('free')
+          return null
+        }
 
         return selectedModels[targetProvider] || null
       },
