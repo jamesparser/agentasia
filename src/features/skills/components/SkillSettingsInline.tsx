@@ -40,11 +40,27 @@ export function SkillSettingsInline({
 
   const compat = getSkillCompatibility(skill)
 
+  // The store re-scans on enable and refuses a `blocked` verdict, so say so here
+  // rather than letting the switch snap back like a broken control.
+  const [refusal, setRefusal] = useState<string | null>(null)
+
   const handleToggleEnabled = useCallback(
     (enabled: boolean) => {
-      setSkillEnabled(skill.id, enabled)
+      const ok = setSkillEnabled(skill.id, enabled)
+      if (ok) {
+        setRefusal(null)
+        return
+      }
+      const first =
+        skill.security?.findings?.find((f) => f.severity === 'blocked') ??
+        skill.security?.findings?.[0]
+      setRefusal(
+        first
+          ? first.file + ':' + first.line + ' - ' + first.message
+          : 'The skill checker refused to enable this skill',
+      )
     },
-    [skill.id],
+    [skill.id, skill.security],
   )
 
   const handleToggleAutoActivate = useCallback(
@@ -107,6 +123,44 @@ export function SkillSettingsInline({
           />
         </div>
       </div>
+
+      {/* Skill-checker verdict: a security feature should be visible without
+          opening a details tab. `Not checked` is deliberate for pre-scanner
+          installs - they must not read as safe. */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {skill.security?.verdict === 'blocked' ? (
+          <Chip size="sm" color="danger" variant="flat">
+            {t('Blocked by skill checker')}
+          </Chip>
+        ) : skill.security?.verdict === 'caution' ? (
+          <Chip size="sm" color="warning" variant="flat">
+            {t('Needs review')}
+          </Chip>
+        ) : skill.security?.verdict === 'safe' ? (
+          <Chip size="sm" color="success" variant="flat">
+            {t('Checked')}
+          </Chip>
+        ) : (
+          <Chip size="sm" color="default" variant="flat">
+            {t('Not checked')}
+          </Chip>
+        )}
+        {skill.security?.verdict === 'blocked' && !skill.enabled && (
+          <span className="text-xs text-default-500">
+            {t('Disabled automatically. Review the findings before enabling.')}
+          </span>
+        )}
+      </div>
+
+      {refusal && (
+        <div
+          role="alert"
+          className="mt-2 rounded-lg border border-danger-200 bg-danger-50 px-3 py-2 text-xs text-danger-700 dark:text-danger-200"
+        >
+          <span className="font-semibold">{t('Not enabled')}: </span>
+          {refusal}
+        </div>
+      )}
 
       {/* Compatibility indicator */}
       <div className="flex items-center gap-2">
