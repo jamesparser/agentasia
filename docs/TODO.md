@@ -134,7 +134,7 @@ _Last updated: April 2026_
 - [ ] Maintain desktop connect-to-gaming-laptop instructions outside the browser-only devs.new app
 - [ ] Windows LLM on/off control and desktop connect-to-gaming-laptop actions
 - [ ] Heartbeat and scheduled task workers
-- [ ] Daily aggregate provider audit email to redacted@users.noreply.github.com (test email sent; production scheduler/mail delivery pending)
+- [ ] Daily aggregate provider audit email to the operator alert address (test email sent; production scheduler/mail delivery pending)
 - [ ] Finish Bonsai Ternary 27B + DSpark integration (v7 available); benchmark and add vision when ready
 - [ ] User accounts, Stripe subscriptions, and NOWPayments
 - [ ] Make/Zapier MCP catalog connection and ClawHub skill import with sandbox/permission review

@@ -59,7 +59,6 @@ export const AGENTASIA = {
     capabilities: ['chat', 'vision', 'agentic-tools', 'multilingual-tts'],
     localFallback: 'webgpu',
     futureFreeCompute: 'gpucloud',
-    auditEmail: 'redacted@users.noreply.github.com',
     browserOnlyFreeTier: true,
     languageRouting: {
       common: ['en', 'zh-CN', 'zh-TW', 'yue', 'hi', 'ja', 'ko', 'vi', 'th', 'id', 'ms', 'bn', 'ur'],
