@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   Button,
   ScrollShadow,
@@ -7,6 +7,7 @@ import {
 import { Icon, PromptArea, Title } from '@/components'
 import { DevsIcon } from '@/components/DevsIcon'
 import { AGENTASIA } from '@/config/agentasia'
+import { useDraftPrompt } from '@/hooks/useDraftPrompt'
 import type { PromptMode } from '@/components/PromptArea'
 import { useI18n, useUrl } from '@/i18n'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -73,7 +74,13 @@ export function NewTaskHero({
   const url = useUrl(lang)
   const navigate = useNavigate()
 
-  const [internalPrompt, setInternalPrompt] = useState('')
+  // The composer on the landing page and the new-task route. Uncontrolled here,
+  // so without a draft store the text is gone the moment you open another
+  // agent; keyed by the thread in the URL when there is one.
+  const { threadId: draftThreadId } = useParams<{ threadId?: string }>()
+  const [internalPrompt, setInternalPrompt] = useDraftPrompt(
+    draftThreadId ?? 'new-task',
+  )
   const prompt = value !== undefined ? value : internalPrompt
   const setPrompt = (next: string) => {
     if (value === undefined) setInternalPrompt(next)

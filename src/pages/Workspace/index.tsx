@@ -40,6 +40,27 @@ import { AgentsPage } from './pages/AgentsPage'
 import { NewTaskPage } from './pages/NewTaskPage'
 import { ThreadsPage } from './pages/ThreadsPage'
 
+
+/**
+ * Unsent reply text, kept per conversation.
+ *
+ * The map already existed but lived in component state, so a reload - or simply
+ * leaving the workspace - discarded everything typed but not sent. Users hit
+ * this because the natural workflow is to start a reply, go read something
+ * else, and come back.
+ */
+const REPLY_DRAFTS_KEY = 'agentasia:prompt-drafts'
+
+const readReplyDrafts = (): Record<string, string> => {
+  try {
+    const raw = localStorage.getItem(REPLY_DRAFTS_KEY)
+    const parsed = raw ? JSON.parse(raw) : {}
+    return typeof parsed === 'object' && parsed !== null ? parsed : {}
+  } catch {
+    return {} // private mode / corrupt JSON: start empty, never crash the page
+  }
+}
+
 export const V2Page = () => {
   const { markRead, markUnread, isRead } = useReadStatus()
   return <V2Shell markRead={markRead} markUnread={markUnread} isRead={isRead} />
@@ -298,7 +319,26 @@ function V2Shell({
   const { addTurn, setStarColor: setSessionStarColor } = useSessionStore()
   const { setStarColor: setTaskStarColor } = useTaskStore()
   const [replyingThreadIds, setReplyingThreadIds] = useState<Set<string>>(new Set())
-  const [replyPrompts, setReplyPrompts] = useState<Record<string, string>>({})
+  const [replyPrompts, setReplyPrompts] = useState<Record<string, string>>(
+    readReplyDrafts,
+  )
+
+
+  // Pruned on write so answered threads do not accumulate forever.
+  useEffect(() => {
+    try {
+      const kept = Object.fromEntries(
+        Object.entries(replyPrompts).filter(([, v]) => v.trim()),
+      )
+      if (Object.keys(kept).length) {
+        localStorage.setItem(REPLY_DRAFTS_KEY, JSON.stringify(kept))
+      } else {
+        localStorage.removeItem(REPLY_DRAFTS_KEY)
+      }
+    } catch {
+      // a failed draft save must never break the workspace
+    }
+  }, [replyPrompts])
 
   // Convenience helpers
   const setReplyingForThread = useCallback((threadId: string, replying: boolean) => {
