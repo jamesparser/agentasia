@@ -90,10 +90,10 @@ function showNotification(title: string, body: string, tag?: string): void {
         reg.showNotification(title, {
           body,
           tag: tag || 'devs-background-task',
-          icon: '/brand/naga-solid-black-96.png',
+          icon: '/brand/naga-head-black-96.png',
           // Badges are composited as a monochrome stencil, so they need the
           // white-on-transparent variant rather than the black one used for `icon`.
-          badge: '/brand/naga-solid-white-96.png',
+          badge: '/brand/naga-head-white-96.png',
           requireInteraction: false,
           silent: false,
         })

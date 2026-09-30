@@ -14,12 +14,34 @@ import clsx from 'clsx'
  * transparent negative space, so it cannot simply be recoloured with
  * `currentColor` the way the old inline SVG was.
  *
- * The solid mass is used here, not the line art: the drawing's strokes are ~0.2px
- * once reduced to 16px, so `naga-ink-*` is for large placements only. Filling the
- * enclosed regions instead keeps 0.30 ink coverage at 16px, where the previous
- * mark measured 0.33 - same weight class, so nothing about the layout shifts.
- * Regenerate both families with scripts/brand/generate-brand-assets.py.
+ * Two raster families, both the owner's drawing with its lines intact:
+ * `naga-ink-*` is the whole artwork and is for placements big enough to resolve
+ * the strokes; `naga-head-*` is the head-and-crest crop and is used here, because
+ * at 12-32px the full body is a smear of sub-pixel lines. Neither is a traced SVG
+ * nor a filled silhouette - see scripts/brand/generate-brand-assets.py, which is
+ * the only place these are made.
  */
+/**
+ * Pick the pre-rendered variant that actually fits the pixel budget.
+ *
+ * The master is 1024px, and letting the browser average 1024px of fine line art
+ * down to a 16px tab slot produces grey noise. The generator already solved that
+ * per size - variants at or below 48px are the thresholded mass, larger ones keep
+ * the lines - so hand the browser the ladder and let `sizes` choose against the
+ * real device pixel ratio.
+ */
+const VARIANTS = [16, 32, 48, 96, 128, 192, 256, 512]
+
+const srcSet = (colour: 'black' | 'white', width: number) => {
+  const needed = VARIANTS.filter((v) => v >= width)
+  const ladder = needed.length ? needed.slice(0, 3) : [512]
+  if (!needed.length) ladder.unshift(VARIANTS[VARIANTS.length - 1])
+  return ladder
+    .map((v) => `/brand/naga-head-${colour}-${v}.png ${v}w`)
+    .concat('/brand/naga-head-' + colour + '.png 1024w')
+    .join(', ')
+}
+
 const NagaMark = ({
   width = 24,
   height = 24,
@@ -32,14 +54,18 @@ const NagaMark = ({
     {...rest}
   >
     <img
-      src="/brand/naga-solid-black.png"
+      src="/brand/naga-head-black.png"
+      srcSet={srcSet('black', width)}
+      sizes={`${width}px`}
       alt=""
       aria-hidden="true"
       draggable={false}
       className="h-full w-full object-contain dark:hidden"
     />
     <img
-      src="/brand/naga-solid-white.png"
+      src="/brand/naga-head-white.png"
+      srcSet={srcSet('white', width)}
+      sizes={`${width}px`}
       alt=""
       aria-hidden="true"
       draggable={false}
