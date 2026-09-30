@@ -26,17 +26,18 @@ const hostOf = (u: string): string => {
 const TIMEOUT_MS = 20_000
 
 export default async function handler(request: Request): Promise<Response> {
+  try {
   const url = new URL(request.url)
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204 })
   }
   if (request.method !== 'GET') {
-    return Response.json({ error: 'Method not allowed' }, { status: 405 })
+    return json({ error: 'Method not allowed' }, 405)
   }
 
   const check = validateProxyTarget(url.searchParams.get('url'))
   if (!check.ok) {
-    return Response.json({ error: check.error }, { status: check.status })
+    return json({ error: check.error }, check.status)
   }
 
   const target = check.url.toString()
@@ -56,18 +57,18 @@ export default async function handler(request: Request): Promise<Response> {
   })
 
   if (!upstream) {
-    return Response.json({ error: 'Upstream request failed' }, { status: 502 })
+    return json({ error: 'Upstream request failed' }, 502)
   }
   if (upstream.status >= 300 && upstream.status < 400) {
-    return Response.json({ error: 'Redirects are not followed' }, { status: 502 })
+    return json({ error: 'Redirects are not followed' }, 502)
   }
 
   const buf = await upstream.arrayBuffer().catch(() => null)
   if (!buf) {
-    return Response.json({ error: 'Upstream body unreadable' }, { status: 502 })
+    return json({ error: 'Upstream body unreadable' }, 502)
   }
   if (buf.byteLength > MAX_BYTES) {
-    return Response.json({ error: 'Upstream response too large' }, { status: 502 })
+    return json({ error: 'Upstream response too large' }, 502)
   }
 
   return new Response(buf, {
@@ -78,5 +79,24 @@ export default async function handler(request: Request): Promise<Response> {
       // binary-safe: the ZIP download path needs bytes, not text
       'cache-control': 'no-store',
     },
+  })
+  } catch (error) {
+    // Without this, any unexpected throw surfaced as Vercel's opaque 500 page with
+    // nothing in the response saying why.
+    const message = error instanceof Error ? error.message : String(error)
+    console.error('[proxy] failed', message.slice(0, 200))
+    return json({ error: 'Proxy request failed', detail: message.slice(0, 200) }, 502)
+  }
+}
+
+/**
+ * `Response.json()` is missing on some runtimes, which made every call throw.
+ * Build the Response directly so this works on any Node version the platform
+ * defaults to.
+ */
+function json(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'content-type': 'application/json; charset=utf-8' },
   })
 }
