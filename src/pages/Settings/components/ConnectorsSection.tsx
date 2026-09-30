@@ -258,6 +258,13 @@ export function ConnectorsSection() {
             >
               {t('Add Connector')}
             </Button>
+          </div>
+        )}
+
+        {/* Rendered outside the empty/populated branches: with no connectors this
+            section redirects straight to the add wizard, so a card parked inside
+            the populated grid was never visible to a new user - which is the only
+            user who needs to see it. */}
 
             {/* Composio is advertised here but not wired: there is no client code
                 and no gateway route for it (config has it as
@@ -280,8 +287,6 @@ export function ConnectorsSection() {
                 )}
               </p>
             </div>
-          </div>
-        )}
       </div>
     </div>
   )
