@@ -27,6 +27,12 @@ import {
 } from '@/stores/skillStore'
 import { fetchSkillFromGitHub } from '@/lib/skills/github-fetcher'
 import { searchSkills } from '@/lib/skills/skillsmp-client'
+import {
+  isClawHubResult,
+  searchClawHubSkills,
+  fetchClawHubSkillFiles,
+  type ClawHubSkillSearchResult,
+} from '@/lib/skills/clawhub-client'
 import type { SkillSearchResult } from '@/lib/skills/skillsmp-client'
 import {
   searchSkillsSh,
@@ -306,8 +312,9 @@ function AddSkillView({
     setHasSearched(true)
 
     try {
-      // Search both registries in parallel
-      const [skillsShResults, skillsMpResults] = await Promise.all([
+      // Search all three registries in parallel. ClawHub needs no key and never
+      // fails the whole search (searchClawHubSkills swallows its own errors).
+      const [skillsShResults, skillsMpResults, clawHubResults] = await Promise.all([
         searchSkillsSh(trimmed)
           .then((r) => r.skills.map(toUnifiedSkillResult))
           .catch(() => [] as SkillSearchResult[]),
@@ -319,14 +326,18 @@ function AddSkillView({
               .then((r) => r.data.skills)
               .catch(() => [] as SkillSearchResult[])
           : Promise.resolve([] as SkillSearchResult[]),
+        searchClawHubSkills(trimmed, 20),
       ])
 
-      // Merge results, dedup by githubUrl (prefer SkillsMP which has descriptions)
+      // Merge results. Dedup key must fall back to the ClawHub id: many registry
+      // rows publish no sourceUrl at all (verified live), so keying on githubUrl
+      // alone would collapse every ClawHub hit into a single entry.
       const seen = new Set<string>()
       const merged: SkillSearchResult[] = []
-      for (const r of [...skillsMpResults, ...skillsShResults]) {
-        if (!seen.has(r.githubUrl)) {
-          seen.add(r.githubUrl)
+      for (const r of [...skillsMpResults, ...skillsShResults, ...clawHubResults]) {
+        const key = r.githubUrl || (r as ClawHubSkillSearchResult).id
+        if (key && !seen.has(key)) {
+          seen.add(key)
           merged.push(r)
         }
       }
@@ -347,7 +358,18 @@ function AddSkillView({
     async (result: SkillSearchResult) => {
       setInstallingIds((prev) => new Set(prev).add(result.id))
       try {
-        const fetched = await fetchSkillFromGitHub(result.githubUrl)
+        // ClawHub serves the skill as an archive and often publishes no source
+        // URL, so it is installed from its own download endpoint; everything
+        // else keeps coming from GitHub. Both paths end in the same installSkill,
+        // which is where the security scan happens - the gate does not depend on
+        // which registry the skill came from.
+        const fetched = isClawHubResult(result)
+          ? await fetchClawHubSkillFiles(
+              result.slug,
+              result.ownerHandle || undefined,
+              undefined,
+            )
+          : await fetchSkillFromGitHub(result.githubUrl)
         const skill = installSkill({
           name: result.name,
           description: result.description,

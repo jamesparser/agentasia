@@ -27,6 +27,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "api"],
   "exclude": ["src/lib/cache-version-plugin.ts"]
 }

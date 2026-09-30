@@ -1,19 +1,19 @@
 /**
  * Fetch a URL via our CORS proxy.
  *
- * In development, this uses the Vite dev server proxy at /api/proxy.
- * In production, this uses the devs-proxy service at proxy.devs.new.
+ * Always same-origin `/api/proxy`: the Vite plugin serves it in dev and
+ * `api/proxy.ts` (this repo) serves it on Vercel. It previously pointed at
+ * `https://proxy.devs.new` outside dev, i.e. somebody else's service, which
+ * allow-lists the `devs.new` origin and therefore answered
+ * `403 Forbidden: Invalid origin` for every request from our deployed app -
+ * skill search was dead in production - and would have received each user's
+ * search queries either way.
  */
 export const fetchViaCorsProxy = async (
   url: string,
   options?: RequestInit,
 ): Promise<Response> => {
-  const isDev =
-    typeof window !== 'undefined' && window.location.hostname === 'localhost'
-
-  const proxyBase = isDev ? '/api/proxy' : 'https://proxy.devs.new/api/proxy'
-
-  const proxyUrl = `${proxyBase}?url=${encodeURIComponent(url)}`
+  const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`
 
   const response = await fetch(proxyUrl, {
     ...options,
