@@ -60,6 +60,11 @@ export interface CreateCustomSkillData {
  */
 export function createCustomSkill(data: CreateCustomSkillData): InstalledSkill {
   const now = new Date()
+  // Same gate as installSkill. "Custom" usually means typed by the user, but it
+  // is just as often pasted from a page or a chat message, and it becomes agent
+  // instructions either way. Scanning also means the UI never has to show
+  // `Not checked` for a skill created after the scanner existed.
+  const report: ScanReport = scanSkill(data)
   const skill: InstalledSkill = {
     id: nanoid(),
     name: data.name,
@@ -73,7 +78,13 @@ export function createCustomSkill(data: CreateCustomSkillData): InstalledSkill {
     stars: 0,
     installedAt: now,
     updatedAt: now,
-    enabled: true,
+    enabled: isAutoEnableAllowed(report),
+    security: {
+      verdict: report.verdict,
+      findings: report.findings,
+      scannedAt: report.scannedAt,
+      fingerprint: report.fingerprint,
+    },
     assignedAgentIds: [],
     autoActivate: false,
     spaceId: getCreationSpaceId(),

@@ -22,3 +22,25 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 })
+
+// jsdom ships no ResizeObserver/IntersectionObserver, but HeroUI's Switch,
+// Tooltip and overlay components require them, which made any component test that
+// renders a real HeroUI control die with "ResizeObserver is not defined". Stubbed
+// as no-ops: layout measurement is irrelevant to assertions about content.
+class NoopObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+if (!('ResizeObserver' in globalThis)) {
+  Object.defineProperty(globalThis, 'ResizeObserver', {
+    value: NoopObserver,
+    writable: true,
+  })
+}
+if (!('IntersectionObserver' in globalThis)) {
+  Object.defineProperty(globalThis, 'IntersectionObserver', {
+    value: NoopObserver,
+    writable: true,
+  })
+}

@@ -246,6 +246,35 @@ function SkillListCard({
 // AddSkillView — search registry + install from GitHub URL
 // ============================================================================
 
+/**
+ * `installSkill()` stores a skill whose SKILL.md trips the checker in a DISABLED
+ * state, so a flat "installed successfully" would be untrue and would swallow the
+ * only warning the user is going to see. Report the verdict instead.
+ */
+function reportInstallResult(skill: InstalledSkill, t: (s: string) => string) {
+  const verdict = skill.security?.verdict
+  if (verdict === 'blocked') {
+    const first = skill.security?.findings?.find((f) => f.severity === 'blocked')
+    addToast({
+      title: t('Skill installed but disabled'),
+      description: first
+        ? `${first.file}:${first.line} - ${first.message}`
+        : t('Blocked by the skill checker'),
+      color: 'danger',
+    })
+    return
+  }
+  if (verdict === 'caution') {
+    addToast({
+      title: t('Skill installed'),
+      description: t('Review the flagged items in its settings before enabling it.'),
+      color: 'warning',
+    })
+    return
+  }
+  addToast({ title: t('Skill installed successfully'), color: 'success' })
+}
+
 function AddSkillView({
   onInstalled,
 }: {
@@ -330,10 +359,7 @@ function AddSkillView({
           githubUrl: result.githubUrl,
           stars: result.stars,
         })
-        addToast({
-          title: t('Skill installed successfully'),
-          color: 'success',
-        })
+        reportInstallResult(skill, t)
         onInstalled(skill.id)
       } catch (error) {
         console.error('Failed to install skill:', error)
@@ -375,10 +401,7 @@ function AddSkillView({
         githubUrl: fetched.githubUrl,
         stars: 0,
       })
-      addToast({
-        title: t('Skill installed successfully'),
-        color: 'success',
-      })
+      reportInstallResult(skill, t)
       onInstalled(skill.id)
     } catch (error) {
       console.error('Failed to install skill from URL:', error)
