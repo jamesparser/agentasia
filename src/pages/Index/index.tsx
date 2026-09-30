@@ -1,4 +1,5 @@
 import { useI18n, useUrl } from '@/i18n'
+import { useDraftPrompt } from '@/hooks/useDraftPrompt'
 import { Container, Icon, PromptArea, Section, Title } from '@/components'
 import type { PromptMode } from '@/components/PromptArea'
 import { DevsIcon } from '@/components/DevsIcon'
@@ -37,7 +38,7 @@ export const IndexPage = () => {
   const { lang, t } = useI18n(localeI18n)
   const url = useUrl(lang)
   const navigate = useNavigate()
-  const [prompt, setPrompt] = useState('')
+  const [prompt, setPrompt] = useDraftPrompt('new-task')
   const [isSending, setIsSending] = useState(false)
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])

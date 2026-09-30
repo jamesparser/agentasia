@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback, memo, useRef } from 'react'
+import { useDraftPrompt } from '@/hooks/useDraftPrompt'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   Accordion,
@@ -1220,7 +1221,10 @@ export const AgentRunPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const [prompt, setPrompt] = useState('')
+  // currentConversation is resolved further down, so key the draft off the
+  // route param: that is what changes when you go talk to another agent.
+  const { conversationId: draftKey } = useParams<{ conversationId?: string }>()
+  const [prompt, setPrompt] = useDraftPrompt(draftKey ?? 'new')
   const [isSending, setIsSending] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)

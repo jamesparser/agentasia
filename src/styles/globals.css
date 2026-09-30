@@ -278,6 +278,22 @@
   } */
 }
 
+/* Chat replies must be selectable with the mouse.
+ *
+ * `user-select` is not an inherited property, but Blink/WebKit still refuse to
+ * start a selection inside an ancestor that has `user-select: none`, and the UI
+ * kit sets exactly that on list-box labels and descriptions - which is where
+ * message text ends up when a reply is rendered inside a selectable row. Pinning
+ * the rendered reply to `text` makes copying independent of the container it
+ * happens to sit in. The per-message copy button is a convenience, not a
+ * replacement for selecting part of an answer.
+ */
+.markdown-content,
+.markdown-content * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 @layer utilities {
   .no-scrollbar {
     @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;

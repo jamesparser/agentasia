@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
+import { useDraftPrompt } from '@/hooks/useDraftPrompt'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import {
   Spinner,
@@ -124,7 +125,9 @@ export const TaskPage = () => {
   }, [task?.workflowId, loadWorkflows])
 
   // Core state
-  const [prompt, setPrompt] = useState('')
+  // Per-task draft: text typed here used to vanish when the user opened
+  // another task without sending.
+  const [prompt, setPrompt] = useDraftPrompt(taskId)
   const [isSending, setIsSending] = useState(false)
   const [response, setResponse] = useState('')
   const [conversationSteps, setConversationSteps] = useState<

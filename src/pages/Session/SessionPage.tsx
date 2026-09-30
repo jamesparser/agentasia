@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useDraftPrompt } from '@/hooks/useDraftPrompt'
 import { useParams } from 'react-router-dom'
 import { Chip, Spinner } from '@heroui/react'
 
@@ -41,7 +42,7 @@ export function SessionPage() {
 
   const { addTurn } = useSessionStore()
 
-  const [prompt, setPrompt] = useState('')
+  const [prompt, setPrompt] = useDraftPrompt(sessionId)
   const [mode, setMode] = useState<PromptMode>('chat')
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [isSending, setIsSending] = useState(false)
