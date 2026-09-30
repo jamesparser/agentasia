@@ -393,7 +393,7 @@ function AboutButton({ showKbd }: { showKbd?: boolean }) {
         isIconOnly
         variant="ghost"
         size="sm"
-        onPress={() => navigate(url('/about'))}
+        onPress={() => navigate(url('/info'))}
         aria-label={t('About')}
       >
         <Icon name="InfoCircle" className="text-muted" size="sm" />

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://devs.new/schemas/methodology.schema.json",
+  "$id": "https://agentasia.vercel.app/schemas/methodology.schema.json",
   "title": "Agentic Methodology Schema",
   "description": "Universal schema for defining task execution methodologies for AI agent swarm coordination",
   "type": "object",

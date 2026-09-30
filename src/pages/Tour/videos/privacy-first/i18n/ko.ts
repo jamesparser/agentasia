@@ -40,7 +40,7 @@ export const ko: I18n = {
 
   // Scene 5 — CTA
   [`Now you can.`]: `이제 할 수 있습니다.`,
-  [`Open devs.new →`]: `devs.new 열기 →`,
+  [`Open agentasia.vercel.app →`]: `agentasia.vercel.app 열기 →`,
   [`No signup · No install · Free`]: `가입 없음 · 설치 없음 · 무료`,
 
   // Playback bar — settings menu

@@ -55,7 +55,7 @@ export const ar: I18n = {
   [`2.4 MB`]: `2.4 ميجابايت`,
   [`Connected. Computed. Delivered.`]: `متصل. محسوب. مُسلَّم.`,
   [`Now you can.`]: `الآن بإمكانك.`,
-  [`Open devs.new \u2192`]: `افتح devs.new ←`,
+  [`Open agentasia.vercel.app \u2192`]: `افتح agentasia.vercel.app ←`,
   [`No signup \u00B7 No install \u00B7 Free`]: `بلا تسجيل · بلا تثبيت · مجاني`,
   [`Speed`]: `السرعة`,
   [`Normal`]: `عادي`,

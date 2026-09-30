@@ -62,7 +62,7 @@ export const en = [
 
   // Scene 5 — CTA
   'Now you can.',
-  'Open devs.new →',
+  'Open agentasia.vercel.app →',
   'No signup · No install · Free',
 
   // Playback bar — settings menu

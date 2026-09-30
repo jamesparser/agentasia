@@ -2,7 +2,7 @@
   "id": "agentasia",
   "short_name": "AgentAsia",
   "name": "AgentAsia — AI that speaks your language",
-  "description": "A personal AI team that speaks Southeast Asia's languages. Powered by NVIDIA Nemotron on Nebius.",
+  "description": "A personal AI team that speaks your language. Powered by NVIDIA Nemotron on Nebius.",
   "icons": [
     {
       "src": "/icon-192.png",

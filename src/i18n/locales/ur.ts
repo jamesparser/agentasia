@@ -103,23 +103,23 @@ export const ur: Partial<I18n> = {
   'From device': 'ڈیوائس سے',
   Screenshot: 'اسکرین شاٹ',
   'Capture screen': 'اسکرین پر قبضہ کریں۔',
-  'Capturingâ¦': "کیپچرنگ''",
+  'Capturing…': "کیپچرنگ''",
   'Choose from knowledge base': 'علم کی بنیاد میں سے انتخاب کریں۔',
   'No files found in knowledge base': 'نالج بیس میں کوئی فائل نہیں ملی',
   'No matching files': 'کوئی مماثل فائلیں نہیں ہیں۔',
-  'Filter filesâ¦': 'فائلوں کو فلٹر کریں۔',
+  'Filter files…': 'فائلوں کو فلٹر کریں۔',
   'Add files': 'فائلیں شامل کریں۔',
   'Choose from skills': 'ہنر میں سے انتخاب کریں۔',
   'No skills installed': 'کوئی ہنر انسٹال نہیں ہے۔',
   'No matching skills': 'کوئی مماثل مہارت نہیں۔',
-  'Filter skillsâ¦': 'فلٹر کی مہارت',
+  'Filter skills…': 'فلٹر کی مہارت',
   'Browse skills': 'مہارت کو براؤز کریں۔',
   Attach: 'منسلک کریں۔',
   Extend: 'بڑھانا',
   'Image & video': 'تصویر اور ویڈیو',
   'Web app': 'ویب ایپ',
   'AI agent': 'اے آئی ایجنٹ',
-  'Drop files hereâ¦': 'فائلیں یہاں ڈراپ کریں۔',
+  'Drop files here…': 'فائلیں یہاں ڈراپ کریں۔',
   'Speak to microphone': 'مائکروفون سے بات کریں۔',
   'Send prompt': 'پرامپٹ بھیجیں۔',
   'Stop generating': 'پیدا کرنا بند کریں۔',
@@ -129,14 +129,14 @@ export const ur: Partial<I18n> = {
   'Image & video generation': 'تصویر اور ویڈیو جنریشن',
   'Create a web app': 'ایک ویب ایپ بنائیں',
   'Create an agent': 'ایک ایجنٹ بنائیں',
-  'Describe the image or video you want to createâ¦':
+  'Describe the image or video you want to create…':
     'جس تصویر یا ویڈیو کو آپ بنانا چاہتے ہیں اسے بیان کریں۔',
-  'Describe the web app you want to buildâ¦':
+  'Describe the web app you want to build…':
     'جس ویب ایپ کو آپ بنانا چاہتے ہیں اسے بیان کریں۔',
-  'Describe the AI agent you want to createâ¦':
+  'Describe the AI agent you want to create…':
     'اس AI ایجنٹ کی وضاحت کریں جسے آپ بنانا چاہتے ہیں۔',
   'Live voice conversation': 'لائیو آواز گفتگو',
-  'Listeningâ¦': 'سن رہا ہے۔',
+  'Listening…': 'سن رہا ہے۔',
   'Select an agent': 'ایک ایجنٹ منتخب کریں۔',
   'No agents found': 'کوئی ایجنٹ نہیں ملا',
   'Select a methodology': 'ایک طریقہ کار منتخب کریں۔',
@@ -161,7 +161,7 @@ export const ur: Partial<I18n> = {
   'No models available': 'کوئی ماڈل دستیاب نہیں ہے۔',
   'Check your server URL and connection':
     'اپنے سرور کا یو آر ایل اور کنکشن چیک کریں۔',
-  'Search agentsâ¦': 'ایجنٹوں کو تلاش کریں۔',
+  'Search agents…': 'ایجنٹوں کو تلاش کریں۔',
   Fast: 'تیز',
   'Low cost': 'کم قیمت',
   'High cost': 'زیادہ قیمت',
@@ -230,7 +230,7 @@ export const ur: Partial<I18n> = {
   'Page not found': 'صفحہ نہیں ملا',
   'No AI provider configured. Please [configure one in Settings]({path}).':
     'کوئی AI فراہم کنندہ کنفیگر نہیں ہے۔ براہ کرم [ترتیبات میں ایک ترتیب دیں]({path})۔',
-  'Thinkingâ¦': 'سوچ',
+  'Thinking…': 'سوچ',
   Thoughts: 'خیالات',
   'My Agents': 'میرے ایجنٹس',
   'Built-in Agents': 'بلٹ ان ایجنٹس',
@@ -239,12 +239,12 @@ export const ur: Partial<I18n> = {
   'Default agents are currently hidden. You can enable them in':
     'پہلے سے طے شدہ ایجنٹ فی الحال پوشیدہ ہیں۔ آپ انہیں اس میں فعال کر سکتے ہیں۔',
   'Find your past conversations': 'اپنی ماضی کی گفتگو کو تلاش کریں۔',
-  'Loading agent and conversationâ¦': 'لوڈنگ ایجنٹ اور گفتگو',
+  'Loading agent and conversation…': 'لوڈنگ ایجنٹ اور گفتگو',
   Back: 'پیچھے',
   'Conversation ID:': 'بات چیت کی شناخت:',
   You: 'آپ',
-  'Continue the conversationâ¦': 'بات چیت جاری رکھیں',
-  'Start chatting with {agentName}â¦': '{agentName}â¦ کے ساتھ چیٹنگ شروع کریں۔',
+  'Continue the conversation…': 'بات چیت جاری رکھیں',
+  'Start chatting with {agentName}…': '{agentName}â¦ کے ساتھ چیٹنگ شروع کریں۔',
   'this agent': 'یہ ایجنٹ',
   'System Prompt': 'سسٹم پرامپٹ',
   'No system prompt defined.': 'سسٹم پرامپٹ کی وضاحت نہیں کی گئی ہے۔',
@@ -337,7 +337,7 @@ export const ur: Partial<I18n> = {
   'View on GitHub': 'GitHub پر دیکھیں',
   'Manage and monitor tasks for your organization':
     'اپنی تنظیم کے لیے کاموں کا نظم اور نگرانی کریں۔',
-  'Loading tasksâ¦': 'ٹاسک لوڈ ہو رہے ہیں۔',
+  'Loading tasks…': 'ٹاسک لوڈ ہو رہے ہیں۔',
   tasks: 'کام',
   'In Progress': 'جاری ہے۔',
   'Task Details': 'ٹاسک کی تفصیلات',
@@ -364,17 +364,17 @@ export const ur: Partial<I18n> = {
   'Task not found': 'کام نہیں ملا',
   'Failed to load task data': 'ٹاسک ڈیٹا لوڈ کرنے میں ناکام',
   'View Content': 'مواد دیکھیں',
-  'Loading task detailsâ¦': 'کام کی تفصیلات لوڈ ہو رہی ہیں۔',
+  'Loading task details…': 'کام کی تفصیلات لوڈ ہو رہی ہیں۔',
   'Task Not Found': 'ٹاسک نہیں ملا',
   'The requested task could not be found.': 'مطلوبہ کام نہیں مل سکا۔',
   'Task Steps': 'کام کے مراحل',
   Steps: 'قدم',
-  'Agents workingâ¦': 'ایجنٹ کام کر رہے ہیں۔',
+  'Agents working…': 'ایجنٹ کام کر رہے ہیں۔',
   'No conversation messages yet.': 'ابھی تک کوئی بات چیت کے پیغامات نہیں ہیں۔',
   'Copied to clipboard': 'کلپ بورڈ پر کاپی ہو گیا۔',
   Conversation: 'بات چیت',
   Source: 'ماخذ',
-  'No messages yet. The task is being processedâ¦':
+  'No messages yet. The task is being processed…':
     'ابھی تک کوئی پیغامات نہیں ہیں۔ کام پر کارروائی کی جا رہی ہے۔',
   'Validation Criteria': 'توثیق کا معیار',
   'Delete task': 'کام کو حذف کریں۔',
@@ -401,7 +401,7 @@ export const ur: Partial<I18n> = {
   Export: 'برآمد کریں۔',
   'Copy to clipboard': 'کلپ بورڈ پر کاپی کریں۔',
   Download: 'ڈاؤن لوڈ کریں۔',
-  'Loading database informationâ¦': 'ڈیٹا بیس کی معلومات لوڈ ہو رہی ہے۔',
+  'Loading database information…': 'ڈیٹا بیس کی معلومات لوڈ ہو رہی ہے۔',
   'Failed to load database information':
     'ڈیٹا بیس کی معلومات لوڈ کرنے میں ناکام',
   'Database Administration': 'ڈیٹا بیس ایڈمنسٹریشن',
@@ -410,7 +410,7 @@ export const ur: Partial<I18n> = {
   Records: 'ریکارڈز',
   Indexes: 'اشاریہ جات',
   Size: 'سائز',
-  'Search {store} by {categories}â¦':
+  'Search {store} by {categories}…':
     '{سٹور} کو {زمرہوں} کے لحاظ سے تلاش کریں۔',
   'All Records': 'تمام ریکارڈز',
   'Filtered Records': 'فلٹر شدہ ریکارڈز',
@@ -457,7 +457,7 @@ export const ur: Partial<I18n> = {
   'Export your current agents and AI provider settings and share it via URL or QR code.':
     'اپنے موجودہ ایجنٹس اور AI فراہم کنندہ کی ترتیبات کو برآمد کریں اور اسے URL یا QR کوڈ کے ذریعے شیئر کریں۔',
   'Include my {n} agents': 'میرے {n} ایجنٹوں کو شامل کریں۔',
-  'Now you can share the platform configurationâ¦':
+  'Now you can share the platform configuration…':
     'اب آپ پلیٹ فارم کی ترتیب کا اشتراک کر سکتے ہیں۔',
   'Either with this URL:': 'یا تو اس URL کے ساتھ:',
   'Or this QR Code:': 'یا یہ QR کوڈ:',
@@ -467,8 +467,8 @@ export const ur: Partial<I18n> = {
   'Password (optional)': 'پاس ورڈ (اختیاری)',
   Password: 'پاس ورڈ',
   Continue: 'جاری رکھیں',
-  'Setting the platform upâ¦': 'پلیٹ فارم کو ترتیب دیا جا رہا ہے۔',
-  'Initializing Local AI Modelâ¦': 'مقامی AI ماڈل کو شروع کرنا',
+  'Setting the platform up…': 'پلیٹ فارم کو ترتیب دیا جا رہا ہے۔',
+  'Initializing Local AI Model…': 'مقامی AI ماڈل کو شروع کرنا',
   'Downloading model': 'ماڈل ڈاؤن لوڈ ہو رہا ہے۔',
   'Model loaded': 'ماڈل لوڈ ہو گیا۔',
   'Model load failed': 'ماڈل لوڈ ناکام ہو گیا۔',
@@ -567,7 +567,7 @@ export const ur: Partial<I18n> = {
   'Memory updated': 'میموری کو اپ ڈیٹ کر دیا گیا۔',
   'Add a note': 'ایک نوٹ شامل کریں۔',
   'Edit memory': 'میموری میں ترمیم کریں۔',
-  'Write what this agent should remember, as short notesâ¦':
+  'Write what this agent should remember, as short notes…':
     'مختصر نوٹس کے طور پر لکھیں کہ اس ایجنٹ کو کیا یاد رکھنا چاہیے۔',
   'Failed to delete memory': 'میموری کو حذف کرنے میں ناکام',
   'Failed to load learning events': 'سیکھنے کے واقعات کو لوڈ کرنے میں ناکام',
@@ -606,7 +606,7 @@ export const ur: Partial<I18n> = {
   'Remember for all agents': 'تمام ایجنٹوں کے لیے یاد رکھیں',
   'Remember selection': 'انتخاب یاد رکھیں',
   'Selection actions': 'انتخابی کارروائیاں',
-  'Added to this agentâs memory': 'اس ایجنٹ کی یادداشت میں شامل کر دیا گیا۔',
+  'Added to this agent’s memory': 'اس ایجنٹ کی یادداشت میں شامل کر دیا گیا۔',
   'Added to global memory': 'عالمی میموری میں شامل کیا گیا۔',
   'Failed to save to memory': 'میموری میں محفوظ کرنے میں ناکام',
   'No agent selected for this memory':
@@ -804,8 +804,8 @@ export const ur: Partial<I18n> = {
     'اپنے ڈیٹا کو خود بخود اپنے آلے کے فولڈر میں بیک اپ کریں۔',
   'Successfully joined sync room':
     'مطابقت پذیری کے کمرے میں کامیابی کے ساتھ شامل ہو گیا۔',
-  'Drop reference image hereâ¦': 'حوالہ کی تصویر یہاں ڈراپ کریں۔',
-  'Describe the image you want to createâ¦':
+  'Drop reference image here…': 'حوالہ کی تصویر یہاں ڈراپ کریں۔',
+  'Describe the image you want to create…':
     'جس تصویر کو آپ بنانا چاہتے ہیں اسے بیان کریں۔',
   'Image presets': 'تصویر کے پیش سیٹ',
   'Image settings': 'تصویر کی ترتیبات',
@@ -882,7 +882,7 @@ export const ur: Partial<I18n> = {
   'Encryption Key Status': 'خفیہ کاری کی کلیدی حیثیت',
   'Secure (Non-extractable)': 'محفوظ (غیر نکالنے کے قابل)',
   'Not initialized': 'شروع نہیں کیا گیا۔',
-  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exportedâit can only be used for encryption operations.':
+  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exported—it can only be used for encryption operations.':
     'آپ کی انکرپشن کلید کو محفوظ طریقے سے محفوظ کیا جاتا ہے جو کہ نان ایکسٹریکٹ ایبل براؤزر کرپٹوگرافی کا استعمال کرتے ہوئے ہے۔ کلید کو پڑھا یا برآمد نہیں کیا جا سکتا ہے‘ اسے صرف خفیہ کاری کے کاموں کے لیے استعمال کیا جا سکتا ہے۔',
   'Non-extractable keys provide maximum security - they cannot be stolen even if an attacker gains access to your browser':
     'غیر نکالنے والی چابیاں زیادہ سے زیادہ سیکیورٹی فراہم کرتی ہیں - ان کو چوری نہیں کیا جا سکتا چاہے حملہ آور آپ کے براؤزر تک رسائی حاصل کر لے',
@@ -964,19 +964,19 @@ export const ur: Partial<I18n> = {
     'انسانی مداخلت کے تمام اشارے چھوڑ دیں اور ایجنٹوں کو خود مختاری سے فیصلہ کرنے دیں۔',
   Automation: 'آٹومیشن',
   Session: 'سیشن',
-  'Startingâ¦': 'شروع ہو رہا ہے۔',
-  'Workingâ¦': 'کام کر رہا ہے۔',
+  'Starting…': 'شروع ہو رہا ہے۔',
+  'Working…': 'کام کر رہا ہے۔',
   'file(s)': 'فائل (فائلیں)',
-  'Creating agentâ¦': 'ایجنٹ بنانا',
+  'Creating agent…': 'ایجنٹ بنانا',
   'Agent creation failed': 'ایجنٹ کی تخلیق ناکام ہو گئی۔',
-  'Building appâ¦': 'بلڈنگ ایپâ¦',
+  'Building app…': 'بلڈنگ ایپâ¦',
   'App build failed': 'ایپ کی تعمیر ناکام ہوگئی',
-  'is thinkingâ¦': 'سوچ رہا ہے',
+  'is thinking…': 'سوچ رہا ہے',
   'Turn failed': 'ٹرن ناکام ہو گیا۔',
-  'Generating mediaâ¦': 'میڈیا تیار ہو رہا ہے۔',
+  'Generating media…': 'میڈیا تیار ہو رہا ہے۔',
   'Generation failed': 'نسل ناکام ہوگئی',
   'Media generated': 'میڈیا بنایا',
-  'Orchestrating taskâ¦': 'آرکیسٹریٹنگ ٹاسکâ¦',
+  'Orchestrating task…': 'آرکیسٹریٹنگ ٹاسکâ¦',
   'Task failed': 'کام ناکام ہو گیا۔',
   Space: 'خلا',
   'Space name': 'خلائی نام',
@@ -995,7 +995,7 @@ export const ur: Partial<I18n> = {
   Board: 'بورڈ',
   'New conversation': 'نئی گفتگو',
   'Start a new conversation': 'ایک نئی گفتگو شروع کریں۔',
-  'Search tasks and conversationsâ¦': 'ٹاسکس اور بات چیت تلاش کریں۔',
+  'Search tasks and conversations…': 'ٹاسکس اور بات چیت تلاش کریں۔',
   'No threads yet': 'ابھی تک کوئی تھریڈ نہیں ہے۔',
   'No matching threads': 'کوئی مماثل تھریڈز نہیں ہیں۔',
   'Select a thread to preview': 'پیش نظارہ کرنے کے لیے ایک دھاگہ منتخب کریں۔',

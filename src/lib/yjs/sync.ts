@@ -50,7 +50,7 @@ export interface SyncConfig {
   roomId: string
   /**
    * WebSocket signalling server URL.
-   * @defaultValue `'wss://signal.devs.new'`
+   * @defaultValue `''` (no relay unless the user configures one)
    */
   server?: string
   /**
@@ -209,7 +209,8 @@ export async function enableSync(config: SyncConfig): Promise<void> {
     disableSync()
   }
 
-  const server = config.server ?? 'wss://signal.devs.new'
+  // No upstream relay: sync needs an explicit server from the user.
+  const server = config.server ?? ''
 
   // Derive room name and encryption key in parallel (both use PBKDF2).
   const [effectiveRoom, encryptionKey] = await Promise.all([

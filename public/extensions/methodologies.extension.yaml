@@ -9,7 +9,7 @@ description: Browse and explore task execution methodologies for AI agent orches
 author:
   name: Arnaud Leymet
   url: https://arnley.com
-privacyPolicy: https://devs.new/privacy
+privacyPolicy: https://agentasia.vercel.app/privacy
 source: https://github.com/codename-co/devs/blob/main/public/extensions/methodologies.extension.yaml
 
 i18n:

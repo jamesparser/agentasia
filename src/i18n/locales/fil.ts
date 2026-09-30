@@ -103,23 +103,23 @@ export const fil: Partial<I18n> = {
   'From device': 'Mula sa device',
   Screenshot: 'Screenshot',
   'Capture screen': 'Kunan ang screen',
-  'Capturingâ¦': 'Kinukuhaâ¦',
+  'Capturing…': 'Kinukuhaâ¦',
   'Choose from knowledge base': 'Pumili mula sa base ng kaalaman',
   'No files found in knowledge base': 'Walang nakitang file sa knowledge base',
   'No matching files': 'Walang tugmang file',
-  'Filter filesâ¦': 'I-filter ang mga fileâ¦',
+  'Filter files…': 'I-filter ang mga fileâ¦',
   'Add files': 'Magdagdag ng mga file',
   'Choose from skills': 'Pumili mula sa mga kasanayan',
   'No skills installed': 'Walang naka-install na kasanayan',
   'No matching skills': 'Walang tugmang kasanayan',
-  'Filter skillsâ¦': 'Mga kasanayan sa pag-filterâ¦',
+  'Filter skills…': 'Mga kasanayan sa pag-filterâ¦',
   'Browse skills': 'Mga kasanayan sa pag-browse',
   Attach: 'Kalakip',
   Extend: 'Palawigin',
   'Image & video': 'Larawan at video',
   'Web app': 'Web app',
   'AI agent': 'Ahente ng AI',
-  'Drop files hereâ¦': 'Mag-drop ng mga file ditoâ¦',
+  'Drop files here…': 'Mag-drop ng mga file ditoâ¦',
   'Speak to microphone': 'Magsalita sa mikropono',
   'Send prompt': 'Magpadala ng prompt',
   'Stop generating': 'Itigil ang pagbuo',
@@ -129,14 +129,14 @@ export const fil: Partial<I18n> = {
   'Image & video generation': 'Pagbuo ng larawan at video',
   'Create a web app': 'Gumawa ng web app',
   'Create an agent': 'Lumikha ng ahente',
-  'Describe the image or video you want to createâ¦':
+  'Describe the image or video you want to create…':
     'Ilarawan ang larawan o video na gusto mong gawinâ¦',
-  'Describe the web app you want to buildâ¦':
+  'Describe the web app you want to build…':
     'Ilarawan ang web app na gusto mong buuinâ¦',
-  'Describe the AI agent you want to createâ¦':
+  'Describe the AI agent you want to create…':
     'Ilarawan ang ahente ng AI na gusto mong gawinâ¦',
   'Live voice conversation': 'Live na pag-uusap gamit ang boses',
-  'Listeningâ¦': 'Nakikinigâ¦',
+  'Listening…': 'Nakikinigâ¦',
   'Select an agent': 'Pumili ng ahente',
   'No agents found': 'Walang nakitang ahente',
   'Select a methodology': 'Pumili ng isang pamamaraan',
@@ -161,7 +161,7 @@ export const fil: Partial<I18n> = {
   'No models available': 'Walang available na mga modelo',
   'Check your server URL and connection':
     'Suriin ang iyong server URL at koneksyon',
-  'Search agentsâ¦': 'Mga ahente sa paghahanapâ¦',
+  'Search agents…': 'Mga ahente sa paghahanapâ¦',
   Fast: 'Mabilis',
   'Low cost': 'Mababang gastos',
   'High cost': 'Mataas na gastos',
@@ -231,7 +231,7 @@ export const fil: Partial<I18n> = {
   'Page not found': 'Hindi nahanap ang page',
   'No AI provider configured. Please [configure one in Settings]({path}).':
     'Walang AI provider na na-configure. Mangyaring [i-configure ang isa sa Mga Setting]({path}).',
-  'Thinkingâ¦': 'Nag-iisipâ¦',
+  'Thinking…': 'Nag-iisipâ¦',
   Thoughts: 'Mga kaisipan',
   'My Agents': 'Aking mga Ahente',
   'Built-in Agents': 'Mga Built-in na Ahente',
@@ -240,12 +240,12 @@ export const fil: Partial<I18n> = {
   'Default agents are currently hidden. You can enable them in':
     'Kasalukuyang nakatago ang mga default na ahente. Maaari mong paganahin ang mga ito sa',
   'Find your past conversations': 'Hanapin ang iyong mga nakaraang pag-uusap',
-  'Loading agent and conversationâ¦': 'Naglo-load ng ahente at pag-uusapâ¦',
+  'Loading agent and conversation…': 'Naglo-load ng ahente at pag-uusapâ¦',
   Back: 'Bumalik',
   'Conversation ID:': 'ID ng Pag-uusap:',
   You: 'Ikaw',
-  'Continue the conversationâ¦': 'Ipagpatuloy ang usapanâ¦',
-  'Start chatting with {agentName}â¦':
+  'Continue the conversation…': 'Ipagpatuloy ang usapanâ¦',
+  'Start chatting with {agentName}…':
     'Magsimulang makipag-chat kay {agentName}â¦',
   'this agent': 'ahente na ito',
   'System Prompt': 'System Prompt',
@@ -340,7 +340,7 @@ export const fil: Partial<I18n> = {
   'View on GitHub': 'Tingnan sa GitHub',
   'Manage and monitor tasks for your organization':
     'Pamahalaan at subaybayan ang mga gawain para sa iyong organisasyon',
-  'Loading tasksâ¦': 'Naglo-load ng mga gawainâ¦',
+  'Loading tasks…': 'Naglo-load ng mga gawainâ¦',
   tasks: 'mga gawain',
   'In Progress': 'Isinasagawa',
   'Task Details': 'Mga Detalye ng Gawain',
@@ -367,18 +367,18 @@ export const fil: Partial<I18n> = {
   'Task not found': 'Hindi nahanap ang gawain',
   'Failed to load task data': 'Nabigong i-load ang data ng gawain',
   'View Content': 'Tingnan ang Nilalaman',
-  'Loading task detailsâ¦': 'Nilo-load ang mga detalye ng gawainâ¦',
+  'Loading task details…': 'Nilo-load ang mga detalye ng gawainâ¦',
   'Task Not Found': 'Hindi Nahanap ang Gawain',
   'The requested task could not be found.':
     'Hindi mahanap ang hiniling na gawain.',
   'Task Steps': 'Mga Hakbang sa Gawain',
   Steps: 'Mga hakbang',
-  'Agents workingâ¦': 'Nagtatrabaho ang mga ahenteâ¦',
+  'Agents working…': 'Nagtatrabaho ang mga ahenteâ¦',
   'No conversation messages yet.': 'Wala pang mga mensahe sa pag-uusap.',
   'Copied to clipboard': 'Kinopya sa clipboard',
   Conversation: 'Pag-uusap',
   Source: 'Pinagmulan',
-  'No messages yet. The task is being processedâ¦':
+  'No messages yet. The task is being processed…':
     'Wala pang mensahe. Pinoproseso ang gawainâ¦',
   'Validation Criteria': 'Pamantayan sa Pagpapatunay',
   'Delete task': 'Tanggalin ang gawain',
@@ -405,7 +405,7 @@ export const fil: Partial<I18n> = {
   Export: 'I-export',
   'Copy to clipboard': 'Kopyahin sa clipboard',
   Download: 'I-download',
-  'Loading database informationâ¦': 'Nilo-load ang impormasyon sa databaseâ¦',
+  'Loading database information…': 'Nilo-load ang impormasyon sa databaseâ¦',
   'Failed to load database information':
     'Nabigong i-load ang impormasyon ng database',
   'Database Administration': 'Pangangasiwa ng Database',
@@ -414,7 +414,7 @@ export const fil: Partial<I18n> = {
   Records: 'Mga rekord',
   Indexes: 'Mga index',
   Size: 'Sukat',
-  'Search {store} by {categories}â¦':
+  'Search {store} by {categories}…':
     'Maghanap sa {store} ayon sa {categories}â¦',
   'All Records': 'Lahat ng Records',
   'Filtered Records': 'Mga Na-filter na Tala',
@@ -461,7 +461,7 @@ export const fil: Partial<I18n> = {
   'Export your current agents and AI provider settings and share it via URL or QR code.':
     'I-export ang iyong kasalukuyang mga ahente at mga setting ng AI provider at ibahagi ito sa pamamagitan ng URL o QR code.',
   'Include my {n} agents': 'Isama ang aking {n} mga ahente',
-  'Now you can share the platform configurationâ¦':
+  'Now you can share the platform configuration…':
     'Maaari mo na ngayong ibahagi ang configuration ng platformâ¦',
   'Either with this URL:': 'Alinman sa URL na ito:',
   'Or this QR Code:': 'O itong QR Code:',
@@ -471,8 +471,8 @@ export const fil: Partial<I18n> = {
   'Password (optional)': 'Password (opsyonal)',
   Password: 'Password',
   Continue: 'Magpatuloy',
-  'Setting the platform upâ¦': 'Pag-set up ng platformâ¦',
-  'Initializing Local AI Modelâ¦': 'Sinisimulan ang Lokal na Modelo ng AIâ¦',
+  'Setting the platform up…': 'Pag-set up ng platformâ¦',
+  'Initializing Local AI Model…': 'Sinisimulan ang Lokal na Modelo ng AIâ¦',
   'Downloading model': 'Nagda-download ng modelo',
   'Model loaded': 'Na-load ang modelo',
   'Model load failed': 'Nabigo ang pag-load ng modelo',
@@ -573,7 +573,7 @@ export const fil: Partial<I18n> = {
   'Memory updated': 'Na-update ang memorya',
   'Add a note': 'Magdagdag ng tala',
   'Edit memory': 'I-edit ang memorya',
-  'Write what this agent should remember, as short notesâ¦':
+  'Write what this agent should remember, as short notes…':
     'Isulat kung ano ang dapat tandaan ng ahenteng ito, bilang mga maikling talaâ¦',
   'Failed to delete memory': 'Nabigong tanggalin ang memorya',
   'Failed to load learning events':
@@ -616,7 +616,7 @@ export const fil: Partial<I18n> = {
   'Remember for all agents': 'Tandaan para sa lahat ng mga ahente',
   'Remember selection': 'Tandaan ang pagpili',
   'Selection actions': 'Mga aksyon sa pagpili',
-  'Added to this agentâs memory': 'Idinagdag sa memorya ng ahente na ito',
+  'Added to this agent’s memory': 'Idinagdag sa memorya ng ahente na ito',
   'Added to global memory': 'Idinagdag sa pandaigdigang memorya',
   'Failed to save to memory': 'Nabigong i-save sa memorya',
   'No agent selected for this memory':
@@ -814,8 +814,8 @@ export const fil: Partial<I18n> = {
   'Automatically backup your data to a folder on your device':
     'Awtomatikong i-backup ang iyong data sa isang folder sa iyong device',
   'Successfully joined sync room': 'Matagumpay na sumali sa sync room',
-  'Drop reference image hereâ¦': 'I-drop ang reference na larawan ditoâ¦',
-  'Describe the image you want to createâ¦':
+  'Drop reference image here…': 'I-drop ang reference na larawan ditoâ¦',
+  'Describe the image you want to create…':
     'Ilarawan ang larawang gusto mong likhainâ¦',
   'Image presets': 'Mga preset ng larawan',
   'Image settings': 'Mga setting ng larawan',
@@ -893,7 +893,7 @@ export const fil: Partial<I18n> = {
   'Encryption Key Status': 'Katayuan ng Encryption Key',
   'Secure (Non-extractable)': 'Secure (Non-extractable)',
   'Not initialized': 'Hindi nasimulan',
-  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exportedâit can only be used for encryption operations.':
+  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exported—it can only be used for encryption operations.':
     'Ang iyong encryption key ay ligtas na nakaimbak gamit ang hindi na-extract na browser cryptography. Ang susi ay hindi maaaring basahin o i-exportâito ay magagamit lamang para sa mga pagpapatakbo ng pag-encrypt.',
   'Non-extractable keys provide maximum security - they cannot be stolen even if an attacker gains access to your browser':
     'Ang mga non-extractable na key ay nagbibigay ng maximum na seguridad - hindi sila maaaring manakaw kahit na ang isang attacker ay nakakuha ng access sa iyong browser',
@@ -976,19 +976,19 @@ export const fil: Partial<I18n> = {
     'Laktawan ang lahat ng mga senyales ng interbensyon ng tao at hayaan ang mga ahente na makapagdesisyon nang nakapag-iisa',
   Automation: 'Automation',
   Session: 'Sesyon',
-  'Startingâ¦': 'Simulaâ¦',
-  'Workingâ¦': 'Nagtatrabahoâ¦',
+  'Starting…': 'Simulaâ¦',
+  'Working…': 'Nagtatrabahoâ¦',
   'file(s)': '(mga) file',
-  'Creating agentâ¦': 'Gumagawa ng ahenteâ¦',
+  'Creating agent…': 'Gumagawa ng ahenteâ¦',
   'Agent creation failed': 'Nabigo ang paggawa ng ahente',
-  'Building appâ¦': 'Building appâ¦',
+  'Building app…': 'Building appâ¦',
   'App build failed': 'Nabigo ang pagbuo ng app',
-  'is thinkingâ¦': 'ay nag-iisipâ¦',
+  'is thinking…': 'ay nag-iisipâ¦',
   'Turn failed': 'Nabigo ang pagliko',
-  'Generating mediaâ¦': 'Bumubuo ng mediaâ¦',
+  'Generating media…': 'Bumubuo ng mediaâ¦',
   'Generation failed': 'Nabigo ang henerasyon',
   'Media generated': 'Nabuo ng media',
-  'Orchestrating taskâ¦': 'Pagsasaayos ng gawainâ¦',
+  'Orchestrating task…': 'Pagsasaayos ng gawainâ¦',
   'Task failed': 'Nabigo ang gawain',
   Space: 'kalawakan',
   'Space name': 'Pangalan ng espasyo',
@@ -1007,7 +1007,7 @@ export const fil: Partial<I18n> = {
   Board: 'Lupon',
   'New conversation': 'Bagong usapan',
   'Start a new conversation': 'Magsimula ng bagong pag-uusap',
-  'Search tasks and conversationsâ¦': 'Maghanap ng mga gawain at pag-uusapâ¦',
+  'Search tasks and conversations…': 'Maghanap ng mga gawain at pag-uusapâ¦',
   'No threads yet': 'Wala pang mga thread',
   'No matching threads': 'Walang katugmang mga thread',
   'Select a thread to preview': 'Pumili ng thread na i-preview',

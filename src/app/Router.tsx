@@ -46,6 +46,7 @@ const TaskTimelineDemo = lazyNamed(
   'TaskTimelineDemo',
 )
 const AboutPage = lazyNamed(() => import('@/pages/About'), 'AboutPage')
+const InfoPage = lazyNamed(() => import('@/pages/Info'), 'InfoPage')
 const PrivacyPage = lazyNamed(() => import('@/pages/Privacy'), 'PrivacyPage')
 const TermsPage = lazyNamed(() => import('@/pages/Terms'), 'TermsPage')
 const TourPage = lazyNamed(() => import('@/pages/Tour'), 'TourPage')
@@ -129,6 +130,7 @@ const routes = {
   studio: StudioPage,
   'oauth/callback': OAuthCallbackPage,
   about: AboutPage,
+  info: InfoPage,
   privacy: PrivacyPage,
   'session/:sessionId': SessionPage,
   library: LibraryRedirect,

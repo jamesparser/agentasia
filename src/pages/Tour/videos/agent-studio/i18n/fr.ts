@@ -32,7 +32,7 @@ export const fr: I18n = {
   [`Based on my analysis, here are the key competitor moves this quarter:\n\n1. **Acme Corp** launched a freemium tier targeting SMBs\n2. **Globex** cut enterprise pricing by 15%\n3. **Initech** acquired a data analytics startup\n\nI recommend focusing on our mid-market positioning.`]: `D\u2019après mon analyse, voici les mouvements clés de la concurrence ce trimestre :\n\n1. **Acme Corp** a lancé une offre freemium ciblant les PME\n2. **Globex** a réduit ses tarifs entreprise de 15 %\n3. **Initech** a acquis une startup d\u2019analyse de données\n\nJe recommande de renforcer notre positionnement mid-market.`,
   [`A team. Yours. Built in seconds.`]: `Une équipe. La vôtre. Créée en quelques secondes.`,
   [`Now you can.`]: `Maintenant, c\u2019est possible.`,
-  [`Open devs.new →`]: `Ouvrir devs.new →`,
+  [`Open agentasia.vercel.app →`]: `Ouvrir agentasia.vercel.app →`,
   [`No signup · No install · Free`]: `Sans inscription · Sans installation · Gratuit`,
   [`Speed`]: `Vitesse`,
   [`Normal`]: `Normal`,

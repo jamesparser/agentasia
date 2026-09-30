@@ -11,4 +11,6 @@ export const BRIDGE_URL =
   typeof import.meta.env !== 'undefined' &&
   import.meta.env.DEV
     ? ''
-    : 'https://bridge.devs.new'
+    : '' // was https://bridge.devs.new - somebody else's host, and pointing the
+         // shipped bundle at it advertised the fork and routed user OAuth
+         // traffic through their infrastructure. Nothing in AgentAsia needs it.

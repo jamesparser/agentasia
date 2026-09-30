@@ -302,7 +302,7 @@ function SceneBrowseAgentsInner() {
     <div ref={opacityRef} style={{ position: 'absolute', inset: 0 }}>
       <BrowserChrome
         inset={chromeInset}
-        url="devs.new/agents"
+        url="agentasia.vercel.app/agents"
         tabTitle={s.devs}
         scale={chromeScale}
         opacity={chromeOpacity}
@@ -358,7 +358,7 @@ const AIDescribeContent = memo(function AIDescribeContent({
   customAgentIds: Set<string>
 }) {
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new/agents/new" tabTitle={s.devs}>
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app/agents/new" tabTitle={s.devs}>
       <div className="bg-background flex h-full w-full overflow-hidden">
         <div className="shrink-0">
           <Sidebar
@@ -537,7 +537,7 @@ const FormReviewContent = memo(function FormReviewContent({
   customAgentIds: Set<string>
 }) {
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new/agents/new" tabTitle={s.devs}>
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app/agents/new" tabTitle={s.devs}>
       <div className="bg-background flex h-full w-full overflow-hidden">
         <div className="shrink-0">
           <Sidebar
@@ -751,7 +751,7 @@ const PlaygroundContent = memo(function PlaygroundContent({
   customAgentIds,
 }: PlaygroundContentProps) {
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new/agents/new" tabTitle={s.devs}>
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app/agents/new" tabTitle={s.devs}>
       <div className="bg-background flex h-full w-full overflow-hidden">
         <div className="shrink-0">
           <Sidebar

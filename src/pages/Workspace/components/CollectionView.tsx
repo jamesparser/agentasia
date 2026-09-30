@@ -191,7 +191,11 @@ export function CollectionView<T extends object>({
     <div
       className={`h-full min-h-0 flex-col gap-4 overflow-clip px-4 pb-6 pt-4 ${className ?? 'flex'}`}
     >
-      <div className="relative flex items-center gap-1.5">
+      {/* The mobile burger is `fixed top-3 left-3` in Sidebar, so below `lg` it
+          floats over this row: the search field starts at x=16 and the button
+          occupies x=12-44, which is the overlap reported on a narrow Mac window.
+          Reserving the burger's width here keeps the field clear of it. */}
+      <div className="relative flex items-center gap-1.5 pl-11 lg:pl-0">
         <SearchField
           name="collection-search"
           variant="primary"

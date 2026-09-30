@@ -50,7 +50,12 @@ PUBLIC = REPO / "public"
 FONT = REPO / "public" / "fonts" / "Geist.ttf"
 
 MASTER = 1024
-PLATE_BLUE = (106, 161, 255, 255)  # #6aa1ff - the colour the PWA icons already use
+# Black plate, white mark. The blue plate (#6aa1ff) came from the icons that
+# shipped before this artwork existed, and the owner asked for black and white.
+# A white-on-black tile also survives both browser themes, which a black-on-
+# transparent PNG does not.
+PLATE_BLUE = (17, 17, 17, 255)
+PLATE_MONO = PLATE_BLUE  # historical name; the plate is no longer blue
 PLATE_DARK = (11, 14, 20, 255)  # og card background
 PAD = 0.02  # breathing room around the mark inside the square canvas
 
@@ -63,13 +68,13 @@ WHITE = (255, 255, 255)
 HEAD_BOX = (1700, 100, 2180, 780)
 
 # Sizes where averaging destroys the strokes, so the max-pool is used instead.
-# Sizes at or below this cannot resolve the drawing's 4px strokes: one output
+# Sizes below this cannot resolve the drawing's 4px strokes: one output
 # pixel covers ~64 source pixels, so averaging makes the lines vanish and
 # max-pooling makes every touched pixel light up, which is how the previous
 # revision got a 0.40 blob out of a 0.28 mark. Below this size the badge is
 # rendered as the thresholded mass of the artwork instead - the head's overall
 # silhouette, at the same weight class as the mark it replaces.
-SMALL_SIZE_BELOW = 64
+SMALL_SIZE_BELOW = 48
 SMALL_INK_THRESHOLD = 0.23  # measured: 0.28 coverage at 16px (old mark: 0.33)
 
 

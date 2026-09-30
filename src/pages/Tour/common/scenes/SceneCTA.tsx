@@ -25,7 +25,7 @@ export function SceneCTA({
   tagline,
   ctaLabel,
   frictionBadge,
-  ctaHref = 'https://devs.new',
+  ctaHref = 'https://agentasia.vercel.app',
 }: SceneCTAProps) {
   const { width: stageW, height: stageH } = useStageSize()
   const t = useStageT()

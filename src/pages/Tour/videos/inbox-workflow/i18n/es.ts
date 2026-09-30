@@ -65,7 +65,7 @@ export const es: I18n = {
 
   // Scene 5 — CTA
   [`Now you can.`]: `Ahora puedes.`,
-  [`Open devs.new →`]: `Abrir devs.new →`,
+  [`Open agentasia.vercel.app →`]: `Abrir agentasia.vercel.app →`,
   [`No signup · No install · Free`]: `Sin registro · Sin instalación · Gratis`,
 
   // Playback bar — settings menu

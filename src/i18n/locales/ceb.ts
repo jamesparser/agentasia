@@ -103,24 +103,24 @@ export const ceb: Partial<I18n> = {
   'From device': 'Gikan sa device',
   Screenshot: 'Screenshot',
   'Capture screen': 'Kuhaa ang screen',
-  'Capturingâ¦': 'Pagkuhaâ¦',
+  'Capturing…': 'Pagkuhaâ¦',
   'Choose from knowledge base': 'Pagpili gikan sa base sa kahibalo',
   'No files found in knowledge base':
     'Walay mga file nga nakit-an sa base sa kahibalo',
   'No matching files': 'Walay katugbang nga mga file',
-  'Filter filesâ¦': 'Pagsala sa mga fileâ¦',
+  'Filter files…': 'Pagsala sa mga fileâ¦',
   'Add files': 'Idugang ang mga file',
   'Choose from skills': 'Pagpili gikan sa mga kahanas',
   'No skills installed': 'Walay mga kahanas nga na-install',
   'No matching skills': 'Walay katugbang nga kahanas',
-  'Filter skillsâ¦': 'Mga kahanas sa pagsalaâ¦',
+  'Filter skills…': 'Mga kahanas sa pagsalaâ¦',
   'Browse skills': 'Mga kahanas sa pag-browse',
   Attach: 'Ilakip',
   Extend: 'Extend',
   'Image & video': 'Imahe ug video',
   'Web app': 'Web app',
   'AI agent': 'Ahente sa AI',
-  'Drop files hereâ¦': 'Ihulog ang mga file dinhiâ¦',
+  'Drop files here…': 'Ihulog ang mga file dinhiâ¦',
   'Speak to microphone': 'Pakigsulti sa mikropono',
   'Send prompt': 'Ipadala dayon',
   'Stop generating': 'Hunong sa pagmugna',
@@ -130,14 +130,14 @@ export const ceb: Partial<I18n> = {
   'Image & video generation': 'Pagmugna og hulagway ug video',
   'Create a web app': 'Paghimo og web app',
   'Create an agent': 'Paghimo og ahente',
-  'Describe the image or video you want to createâ¦':
+  'Describe the image or video you want to create…':
     'Ihulagway ang hulagway o video nga gusto nimong himoonâ¦',
-  'Describe the web app you want to buildâ¦':
+  'Describe the web app you want to build…':
     'Ihulagway ang web app nga gusto nimong buhatonâ¦',
-  'Describe the AI agent you want to createâ¦':
+  'Describe the AI agent you want to create…':
     'Ihulagway ang ahente sa AI nga gusto nimong buhatonâ¦',
   'Live voice conversation': 'Live nga panag-istoryahanay sa tingog',
-  'Listeningâ¦': 'Pagpaminawâ¦',
+  'Listening…': 'Pagpaminawâ¦',
   'Select an agent': 'Pagpili og ahente',
   'No agents found': 'Walay nakit-an nga ahente',
   'Select a methodology': 'Pagpili og pamaagi',
@@ -162,7 +162,7 @@ export const ceb: Partial<I18n> = {
   'No models available': 'Walay mga modelo nga magamit',
   'Check your server URL and connection':
     'Susiha ang imong server URL ug koneksyon',
-  'Search agentsâ¦': 'Mga ahente sa pagpangitaâ¦',
+  'Search agents…': 'Mga ahente sa pagpangitaâ¦',
   Fast: 'Paspas',
   'Low cost': 'Ubos nga gasto',
   'High cost': 'Taas nga gasto',
@@ -232,7 +232,7 @@ export const ceb: Partial<I18n> = {
   'Page not found': 'Wala makit-an ang panid',
   'No AI provider configured. Please [configure one in Settings]({path}).':
     'Walay AI provider nga na-configure. Palihug [i-configure ang usa sa Settings]({path}).',
-  'Thinkingâ¦': 'Naghunahunaâ¦',
+  'Thinking…': 'Naghunahunaâ¦',
   Thoughts: 'Mga hunahuna',
   'My Agents': 'Akong mga Ahente',
   'Built-in Agents': 'Gitukod nga mga Ahente',
@@ -242,13 +242,13 @@ export const ceb: Partial<I18n> = {
     'Ang mga default nga ahente gitago karon. Mahimo nimo silang pasudlon',
   'Find your past conversations':
     'Pangitaa ang imong nangaging mga panag-istoryahanay',
-  'Loading agent and conversationâ¦':
+  'Loading agent and conversation…':
     'Nag-load nga ahente ug panag-istoryahanayâ¦',
   Back: 'Balik',
   'Conversation ID:': 'Pag-istoryahanay ID:',
   You: 'Ikaw',
-  'Continue the conversationâ¦': 'Ipadayon ang panag-istoryaâ¦',
-  'Start chatting with {agentName}â¦': 'Sugdi ang pakig-chat sa {agentName}â¦',
+  'Continue the conversation…': 'Ipadayon ang panag-istoryaâ¦',
+  'Start chatting with {agentName}…': 'Sugdi ang pakig-chat sa {agentName}â¦',
   'this agent': 'kini nga ahente',
   'System Prompt': 'System Prompt',
   'No system prompt defined.': "Wala'y gihubit nga prompt sa sistema.",
@@ -342,7 +342,7 @@ export const ceb: Partial<I18n> = {
   'View on GitHub': 'Tan-awa sa GitHub',
   'Manage and monitor tasks for your organization':
     'Pagdumala ug pagmonitor sa mga buluhaton alang sa imong organisasyon',
-  'Loading tasksâ¦': 'Nagkarga sa mga buluhatonâ¦',
+  'Loading tasks…': 'Nagkarga sa mga buluhatonâ¦',
   tasks: 'mga buluhaton',
   'In Progress': 'Sa Pag-uswag',
   'Task Details': 'Mga Detalye sa Buluhaton',
@@ -369,19 +369,19 @@ export const ceb: Partial<I18n> = {
   'Task not found': 'Wala makit-an ang buluhaton',
   'Failed to load task data': 'Napakyas sa pagkarga sa datos sa buluhaton',
   'View Content': 'Tan-awa ang Content',
-  'Loading task detailsâ¦': 'Nagkarga sa mga detalye sa buluhatonâ¦',
+  'Loading task details…': 'Nagkarga sa mga detalye sa buluhatonâ¦',
   'Task Not Found': 'Buluhaton Wala Makita',
   'The requested task could not be found.':
     'Ang gipangayo nga buluhaton dili makit-an.',
   'Task Steps': 'Mga Lakang sa Buluhaton',
   Steps: 'Mga lakang',
-  'Agents workingâ¦': 'Mga ahente nga nagtrabahoâ¦',
+  'Agents working…': 'Mga ahente nga nagtrabahoâ¦',
   'No conversation messages yet.':
     "Wala pa'y mga mensahe sa panag-istoryahanay.",
   'Copied to clipboard': 'Gikopya sa clipboard',
   Conversation: 'Pag-istoryahanay',
   Source: 'Tinubdan',
-  'No messages yet. The task is being processedâ¦':
+  'No messages yet. The task is being processed…':
     'Wala pay mensahe. Ang buluhaton giprosesoâ¦',
   'Validation Criteria': 'Pamantayan sa Pagpamatuod',
   'Delete task': 'Pagtangtang sa buluhaton',
@@ -408,7 +408,7 @@ export const ceb: Partial<I18n> = {
   Export: 'Export',
   'Copy to clipboard': 'Kopyaha sa clipboard',
   Download: 'Pag-download',
-  'Loading database informationâ¦': 'Nagkarga sa impormasyon sa databaseâ¦',
+  'Loading database information…': 'Nagkarga sa impormasyon sa databaseâ¦',
   'Failed to load database information':
     'Napakyas sa pagkarga sa impormasyon sa database',
   'Database Administration': 'Pagdumala sa Database',
@@ -417,7 +417,7 @@ export const ceb: Partial<I18n> = {
   Records: 'Mga rekord',
   Indexes: 'Mga indeks',
   Size: 'Gidak-on',
-  'Search {store} by {categories}â¦':
+  'Search {store} by {categories}…':
     'Pangitaa ang {store} pinaagi sa {categories}â¦',
   'All Records': 'Tanan nga mga Rekord',
   'Filtered Records': 'Nasala nga mga Rekord',
@@ -464,7 +464,7 @@ export const ceb: Partial<I18n> = {
   'Export your current agents and AI provider settings and share it via URL or QR code.':
     'I-export ang imong kasamtangan nga mga ahente ug mga setting sa AI provider ug ipaambit kini pinaagi sa URL o QR code.',
   'Include my {n} agents': 'Iapil ang akong {n} mga ahente',
-  'Now you can share the platform configurationâ¦':
+  'Now you can share the platform configuration…':
     'Karon mahimo nimong ipaambit ang configuration sa platapormaâ¦',
   'Either with this URL:': 'Bisan sa kini nga URL:',
   'Or this QR Code:': 'O kini nga QR Code:',
@@ -474,8 +474,8 @@ export const ceb: Partial<I18n> = {
   'Password (optional)': 'Password (opsyonal)',
   Password: 'Password',
   Continue: 'Padayon',
-  'Setting the platform upâ¦': 'Pagpahimutang sa platapormaâ¦',
-  'Initializing Local AI Modelâ¦': 'Pagsugod sa Lokal nga AI Modelâ¦',
+  'Setting the platform up…': 'Pagpahimutang sa platapormaâ¦',
+  'Initializing Local AI Model…': 'Pagsugod sa Lokal nga AI Modelâ¦',
   'Downloading model': 'Pag-download nga modelo',
   'Model loaded': 'Gikarga ang modelo',
   'Model load failed': 'Napakyas ang pagkarga sa modelo',
@@ -577,7 +577,7 @@ export const ceb: Partial<I18n> = {
   'Memory updated': 'Gi-update ang memorya',
   'Add a note': 'Pagdugang og nota',
   'Edit memory': 'I-edit ang memorya',
-  'Write what this agent should remember, as short notesâ¦':
+  'Write what this agent should remember, as short notes…':
     'Isulat kung unsa ang angay hinumdoman niini nga ahente, isip mubo nga mga notaâ¦',
   'Failed to delete memory': 'Napakyas sa pagtangtang sa memorya',
   'Failed to load learning events':
@@ -620,7 +620,7 @@ export const ceb: Partial<I18n> = {
   'Remember for all agents': 'Hinumdomi para sa tanang ahente',
   'Remember selection': 'Hinumdomi ang pagpili',
   'Selection actions': 'Mga aksyon sa pagpili',
-  'Added to this agentâs memory': 'Gidugang sa memorya niini nga ahente',
+  'Added to this agent’s memory': 'Gidugang sa memorya niini nga ahente',
   'Added to global memory': 'Gidugang sa global memory',
   'Failed to save to memory': 'Napakyas sa pagtipig sa memorya',
   'No agent selected for this memory':
@@ -818,8 +818,8 @@ export const ceb: Partial<I18n> = {
   'Automatically backup your data to a folder on your device':
     'Awtomatikong i-backup ang imong data sa usa ka folder sa imong device',
   'Successfully joined sync room': 'Malampusong miapil sa sync room',
-  'Drop reference image hereâ¦': 'Ihulog ang reference nga hulagway dinhiâ¦',
-  'Describe the image you want to createâ¦':
+  'Drop reference image here…': 'Ihulog ang reference nga hulagway dinhiâ¦',
+  'Describe the image you want to create…':
     'Ihulagway ang hulagway nga gusto nimong himoonâ¦',
   'Image presets': 'Mga preset sa imahe',
   'Image settings': 'Mga setting sa imahe',
@@ -897,7 +897,7 @@ export const ceb: Partial<I18n> = {
   'Encryption Key Status': 'Encryption Key Status',
   'Secure (Non-extractable)': 'Luwas (Dili ma-extract)',
   'Not initialized': 'Dili inisyal',
-  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exportedâit can only be used for encryption operations.':
+  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exported—it can only be used for encryption operations.':
     'Ang imong encryption key gitipigan nga luwas gamit ang non-extractable browser cryptography. Ang yawe dili mabasa o ma-eksportâmagamit lang kini alang sa mga operasyon sa pag-encrypt.',
   'Non-extractable keys provide maximum security - they cannot be stolen even if an attacker gains access to your browser':
     'Ang dili makuha nga mga yawe naghatag labing taas nga seguridad - dili kini kawaton bisan kung ang usa ka tig-atake makakuha og access sa imong browser',
@@ -979,19 +979,19 @@ export const ceb: Partial<I18n> = {
     'Laktawan ang tanan nga mga pag-aghat sa interbensyon sa tawo ug tugoti ang mga ahente nga magdesisyon nga awtonomiya',
   Automation: 'Automation',
   Session: 'Sesyon',
-  'Startingâ¦': 'Nagsugodâ¦',
-  'Workingâ¦': 'Nagtrabahoâ¦',
+  'Starting…': 'Nagsugodâ¦',
+  'Working…': 'Nagtrabahoâ¦',
   'file(s)': '(mga) file',
-  'Creating agentâ¦': 'Pagmugna og ahenteâ¦',
+  'Creating agent…': 'Pagmugna og ahenteâ¦',
   'Agent creation failed': 'Napakyas ang paghimo sa ahente',
-  'Building appâ¦': 'Pagtukod og appâ¦',
+  'Building app…': 'Pagtukod og appâ¦',
   'App build failed': 'Napakyas ang paghimo sa app',
-  'is thinkingâ¦': 'naghunahunaâ¦',
+  'is thinking…': 'naghunahunaâ¦',
   'Turn failed': 'Napakyas ang pagliko',
-  'Generating mediaâ¦': 'Pagmugna og mediaâ¦',
+  'Generating media…': 'Pagmugna og mediaâ¦',
   'Generation failed': 'Napakyas ang henerasyon',
   'Media generated': 'Nahimo ang media',
-  'Orchestrating taskâ¦': 'Pag-orkestra sa buluhatonâ¦',
+  'Orchestrating task…': 'Pag-orkestra sa buluhatonâ¦',
   'Task failed': 'Napakyas ang buluhaton',
   Space: 'Luna',
   'Space name': 'Ngalan sa wanang',
@@ -1010,7 +1010,7 @@ export const ceb: Partial<I18n> = {
   Board: 'Board',
   'New conversation': 'Bag-ong panag-istoryahanay',
   'Start a new conversation': 'Pagsugod ug bag-ong panag-istoryahanay',
-  'Search tasks and conversationsâ¦':
+  'Search tasks and conversations…':
     'Pangitaa ang mga buluhaton ug panag-istoryahanayâ¦',
   'No threads yet': 'Wala pay thread',
   'No matching threads': 'Walay matching threads',

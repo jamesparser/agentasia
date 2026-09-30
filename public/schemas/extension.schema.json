@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://devs.new/schemas/extension.schema.yaml",
+  "$id": "https://agentasia.vercel.app/schemas/extension.schema.yaml",
   "title": "DEVS Extension Definition",
   "description": "Schema for defining extensions",
   "type": "object",

@@ -70,7 +70,7 @@ export function PrivacyFirstVideo({ autoplay, rootId, disableKeyboard, initialTi
         start={21.9}
         end={28}
         tagline="Now you can."
-        ctaLabel="Open devs.new →"
+        ctaLabel="Open agentasia.vercel.app →"
         frictionBadge="No signup · No install · Free"
       />
     </Stage>

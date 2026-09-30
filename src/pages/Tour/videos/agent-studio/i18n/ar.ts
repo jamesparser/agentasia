@@ -32,7 +32,7 @@ export const ar: I18n = {
   [`Based on my analysis, here are the key competitor moves this quarter:\n\n1. **Acme Corp** launched a freemium tier targeting SMBs\n2. **Globex** cut enterprise pricing by 15%\n3. **Initech** acquired a data analytics startup\n\nI recommend focusing on our mid-market positioning.`]: `بناءً على تحليلي، إليك أهم تحركات المنافسين هذا الربع:\n\n1. **Acme Corp** أطلقت طبقة مجانية تستهدف الشركات الصغيرة\n2. **Globex** خفضت أسعار المؤسسات بنسبة 15%\n3. **Initech** استحوذت على شركة ناشئة لتحليل البيانات\n\nأوصي بالتركيز على موقعنا في السوق المتوسط.`,
   [`A team. Yours. Built in seconds.`]: `فريق. فريقك. يُبنى في ثوانٍ.`,
   [`Now you can.`]: `الآن يمكنك ذلك.`,
-  [`Open devs.new →`]: `افتح devs.new ←`,
+  [`Open agentasia.vercel.app →`]: `افتح agentasia.vercel.app ←`,
   [`No signup · No install · Free`]: `بدون تسجيل · بدون تثبيت · مجاني`,
   [`Speed`]: `السرعة`,
   [`Normal`]: `عادي`,

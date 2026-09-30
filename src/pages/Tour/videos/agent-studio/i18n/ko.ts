@@ -32,7 +32,7 @@ export const ko: I18n = {
   [`Based on my analysis, here are the key competitor moves this quarter:\n\n1. **Acme Corp** launched a freemium tier targeting SMBs\n2. **Globex** cut enterprise pricing by 15%\n3. **Initech** acquired a data analytics startup\n\nI recommend focusing on our mid-market positioning.`]: `분석 결과, 이번 분기 주요 경쟁사 동향은 다음과 같습니다:\n\n1. **Acme Corp**이 SMB 대상 프리미엄 티어를 출시했습니다\n2. **Globex**가 엔터프라이즈 가격을 15% 인하했습니다\n3. **Initech**가 데이터 분석 스타트업을 인수했습니다\n\n미드마켓 포지셔닝에 집중할 것을 권장합니다.`,
   [`A team. Yours. Built in seconds.`]: `팀. 당신의 팀. 몇 초 만에 구축.`,
   [`Now you can.`]: `이제 가능합니다.`,
-  [`Open devs.new →`]: `devs.new 열기 →`,
+  [`Open agentasia.vercel.app →`]: `agentasia.vercel.app 열기 →`,
   [`No signup · No install · Free`]: `가입 불필요 · 설치 불필요 · 무료`,
   [`Speed`]: `속도`,
   [`Normal`]: `보통`,

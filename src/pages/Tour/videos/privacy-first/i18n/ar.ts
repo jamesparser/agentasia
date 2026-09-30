@@ -40,7 +40,7 @@ export const ar: I18n = {
 
   // Scene 5 — CTA
   [`Now you can.`]: `الآن بإمكانك.`,
-  [`Open devs.new →`]: `افتح devs.new ←`,
+  [`Open agentasia.vercel.app →`]: `افتح agentasia.vercel.app ←`,
   [`No signup · No install · Free`]: `بلا تسجيل · بلا تثبيت · مجاني`,
 
   // Playback bar — settings menu

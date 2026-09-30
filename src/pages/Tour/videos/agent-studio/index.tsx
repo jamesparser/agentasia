@@ -62,7 +62,7 @@ export function AgentStudioVideo({ autoplay, rootId, disableKeyboard, initialTim
         start={29.9}
         end={36}
         tagline="Now you can."
-        ctaLabel="Open devs.new →"
+        ctaLabel="Open agentasia.vercel.app →"
         frictionBadge="No signup · No install · Free"
       />
     </Stage>

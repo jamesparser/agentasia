@@ -26,9 +26,9 @@ export const en = [
   'No third party.',
   'Your keys. Your data.',
   'OPEN SOURCE · BROWSER-NATIVE · YOURS',
-  'devs.new',
+  'agentasia.vercel.app',
   'Now you can.',
-  'Open devs.new →',
+  'Open agentasia.vercel.app →',
   'No signup · No install · Free',
   'github.com/codename-co/devs · MIT',
 

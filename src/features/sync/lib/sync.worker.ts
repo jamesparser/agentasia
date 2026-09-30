@@ -29,7 +29,8 @@ import { SYNCED_STORES, SYNCED_PREFERENCE_KEYS } from './sync-worker-types'
 // ============================================================================
 
 const YJS_DB_NAME = 'devs-yjs-sync'
-const DEFAULT_SERVER_URL = 'wss://signal.devs.new'
+// Upstream's relay (wss://signal.devs.new) is not ours to send users to.
+const DEFAULT_SERVER_URL = ''
 const PERSISTENCE_TIMEOUT_MS = 10_000
 const IDB_CHECK_TIMEOUT_MS = 5_000
 

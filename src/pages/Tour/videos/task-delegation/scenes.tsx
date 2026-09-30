@@ -643,7 +643,7 @@ export function SceneConnectors({ start = 2.4, end = 11 }: SceneProps) {
             {/* Browser chrome with real homepage */}
             <BrowserChrome
               inset={chromeInset}
-              url="devs.new"
+              url="agentasia.vercel.app"
               scale={chromeScale}
               opacity={chromeOpacity}
             >
@@ -672,7 +672,6 @@ export function SceneConnectors({ start = 2.4, end = 11 }: SceneProps) {
                 >
                   <NewTaskHero
                     autoFocus={false}
-                    showUseCases={false}
                     className="flex h-full min-h-0 flex-1 flex-col"
                     demo
                   />
@@ -890,7 +889,7 @@ export function ScenePromptSubmit({ start = 10.9, end = 15 }: SceneProps) {
           <div style={{ position: 'absolute', inset: 0, opacity: exitOpacity }}>
             <BrowserChromeTyping
               inset={chromeInset}
-              urlText="devs.new"
+              urlText="agentasia.vercel.app"
               urlProgress={urlProgress}
               scale={chromeScale}
               opacity={chromeOpacity}
@@ -1190,7 +1189,7 @@ const SwarmContent = memo(function SwarmContent({
   const selectedId = threads[0].id
 
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new">
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app">
       <div
         className="bg-background flex h-full w-full overflow-hidden relative"
         style={{ height: '100%' }}

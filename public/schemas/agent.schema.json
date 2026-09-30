@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://devs.new/schemas/agent.schema.json",
+  "$id": "https://agentasia.vercel.app/schemas/agent.schema.json",
   "title": "Agent Definition",
   "description": "Schema for defining AI agents with their roles, instructions, and configuration",
   "type": "object",

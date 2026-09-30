@@ -55,7 +55,7 @@ export const es: I18n = {
   [`2.4 MB`]: `2,4 MB`,
   [`Connected. Computed. Delivered.`]: `Conectado. Calculado. Entregado.`,
   [`Now you can.`]: `Ahora puedes.`,
-  [`Open devs.new \u2192`]: `Abrir devs.new \u2192`,
+  [`Open agentasia.vercel.app \u2192`]: `Abrir agentasia.vercel.app \u2192`,
   [`No signup \u00B7 No install \u00B7 Free`]: `Sin registro \u00B7 Sin instalación \u00B7 Gratis`,
   [`Speed`]: `Velocidad`,
   [`Normal`]: `Normal`,

@@ -95,7 +95,7 @@ export function TaskDelegationVideo({
         start={31.9}
         end={40}
         tagline="Now you can."
-        ctaLabel="Open devs.new →"
+        ctaLabel="Open agentasia.vercel.app →"
         frictionBadge="No signup · No install · Free"
       />
     </Stage>

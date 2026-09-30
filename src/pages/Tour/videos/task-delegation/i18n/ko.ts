@@ -55,7 +55,7 @@ export const ko: I18n = {
   [`2.4 MB`]: `2.4 MB`,
   [`Connected. Computed. Delivered.`]: `연결. 계산. 완료.`,
   [`Now you can.`]: `이제 할 수 있습니다.`,
-  [`Open devs.new \u2192`]: `devs.new 열기 →`,
+  [`Open agentasia.vercel.app \u2192`]: `agentasia.vercel.app 열기 →`,
   [`No signup \u00B7 No install \u00B7 Free`]: `가입 없음 · 설치 없음 · 무료`,
   [`Speed`]: `속도`,
   [`Normal`]: `보통`,

@@ -28,7 +28,6 @@ import { getAgentsByCategory } from '@/stores/agentStore'
 // import { loadAllMethodologies } from '@/stores/methodologiesStore'
 // import type { Methodology } from '@/types/methodology.types'
 import localeI18n from './i18n'
-import { agentThemeIcon, useCasesByThemes } from '@/lib/agents'
 import { PRODUCT } from '@/config/product'
 import { userSettings } from '@/stores/userStore'
 import { RecentActivity } from './RecentActivity'
@@ -361,155 +360,6 @@ export const IndexPage = () => {
             />
           </motion.div>
 
-          {/* AgentAsia: Life/Art/Coding/Learn/Writing theme buttons removed per handover */}
-          {false && <motion.div {...motionVariants.agentSection}>
-            {!isLoadingAgents && (
-              <Container size={7} className="mt-0 sm:-mt-8">
-                <div className="flex gap-2 flex-wrap justify-center">
-                  {useCasesByThemes(agents).map(
-                    ({ theme, usecases }, index) => (
-                      <motion.div
-                        {...motionVariants.usecase}
-                        transition={{
-                          ...motionVariants.usecase.transition,
-                          delay: 0.7 + 0.06 * index,
-                        }}
-                        key={theme}
-                      >
-                        <Dropdown key={theme} placement="bottom-start">
-                          <DropdownTrigger>
-                            <Button
-                              variant="ghost"
-                              size="md"
-                              className="inline-flex justify-start"
-                              startContent={
-                                usecases[0]?.agent.icon && (
-                                  <Icon
-                                    name={(agentThemeIcon as any)[theme]}
-                                    size="lg"
-                                    className="text-default-500"
-                                  />
-                                )
-                              }
-                            >
-                              <span className="font-semibold">
-                                {t(theme as any)}
-                              </span>
-                            </Button>
-                          </DropdownTrigger>
-                          <DropdownMenu
-                            aria-label={`${theme} examples`}
-                            className="max-h-[70vh] overflow-y-auto"
-                          >
-                            {[
-                              <DropdownItem
-                                key="aa"
-                                className="py-2 text-default-500 !data-[hover=true]:bg-transparent"
-                                startContent={
-                                  usecases[0]?.agent.icon && (
-                                    <Icon
-                                      name={(agentThemeIcon as any)[theme]}
-                                      size="md"
-                                      className="text-default-00"
-                                    />
-                                  )
-                                }
-                                endContent={
-                                  <Icon
-                                    name="Xmark"
-                                    size="md"
-                                    className="text-default-500"
-                                  />
-                                }
-                              >
-                                <span className="font-medium">
-                                  {t(theme as any)}
-                                </span>
-                              </DropdownItem>,
-
-                              ...usecases.map((example) => (
-                                <DropdownItem
-                                  key={example.id}
-                                  endContent={
-                                    <Icon
-                                      name="NavArrowRight"
-                                      size="md"
-                                      className="text-default-500"
-                                    />
-                                  }
-                                  // description={
-                                  //   <span className="text-xs text-default-500 line-clamp-2">
-                                  //     {example.prompt}
-                                  //   </span>
-                                  // }
-                                  classNames={{
-                                    base: 'py-3',
-                                    title: 'font-medium',
-                                    description: 'text-xs',
-                                  }}
-                                  onPress={() => {
-                                    handleUseCaseClick(example)
-
-                                    // submit
-                                    setTimeout(() => {
-                                      const submitButton =
-                                        document.querySelector(
-                                          '#prompt-area [type="submit"]',
-                                        ) as HTMLButtonElement | null
-                                      submitButton?.click()
-                                    }, 150)
-                                  }}
-                                  onMouseEnter={() =>
-                                    handleUseCaseClick(example, false)
-                                  }
-                                >
-                                  {example.agent.i18n?.[lang]?.examples?.find(
-                                    (ex) => ex.id === example.id,
-                                  )?.title ?? example.title}
-                                </DropdownItem>
-                              )),
-                            ]}
-                          </DropdownMenu>
-                        </Dropdown>
-                      </motion.div>
-                    ),
-                  )}
-                </div>
-              </Container>
-            )}
-
-            {/* Methodologies Section */}
-            {/* {!isLoadingMethodologies && (
-            <Container>
-              <Title level={3} size="lg" className="text-gray-600">
-                {t('Methodologies')}
-              </Title>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                {methodologies.map((methodology) => {
-                  const methodologyName =
-                    methodology.metadata.i18n?.[lang]?.name ||
-                    methodology.metadata.name
-                  return (
-                    <Card
-                      key={methodology.metadata.id}
-                      isPressable
-                      isHoverable
-                      shadow="sm"
-                      className="transition-transform"
-                      onPress={() => {
-                        window.location.hash = `p=${encodeURIComponent(methodologyName)}`
-                      }}
-                    >
-                      <CardBody className="p-3 text-center">
-                        <p className="text-sm font-medium">{methodologyName}</p>
-                      </CardBody>
-                    </Card>
-                  )
-                })}
-              </div>
-            </Container>
-          )} */}
-          </motion.div>}
 
           <motion.div {...motionVariants.agentSection}>
             <RecentActivity />
@@ -517,7 +367,7 @@ export const IndexPage = () => {
         </Section>
 
         <footer className="absolute bottom-12 md:bottom-0 left-0 right-0 mt-auto py-6 flex justify-center gap-4 scale-90 text-sm *:text-default-400 dark:*:text-default-500">
-          <Link href={url('/about')}>{t('About')}</Link>
+          <Link href={url('/info')}>{t('About')}</Link>
           <Link href={url('/terms')}>{t('Terms')}</Link>
           <Link href={url('/privacy')}>{t('Privacy')}</Link>
           {/* Open Source */}

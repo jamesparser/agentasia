@@ -60,7 +60,7 @@ export function InboxWorkflowVideo({ autoplay, rootId, disableKeyboard, initialT
         start={19.9}
         end={26}
         tagline="Now you can."
-        ctaLabel="Open devs.new →"
+        ctaLabel="Open agentasia.vercel.app →"
         frictionBadge="No signup · No install · Free"
       />
     </Stage>

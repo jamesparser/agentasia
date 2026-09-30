@@ -15,7 +15,10 @@ import { errorToast, successToast } from '@/lib/toast'
 
 // Default WebSocket server URL
 const getDefaultServerUrl = (): string => {
-  return 'wss://signal.devs.new' // TODO: Let the user override this in the advanced settings
+  // Was wss://signal.devs.new: the upstream project's relay.
+  // Sync stays off until the user supplies their own server,
+  // rather than silently sending peers through someone else's.
+  return ''
 }
 
 let wsProvider: WebsocketProvider | null = null

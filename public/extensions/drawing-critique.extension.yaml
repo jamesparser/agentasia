@@ -9,7 +9,7 @@ description: Your artworks real-time AI critique.
 author:
   name: Arnaud Leymet
   url: https://arnley.com
-privacyPolicy: https://devs.new/privacy
+privacyPolicy: https://agentasia.vercel.app/privacy
 source: https://github.com/codename-co/devs/blob/main/public/extensions/drawing-critic.extension.yaml
 i18n:
   en:

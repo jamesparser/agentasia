@@ -60,7 +60,7 @@ export function SceneOpen({ start = 0, end = 4.0 }: SceneProps) {
   //   0.35 – 0.70  hook holds
   //   0.70 – 1.10  hook fades out
   //   0.80 – 1.30  chrome eases in
-  //   1.40 – 2.20  URL "devs.new" types
+  //   1.40 – 2.20  URL "agentasia.vercel.app" types
   //   1.80 – 2.60  home page fades in with prompt already filled
   //   2.40 – 3.20  cursor glides from off-stage to submit
   //   3.20 – 3.45  cursor clicks submit (ripple)
@@ -129,7 +129,7 @@ export function SceneOpen({ start = 0, end = 4.0 }: SceneProps) {
           >
             <BrowserChromeTyping
               inset={chromeInset}
-              urlText="devs.new"
+              urlText="agentasia.vercel.app"
               urlProgress={urlProgress}
               scale={chromeScale}
               opacity={chromeOpacity}
@@ -147,7 +147,6 @@ export function SceneOpen({ start = 0, end = 4.0 }: SceneProps) {
               >
                 <NewTaskHero
                   autoFocus={false}
-                  showUseCases={pageIn > 0.6}
                   className="flex h-full min-h-0 flex-1 flex-col"
                   value={pageIn > 0.3 ? prompt : undefined}
                   demo
@@ -472,7 +471,7 @@ const SwarmContent = memo(function SwarmContent({
   )
   const selectedId = threads[0].id
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new">
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app">
       {/* ThreadsPage composition — real Sidebar + ThreadList + ThreadPreview.
           We avoid WorkspaceLayout because it forces h-dvh. */}
       <div
@@ -1064,7 +1063,7 @@ export function SceneCTA({ start = 22.9, end = 30 }: SceneProps) {
       start={start}
       end={end}
       tagline="Now you can."
-      ctaLabel="Open devs.new →"
+      ctaLabel="Open agentasia.vercel.app →"
       frictionBadge="No signup · No install · Free"
     />
   )

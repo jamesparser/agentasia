@@ -65,7 +65,7 @@ export const fr: I18n = {
 
   // Scene 5 — CTA
   [`Now you can.`]: `Maintenant, c\u2019est possible.`,
-  [`Open devs.new →`]: `Ouvrir devs.new →`,
+  [`Open agentasia.vercel.app →`]: `Ouvrir agentasia.vercel.app →`,
   [`No signup · No install · Free`]: `Sans inscription · Sans installation · Gratuit`,
 
   // Playback bar — settings menu

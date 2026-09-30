@@ -2,10 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
   ScrollShadow,
 } from '@heroui/react'
 import { Icon, PromptArea, Title } from '@/components'
@@ -15,7 +11,6 @@ import type { PromptMode } from '@/components/PromptArea'
 import { useI18n, useUrl } from '@/i18n'
 import { useSessionStore } from '@/stores/sessionStore'
 import { getAgentsByCategory } from '@/stores/agentStore'
-import { agentThemeIcon, useCasesByThemes } from '@/lib/agents'
 import { errorToast } from '@/lib/toast'
 import { uuidToBase64url } from '@/lib/url'
 import type { Agent, InstalledSkill, SessionIntent } from '@/types'
@@ -27,7 +22,6 @@ export interface NewTaskHeroProps {
   /** When true the PromptArea receives autofocus. Default: true. */
   autoFocus?: boolean
   /** Show the category use-case dropdowns. Default: true. */
-  showUseCases?: boolean
   className?: string
   /**
    * Externally controlled prompt value. When provided, the internal prompt
@@ -70,7 +64,6 @@ const fileToBase64 = (file: File): Promise<string> =>
  */
 export function NewTaskHero({
   autoFocus = true,
-  showUseCases = true,
   className,
   value,
   onValueChange,
@@ -310,11 +303,6 @@ export function NewTaskHero({
     ],
   )
 
-  const useCases = useMemo(
-    () => (isLoadingAgents ? [] : useCasesByThemes(agents)),
-    [isLoadingAgents, agents],
-  )
-
   return (
     <div className={className ?? 'flex h-full min-h-0 flex-1 flex-col'}>
       <ScrollShadow
@@ -353,96 +341,6 @@ export function NewTaskHero({
             />
           </div>
 
-          {/* Use cases */}
-          {showUseCases && useCases.length > 0 && (
-            <div className="flex max-w-2xl flex-wrap justify-center gap-2">
-              {useCases.map(({ theme, usecases }) => (
-                <Dropdown key={theme} placement="bottom-start">
-                  <DropdownTrigger>
-                    <Button
-                      variant="ghost"
-                      size="md"
-                      className="inline-flex justify-start"
-                      startContent={
-                        usecases[0]?.agent.icon && (
-                          <Icon
-                            name={(agentThemeIcon as any)[theme]}
-                            size="lg"
-                            className="text-default-500"
-                          />
-                        )
-                      }
-                    >
-                      <span className="font-semibold">{t(theme as any)}</span>
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    aria-label={`${theme} examples`}
-                    className="max-h-[70vh] overflow-y-auto"
-                  >
-                    {[
-                      <DropdownItem
-                        key="header"
-                        className="py-2 text-default-500 !data-[hover=true]:bg-transparent"
-                        startContent={
-                          usecases[0]?.agent.icon && (
-                            <Icon
-                              name={(agentThemeIcon as any)[theme]}
-                              size="md"
-                              className="text-default-00"
-                            />
-                          )
-                        }
-                        endContent={
-                          <Icon
-                            name="Xmark"
-                            size="md"
-                            className="text-default-500"
-                          />
-                        }
-                      >
-                        <span className="font-medium">{t(theme as any)}</span>
-                      </DropdownItem>,
-
-                      ...usecases.map((example) => (
-                        <DropdownItem
-                          key={example.id}
-                          endContent={
-                            <Icon
-                              name="NavArrowRight"
-                              size="md"
-                              className="text-default-500"
-                            />
-                          }
-                          classNames={{
-                            base: 'py-3',
-                            title: 'font-medium',
-                            description: 'text-xs',
-                          }}
-                          onPress={() => {
-                            handleUseCaseClick(example)
-                            setTimeout(() => {
-                              const submitButton = document.querySelector(
-                                '#prompt-area [type="submit"]',
-                              ) as HTMLButtonElement | null
-                              submitButton?.click()
-                            }, 150)
-                          }}
-                          onMouseEnter={() =>
-                            handleUseCaseClick(example, false)
-                          }
-                        >
-                          {example.agent.i18n?.[lang]?.examples?.find(
-                            (ex) => ex.id === example.id,
-                          )?.title ?? example.title}
-                        </DropdownItem>
-                      )),
-                    ]}
-                  </DropdownMenu>
-                </Dropdown>
-              ))}
-            </div>
-          )}
         </div>
       </ScrollShadow>
     </div>

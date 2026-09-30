@@ -165,7 +165,7 @@ export const PrivacyPage = () => {
             </li>
             <li>
               {t(
-                'A signaling server (wss://signal.devs.new) is used only for WebSocket connection relay',
+                'Peer sync is off by default and relays nothing; if you configure your own signaling server, only connection metadata passes through it',
               )}
             </li>
             <li>
@@ -278,7 +278,7 @@ const localI18n = {
     'DEVS offers an optional peer-to-peer sync feature to synchronize your data across devices:',
     'Sync is opt-in and disabled by default',
     'All sync data is encrypted per-message with AES-GCM-256 using a key derived from your room password (PBKDF2 with 210,000 iterations)',
-    'A signaling server (wss://signal.devs.new) is used only for WebSocket connection relay',
+    'Peer sync is off by default and relays nothing; if you configure your own signaling server, only connection metadata passes through it',
     'The signaling server sees only: derived room identifiers (opaque hashes) and encrypted binary payloads',
     'The signaling server is stateless and stores no data',
     'Your actual data is end-to-end encrypted and never visible to the server',
@@ -357,8 +357,8 @@ const localI18n = {
       'المزامنة اختيارية ومعطلة افتراضيًا',
     'All sync data is encrypted per-message with AES-GCM-256 using a key derived from your room password (PBKDF2 with 210,000 iterations)':
       'يتم تشفير جميع بيانات المزامنة لكل رسالة باستخدام AES-GCM-256 بمفتاح مشتق من كلمة مرور الغرفة (PBKDF2 مع 210,000 تكرار)',
-    'A signaling server (wss://signal.devs.new) is used only for WebSocket connection relay':
-      'يُستخدم خادم الإشارات (wss://signal.devs.new) فقط لترحيل اتصالات WebSocket',
+    'Peer sync is off by default and relays nothing; if you configure your own signaling server, only connection metadata passes through it':
+      'يُستخدم خادم الإشارات (a self-hosted relay you configure) فقط لترحيل اتصالات WebSocket',
     'The signaling server sees only: derived room identifiers (opaque hashes) and encrypted binary payloads':
       'يرى خادم الإشارات فقط: معرفات الغرف المشتقة (تجزئات معتمة) وحمولات ثنائية مشفرة',
     'The signaling server is stateless and stores no data':
@@ -451,8 +451,8 @@ const localI18n = {
       'Die Synchronisierung ist optional und standardmäßig deaktiviert',
     'All sync data is encrypted per-message with AES-GCM-256 using a key derived from your room password (PBKDF2 with 210,000 iterations)':
       'Alle Synchronisierungsdaten werden pro Nachricht mit AES-GCM-256 verschlüsselt, unter Verwendung eines aus Ihrem Raumpasswort abgeleiteten Schlüssels (PBKDF2 mit 210.000 Iterationen)',
-    'A signaling server (wss://signal.devs.new) is used only for WebSocket connection relay':
-      'Ein Signalisierungsserver (wss://signal.devs.new) wird nur für die WebSocket-Verbindungsweiterleitung verwendet',
+    'Peer sync is off by default and relays nothing; if you configure your own signaling server, only connection metadata passes through it':
+      'Ein Signalisierungsserver (a self-hosted relay you configure) wird nur für die WebSocket-Verbindungsweiterleitung verwendet',
     'The signaling server sees only: derived room identifiers (opaque hashes) and encrypted binary payloads':
       'Der Signalisierungsserver sieht nur: abgeleitete Raumkennungen (undurchsichtige Hashes) und verschlüsselte Binärdaten',
     'The signaling server is stateless and stores no data':
@@ -545,8 +545,8 @@ const localI18n = {
       'La sincronización es opcional y está deshabilitada por defecto',
     'All sync data is encrypted per-message with AES-GCM-256 using a key derived from your room password (PBKDF2 with 210,000 iterations)':
       'Todos los datos de sincronización se cifran por mensaje con AES-GCM-256 usando una clave derivada de tu contraseña de sala (PBKDF2 con 210.000 iteraciones)',
-    'A signaling server (wss://signal.devs.new) is used only for WebSocket connection relay':
-      'Un servidor de señalización (wss://signal.devs.new) se usa solo para la retransmisión de conexiones WebSocket',
+    'Peer sync is off by default and relays nothing; if you configure your own signaling server, only connection metadata passes through it':
+      'Un servidor de señalización (a self-hosted relay you configure) se usa solo para la retransmisión de conexiones WebSocket',
     'The signaling server sees only: derived room identifiers (opaque hashes) and encrypted binary payloads':
       'El servidor de señalización solo ve: identificadores de sala derivados (hashes opacos) y cargas binarias cifradas',
     'The signaling server is stateless and stores no data':
@@ -639,8 +639,8 @@ const localI18n = {
       'La synchronisation est optionnelle et désactivée par défaut',
     'All sync data is encrypted per-message with AES-GCM-256 using a key derived from your room password (PBKDF2 with 210,000 iterations)':
       "Toutes les données de synchronisation sont chiffrées par message avec AES-GCM-256 à l'aide d'une clé dérivée de votre mot de passe de salon (PBKDF2 avec 210 000 itérations)",
-    'A signaling server (wss://signal.devs.new) is used only for WebSocket connection relay':
-      'Un serveur de signalisation (wss://signal.devs.new) est utilisé uniquement pour le relais de connexions WebSocket',
+    'Peer sync is off by default and relays nothing; if you configure your own signaling server, only connection metadata passes through it':
+      'Un serveur de signalisation (a self-hosted relay you configure) est utilisé uniquement pour le relais de connexions WebSocket',
     'The signaling server sees only: derived room identifiers (opaque hashes) and encrypted binary payloads':
       'Le serveur de signalisation ne voit que : des identifiants de salon dérivés (hachages opaques) et des charges utiles binaires chiffrées',
     'The signaling server is stateless and stores no data':
@@ -731,8 +731,8 @@ const localI18n = {
       '동기화는 선택 사항이며 기본적으로 비활성화되어 있습니다',
     'All sync data is encrypted per-message with AES-GCM-256 using a key derived from your room password (PBKDF2 with 210,000 iterations)':
       '모든 동기화 데이터는 방 비밀번호에서 파생된 키(PBKDF2, 210,000회 반복)를 사용하여 AES-GCM-256으로 메시지별 암호화됩니다',
-    'A signaling server (wss://signal.devs.new) is used only for WebSocket connection relay':
-      '신호 서버(wss://signal.devs.new)는 WebSocket 연결 중계에만 사용됩니다',
+    'Peer sync is off by default and relays nothing; if you configure your own signaling server, only connection metadata passes through it':
+      '신호 서버(a self-hosted relay you configure)는 WebSocket 연결 중계에만 사용됩니다',
     'The signaling server sees only: derived room identifiers (opaque hashes) and encrypted binary payloads':
       '신호 서버는 다음만 확인합니다: 파생된 방 식별자(불투명 해시) 및 암호화된 바이너리 페이로드',
     'The signaling server is stateless and stores no data':

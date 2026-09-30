@@ -103,24 +103,24 @@ export const my: Partial<I18n> = {
   'From device': 'စက်မှ',
   Screenshot: 'ဖန်သားပြင်ဓာတ်ပုံ',
   'Capture screen': 'မျက်နှာပြင်ကို ဖမ်းယူပါ။',
-  'Capturingâ¦': 'ရိုက်ကူးခြင်း။',
+  'Capturing…': 'ရိုက်ကူးခြင်း။',
   'Choose from knowledge base': 'အသိပညာအခြေခံမှရွေးချယ်ပါ။',
   'No files found in knowledge base':
     'အသိပညာအခြေခံတွင် မည်သည့်ဖိုင်မျှ မတွေ့ပါ။',
   'No matching files': 'ကိုက်ညီသောဖိုင်များမရှိပါ။',
-  'Filter filesâ¦': 'ဖိုင်များကို စစ်ထုတ်ပါ။',
+  'Filter files…': 'ဖိုင်များကို စစ်ထုတ်ပါ။',
   'Add files': 'ဖိုင်များထည့်ပါ။',
   'Choose from skills': 'အရည်အချင်းများမှ ရွေးချယ်ပါ။',
   'No skills installed': 'ကျွမ်းကျင်မှု ထည့်သွင်းထားခြင်းမရှိပါ။',
   'No matching skills': 'ကိုက်ညီသောအရည်အချင်းမရှိပါ။',
-  'Filter skillsâ¦': 'စစ်ထုတ်ခြင်းဆိုင်ရာ ကျွမ်းကျင်မှုများ',
+  'Filter skills…': 'စစ်ထုတ်ခြင်းဆိုင်ရာ ကျွမ်းကျင်မှုများ',
   'Browse skills': 'အတတ်ပညာကို လိုက်ကြည့်ပါ။',
   Attach: 'တွဲပါ။',
   Extend: 'ထပ်တိုးပါ။',
   'Image & video': 'ရုပ်ပုံနှင့် ဗီဒီယို',
   'Web app': 'ဝဘ်အက်ပ်',
   'AI agent': 'AI အေးဂျင့်',
-  'Drop files hereâ¦': 'ဖိုင်များကို ဤနေရာတွင် ချလိုက်ပါ။',
+  'Drop files here…': 'ဖိုင်များကို ဤနေရာတွင် ချလိုက်ပါ။',
   'Speak to microphone': 'မိုက်ခရိုဖုန်းနဲ့ စကားပြောပါ။',
   'Send prompt': 'အချက်ပြပေးပို့ပါ။',
   'Stop generating': 'ထုတ်လုပ်ခြင်းကို ရပ်လိုက်ပါ။',
@@ -130,14 +130,14 @@ export const my: Partial<I18n> = {
   'Image & video generation': 'ရုပ်ပုံနှင့် ဗီဒီယို မျိုးဆက်',
   'Create a web app': 'ဝဘ်အက်ပ်ကို ဖန်တီးပါ။',
   'Create an agent': 'အေးဂျင့်တစ်ခုဖန်တီးပါ။',
-  'Describe the image or video you want to createâ¦':
+  'Describe the image or video you want to create…':
     'သင်ဖန်တီးလိုသော ရုပ်ပုံ သို့မဟုတ် ဗီဒီယိုကို ဖော်ပြပါ။',
-  'Describe the web app you want to buildâ¦':
+  'Describe the web app you want to build…':
     'သင်တည်ဆောက်လိုသော ဝဘ်အက်ပ်ကို ဖော်ပြပါ။',
-  'Describe the AI agent you want to createâ¦':
+  'Describe the AI agent you want to create…':
     'သင်ဖန်တီးလိုသော AI အေးဂျင့်ကို ဖော်ပြပါ။',
   'Live voice conversation': 'တိုက်ရိုက်စကားပြောဆိုမှု',
-  'Listeningâ¦': 'နားထောင်နေသည်။',
+  'Listening…': 'နားထောင်နေသည်။',
   'Select an agent': 'ကိုယ်စားလှယ်ရွေးပါ။',
   'No agents found': 'အေးဂျင့်မတွေ့ပါ။',
   'Select a methodology': 'နည်းစနစ်တစ်ခုကို ရွေးချယ်ပါ။',
@@ -162,7 +162,7 @@ export const my: Partial<I18n> = {
   'No models available': 'မော်ဒယ်များ မရရှိနိုင်ပါ။',
   'Check your server URL and connection':
     'သင့်ဆာဗာ URL နှင့် ချိတ်ဆက်မှုကို စစ်ဆေးပါ။',
-  'Search agentsâ¦': 'အေးဂျင့်များရှာဖွေပါ။',
+  'Search agents…': 'အေးဂျင့်များရှာဖွေပါ။',
   Fast: 'မြန်သည်။',
   'Low cost': 'ကုန်ကျစရိတ်သက်သာတယ်။',
   'High cost': 'မြင့်မားသောကုန်ကျစရိတ်',
@@ -233,7 +233,7 @@ export const my: Partial<I18n> = {
   'Page not found': 'စာမျက်နှာကို ရှာမတွေ့ပါ။',
   'No AI provider configured. Please [configure one in Settings]({path}).':
     'AI ပံ့ပိုးပေးသူကို စီစဉ်သတ်မှတ်ထားခြင်းမရှိပါ။ ကျေးဇူးပြု၍ [ဆက်တင်များ]({path}) တွင် တစ်ခုသတ်မှတ်ပါ။',
-  'Thinkingâ¦': 'စဉ်းစားနေသည်။',
+  'Thinking…': 'စဉ်းစားနေသည်။',
   Thoughts: 'အတွေးများ',
   'My Agents': 'ကျွန်ုပ်၏ အေးဂျင့်များ',
   'Built-in Agents': 'Built-in အေးဂျင့်များ',
@@ -242,13 +242,13 @@ export const my: Partial<I18n> = {
   'Default agents are currently hidden. You can enable them in':
     'မူရင်းအေးဂျင့်များကို လောလောဆယ် ဝှက်ထားသည်။ ၎င်းတို့ကိုသင်ဖွင့်နိုင်သည်။',
   'Find your past conversations': 'သင်၏အတိတ်စကားဝိုင်းများကိုရှာပါ။',
-  'Loading agent and conversationâ¦':
+  'Loading agent and conversation…':
     'အေးဂျင့်နှင့် စကားဝိုင်းကို ဖွင့်နေပါသည်။',
   Back: 'ကျော',
   'Conversation ID:': 'စကားဝိုင်း ID-',
   You: 'မင်း',
-  'Continue the conversationâ¦': 'စကားဝိုင်းကို ဆက်လုပ်ပါ။',
-  'Start chatting with {agentName}â¦': '{agentName}â ¢ နှင့် စတင်စကားပြောပါ။',
+  'Continue the conversation…': 'စကားဝိုင်းကို ဆက်လုပ်ပါ။',
+  'Start chatting with {agentName}…': '{agentName}â ¢ နှင့် စတင်စကားပြောပါ။',
   'this agent': 'ဒီအေးဂျင့်',
   'System Prompt': 'System Prompt',
   'No system prompt defined.': 'System prompt ကို သတ်မှတ်မထားပါ။',
@@ -341,7 +341,7 @@ export const my: Partial<I18n> = {
   'View on GitHub': 'GitHub တွင်ကြည့်ရှုပါ။',
   'Manage and monitor tasks for your organization':
     'သင့်အဖွဲ့အစည်းအတွက် လုပ်ဆောင်စရာများကို စီမံခန့်ခွဲပြီး စောင့်ကြည့်ပါ။',
-  'Loading tasksâ¦': 'လုပ်ဆောင်စရာများကို တင်နေပါသည်။',
+  'Loading tasks…': 'လုပ်ဆောင်စရာများကို တင်နေပါသည်။',
   tasks: 'အလုပ်များ',
   'In Progress': 'တိုးတက်နေပါသည်။',
   'Task Details': 'အလုပ်အသေးစိတ်',
@@ -368,19 +368,19 @@ export const my: Partial<I18n> = {
   'Task not found': 'လုပ်ဆောင်စရာမတွေ့ပါ။',
   'Failed to load task data': 'လုပ်ဆောင်စရာဒေတာကို တင်ရန် မအောင်မြင်ပါ။',
   'View Content': 'အကြောင်းအရာကို ကြည့်ပါ။',
-  'Loading task detailsâ¦':
+  'Loading task details…':
     'လုပ်ဆောင်စရာအသေးစိတ်အချက်အလက်များကို ဖွင့်နေပါသည်။',
   'Task Not Found': 'လုပ်ဆောင်စရာ ရှာမတွေ့ပါ။',
   'The requested task could not be found.':
     'တောင်းဆိုထားသည့် လုပ်ငန်းကို ရှာမတွေ့ပါ။',
   'Task Steps': 'လုပ်ဆောင်စရာ အဆင့်များ',
   Steps: 'ခြေလှမ်းများ',
-  'Agents workingâ¦': 'လုပ်ကိုင်နေသော အေးဂျင့်များ',
+  'Agents working…': 'လုပ်ကိုင်နေသော အေးဂျင့်များ',
   'No conversation messages yet.': 'စကားဝိုင်း မက်ဆေ့ချ်များ မရှိသေးပါ။',
   'Copied to clipboard': 'ကလစ်ဘုတ်သို့ ကူးယူထားသည်။',
   Conversation: 'စကားဝိုင်း',
   Source: 'အရင်းအမြစ်',
-  'No messages yet. The task is being processedâ¦':
+  'No messages yet. The task is being processed…':
     'မက်ဆေ့ချ်များ မရှိသေးပါ။ လုပ်ငန်းကို ဆောင်ရွက်နေပါသည်။',
   'Validation Criteria': 'မှန်ကန်မှု သတ်မှတ်ချက်',
   'Delete task': 'အလုပ်တစ်ခုကို ဖျက်ပါ။',
@@ -407,7 +407,7 @@ export const my: Partial<I18n> = {
   Export: 'တင်ပို့ခြင်း။',
   'Copy to clipboard': 'ကလစ်ဘုတ်သို့ ကူးယူပါ။',
   Download: 'ဒေါင်းလုဒ်လုပ်ပါ။',
-  'Loading database informationâ¦': 'ဒေတာဘေ့စ်အချက်အလက်ကို တင်နေပါသည်။',
+  'Loading database information…': 'ဒေတာဘေ့စ်အချက်အလက်ကို တင်နေပါသည်။',
   'Failed to load database information':
     'ဒေတာဘေ့စ်အချက်အလက်ကို တင်ရန် မအောင်မြင်ပါ။',
   'Database Administration': 'ဒေတာဘေ့စ်အုပ်ချုပ်ရေး',
@@ -416,7 +416,7 @@ export const my: Partial<I18n> = {
   Records: 'မှတ်တမ်းများ',
   Indexes: 'အညွှန်းများ',
   Size: 'အရွယ်အစား',
-  'Search {store} by {categories}â¦':
+  'Search {store} by {categories}…':
     '{စတိုး} ကို {အမျိုးအစား} အလိုက် ရှာဖွေပါ။',
   'All Records': 'မှတ်တမ်းအားလုံး',
   'Filtered Records': 'စစ်ထုတ်ထားသော မှတ်တမ်းများ',
@@ -463,7 +463,7 @@ export const my: Partial<I18n> = {
   'Export your current agents and AI provider settings and share it via URL or QR code.':
     'သင့်လက်ရှိအေးဂျင့်များနှင့် AI ဝန်ဆောင်မှုပေးဆက်တင်များကို ထုတ်ယူပြီး URL သို့မဟုတ် QR ကုဒ်မှတစ်ဆင့် မျှဝေပါ။',
   'Include my {n} agents': 'ကျွန်ုပ်၏ {n} အေးဂျင့်များ ပါဝင်ပါ။',
-  'Now you can share the platform configurationâ¦':
+  'Now you can share the platform configuration…':
     'ယခု သင်သည် ပလပ်ဖောင်းဖွဲ့စည်းမှုပုံစံကို မျှဝေနိုင်ပါပြီ။',
   'Either with this URL:': 'ဤ URL ဖြင့်ဖြစ်စေ-',
   'Or this QR Code:': 'သို့မဟုတ် ဤ QR ကုဒ်-',
@@ -473,8 +473,8 @@ export const my: Partial<I18n> = {
   'Password (optional)': 'စကားဝှက် (ချန်လှပ်ထားနိုင်သည်)',
   Password: 'စကားဝှက်',
   Continue: 'ဆက်ရန်',
-  'Setting the platform upâ¦': 'ပလက်ဖောင်းကို စတင်သတ်မှတ်ခြင်း။',
-  'Initializing Local AI Modelâ¦': 'Local AI Model ကို စတင်နေပါသည်။',
+  'Setting the platform up…': 'ပလက်ဖောင်းကို စတင်သတ်မှတ်ခြင်း။',
+  'Initializing Local AI Model…': 'Local AI Model ကို စတင်နေပါသည်။',
   'Downloading model': 'မော်ဒယ်ကို ဒေါင်းလုဒ်လုပ်နေသည်။',
   'Model loaded': 'မော်ဒယ်တင်ထားသည်။',
   'Model load failed': 'မော်ဒယ်တင်ခြင်း မအောင်မြင်ပါ။',
@@ -576,7 +576,7 @@ export const my: Partial<I18n> = {
   'Memory updated': 'မန်မိုရီကို အပ်ဒိတ်လုပ်ထားသည်။',
   'Add a note': 'မှတ်စုတစ်ခုထည့်ပါ။',
   'Edit memory': 'မှတ်ဉာဏ်ကို တည်းဖြတ်ပါ။',
-  'Write what this agent should remember, as short notesâ¦':
+  'Write what this agent should remember, as short notes…':
     'မှတ်စုတိုများအဖြစ် ဤအေးဂျင့်မှတ်မိသင့်သည်များကို ရေးပါ။',
   'Failed to delete memory': 'မှတ်ဉာဏ်ကို ဖျက်၍မရပါ။',
   'Failed to load learning events': 'သင်ယူမှုဖြစ်ရပ်များကို တင်၍မရပါ။',
@@ -618,7 +618,7 @@ export const my: Partial<I18n> = {
   'Remember for all agents': 'အေးဂျင့်အားလုံးအတွက် သတိရပါ။',
   'Remember selection': 'ရွေးချယ်မှုကို သတိရပါ။',
   'Selection actions': 'ရွေးချယ်မှုလုပ်ဆောင်ချက်များ',
-  'Added to this agentâs memory': 'ဤအေးဂျင့်၏ မှတ်ဉာဏ်ထဲသို့ ထည့်ထားသည်။',
+  'Added to this agent’s memory': 'ဤအေးဂျင့်၏ မှတ်ဉာဏ်ထဲသို့ ထည့်ထားသည်။',
   'Added to global memory': 'ကမ္ဘာလုံးဆိုင်ရာမှတ်ဉာဏ်သို့ ထည့်ထားသည်။',
   'Failed to save to memory': 'မှတ်ဉာဏ်တွင် သိမ်းဆည်းရန် မအောင်မြင်ပါ။',
   'No agent selected for this memory':
@@ -818,8 +818,8 @@ export const my: Partial<I18n> = {
     'သင့်စက်ပစ္စည်းရှိ ဖိုင်တွဲတစ်ခုသို့ သင့်ဒေတာကို အလိုအလျောက် အရန်ကူးယူပါ။',
   'Successfully joined sync room':
     'စင့်ခ်လုပ်ထားသောအခန်းသို့ အောင်မြင်စွာ ဝင်ရောက်ခဲ့သည်။',
-  'Drop reference image hereâ¦': 'ရည်ညွှန်းပုံကို ဤနေရာတွင် ချပေးပါ။',
-  'Describe the image you want to createâ¦': 'သင်ဖန်တီးလိုသောပုံကို ဖော်ပြပါ။',
+  'Drop reference image here…': 'ရည်ညွှန်းပုံကို ဤနေရာတွင် ချပေးပါ။',
+  'Describe the image you want to create…': 'သင်ဖန်တီးလိုသောပုံကို ဖော်ပြပါ။',
   'Image presets': 'ပုံကြိုသတ်မှတ်မှုများ',
   'Image settings': 'ပုံဆက်တင်များ',
   'Add reference image': 'ရည်ညွှန်းပုံထည့်ပါ။',
@@ -898,7 +898,7 @@ export const my: Partial<I18n> = {
   'Encryption Key Status': 'ကုဒ်ဝှက်ခြင်းကီး အခြေအနေ',
   'Secure (Non-extractable)': 'လုံခြုံသော (ထုတ်ယူ၍မရသော)',
   'Not initialized': 'စတင်မထားပါ။',
-  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exportedâit can only be used for encryption operations.':
+  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exported—it can only be used for encryption operations.':
     "သင်၏ ကုဒ်ဝှက်ခြင်းသော့ကို ထုတ်ယူ၍မရသော ဘရောက်ဆာ လျှို့ဝှက်စာဝှက်ဖြင့် လုံခြုံစွာ သိမ်းဆည်းထားသည်။ သော့ကို ဖတ်ခြင်း သို့မဟုတ် ထုတ်ယူ၍မရပါ' ၎င်းကို ကုဒ်ဝှက်ခြင်းဆိုင်ရာ လုပ်ဆောင်ချက်များအတွက်သာ အသုံးပြုနိုင်ပါသည်။",
   'Non-extractable keys provide maximum security - they cannot be stolen even if an attacker gains access to your browser':
     'ထုတ်ယူ၍မရသောသော့များသည် အမြင့်ဆုံးလုံခြုံရေးကိုပေးသည် - တိုက်ခိုက်သူသည် သင့်ဘရောက်ဆာသို့ ဝင်ရောက်ခွင့်ရရှိနိုင်သော်လည်း ၎င်းတို့ကို ခိုးယူ၍မရပါ။',
@@ -982,19 +982,19 @@ export const my: Partial<I18n> = {
     'လူသား၏ဝင်ရောက်စွက်ဖက်မှုသတိပေးချက်အားလုံးကိုကျော်ပြီး အေးဂျင့်များအလိုအလျောက်ဆုံးဖြတ်ခွင့်ပြုပါ။',
   Automation: 'အလိုအလျောက်စနစ်',
   Session: 'အပိုင်း',
-  'Startingâ¦': 'စတင်နေပါသည်။',
-  'Workingâ¦': 'အလုပ်လုပ်သည်။',
+  'Starting…': 'စတင်နေပါသည်။',
+  'Working…': 'အလုပ်လုပ်သည်။',
   'file(s)': 'ဖိုင်(များ)',
-  'Creating agentâ¦': 'အေးဂျင့်ကို ဖန်တီးနေသည်',
+  'Creating agent…': 'အေးဂျင့်ကို ဖန်တီးနေသည်',
   'Agent creation failed': 'အေးဂျင့်ဖန်တီးမှု မအောင်မြင်ပါ။',
-  'Building appâ¦': 'အက်ပ်တည်ဆောက်ခြင်း။',
+  'Building app…': 'အက်ပ်တည်ဆောက်ခြင်း။',
   'App build failed': 'အက်ပ်တည်ဆောက်မှု မအောင်မြင်ပါ။',
-  'is thinkingâ¦': 'တွေးနေပါသည်။',
+  'is thinking…': 'တွေးနေပါသည်။',
   'Turn failed': 'လှည့်၍မရပါ။',
-  'Generating mediaâ¦': 'မီဒီယာကို ထုတ်လုပ်နေသည်',
+  'Generating media…': 'မီဒီယာကို ထုတ်လုပ်နေသည်',
   'Generation failed': 'မျိုးဆက်မအောင်မြင်ပါ။',
   'Media generated': 'မီဒီယာက ထုတ်ပေးတယ်။',
-  'Orchestrating taskâ¦': 'စည်းရုံးခြင်းလုပ်ငန်း',
+  'Orchestrating task…': 'စည်းရုံးခြင်းလုပ်ငန်း',
   'Task failed': 'လုပ်ဆောင်စရာ မအောင်မြင်ပါ။',
   Space: 'အာကာသ',
   'Space name': 'အာကာမည်၏။',
@@ -1013,7 +1013,7 @@ export const my: Partial<I18n> = {
   Board: 'ဘုတ်',
   'New conversation': 'စကားဝိုင်းအသစ်',
   'Start a new conversation': 'စကားဝိုင်းအသစ်တစ်ခု စတင်ပါ။',
-  'Search tasks and conversationsâ¦':
+  'Search tasks and conversations…':
     'လုပ်ဆောင်စရာများနှင့် စကားဝိုင်းများကို ရှာဖွေပါ။',
   'No threads yet': 'စာကြောင်းများ မရှိသေးပါ။',
   'No matching threads': 'ကိုက်ညီသောစာတွဲများမရှိပါ။',

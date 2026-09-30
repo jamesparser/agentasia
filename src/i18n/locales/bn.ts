@@ -103,23 +103,23 @@ export const bn: Partial<I18n> = {
   'From device': 'ডিভাইস থেকে',
   Screenshot: 'স্ক্রিনশট',
   'Capture screen': 'স্ক্রিন ক্যাপচার করুন',
-  'Capturingâ¦': 'ক্যাপচারিংâ¦',
+  'Capturing…': 'ক্যাপচারিংâ¦',
   'Choose from knowledge base': 'জ্ঞানের ভিত্তি থেকে চয়ন করুন',
   'No files found in knowledge base': 'নলেজ বেসে কোনো ফাইল পাওয়া যায়নি',
   'No matching files': 'কোনো মিলে যাওয়া ফাইল নেই',
-  'Filter filesâ¦': 'ফাইল ফিল্টার করুন',
+  'Filter files…': 'ফাইল ফিল্টার করুন',
   'Add files': 'ফাইল যোগ করুন',
   'Choose from skills': 'দক্ষতা থেকে চয়ন করুন',
   'No skills installed': 'কোন দক্ষতা ইনস্টল করা নেই',
   'No matching skills': 'কোন মিল দক্ষতা',
-  'Filter skillsâ¦': 'ফিল্টার দক্ষতা',
+  'Filter skills…': 'ফিল্টার দক্ষতা',
   'Browse skills': 'ব্রাউজ দক্ষতা',
   Attach: 'সংযুক্ত করুন',
   Extend: 'প্রসারিত করুন',
   'Image & video': 'ছবি ও ভিডিও',
   'Web app': 'ওয়েব অ্যাপ',
   'AI agent': 'এআই এজেন্ট',
-  'Drop files hereâ¦': 'ফাইলগুলি এখানে ড্রপ করুন৷',
+  'Drop files here…': 'ফাইলগুলি এখানে ড্রপ করুন৷',
   'Speak to microphone': 'মাইক্রোফোনে কথা বলুন',
   'Send prompt': 'প্রম্পট পাঠান',
   'Stop generating': 'জেনারেট করা বন্ধ করুন',
@@ -129,14 +129,14 @@ export const bn: Partial<I18n> = {
   'Image & video generation': 'ছবি এবং ভিডিও প্রজন্ম',
   'Create a web app': 'একটি ওয়েব অ্যাপ তৈরি করুন',
   'Create an agent': 'একটি এজেন্ট তৈরি করুন',
-  'Describe the image or video you want to createâ¦':
+  'Describe the image or video you want to create…':
     'আপনি যে ছবি বা ভিডিও তৈরি করতে চান তার বর্ণনা দিন',
-  'Describe the web app you want to buildâ¦':
+  'Describe the web app you want to build…':
     'আপনি যে ওয়েব অ্যাপ তৈরি করতে চান তার বর্ণনা দিন',
-  'Describe the AI agent you want to createâ¦':
+  'Describe the AI agent you want to create…':
     'আপনি যে AI এজেন্ট তৈরি করতে চান তার বর্ণনা দিন',
   'Live voice conversation': 'লাইভ ভয়েস কথোপকথন',
-  'Listeningâ¦': 'শুনছি',
+  'Listening…': 'শুনছি',
   'Select an agent': 'একটি এজেন্ট নির্বাচন করুন',
   'No agents found': 'কোনো এজেন্ট পাওয়া যায়নি',
   'Select a methodology': 'একটি পদ্ধতি নির্বাচন করুন',
@@ -161,7 +161,7 @@ export const bn: Partial<I18n> = {
   'No models available': 'কোন মডেল উপলব্ধ',
   'Check your server URL and connection':
     'আপনার সার্ভার URL এবং সংযোগ পরীক্ষা করুন',
-  'Search agentsâ¦': "অনুসন্ধান এজেন্ট'",
+  'Search agents…': "অনুসন্ধান এজেন্ট'",
   Fast: 'দ্রুত',
   'Low cost': 'কম খরচে',
   'High cost': 'উচ্চ খরচ',
@@ -229,7 +229,7 @@ export const bn: Partial<I18n> = {
   'Page not found': 'পেজ পাওয়া যায়নি',
   'No AI provider configured. Please [configure one in Settings]({path}).':
     'কোনো AI প্রদানকারী কনফিগার করা নেই। অনুগ্রহ করে [সেটিংসে একটি কনফিগার করুন]({পথ})।',
-  'Thinkingâ¦': 'চিন্তা করছি',
+  'Thinking…': 'চিন্তা করছি',
   Thoughts: 'চিন্তা',
   'My Agents': 'আমার এজেন্ট',
   'Built-in Agents': 'অন্তর্নির্মিত এজেন্ট',
@@ -238,12 +238,12 @@ export const bn: Partial<I18n> = {
   'Default agents are currently hidden. You can enable them in':
     'ডিফল্ট এজেন্ট বর্তমানে লুকানো আছে. আপনি তাদের সক্ষম করতে পারেন',
   'Find your past conversations': 'আপনার অতীত কথোপকথন খুঁজুন',
-  'Loading agent and conversationâ¦': 'এজেন্ট এবং কথোপকথন লোড হচ্ছে৷',
+  'Loading agent and conversation…': 'এজেন্ট এবং কথোপকথন লোড হচ্ছে৷',
   Back: 'ব্যাক',
   'Conversation ID:': 'কথোপকথন আইডি:',
   You: 'আপনি',
-  'Continue the conversationâ¦': 'কথোপকথন চালিয়ে যান',
-  'Start chatting with {agentName}â¦':
+  'Continue the conversation…': 'কথোপকথন চালিয়ে যান',
+  'Start chatting with {agentName}…':
     '{agentName}â¦ এর সাথে চ্যাট করা শুরু করুন৷',
   'this agent': 'এই এজেন্ট',
   'System Prompt': 'সিস্টেম প্রম্পট',
@@ -335,7 +335,7 @@ export const bn: Partial<I18n> = {
   'View on GitHub': 'GitHub এ দেখুন',
   'Manage and monitor tasks for your organization':
     'আপনার প্রতিষ্ঠানের জন্য কাজগুলি পরিচালনা এবং নিরীক্ষণ করুন',
-  'Loading tasksâ¦': 'কার্যগুলি লোড হচ্ছে৷',
+  'Loading tasks…': 'কার্যগুলি লোড হচ্ছে৷',
   tasks: 'কাজ',
   'In Progress': 'চলছে',
   'Task Details': 'টাস্কের বিবরণ',
@@ -362,18 +362,18 @@ export const bn: Partial<I18n> = {
   'Task not found': 'টাস্ক পাওয়া যায়নি',
   'Failed to load task data': 'টাস্ক ডেটা লোড করতে ব্যর্থ হয়েছে৷',
   'View Content': 'বিষয়বস্তু দেখুন',
-  'Loading task detailsâ¦': 'টাস্কের বিশদ বিবরণ লোড হচ্ছে৷',
+  'Loading task details…': 'টাস্কের বিশদ বিবরণ লোড হচ্ছে৷',
   'Task Not Found': 'টাস্ক পাওয়া যায়নি',
   'The requested task could not be found.':
     'অনুরোধ করা টাস্ক খুঁজে পাওয়া যায়নি.',
   'Task Steps': 'টাস্ক ধাপ',
   Steps: 'ধাপ',
-  'Agents workingâ¦': 'এজেন্ট কাজ করছে',
+  'Agents working…': 'এজেন্ট কাজ করছে',
   'No conversation messages yet.': 'এখনও কোন কথোপকথন বার্তা.',
   'Copied to clipboard': 'ক্লিপবোর্ডে কপি করা হয়েছে',
   Conversation: 'কথোপকথন',
   Source: 'উৎস',
-  'No messages yet. The task is being processedâ¦':
+  'No messages yet. The task is being processed…':
     'এখনও কোন বার্তা নেই. কাজটি প্রক্রিয়া করা হচ্ছেâ¦৷',
   'Validation Criteria': 'বৈধতার মানদণ্ড',
   'Delete task': 'টাস্ক মুছুন',
@@ -400,7 +400,7 @@ export const bn: Partial<I18n> = {
   Export: 'রপ্তানি',
   'Copy to clipboard': 'ক্লিপবোর্ডে কপি করুন',
   Download: 'ডাউনলোড করুন',
-  'Loading database informationâ¦': 'ডাটাবেস তথ্য লোড হচ্ছে৷',
+  'Loading database information…': 'ডাটাবেস তথ্য লোড হচ্ছে৷',
   'Failed to load database information': 'ডাটাবেস তথ্য লোড করতে ব্যর্থ হয়েছে',
   'Database Administration': 'ডাটাবেস প্রশাসন',
   'Reset Database': 'ডাটাবেস রিসেট করুন',
@@ -408,7 +408,7 @@ export const bn: Partial<I18n> = {
   Records: 'রেকর্ডস',
   Indexes: 'সূচক',
   Size: 'আকার',
-  'Search {store} by {categories}â¦': '{শ্রেণীর}â¦ দ্বারা {store} খুঁজুন',
+  'Search {store} by {categories}…': '{শ্রেণীর}â¦ দ্বারা {store} খুঁজুন',
   'All Records': 'সমস্ত রেকর্ড',
   'Filtered Records': 'ফিল্টার করা রেকর্ড',
   ID: 'আইডি',
@@ -454,7 +454,7 @@ export const bn: Partial<I18n> = {
   'Export your current agents and AI provider settings and share it via URL or QR code.':
     'আপনার বর্তমান এজেন্ট এবং AI প্রদানকারী সেটিংস রপ্তানি করুন এবং URL বা QR কোডের মাধ্যমে শেয়ার করুন।',
   'Include my {n} agents': 'আমার {n} এজেন্টদের অন্তর্ভুক্ত করুন৷',
-  'Now you can share the platform configurationâ¦':
+  'Now you can share the platform configuration…':
     'এখন আপনি প্ল্যাটফর্ম কনফিগারেশন শেয়ার করতে পারেন৷',
   'Either with this URL:': 'হয় এই URL দিয়ে:',
   'Or this QR Code:': 'অথবা এই QR কোড:',
@@ -464,8 +464,8 @@ export const bn: Partial<I18n> = {
   'Password (optional)': 'পাসওয়ার্ড (ঐচ্ছিক)',
   Password: 'পাসওয়ার্ড',
   Continue: 'চালিয়ে যান',
-  'Setting the platform upâ¦': 'প্ল্যাটফর্ম সেট আপ করা হচ্ছে',
-  'Initializing Local AI Modelâ¦': 'স্থানীয় AI মডেল শুরু করা হচ্ছে৷',
+  'Setting the platform up…': 'প্ল্যাটফর্ম সেট আপ করা হচ্ছে',
+  'Initializing Local AI Model…': 'স্থানীয় AI মডেল শুরু করা হচ্ছে৷',
   'Downloading model': 'মডেল ডাউনলোড হচ্ছে',
   'Model loaded': 'মডেল লোড',
   'Model load failed': 'মডেল লোড ব্যর্থ হয়েছে',
@@ -564,7 +564,7 @@ export const bn: Partial<I18n> = {
   'Memory updated': 'মেমরি আপডেট করা হয়েছে',
   'Add a note': 'একটি নোট যোগ করুন',
   'Edit memory': 'মেমরি সম্পাদনা করুন',
-  'Write what this agent should remember, as short notesâ¦':
+  'Write what this agent should remember, as short notes…':
     'সংক্ষিপ্ত নোট হিসাবে এই এজেন্টের কি মনে রাখা উচিত তা লিখুন৷',
   'Failed to delete memory': 'মেমরি মুছে ফেলতে ব্যর্থ হয়েছে৷',
   'Failed to load learning events': 'শেখার ইভেন্টগুলি লোড করতে ব্যর্থ হয়েছে৷',
@@ -603,7 +603,7 @@ export const bn: Partial<I18n> = {
   'Remember for all agents': 'সব এজেন্টদের জন্য মনে রাখবেন',
   'Remember selection': 'নির্বাচন মনে রাখবেন',
   'Selection actions': 'নির্বাচন কর্ম',
-  'Added to this agentâs memory': 'এই এজেন্টের স্মৃতিতে যোগ করা হয়েছে৷',
+  'Added to this agent’s memory': 'এই এজেন্টের স্মৃতিতে যোগ করা হয়েছে৷',
   'Added to global memory': 'গ্লোবাল মেমরি যোগ করা হয়েছে',
   'Failed to save to memory': 'মেমরিতে সংরক্ষণ করতে ব্যর্থ হয়েছে৷',
   'No agent selected for this memory':
@@ -799,8 +799,8 @@ export const bn: Partial<I18n> = {
   'Automatically backup your data to a folder on your device':
     'আপনার ডিভাইসের একটি ফোল্ডারে স্বয়ংক্রিয়ভাবে আপনার ডেটা ব্যাকআপ করুন',
   'Successfully joined sync room': 'সিঙ্ক রুমে সফলভাবে যোগদান করেছেন৷',
-  'Drop reference image hereâ¦': 'এখানে রেফারেন্স ইমেজ ড্রপ করুনâ¦',
-  'Describe the image you want to createâ¦':
+  'Drop reference image here…': 'এখানে রেফারেন্স ইমেজ ড্রপ করুনâ¦',
+  'Describe the image you want to create…':
     'আপনি যে ছবিটি তৈরি করতে চান তার বর্ণনা দিন',
   'Image presets': 'ইমেজ প্রিসেট',
   'Image settings': 'ইমেজ সেটিংস',
@@ -877,7 +877,7 @@ export const bn: Partial<I18n> = {
   'Encryption Key Status': 'এনক্রিপশন কী স্থিতি',
   'Secure (Non-extractable)': 'নিরাপদ (অ-নিষ্কাশনযোগ্য)',
   'Not initialized': 'আরম্ভ করা হয়নি',
-  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exportedâit can only be used for encryption operations.':
+  'Your encryption key is stored securely using non-extractable browser cryptography. The key cannot be read or exported—it can only be used for encryption operations.':
     'আপনার এনক্রিপশন কী নিরাপদে সংরক্ষণ করা হয় না নিষ্কাশনযোগ্য ব্রাউজার ক্রিপ্টোগ্রাফি ব্যবহার করে। কীটি পড়া বা রপ্তানি করা যাবে না—এটি শুধুমাত্র এনক্রিপশন ক্রিয়াকলাপের জন্য ব্যবহার করা যেতে পারে৷',
   'Non-extractable keys provide maximum security - they cannot be stolen even if an attacker gains access to your browser':
     'নিষ্কাশনযোগ্য কীগুলি সর্বাধিক নিরাপত্তা প্রদান করে - আক্রমণকারী আপনার ব্রাউজারে অ্যাক্সেস লাভ করলেও সেগুলি চুরি করা যাবে না',
@@ -959,19 +959,19 @@ export const bn: Partial<I18n> = {
     'সমস্ত মানব হস্তক্ষেপের প্রম্পট এড়িয়ে যান এবং এজেন্টদের স্বায়ত্তশাসিতভাবে সিদ্ধান্ত নিতে দিন',
   Automation: 'অটোমেশন',
   Session: 'অধিবেশন',
-  'Startingâ¦': 'শুরু হচ্ছেâ¦',
-  'Workingâ¦': "কাজ করছে'",
+  'Starting…': 'শুরু হচ্ছেâ¦',
+  'Working…': "কাজ করছে'",
   'file(s)': 'ফাইল(গুলি)',
-  'Creating agentâ¦': 'এজেন্ট তৈরি করা হচ্ছে',
+  'Creating agent…': 'এজেন্ট তৈরি করা হচ্ছে',
   'Agent creation failed': 'এজেন্ট তৈরি ব্যর্থ হয়েছে৷',
-  'Building appâ¦': 'বিল্ডিং অ্যাপâ¦',
+  'Building app…': 'বিল্ডিং অ্যাপâ¦',
   'App build failed': 'অ্যাপ তৈরি ব্যর্থ হয়েছে',
-  'is thinkingâ¦': "চিন্তা করছে'",
+  'is thinking…': "চিন্তা করছে'",
   'Turn failed': 'বাঁক ব্যর্থ হয়েছে',
-  'Generating mediaâ¦': 'মিডিয়া তৈরি করা হচ্ছে৷',
+  'Generating media…': 'মিডিয়া তৈরি করা হচ্ছে৷',
   'Generation failed': 'জেনারেশন ব্যর্থ হয়েছে',
   'Media generated': 'মিডিয়া তৈরি করেছে',
-  'Orchestrating taskâ¦': 'অর্কেস্ট্রেটিং টাস্কâ¦',
+  'Orchestrating task…': 'অর্কেস্ট্রেটিং টাস্কâ¦',
   'Task failed': 'টাস্ক ব্যর্থ হয়েছে',
   Space: 'স্থান',
   'Space name': 'মহাকাশ নাম',
@@ -990,7 +990,7 @@ export const bn: Partial<I18n> = {
   Board: 'বোর্ড',
   'New conversation': 'নতুন কথোপকথন',
   'Start a new conversation': 'একটি নতুন কথোপকথন শুরু করুন',
-  'Search tasks and conversationsâ¦': 'অনুসন্ধান কাজ এবং কথোপকথনâ¦',
+  'Search tasks and conversations…': 'অনুসন্ধান কাজ এবং কথোপকথনâ¦',
   'No threads yet': 'এখনও কোন থ্রেড',
   'No matching threads': 'কোন মিল থ্রেড',
   'Select a thread to preview': 'পূর্বরূপ দেখতে একটি থ্রেড নির্বাচন করুন',

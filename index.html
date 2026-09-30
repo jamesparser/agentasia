@@ -25,9 +25,10 @@
     <meta name="author" content="AgentAsia" />
     <meta name="language" content="<%= language %>" />
     <meta name="theme-color" content="#000000" />
-    <!-- Canonical was https://devs.new, which told search engines our pages are a
-         duplicate of the upstream product and would have suppressed our own
-         indexing. Ours is agentasia.vercel.app until a custom domain is bought. -->
+    <!-- Canonical. It inherited the upstream product's domain from the fork,
+         which told search engines our pages were a duplicate of that site and
+         would have suppressed our own indexing. Ours is agentasia.vercel.app
+         until a custom domain is bought. -->
     <link rel="canonical" href="https://agentasia.vercel.app" />
 
     <!-- Open Graph / Facebook -->
@@ -36,10 +37,9 @@
     <meta property="og:title" content="<%= title %>" />
     <meta property="og:description" content="<%= description %>" />
     <meta property="og:url" content="https://agentasia.vercel.app" />
-    <!-- Our own share card. This used to point at
-         https://devs.new/screenshots/devs-desktop-home.webp, i.e. a screenshot of
-         the upstream product, so every X/LinkedIn share advertised devs.new with
-         their mark instead of ours. -->
+    <!-- Our own share card. This used to point at the upstream product's
+         screenshot (/screenshots/devs-desktop-home.webp), so every X/LinkedIn
+         share advertised their domain and their mark instead of ours. -->
     <meta property="og:image" content="https://agentasia.vercel.app/og-cover.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -80,7 +80,7 @@
         "@type": "WebApplication",
         "name": "DEVS",
         "description": "<%= description %>",
-        "url": "https://devs.new",
+        "url": "https://agentasia.vercel.app",
         "applicationCategory": "ProductivityApplication",
         "operatingSystem": "Web Browser",
         "offers": {

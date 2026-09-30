@@ -25,7 +25,21 @@ const hostOf = (u: string): string => {
 }
 const TIMEOUT_MS = 20_000
 
-export default async function handler(request: Request): Promise<Response> {
+/**
+ * Vercel dispatches on the *shape* of the export, and this is the part that broke.
+ *
+ * A default-exported function is treated as the classic Node handler and called
+ * with `(IncomingMessage, ServerResponse)`. That made `request.url` a relative
+ * path (`/api/proxy?url=...`), so `new URL()` threw `Invalid URL`, and the
+ * `Response` we returned was something the Node wrapper cannot write - a bare 500
+ * `FUNCTION_INVOCATION_FAILED` with nothing in the request logs. It looked like a
+ * runtime gap, not a signature mismatch, which is why the first fix here missed.
+ *
+ * The Web Standard path is only taken when the module exports `fetch` (or the
+ * per-method `GET`/`POST`), per the Node.js runtime docs. So `handler` is now a
+ * plain function and the module default is `{ fetch: handler }`.
+ */
+async function handler(request: Request): Promise<Response> {
   try {
   const url = new URL(request.url)
   if (request.method === 'OPTIONS') {
@@ -89,10 +103,12 @@ export default async function handler(request: Request): Promise<Response> {
   }
 }
 
+export default { fetch: handler }
+
 /**
- * `Response.json()` is missing on some runtimes, which made every call throw.
- * Build the Response directly so this works on any Node version the platform
- * defaults to.
+ * Constructed directly rather than via `Response.json()`. That static is fine on
+ * the current Node 24 runtime; this is kept because it is one less thing for the
+ * dispatch bug above to hide behind.
  */
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {

@@ -248,7 +248,7 @@ const InboxContent = memo(function InboxContent({
   const selectedThread = threads.find((th) => th.id === selectedThreadId)
 
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new">
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app">
       <div className="bg-background relative flex h-full w-full overflow-hidden">
         <div className="shrink-0">
           <Sidebar
@@ -346,7 +346,7 @@ const TranscriptContent = memo(function TranscriptContent({
   const chromeInset = Math.round(Math.min(40, Math.max(8, stageW * 0.031)))
 
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new">
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app">
       <div className="bg-background relative flex h-full w-full overflow-hidden">
         <div className="shrink-0">
           <Sidebar
@@ -563,7 +563,7 @@ const TagSearchContent = memo(function TagSearchContent({
   const chromeInset = Math.round(Math.min(40, Math.max(8, stageW * 0.031)))
 
   return (
-    <BrowserChrome inset={chromeInset} url="devs.new">
+    <BrowserChrome inset={chromeInset} url="agentasia.vercel.app">
       <div className="bg-background relative flex h-full w-full overflow-hidden">
         <div className="shrink-0">
           <Sidebar
