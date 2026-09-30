@@ -368,8 +368,15 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
         setPrompt(transcript)
         onValueChange?.(transcript)
       },
-      onFinalTranscript: () => {
-        onSubmitToAgent?.()
+      onFinalTranscript: (transcript) => {
+        // Submit the spoken text itself rather than signalling "there is text
+        // now": setPrompt above has not flushed, so a parent that falls back to
+        // its own prompt state would see the previous, empty value.
+        //
+        // The box is deliberately left holding the transcript. The parent clears
+        // it on a successful send; if the send fails (no agent selected, offline)
+        // the words are still there instead of gone.
+        onSubmitToAgent?.(transcript)
       },
     })
 

@@ -14,7 +14,18 @@ type SpeechRecognitionErrorCode =
 interface UseSpeechRecognitionOptions {
   lang?: string
   onTranscript?: (transcript: string) => void
-  onFinalTranscript?: () => void
+  /**
+   * Hands the finished text to the caller.
+   *
+   * It has to be a parameter, not just a signal. The old signature was
+   * `() => void`, and PromptArea responded by calling
+   * `setPrompt(transcript)` and then `onSubmitToAgent()` with no argument in the
+   * same tick. React had not flushed the state yet, so the submit handler read
+   * the previous (empty) prompt, bailed on its own `!prompt.trim()` guard, and
+   * the agent never answered - which is what "I talked and it did not respond"
+   * actually was.
+   */
+  onFinalTranscript?: (transcript: string) => void
   onError?: (error: SpeechRecognitionErrorCode) => void
 }
 
@@ -36,6 +47,9 @@ export function useSpeechRecognition({
   const [isSupported, setIsSupported] = useState(false)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const finalTranscriptRef = useRef('')
+  // onresult stops the session and onend fires too; without this the same
+  // utterance would submit twice.
+  const deliveredRef = useRef(false)
 
   // Store callbacks in refs to avoid effect re-runs
   const onTranscriptRef = useRef(onTranscript)
@@ -81,6 +95,7 @@ export function useSpeechRecognition({
 
     recognition.onstart = () => {
       finalTranscriptRef.current = ''
+      deliveredRef.current = false
     }
 
     recognition.onresult = (event: any) => {
@@ -103,8 +118,9 @@ export function useSpeechRecognition({
       onTranscriptRef.current?.(newTranscript)
 
       if (finalTranscript) {
+        deliveredRef.current = true
         recognition.stop()
-        onFinalTranscriptRef.current?.()
+        onFinalTranscriptRef.current?.(finalTranscript)
       }
     }
 
@@ -149,8 +165,10 @@ export function useSpeechRecognition({
 
     recognition.onend = () => {
       setIsRecording(false)
-      if (finalTranscriptRef.current.trim()) {
-        onFinalTranscriptRef.current?.()
+      const text = finalTranscriptRef.current.trim()
+      if (text && !deliveredRef.current) {
+        deliveredRef.current = true
+        onFinalTranscriptRef.current?.(text)
       }
     }
 
