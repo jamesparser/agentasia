@@ -20,6 +20,7 @@ import type {
   LanguageModelV4Usage,
 } from '@ai-sdk/provider'
 import type { AiSdkBinding, AiSdkModelConfig } from './adapter'
+import { recordRequest } from '@/lib/usage/localUsage'
 
 const CHATJIMMY_BASE_URL = 'https://chatjimmy.ai/api/chat'
 const DEFAULT_MODEL = 'llama3.1-8B'
@@ -74,6 +75,9 @@ async function post(
   modelId: string,
   signal: AbortSignal | undefined,
 ): Promise<Response> {
+  // One count per outbound request, for the Usage screen. The gateway exposes no
+  // public quota route, so this device-side tally is the only number we have.
+  recordRequest()
   const res = await fetch(getChatEndpoint(), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

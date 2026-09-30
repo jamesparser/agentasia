@@ -1,129 +1,82 @@
 <div align="center">
 
-[<img src="./public/favicon.svg" width="48" alt="DEVS Logo" />](https://devs.new)
+<img src="./public/icon-192.png" width="88" alt="AgentAsia mark" />
 
-# <span title='DEVS, from Latin "Deus"'>DEVS</span>
+# AgentAsia
 
-**Delegate complex tasks to a swarm of AI agents**
+**AI that speaks your language.**
+
+A personal AI agent workspace built for Southeast Asia: 22 regional languages in
+the UI, a naga-themed interface, and inference that runs on
+**NVIDIA Nemotron on Nebius Token Factory**.
+
 <br />
-through a universally accessible, privacy-first platform.
-
-[ **<https://devs.new>** ]
-
-[Features](#features) • [Self-Hosting](#self-hosting) • [Contributing](#contributing) • [Documentation](#documentation)
-
----
 
 </div>
 
-## Features
+## What it does
 
-<span title='DEVS, from Latin "Deus"'>DEVS</span> is an open-source, browser-native platform that enables users to delegate complex tasks to a swarm of AI agents. Here are some of its standout features:
+- **Worker mode** - give it a task, it plans and runs sub-tasks across agents.
+- **22 languages** - full UI localisation across Southeast and South Asian
+  scripts, including Thai, Lao, Khmer, Burmese, Sinhala-adjacent Indic scripts,
+  Arabic, CJK and the Indonesian archipelago languages.
+- **Voice** - speech-to-text across the region; text-to-speech where an engine
+  exists, and an honest text-only badge where it does not (see below).
+- **Skills** - discover and install agent skills from skills.sh, SkillsMP and
+  ClawHub, each scanned by a built-in skill checker before it can run.
+- **Agents and knowledge** - create agents, attach files, search the web through
+  the managed gateway with citations.
+- **Local-first** - conversation data is encrypted at rest in the browser.
 
-### Artificial Intelligence
+## The hackathon requirement
 
-- [x] 🤖 **LLM provider independence**: <abbr title="Bring Your Own Key">BYOK</abbr> support for OpenAI, Anthropic, Google Gemini, Mistral, OpenRouter, HuggingFace, Ollama, LM Studio, Vertex AI, and more.
-- [x] 🧠 **Local AI models**: Run HuggingFace open models directly in your browser via WebGPU.
-- [x] 💰 **Traces & Cost tracking**: LLM observability with real-time cost tracking and performance metrics.
-- [x] 🖥️ **Sandboxed code execution**: Agents can write and execute JavaScript (QuickJS) and Python (Pyodide) in WASM-isolated sandboxes — no server needed.
+Everything runs on **Nebius Token Factory**. The default model is
+`nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`, served through a gateway we operate so
+that no inference key is ever shipped to the browser.
 
-### Swarm Intelligence
+## Architecture
 
-- [x] 🤖 **AI Studio**: Pre-built agents, custom agent builder with AI-generated portraits.
-- [x] 📝 **Methodologies**: <abbr title="8 Disciplines">8D</abbr>, <abbr title="A3 Problem Solving">A3</abbr>, Agile, <abbr title="Analysis, Objectives, Strategies, Tactics, Control">AOSTC</abbr>, <abbr title="Define, Measure, Analyze, Improve, Control">DMAIC</abbr>, <abbr title="Plan-Do-Check-Act">PDCA</abbr>, Scrum, <abbr title="You Only Live Once">YOLO</abbr>, and your own.
-- [x] 🧠 **Agent Memory**: Agents learn and remember information from conversations with human review.
-- [x] 🔧 **Tools**: Equip agents with capabilities like Wikipedia search, arXiv search, calculator, code execution, and more.
-- [x] 🎯 **Multi-agent orchestration**: Automated task coordination with decomposition, dependency resolution, and parallel execution.
-- [x] 🔌 **Skills**: Installable capability bundles that extend what agents can do.
-- [ ] 🎭 **Hyper meta-prompting**: Multi-layered prompt generation for dynamic task handling.
-- [ ] 👥 **Dynamic team formation**: Mimicking human organizational structures.
+    browser  ->  agentasia-gateway.realcryptocap.com  ->  Nebius Token Factory
+               (OpenAI-compatible, spend breaker, Tavily search loop)
 
-### Integrations
+The gateway holds the Token Factory key. A visitor can only reach
+`/v1/chat/completions`; the model list is public and the operator routes require
+a token. No client secret exists in the bundle.
 
-- [x] 🔗 **Connectors**: Integrations with Google Drive, Gmail, Calendar, Notion, Slack, Figma, Dropbox, OneDrive, Outlook, and more.
-- [x] 🏪 **Marketplace**: Extensible platform with apps, agents, connectors, and tools.
-- [ ] 🎤 **Meeting Bot**: AI agents join Google Meet as real participants.
+## Honest limits
 
-### Privacy
+We would rather list these than have you find them.
 
-- [x] 🌐 **Browser-native**: The browser is the <abbr title="Operating System">OS</abbr>. Runs entirely in your browser, no server dependencies.
-- [x] 🛡️ **Privacy-first**: All data stays on your device, no tracking, no cookies.
-- [x] 🥷 **Offline capable**: Works without Internet connection after initial load.
-- [x] 💾 **Local Backup**: Preserve your data with bidirectional sync to a local folder on your host, with human-readable Markdown files.
+| Area | State |
+|---|---|
+| UI translations | ~69% of strings per locale; the rest fall back to English |
+| Text-to-speech | 6 of 22 languages on the free tier (ja, ko, vi, id, hi, ar) |
+| Speech-to-text | all 22 languages, via a Nemotron / Qwen / Whisper ladder |
+| Thai, Lao, Khmer, Burmese TTS | no in-browser engine exists; shown as text with a badge |
+| Cross-device sync | off by default; needs your own signaling server |
 
-### User Experience
+## Running it
 
-- [x] 📱 **Mobile-first design**: Optimized for touch and small screens.
-- [x] 🌐 **Multi-language support**: English, French, German, Spanish, Arabic, Korean.
-- [x] 🔍 **Global Search**: Unified search across agents, conversations, tasks, and files (<kbd>Cmd/Ctrl+K</kbd>).
-- [x] 💄 **Customizable**: Tailor the platform to your specific needs.
-- [x] 📂 **Spaces**: Multi-workspace isolation for different projects or contexts.
-
-### Collaboration
-
-- [x] 🌐 **Universal access**: Web-based platform accessible from anywhere: <https://devs.new>
-- [x] 🔄 **P2P Sync**: Cross-device synchronization with CRDT-based conflict resolution.
-- [x] 🤝 **Team collaboration**: Peer-to-peer networking and sharing.
-- [x] 📱 **QR Code support**: Easily share and access your platform configuration.
-
-### Deployment
-
-- [x] ⚙️ **Open-source**: Community-driven development and transparency.
-- [x] 🐳 **Docker-ready**: One-command self-hosting with an image of ~60MB ([registry](https://hub.docker.com/r/codename/devs)).
-
-## Self-Hosting
-
-<details open>
-<summary>
-
-### 🐳 Docker
-
-</summary>
-
-```shell
-docker run -d -p 80:80 codename/devs
+```bash
+bun install
+bun run dev      # http://localhost:3000
+bun run build    # production bundle in dist/
+bun run test:run
 ```
 
-Then open <http://localhost> in your browser.
+Point it at your own inference by setting the gateway URL:
 
-</details>
-
-<details open>
-<summary>
-
-### 🐳 Docker compose
-
-</summary>
-
-Alternatively, check out the [compose.yaml](compose.yaml) file for a Docker Compose setup.
-
-```docker
-services:
-  devs:
-    image: codename/devs
-    ports:
-      - 8080:80
+```bash
+VITE_AGENTASIA_GATEWAY_URL=https://your-gateway/v1 bun run dev
 ```
 
-See <https://hub.docker.com/r/codename/devs> for more details.
+## Attribution
 
-</details>
+This project is a derivative of the open-source `devs` application and is
+distributed under its original licence. The AgentAsia work - branding,
+localisation, voice routing, the skill registries, the managed gateway and the
+worker mode - is ours; the upstream base remains theirs.
 
-## Documentation
-
-Detailed documentation is available in the [`docs/`](docs/) directory:
-
-- [Architecture](docs/ARCHITECTURE.md) — System architecture and data layer
-- [Conventions](docs/CONVENTIONS.md) — Code style, naming, and patterns
-- [Decisions](docs/DECISIONS.md) — Architectural decision records
-- [Glossary](docs/GLOSSARY.md) — Term definitions
-- [Vision](docs/VISION.md) — Project vision and design principles
-- [TODO](docs/TODO.md) — Feature status and roadmap
-
-## Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+<p align="center">
+  <a href="https://x.com/JasonParserSec">@JasonParserSec</a>
+</p>

@@ -260,7 +260,11 @@ export function FeaturesSection() {
         </div>
       </div>
 
-      <div>
+      {/* AgentAsia: the Advanced group (a custom HuggingFace mirror for
+          enterprise air-gapped setups) is hidden. It offers a self-hosting knob
+          that this product does not support and that a reviewer would read as a
+          promise. */}
+      <div className="hidden">
         <h4 className="text-sm font-medium text-default-700 mb-3">
           {t('Advanced')}
         </h4>

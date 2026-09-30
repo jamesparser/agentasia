@@ -1,5 +1,5 @@
 {
-  "name": "devs",
+  "name": "agentasia",
   "private": true,
   "version": "0.8.0",
   "license": "MIT",
@@ -119,5 +119,6 @@
     "vite-plugin-virtual-mpa": "^1.12.1",
     "vitest": "^3.2.4",
     "yaml": "^2.8.1"
-  }
+  },
+  "description": "AgentAsia - AI that speaks your language. A personal AI agent workspace for Southeast Asian languages, running NVIDIA Nemotron on Nebius Token Factory."
 }

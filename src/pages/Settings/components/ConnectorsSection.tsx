@@ -14,13 +14,14 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Button, Spinner } from '@heroui/react'
+import { Button, Spinner, Tab, Tabs } from '@heroui/react'
 import { Icon } from '@/components'
 import { useI18n } from '@/i18n'
 import { useHashHighlight } from '@/hooks/useHashHighlight'
 import { useConnectorStore } from '@/features/connectors/stores'
 import { ConnectorCard } from '@/features/connectors/components'
 import { ConnectorWizardInline } from '@/features/connectors/components/ConnectorWizardInline'
+import { CustomMcpWizard } from '@/features/connectors/components/CustomMcpWizard'
 import { ConnectorSettingsInline } from '@/features/connectors/components/ConnectorSettingsInline'
 import type { ConnectorCategory } from '@/features/connectors/types'
 import { useSettingsScope } from '../SettingsContext'
@@ -35,7 +36,12 @@ export function ConnectorsSection() {
   const scope = useSettingsScope()
   const spaceId = useActiveSpaceId()
 
-  const [selectedTab] = useState<ConnectorCategory>('app')
+  // Apps and MCP servers are both reachable. This was pinned to 'app', so the
+  // MCP tab could not be opened at all and the wizard fell through to a provider
+  // grid that returns nothing for non-app categories - which is why every MCP
+  // entry read "coming soon".
+  const [selectedTab, setSelectedTab] = useState<ConnectorCategory>('app')
+  const [showMcpWizard, setShowMcpWizard] = useState(false)
 
   const {
     connectors,
@@ -130,6 +136,19 @@ export function ConnectorsSection() {
 
   // --- Sub-route: /new  (wizard) ----------------------------------------
   if (activeElement === 'add') {
+    if (selectedTab === 'mcp') {
+      return (
+        <div data-testid="connectors-settings">
+          <CustomMcpWizard
+            isOpen
+            onClose={() => {
+              setShowMcpWizard(false)
+              navigateToList()
+            }}
+          />
+        </div>
+      )
+    }
     return (
       <div data-testid="connectors-settings">
         <ConnectorWizardInline
@@ -176,10 +195,23 @@ export function ConnectorsSection() {
   // --- Default sub-route: list view ------------------------------------
   return (
     <div data-testid="connectors-settings">
+      <Tabs
+        aria-label={t('Connector type')}
+        size="sm"
+        selectedKey={selectedTab}
+        onSelectionChange={(k) => setSelectedTab(k as ConnectorCategory)}
+        className="mb-6"
+      >
+        <Tab key="app" title={t('Apps')} />
+        <Tab key="mcp" title={t('MCP server')} />
+      </Tabs>
+
       {/* Header with Add Button */}
       <div className="flex justify-between items-center mb-6">
         <p className="text-default-500 text-sm">
-          {t('Sync files and data from your favorite apps and services.')}
+          {selectedTab === 'mcp'
+            ? t('Connect a remote MCP server to give your agents its tools.')
+            : t('Sync files and data from your favorite apps and services.')}
         </p>
       </div>
 
@@ -190,8 +222,22 @@ export function ConnectorsSection() {
             <Spinner size="lg" />
           </div>
         ) : currentConnectors.length === 0 ? (
-          <div className="flex justify-center items-center py-12">
-            <Spinner size="lg" />
+          <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
+            <Icon name="Server" className="w-8 h-8 text-default-300" />
+            <p className="text-default-500 text-sm">
+              {selectedTab === 'mcp'
+                ? t('No MCP servers connected yet.')
+                : t('No connectors yet.')}
+            </p>
+            <Button
+              color="primary"
+              size="sm"
+              variant="flat"
+              startContent={<Icon name="Plus" className="w-4 h-4" />}
+              onPress={navigateToAdd}
+            >
+              {selectedTab === 'mcp' ? t('Add MCP server') : t('Add Connector')}
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">

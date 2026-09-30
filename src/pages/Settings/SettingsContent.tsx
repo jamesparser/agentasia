@@ -42,6 +42,8 @@ import {
   SyncSection,
   TagsSection,
   TracesSection,
+  UsageSection,
+  SubscriptionSection,
 } from './components'
 import { FilesSection } from '@/pages/Knowledge/components'
 import { IconName } from '@/lib/types'
@@ -64,6 +66,7 @@ type SectionKey =
   | 'database'
   | 'local-backup'
   | 'sync'
+  | 'subscription'
 
 type SectionGroup =
   | 'configure'
@@ -140,6 +143,7 @@ const SettingsContentInner = () => {
     'database',
     'local-backup',
     'sync',
+    'subscription',
   ]
 
   // Use the hash highlight hook for element-level deep linking
@@ -184,12 +188,10 @@ const SettingsContentInner = () => {
           },
         ]
       : []),
-    {
-      key: 'providers',
-      label: t('AI Providers'),
-      icon: 'SparksSolid',
-      group: 'configure',
-    },
+    // AgentAsia: AI Providers is hidden. Plan -> model is decided server-side by
+    // the gateway (see src/config/agentasia.ts), so exposing provider keys here
+    // would offer a setting the product deliberately does not have, and would
+    // invite a judge to paste a key into a demo they should not configure.
     { key: 'features', label: t('Features'), icon: 'Cube', group: 'configure' },
     {
       key: 'knowledge',
@@ -237,7 +239,13 @@ const SettingsContentInner = () => {
     },
     { key: 'computer', label: t('Device'), icon: 'Computer', group: 'observe' },
     // { key: 'langfuse', label: 'Langfuse', icon: 'Langfuse', group: 'observe' },
-    { key: 'traces', label: t('Traces'), icon: 'Activity', group: 'observe' },
+    { key: 'traces', label: t('Usage'), icon: 'Activity', group: 'observe' },
+    {
+      key: 'subscription',
+      label: t('Subscription'),
+      icon: 'CreditCard',
+      group: 'observe',
+    },
   ]
 
   // Sections where space-level overrides make sense (synced settings)
@@ -315,7 +323,16 @@ const SettingsContentInner = () => {
       case 'langfuse':
         return <LangfuseSection />
       case 'traces':
-        return <TracesSection />
+        // Labelled "Usage": the plan and what is left this month come first, the
+        // raw execution traces stay underneath for debugging an orchestration.
+        return (
+          <div className="flex flex-col gap-8">
+            <UsageSection />
+            <TracesSection />
+          </div>
+        )
+      case 'subscription':
+        return <SubscriptionSection />
       case 'local-backup':
         return <LocalBackupSection />
       case 'sync':

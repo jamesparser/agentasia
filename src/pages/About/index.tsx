@@ -297,6 +297,15 @@ export const AboutPage = () => {
 
   return (
     <WorkspaceShell title={t('About')}>
+      {/* The About page is a dead end: it has no in-page route back, so the only
+          way out was the browser button. This restores the obvious one. */}
+      <div className="flex justify-start px-1 pt-4">
+        <Link href={url('')} className="text-muted hover:text-foreground inline-flex items-center gap-1.5 text-sm">
+          <Icon name="NavArrowLeft" size="sm" />
+          {t('Back to AgentAsia')}
+        </Link>
+      </div>
+
       {/* ================================================================= */}
       {/* HERO — Vision Statement                                           */}
       {/* ================================================================= */}

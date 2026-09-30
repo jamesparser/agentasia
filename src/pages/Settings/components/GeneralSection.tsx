@@ -159,9 +159,11 @@ export function GeneralSection() {
           <ColorThemePicker value={colorTheme} onChange={setColorTheme} />
         </div>
 
+        {/* AgentAsia: the PPTX presentation-theme picker is hidden. */}
         <div
           id="pptx-theme"
-          className={getHighlightClasses('pptx-theme', 'max-w-lg')}
+          className="hidden"
+          aria-hidden="true"
         >
           <p className="text-xs text-default-500 mb-3">
             {t('Presentation theme used for generated PPTX slides')}
