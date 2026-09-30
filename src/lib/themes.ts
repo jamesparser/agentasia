@@ -29,8 +29,12 @@ export interface ColorTheme {
 
 export const COLOR_THEMES: ColorTheme[] = [
   {
+    // The id stays 'devs' so a saved preference on an existing device still
+    // resolves; only the visible label is corrected. It used to read "Devs" in
+    // the theme picker, which put the upstream project's name in front of every
+    // user on the default setting.
     id: 'devs',
-    label: 'Devs',
+    label: 'AgentAsia',
     primaryColor: '#3366FF',
     backgroundColor: 'rgb(244, 247, 249)',
     headingFont: "'Unbounded', Georgia, serif",

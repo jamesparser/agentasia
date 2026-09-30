@@ -50,13 +50,13 @@ export function cacheVersionPlugin(): Plugin {
       )
 
       swContent = swContent.replace(
-        /const CACHE_NAME = 'devs-new-v1'/,
-        `const CACHE_NAME = 'devs-new-v${buildHash}'`,
+        /const CACHE_NAME = 'agentasia-v1'/,
+        `const CACHE_NAME = 'agentasia-v${buildHash}'`,
       )
 
       swContent = swContent.replace(
-        /const API_CACHE_NAME = 'devs-new-cache-v1'/,
-        `const API_CACHE_NAME = 'devs-new-cache-v${buildHash}'`,
+        /const API_CACHE_NAME = 'agentasia-cache-v1'/,
+        `const API_CACHE_NAME = 'agentasia-cache-v${buildHash}'`,
       )
 
       // Write the updated service worker
@@ -67,8 +67,8 @@ export function cacheVersionPlugin(): Plugin {
         version: buildHash,
         buildTime: new Date().toISOString(),
         cacheNames: {
-          static: `devs-new-v${buildHash}`,
-          api: `devs-new-cache-v${buildHash}`,
+          static: `agentasia-v${buildHash}`,
+          api: `agentasia-cache-v${buildHash}`,
           transformers: 'transformers-cache',
         },
       }

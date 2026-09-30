@@ -1,7 +1,7 @@
 // Service Worker for LLM API proxy and caching
 const CACHE_VERSION = 'dev' // Will be replaced at build time
-const CACHE_NAME = 'devs-new-v1' // Will be replaced at build time
-const API_CACHE_NAME = 'devs-new-cache-v1' // Will be replaced at build time
+const CACHE_NAME = 'agentasia-v1' // Will be replaced at build time
+const API_CACHE_NAME = 'agentasia-cache-v1' // Will be replaced at build time
 const TRANSFORMERS_CACHE_NAME = 'transformers-cache' // Persistent cache for HuggingFace models
 
 // Privacy mode state — when enabled, blocks all non-local outgoing requests
