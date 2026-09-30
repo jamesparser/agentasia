@@ -258,6 +258,28 @@ export function ConnectorsSection() {
             >
               {t('Add Connector')}
             </Button>
+
+            {/* Composio is advertised here but not wired: there is no client code
+                and no gateway route for it (config has it as
+                'planned-server-side'). Shown as a disabled card with a reason
+                rather than a button that does nothing. */}
+            <div
+              className="border-dashed border-divider text-default-400 flex flex-col items-start gap-1 rounded-xl border p-4"
+              aria-disabled="true"
+            >
+              <div className="flex items-center gap-2">
+                <Icon name="EvPlug" className="w-4 h-4" />
+                <span className="text-sm font-medium">Composio</span>
+                <span className="bg-default-100 text-default-500 dark:bg-default-100/50 rounded-full px-2 py-0.5 text-xs">
+                  {t('Coming soon')}
+                </span>
+              </div>
+              <p className="text-xs">
+                {t(
+                  'One connection to hundreds of apps. Needs a server-side integration before it can be enabled.',
+                )}
+              </p>
+            </div>
           </div>
         )}
       </div>

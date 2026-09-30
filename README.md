@@ -50,9 +50,9 @@ We would rather list these than have you find them.
 | Area | State |
 |---|---|
 | UI translations | ~69% of strings per locale; the rest fall back to English |
-| Text-to-speech | 6 of 22 languages on the free tier (ja, ko, vi, id, hi, ar) |
+| Text-to-speech | 12 of 22 languages on a typical desktop, using the operating system's own voices (ja, ko, zh-CN, zh-TW, yue, vi, **th**, id, ms, hi, bn, ar). Depends on the device: a phone or a bare Linux box may have fewer. |
 | Speech-to-text | all 22 languages, via a Nemotron / Qwen / Whisper ladder |
-| Thai, Lao, Khmer, Burmese TTS | no in-browser engine exists; shown as text with a badge |
+| Lao, Khmer, Burmese, Javanese, Sundanese, Filipino, Cebuano, Urdu, Kazakh, Nepali TTS | no engine and no common OS voice; replies stay as text |
 | Cross-device sync | off by default; needs your own signaling server |
 
 ## Running it

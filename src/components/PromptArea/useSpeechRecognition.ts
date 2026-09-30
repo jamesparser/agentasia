@@ -132,9 +132,14 @@ export function useSpeechRecognition({
       // Provide user-friendly error messages
       switch (errorCode) {
         case 'network':
+          // Chrome does not transcribe locally: webkitSpeechRecognition streams
+          // audio to Google's speech service. When that host is unreachable the
+          // session opens, says nothing, and ends - which looks exactly like "it
+          // is listening but not hearing me". Say so, and name the path that
+          // does transcribe on-device (Live mode's whisper/granite engines).
           warningToast(
-            'Speech recognition unavailable',
-            'Please check your internet connection and try again',
+            'Voice input could not reach the transcription service',
+            'This browser sends speech to Google for transcription and that call failed. Try Live mode, which transcribes on your device.',
           )
           break
         case 'not-allowed':
@@ -152,6 +157,12 @@ export function useSpeechRecognition({
           break
         case 'no-speech':
           // Silent error - no speech detected is not necessarily an error
+          break
+        case 'language-not-supported':
+          warningToast(
+            'This browser cannot transcribe this language',
+            'Try Live mode, which uses an on-device model instead.',
+          )
           break
         case 'aborted':
           // User aborted, no need to show error

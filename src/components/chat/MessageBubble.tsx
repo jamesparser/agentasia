@@ -13,6 +13,7 @@ import {
   messageStepsToConversationSteps,
 } from '@/pages/Agents/ConversationStepTracker'
 import { MessageContent } from './MessageContent'
+import { useSpeakAloud } from '@/lib/voice/useSpeakAloud'
 import { RememberSelectionMenu } from './RememberSelectionMenu'
 
 // ============================================================================
@@ -58,7 +59,10 @@ export const MessageBubble = memo(
     isLearning,
   }: MessageBubbleProps) => {
     const isSmall = size === 'sm'
-    const { t } = useI18n()
+    const { t, lang } = useI18n()
+    // One hook per message: speechSynthesis is global, so starting another
+    // reply cancels this one and this instance's own onend clears its state.
+    const speak = useSpeakAloud(lang)
 
     // Resolve steps: live during streaming, persisted for historical
     const steps =
@@ -181,6 +185,33 @@ export const MessageBubble = memo(
                   <Icon name="Copy" className="w-4 h-4" />
                 </Button>
               </Tooltip>
+              {/* Read this reply aloud. Hidden where the browser has no speech at
+                  all, rather than shown and inert. */}
+              {speak.supported && (
+                <Tooltip
+                  content={
+                    speak.canSpeak
+                      ? speak.isSpeaking
+                        ? t('Stop speaking')
+                        : t('Read the answer aloud')
+                      : t('No voice for this language yet')
+                  }
+                >
+                  <Button
+                    size="sm"
+                    variant="light"
+                    color={speak.isSpeaking ? 'primary' : 'default'}
+                    isIconOnly
+                    aria-label={t('Read the answer aloud')}
+                    onPress={() => speak.speak(String(message.content ?? ''))}
+                  >
+                    <Icon
+                      name={speak.isSpeaking ? 'SoundOff' : 'SoundHigh'}
+                      className="w-4 h-4"
+                    />
+                  </Button>
+                </Tooltip>
+              )}
               {onLearn && (
                 <Tooltip content={t('Learn from this message')}>
                   <Button

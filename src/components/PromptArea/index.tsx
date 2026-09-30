@@ -1044,9 +1044,11 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
                   </Tooltip>
                 )}
 
-                {!isLiveMode &&
-                  speechToTextEnabled &&
-                  (!prompt.trim() || isRecording) && (
+                {/* The old `!prompt.trim()` guard hid the mic the moment the box
+                    had any text in it - including the text dictation had just put
+                    there - so a second utterance was impossible without clearing
+                    the box by hand. */}
+                {!isLiveMode && speechToTextEnabled && (
                     <Tooltip
                       content={t('Speak to microphone')}
                       placement="bottom"
