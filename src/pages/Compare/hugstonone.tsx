@@ -140,7 +140,7 @@ export const CompareHugstonOnePage = () => {
             icon: 'Code',
             title: t('Open Source & Extensible'),
             desc: t(
-              'Fully open-source under the MIT license with a marketplace, plugins, and community contributions. {alternative} is proprietary and closed.',
+              'Fully open-source under the MIT license with plugins and community contributions. {alternative} is proprietary and closed.',
             ),
             gradient: 'from-purple-500/10 via-transparent to-transparent',
           },

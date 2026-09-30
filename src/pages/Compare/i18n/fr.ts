@@ -545,8 +545,6 @@ export const fr: I18n = {
   'Access OpenAI, Anthropic, Gemini, Mistral, and more \u2014 plus local models via Ollama. {alternative} only supports local GGUF inference.':
     'Acc\u00e9dez \u00e0 OpenAI, Anthropic, Gemini, Mistral et plus \u2014 ainsi qu\u2019aux mod\u00e8les locaux via Ollama. {alternative} ne supporte que l\u2019inf\u00e9rence GGUF locale.',
   'Open Source & Extensible': 'Open source et extensible',
-  'Fully open-source under the MIT license with a marketplace, plugins, and community contributions. {alternative} is proprietary and closed.':
-    'Enti\u00e8rement open source sous licence MIT avec marketplace, plugins et contributions communautaires. {alternative} est propri\u00e9taire et ferm\u00e9.',
 
   // HugstonOne — Pricing
   'Free (email required)': 'Gratuit (e-mail requis)',
@@ -579,7 +577,7 @@ export const fr: I18n = {
   'Yes (PWA)': 'Oui (PWA)',
   'Requires Ollama running':
     'N\u00e9cessite Ollama en cours d\u2019ex\u00e9cution',
-  'Marketplace & Connectors': 'Marketplace et connecteurs',
+  'Connectors': 'Connecteurs',
 
   // LlamaPen — Advantages
   'Multi-Provider Freedom': 'Libert\u00e9 multi-fournisseurs',
@@ -592,13 +590,10 @@ export const fr: I18n = {
   'Persistent memory with human review, plus a full knowledge base for document ingestion. {alternative} has neither.':
     'M\u00e9moire persistante avec revue humaine, plus une base de connaissances compl\u00e8te pour l\u2019ingestion de documents. {alternative} n\u2019a ni l\u2019un ni l\u2019autre.',
   'P2P Sync & Ecosystem': 'Synchro P2P et \u00e9cosyst\u00e8me',
-  'Cross-device sync via Yjs/WebRTC, marketplace, connectors, and traces. {alternative} offers none of these.':
-    'Synchronisation inter-appareils via Yjs/WebRTC, marketplace, connecteurs et traces. {alternative} n\u2019offre rien de tout cela.',
 
   // LlamaPen — Pricing
   'Ollama-only (no cloud providers)':
     'Ollama uniquement (pas de fournisseurs cloud)',
-  'No P2P sync or marketplace': 'Pas de synchro P2P ni de marketplace',
 
   // LlamaPen — Honest take
   'Only use local Ollama models and want the simplest possible chat UI':
@@ -878,4 +873,14 @@ export const fr: I18n = {
     'Voulez des fonctionnalit\u00e9s entreprise comme RBAC, LDAP, SSO et mise \u00e0 l\u2019\u00e9chelle horizontale',
   'Need image generation, voice/video calls, and a Pipelines plugin framework':
     'Avez besoin de g\u00e9n\u00e9ration d\u2019images, d\u2019appels voix/vid\u00e9o et d\u2019un framework de plugins Pipelines',
+  // AgentAsia: the marketplace was removed, so these three claims were
+
+  // rewritten without it. Translations follow the corrected English.
+  'Fully open-source under the MIT license with plugins and community contributions. {alternative} is proprietary and closed.':
+    'Enti\u00e8rement open source sous licence MIT avec plugins et contributions communautaires. {alternative} est propri\u00e9taire et ferm\u00e9.',
+  'Cross-device sync via Yjs/WebRTC, connectors, and traces. {alternative} offers none of these.':
+    'Synchronisation inter-appareils via Yjs/WebRTC, connecteurs et traces. {alternative} n\u2019offre rien de tout cela.',
+  'No P2P sync':
+    'Pas de synchro P2P',
+
 }

@@ -10,6 +10,7 @@ import {
 } from '@heroui/react'
 import { Icon, PromptArea, Title } from '@/components'
 import { DevsIcon } from '@/components/DevsIcon'
+import { AGENTASIA } from '@/config/agentasia'
 import type { PromptMode } from '@/components/PromptArea'
 import { useI18n, useUrl } from '@/i18n'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -321,10 +322,10 @@ export function NewTaskHero({
         className="flex min-h-0 flex-1 flex-col overflow-y-auto"
       >
         <div className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:py-16">
-          <DevsIcon className="scale-150 opacity-50" />
+          <DevsIcon size="6xl" className="opacity-50" />
 
           <Title
-            subtitle={t('Your AI team is ready')}
+            subtitle={AGENTASIA.slogan}
             className="!text-2xl text-center sm:!text-3xl md:!text-4xl font-light"
             subtitleClassName="text-md md:text-xl text-center"
           >

@@ -544,8 +544,6 @@ export const de: I18n = {
   'Access OpenAI, Anthropic, Gemini, Mistral, and more \u2014 plus local models via Ollama. {alternative} only supports local GGUF inference.':
     'Zugriff auf OpenAI, Anthropic, Gemini, Mistral und mehr \u2014 plus lokale Modelle via Ollama. {alternative} unterst\u00fctzt nur lokale GGUF-Inferenz.',
   'Open Source & Extensible': 'Open Source & erweiterbar',
-  'Fully open-source under the MIT license with a marketplace, plugins, and community contributions. {alternative} is proprietary and closed.':
-    'Vollst\u00e4ndig Open Source unter MIT-Lizenz mit Marktplatz, Plugins und Community-Beitr\u00e4gen. {alternative} ist propriet\u00e4r und geschlossen.',
 
   // HugstonOne — Pricing
   'Free (email required)': 'Kostenlos (E-Mail erforderlich)',
@@ -577,7 +575,7 @@ export const de: I18n = {
   'Yes (Ollama web UI)': 'Ja (Ollama-Web-UI)',
   'Yes (PWA)': 'Ja (PWA)',
   'Requires Ollama running': 'Erfordert laufendes Ollama',
-  'Marketplace & Connectors': 'Marktplatz & Konnektoren',
+  'Connectors': 'Konnektoren',
 
   // LlamaPen — Advantages
   'Multi-Provider Freedom': 'Multi-Anbieter-Freiheit',
@@ -589,12 +587,9 @@ export const de: I18n = {
   'Persistent memory with human review, plus a full knowledge base for document ingestion. {alternative} has neither.':
     'Persistentes Ged\u00e4chtnis mit menschlicher \u00dcberpr\u00fcfung, plus eine vollst\u00e4ndige Wissensdatenbank f\u00fcr Dokumentenaufnahme. {alternative} hat beides nicht.',
   'P2P Sync & Ecosystem': 'P2P-Sync & \u00d6kosystem',
-  'Cross-device sync via Yjs/WebRTC, marketplace, connectors, and traces. {alternative} offers none of these.':
-    'Ger\u00e4te\u00fcbergreifende Synchronisation via Yjs/WebRTC, Marktplatz, Konnektoren und Traces. {alternative} bietet nichts davon.',
 
   // LlamaPen — Pricing
   'Ollama-only (no cloud providers)': 'Nur Ollama (keine Cloud-Anbieter)',
-  'No P2P sync or marketplace': 'Keine P2P-Synchronisation oder Marktplatz',
 
   // LlamaPen — Honest take
   'Only use local Ollama models and want the simplest possible chat UI':
@@ -869,4 +864,14 @@ export const de: I18n = {
     'Enterprise-Funktionen wie RBAC, LDAP, SSO und horizontale Skalierung w\u00fcnschen',
   'Need image generation, voice/video calls, and a Pipelines plugin framework':
     'Bildgenerierung, Sprach-/Videoanrufe und ein Pipelines-Plugin-Framework ben\u00f6tigen',
+  // AgentAsia: the marketplace was removed, so these three claims were
+
+  // rewritten without it. Translations follow the corrected English.
+  'Fully open-source under the MIT license with plugins and community contributions. {alternative} is proprietary and closed.':
+    'Vollst\u00e4ndig Open Source unter MIT-Lizenz mit Plugins und Community-Beitr\u00e4gen. {alternative} ist propriet\u00e4r und geschlossen.',
+  'Cross-device sync via Yjs/WebRTC, connectors, and traces. {alternative} offers none of these.':
+    'Ger\u00e4te\u00fcbergreifende Synchronisation via Yjs/WebRTC, Konnektoren und Traces. {alternative} bietet nichts davon.',
+  'No P2P sync':
+    'Keine P2P-Synchronisation',
+
 }

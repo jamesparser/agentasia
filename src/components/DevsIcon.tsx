@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Icon } from './Icon'
+import { Icon, type IconSize } from './Icon'
 import clsx from 'clsx'
 
 // Memoized Devs icons to prevent unnecessary re-renders
@@ -10,13 +10,15 @@ export const DevsIcon = memo(
     loading = false,
     linked = true,
     className = '',
+    size = '5xl',
   }: {
     loading?: boolean
     linked?: boolean
     className?: string
+    size?: IconSize
   }) => (
     <Icon
-      size="5xl"
+      size={size}
       name="DevsAnimated"
       animation="appear"
       className={clsx(

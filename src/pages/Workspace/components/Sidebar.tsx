@@ -39,7 +39,7 @@ const KNOWN_LANGS = ['en', 'fr', 'de', 'es', 'ar', 'ko']
 
 /**
  * Derive which sidebar item is "active" from the current URL pathname.
- * Returns one of: 'home' | 'tasks' | 'agents' | 'marketplace' | extensionId | null
+ * Returns one of: 'home' | 'tasks' | 'agents' | extensionId | null
  */
 function useActiveNavItem(installedApps: ReturnType<typeof useInstalledApps>) {
   const { pathname } = useLocation()
@@ -57,7 +57,6 @@ function useActiveNavItem(installedApps: ReturnType<typeof useInstalledApps>) {
     // Core filters
     if (first === 'tasks' || first === 'inbox') return 'tasks'
     if (first === 'agents') return 'agents'
-    if (first === 'marketplace') return 'marketplace'
     if (!first || first === 'home') return 'home'
 
     // Check installed app page keys
@@ -683,12 +682,11 @@ function ExpandedNav({
   const primarySelectedKeys = useMemo(() => {
     if (activeNavItem === 'tasks') return ['tasks']
     if (activeNavItem === 'agents') return ['agents']
-    return [] // No primary nav item selected (app or marketplace is active)
+    return [] // No primary nav item selected (an installed app is active)
   }, [activeNavItem])
 
-  // Determine which app/marketplace key is selected
+  // Determine which installed-app key is selected
   const appsSelectedKeys = useMemo(() => {
-    if (activeNavItem === 'marketplace') return ['__marketplace__']
     if (
       activeNavItem &&
       installedApps.some((a) => a.extension.id === activeNavItem)
@@ -778,39 +776,6 @@ function ExpandedNav({
                 </ListBox.Item>
               )
             })}
-            <ListBox.Item
-              key="__marketplace__"
-              id="__marketplace__"
-              href={url('/marketplace')}
-              className={listItemClass}
-            >
-              <Icon name="HexagonPlus" className="text-warning" />
-              <span className="flex-1 text-left text-sm font-medium">
-                {t('Marketplace')}
-              </span>
-            </ListBox.Item>
-          </ListBox>
-        </>
-      )}
-      {installedApps.length === 0 && (
-        <>
-          <Separator />
-          <ListBox
-            aria-label="Marketplace"
-            selectionMode="single"
-            selectedKeys={appsSelectedKeys}
-          >
-            <ListBox.Item
-              key="__marketplace__"
-              id="__marketplace__"
-              href={url('/marketplace')}
-              className={listItemClass}
-            >
-              <Icon name="HexagonPlus" className="text-warning" />
-              <span className="flex-1 text-left text-sm font-medium">
-                {t('Marketplace')}
-              </span>
-            </ListBox.Item>
           </ListBox>
         </>
       )}

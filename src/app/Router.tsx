@@ -57,21 +57,9 @@ const OAuthCallbackPage = lazyNamed(
 const TaskPage = lazyNamed(() => import('@/pages/Tasks/show'), 'TaskPage')
 const SessionPage = lazyNamed(() => import('@/pages/Session'), 'SessionPage')
 const LivePage = lazyNamed(() => import('@/features/live'), 'LivePage')
-const MarketplacePage = lazyNamed(
-  () => import('@/features/marketplace/pages'),
-  'MarketplacePage',
-)
 const DynamicAppRoute = lazyNamed(
   () => import('@/features/marketplace/pages'),
   'DynamicAppRoute',
-)
-const NewExtensionPage = lazyNamed(
-  () => import('@/features/marketplace/pages'),
-  'NewExtensionPage',
-)
-const ExtensionEditorPage = lazyNamed(
-  () => import('@/features/marketplace/pages'),
-  'ExtensionEditorPage',
 )
 const ComparePage = lazyNamed(() => import('@/pages/Compare/index.tsx'), 'ComparePage')
 const CompareAgenticSeekPage = lazyNamed(() => import('@/pages/Compare'), 'CompareAgenticSeekPage')
@@ -145,10 +133,12 @@ const routes = {
   'session/:sessionId': SessionPage,
   library: LibraryRedirect,
   terms: TermsPage,
-  // AgentAsia: Marketplace hidden per handover
-  // marketplace: MarketplacePage,
-  // 'marketplace/new': NewExtensionPage,
-  // 'marketplace/extensions/:extensionId/edit': ExtensionEditorPage,
+  // AgentAsia: the Marketplace is removed, not hidden. Its browsing routes were
+  // already commented out; the lazy bindings are gone so nothing can re-point at
+  // them, and the nav surfaces that still linked to /marketplace (bottom tab bar,
+  // sidebar app list, sidebar empty state) are deleted. `DynamicAppRoute` below
+  // stays: installed apps still render through it, which is a different thing
+  // from the store.
   live: LivePage,
   tour: TourPage,
   'tour/:videoId': TourVideoPage,

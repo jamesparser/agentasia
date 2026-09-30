@@ -472,9 +472,21 @@ export const Icons = {
   ...CustomIcons,
 }
 
+export type IconSize =
+  | 'xs'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | '2xl'
+  | '3xl'
+  | '4xl'
+  | '5xl'
+  | '6xl'
+
 export type IconProps = ComponentProps<'svg'> & {
   name: IconName
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
+  size?: IconSize
   animation?: 'appear' | 'spinning' | 'thinking' | 'pulsating'
 }
 
@@ -488,6 +500,10 @@ const sizeMap = {
   '3xl': 48,
   '4xl': 64,
   '5xl': 80,
+  // The hero asks for the mark at 120px outright. It used to get 80px plus a
+  // `scale-150` class, and a transform never changes layout: the painted square
+  // overflowed its box by 20px and sat on top of the wordmark underneath.
+  '6xl': 120,
 }
 
 export function Icon({ name, size = 'md', animation, ...props }: IconProps) {

@@ -2,6 +2,7 @@ import { useI18n, useUrl } from '@/i18n'
 import { Container, Icon, PromptArea, Section, Title } from '@/components'
 import type { PromptMode } from '@/components/PromptArea'
 import { DevsIcon } from '@/components/DevsIcon'
+import { AGENTASIA } from '@/config/agentasia'
 import { EasySetupModal } from '@/components/EasySetup/EasySetupModal'
 import DefaultLayout from '@/layouts/Default'
 import { useEffect, useState } from 'react'
@@ -331,7 +332,7 @@ export const IndexPage = () => {
 
             <motion.div {...motionVariants.title}>
               <Title
-                subtitle={t('Your AI team is ready')}
+                subtitle={AGENTASIA.slogan}
                 className="!text-2xl sm:!text-3xl md:!text-4xl font-light"
                 subtitleClassName="text-md md:text-xl"
               >

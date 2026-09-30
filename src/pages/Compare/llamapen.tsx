@@ -88,7 +88,7 @@ export const CompareLlamaPenPage = () => {
           [t('Agent Memory'), t('Yes'), t('No'), 'yes', 'no'],
           [t('Knowledge Base'), t('Yes'), t('No'), 'yes', 'no'],
           [t('P2P Sync'), t('Yes'), t('No'), 'yes', 'no'],
-          [t('Marketplace & Connectors'), t('Yes'), t('No'), 'yes', 'no'],
+          [t('Connectors'), t('Yes'), t('No'), 'yes', 'no'],
         ]}
         altName={ALT_NAME}
       />
@@ -128,7 +128,7 @@ export const CompareLlamaPenPage = () => {
             icon: 'Shuffle',
             title: t('P2P Sync & Ecosystem'),
             desc: t(
-              'Cross-device sync via Yjs/WebRTC, marketplace, connectors, and traces. {alternative} offers none of these.',
+              'Cross-device sync via Yjs/WebRTC, connectors, and traces. {alternative} offers none of these.',
             ),
             gradient: 'from-purple-500/10 via-transparent to-transparent',
           },
@@ -143,7 +143,7 @@ export const CompareLlamaPenPage = () => {
             { text: t('Ollama-only (no cloud providers)'), included: false },
             { text: t('No multi-agent orchestration'), included: false },
             { text: t('No agent memory or knowledge base'), included: false },
-            { text: t('No P2P sync or marketplace'), included: false },
+            { text: t('No P2P sync'), included: false },
           ],
         }}
       />

@@ -493,8 +493,6 @@ export const ko: I18n = {
   'Access OpenAI, Anthropic, Gemini, Mistral, and more — plus local models via Ollama. {alternative} only supports local GGUF inference.':
     'OpenAI, Anthropic, Gemini, Mistral 등에 접근 — Ollama를 통한 로컬 모델도 지원. {alternative}는 로컬 GGUF 추론만 지원합니다.',
   'Open Source & Extensible': '오픈 소스 및 확장 가능',
-  'Fully open-source under the MIT license with a marketplace, plugins, and community contributions. {alternative} is proprietary and closed.':
-    'MIT 라이선스 하의 완전한 오픈 소스 — 마켓플레이스, 플러그인, 커뮤니티 기여 포함. {alternative}는 독점적이고 비공개입니다.',
 
   // HugstonOne — Pricing
   'Free (email required)': '무료 (이메일 필요)',
@@ -524,7 +522,7 @@ export const ko: I18n = {
   'Yes (Ollama web UI)': '예 (Ollama 웹 UI)',
   'Yes (PWA)': '예 (PWA)',
   'Requires Ollama running': 'Ollama 실행 필요',
-  'Marketplace & Connectors': '마켓플레이스 및 커넥터',
+  'Connectors': '커넥터',
 
   // LlamaPen — Advantages
   'Multi-Provider Freedom': '멀티 제공자 자유',
@@ -536,12 +534,9 @@ export const ko: I18n = {
   'Persistent memory with human review, plus a full knowledge base for document ingestion. {alternative} has neither.':
     '인간 검토를 포함한 영구 메모리와 문서 수집을 위한 전체 지식 베이스. {alternative}에는 둘 다 없습니다.',
   'P2P Sync & Ecosystem': 'P2P 동기화 및 에코시스템',
-  'Cross-device sync via Yjs/WebRTC, marketplace, connectors, and traces. {alternative} offers none of these.':
-    'Yjs/WebRTC를 통한 기기 간 동기화, 마켓플레이스, 커넥터, 트레이스. {alternative}는 이 중 아무것도 제공하지 않습니다.',
 
   // LlamaPen — Pricing
   'Ollama-only (no cloud providers)': 'Ollama만 (클라우드 제공자 없음)',
-  'No P2P sync or marketplace': 'P2P 동기화 또는 마켓플레이스 없음',
 
   // LlamaPen — Honest take
   'Only use local Ollama models and want the simplest possible chat UI':
@@ -860,4 +855,14 @@ export const ko: I18n = {
     'RBAC, LDAP, SSO, 수평 확장과 같은 엔터프라이즈 기능이 필요합니다',
   'Need image generation, voice/video calls, and a Pipelines plugin framework':
     '이미지 생성, 음성/영상 통화, Pipelines 플러그인 프레임워크가 필요합니다',
+  // AgentAsia: the marketplace was removed, so these three claims were
+
+  // rewritten without it. Translations follow the corrected English.
+  'Fully open-source under the MIT license with plugins and community contributions. {alternative} is proprietary and closed.':
+    'MIT \ub77c\uc774\uc120\uc2a4 \ud558\uc758 \uc644\uc804\ud55c \uc624\ud508 \uc18c\uc2a4 \u2014 \ud50c\ub7ec\uadf8\uc778, \ucee4\ubba4\ub2c8\ud2f0 \uae30\uc5ec \ud3ec\ud568. {alternative}\ub294 \ub3c5\uc810\uc801\uc774\uace0 \ube44\uacf5\uac1c\uc785\ub2c8\ub2e4.',
+  'Cross-device sync via Yjs/WebRTC, connectors, and traces. {alternative} offers none of these.':
+    'Yjs/WebRTC\ub97c \ud1b5\ud55c \uae30\uae30 \uac04 \ub3d9\uae30\ud654, \ucee4\ub125\ud130, \ud2b8\ub808\uc774\uc2a4. {alternative}\ub294 \uc774 \uc911 \uc544\ubb34\uac83\ub3c4 \uc81c\uacf5\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.',
+  'No P2P sync':
+    'P2P \ub3d9\uae30\ud654 \uc5c6\uc74c',
+
 }

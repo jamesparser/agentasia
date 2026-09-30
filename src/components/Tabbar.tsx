@@ -91,16 +91,6 @@ export const Tabbar = ({ className = '' }) => {
         }
         href={url('/history')}
       />
-      <Tab
-        key="/marketplace"
-        // data-color="warning"
-        title={
-          <Tooltip content={t('Marketplace')} placement="top">
-            <Icon name="HexagonPlus" />
-          </Tooltip>
-        }
-        href={url('/marketplace')}
-      />
     </Tabs>
   )
 }

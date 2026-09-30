@@ -440,7 +440,7 @@ export const en = [
   'Cloud + Local Models',
   'Access OpenAI, Anthropic, Gemini, Mistral, and more \u2014 plus local models via Ollama. {alternative} only supports local GGUF inference.',
   'Open Source & Extensible',
-  'Fully open-source under the MIT license with a marketplace, plugins, and community contributions. {alternative} is proprietary and closed.',
+  'Fully open-source under the MIT license with plugins and community contributions. {alternative} is proprietary and closed.',
 
   // HugstonOne — Pricing
   'Free (email required)',
@@ -466,7 +466,7 @@ export const en = [
   'Yes (Ollama web UI)',
   'Yes (PWA)',
   'Requires Ollama running',
-  'Marketplace & Connectors',
+  'Connectors',
 
   // LlamaPen — Advantages
   'Multi-Provider Freedom',
@@ -475,11 +475,11 @@ export const en = [
   'Agent Memory & Knowledge Base',
   'Persistent memory with human review, plus a full knowledge base for document ingestion. {alternative} has neither.',
   'P2P Sync & Ecosystem',
-  'Cross-device sync via Yjs/WebRTC, marketplace, connectors, and traces. {alternative} offers none of these.',
+  'Cross-device sync via Yjs/WebRTC, connectors, and traces. {alternative} offers none of these.',
 
   // LlamaPen — Pricing
   'Ollama-only (no cloud providers)',
-  'No P2P sync or marketplace',
+  'No P2P sync',
 
   // LlamaPen — Honest take
   'Only use local Ollama models and want the simplest possible chat UI',
