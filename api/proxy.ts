@@ -12,7 +12,20 @@
  * no redirect following (a permitted host could 302 to an internal one), size
  * cap, and a timeout.
  */
-import { validateProxyTarget } from '../src/lib/skills/proxy-target'
+/**
+ * The `.js` in this specifier is not a typo and must not be "fixed" back.
+ *
+ * package.json has `"type": "module"`, and Vercel's Node builder leaves a
+ * cross-file import as a real runtime ESM import rather than bundling it away.
+ * Node's ESM resolver requires the extension, so the extensionless form threw
+ * while loading the module: every request became a bare 500
+ * FUNCTION_INVOCATION_FAILED with nothing in the request logs, because the
+ * handler body never ran. Verified against deployed probes: extensionless
+ * import -> 500; `./x.js` -> 200, including across the api/..src/ boundary.
+ * TypeScript resolves `.js` back to the `.ts` source under moduleResolution
+ * "bundler", and Vite does the same for the client build.
+ */
+import { validateProxyTarget } from '../src/lib/skills/proxy-target.js'
 
 const MAX_BYTES = 6 * 1024 * 1024
 
