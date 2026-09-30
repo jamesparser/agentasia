@@ -55,4 +55,23 @@ describe('api/proxy Vercel export shape', () => {
     )
     expect(res.status).toBe(403)
   })
+
+/**
+ * The actual cause of the production 500, and the one thing a future refactor is
+ * most likely to undo: someone "fixing" the `.js` in the import specifier back to
+ * an extensionless path. That compiles, lints, and passes every other test - and
+ * then throws at module load on Vercel, where the import is resolved by Node's
+ * ESM loader rather than by the bundler.
+ */
+it('imports its validator with an explicit .js extension', async () => {
+  // import.meta.url is stripped in this jsdom environment, and vitest runs from
+  // the repo root, so resolve from cwd.
+  const { readFileSync } = await import('node:fs')
+  const source = readFileSync('api/proxy.ts', 'utf8')
+  const specifiers = [...source.matchAll(/from\s+'([^']+)'/g)].map((m) => m[1])
+  expect(specifiers.length).toBeGreaterThan(0)
+  for (const spec of specifiers) {
+    expect(spec, `api/proxy.ts imports '${spec}' without an extension`).toMatch(/\.js$/)
+  }
+})
 })
