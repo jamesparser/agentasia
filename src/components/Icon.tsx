@@ -14,9 +14,11 @@ import clsx from 'clsx'
  * transparent negative space, so it cannot simply be recoloured with
  * `currentColor` the way the old inline SVG was.
  *
- * The bold simplified silhouette is used, not the detailed illustration: a
- * vision-model review of both versions scored the detailed one 6/10 and this one
- * 8/10 for favicon use, because hairline detail collapses at 16px.
+ * The solid mass is used here, not the line art: the drawing's strokes are ~0.2px
+ * once reduced to 16px, so `naga-ink-*` is for large placements only. Filling the
+ * enclosed regions instead keeps 0.30 ink coverage at 16px, where the previous
+ * mark measured 0.33 - same weight class, so nothing about the layout shifts.
+ * Regenerate both families with scripts/brand/generate-brand-assets.py.
  */
 const NagaMark = ({
   width = 24,
@@ -30,14 +32,14 @@ const NagaMark = ({
     {...rest}
   >
     <img
-      src="/brand/naga-bold-black.png"
+      src="/brand/naga-solid-black.png"
       alt=""
       aria-hidden="true"
       draggable={false}
       className="h-full w-full object-contain dark:hidden"
     />
     <img
-      src="/brand/naga-bold-white.png"
+      src="/brand/naga-solid-white.png"
       alt=""
       aria-hidden="true"
       draggable={false}

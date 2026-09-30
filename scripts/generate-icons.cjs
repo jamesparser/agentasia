@@ -3,41 +3,36 @@ const { join } = require('path')
 const { execSync } = require('child_process')
 
 const publicDir = join(__dirname, '..', 'public')
+const brandDir = join(publicDir, 'brand')
 
-// SVG icon with explicit black color (for light backgrounds)
-// const svgIcon = /* svg */ `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-//   <polygon points="12,26 46,17 37,51" fill="#000" stroke="#000" stroke-width="12" stroke-linejoin="round"/>
-// </svg>`
+/**
+ * The AgentAsia badge icons: the naga mark in white on the AgentAsia blue plate.
+ *
+ * These used to be an inline SVG of three rounded blobs on blue - the leftover
+ * shape of the upstream devs.new mark after the triangle was removed, which is
+ * why every icon on the site, tab and home screen read as "three dots". That SVG
+ * is gone. Everything here is now composed from the same master as the rest of
+ * the brand set, so there is exactly one mark and one place to change it:
+ *
+ *   python3 scripts/brand/generate-brand-assets.py   -> public/brand/naga-solid-*.png
+ *   node scripts/generate-icons.cjs                  -> the plates below
+ *
+ * If the master is missing, that means the brand script has not been run; say so
+ * instead of quietly falling back to a different logo.
+ */
+const MASTER_WHITE = join(brandDir, 'naga-solid-white.png')
+const MASTER_BLACK = join(brandDir, 'naga-solid-black.png')
+const PLATE = '#6aa1ff'
 
-// Maskable icon needs padding (safe zone is 80% of the icon, centered)
-// For a 512x512 icon, the safe zone is 409x409 centered, so we need ~20% padding on each side
-const createMaskableSvg = (size) => {
-  const padding = Math.floor(size * 0.15) // 15% padding for safe zone
-  const iconSize = size - padding * 2
-  const scale = iconSize / 96
+/**
+ * How much of the plate the mark fills.
+ *
+ * `any` icons get the full plate. `maskable` icons get less, because the platform
+ * crops to a circle or squircle and anything outside the inner 80% is lost -
+ * 80% is the safe zone, so the mark is set at 60% to keep clear of it.
+ */
+const SCALE = { any: 0.82, maskable: 0.6, apple: 0.86 }
 
-  return /* svg */ `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    <rect width="${size}" height="${size}" fill="#6aa1ff"/>
-    <g fill="#fff" transform="translate(${padding}, ${padding}) scale(${scale})">
-      <defs><radialGradient id="b" cx="30%" cy="25%" r="55%"><stop stop-color="#fff"/><stop offset="40%" stop-color="#fff"/></radialGradient><filter id="a"><feGaussianBlur stdDeviation="4"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 10 -5"/></filter></defs><g filter="url(#a)"><circle cx="38" cy="42.2" r="5.8"/><circle cx="58" cy="42.2" r="5.8"/><g fill="url(#b)"><circle cx="28" cy="59.5" r="16"/><circle cx="48" cy="24.9" r="16"/><circle cx="68" cy="59.5" r="16"/></g></g>
-    </g>
-  </svg>`
-}
-
-// Standard icon (any purpose) - white icon
-const createStandardSvg = (size) => {
-  const scale = size / 96
-  return /* svg */ `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    <rect width="${size}" height="${size}" fill="#6aa1ff"/>
-    <g fill="#fff" transform="scale(${scale})">
-      <defs><radialGradient id="b" cx="30%" cy="25%" r="55%"><stop stop-color="#fff"/><stop offset="40%" stop-color="#fff"/></radialGradient><filter id="a"><feGaussianBlur stdDeviation="4"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 10 -5"/></filter></defs><g filter="url(#a)"><circle cx="38" cy="42.2" r="5.8"/><circle cx="58" cy="42.2" r="5.8"/><g fill="url(#b)"><circle cx="28" cy="59.5" r="16"/><circle cx="48" cy="24.9" r="16"/><circle cx="68" cy="59.5" r="16"/></g></g>
-    </g>
-  </svg>`
-}
-
-const sizes = [192, 512]
-
-// Optimize PNG with OxiPNG (lossless compression)
 function optimizePng(filePath) {
   try {
     execSync(`oxipng -o max --strip safe "${filePath}"`, { stdio: 'pipe' })
@@ -48,39 +43,77 @@ function optimizePng(filePath) {
   }
 }
 
+async function plate(masterPath, size, scale, outPath) {
+  const markSize = Math.round(size * scale)
+  const mark = await sharp(masterPath)
+    .resize(markSize, markSize, { fit: 'contain', background: 'transparent' })
+    .toBuffer()
+
+  await sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: PLATE,
+    },
+  })
+    .composite([
+      {
+        input: mark,
+        gravity: 'centre',
+        blend: 'over',
+      },
+    ])
+    .png()
+    .toFile(outPath)
+
+  console.log(`Generated ${outPath.replace(publicDir + '/', '')}`)
+  return outPath
+}
+
 async function generateIcons() {
-  const generatedFiles = []
-
-  for (const size of sizes) {
-    // Generate standard icon
-    const standardSvg = createStandardSvg(size)
-    const standardPath = join(publicDir, `icon-${size}.png`)
-    await sharp(Buffer.from(standardSvg)).png().toFile(standardPath)
-    generatedFiles.push(standardPath)
-    console.log(`Generated icon-${size}.png`)
-
-    // Generate maskable icon with safe zone padding
-    const maskableSvg = createMaskableSvg(size)
-    const maskablePath = join(publicDir, `icon-${size}-maskable.png`)
-    await sharp(Buffer.from(maskableSvg)).png().toFile(maskablePath)
-    generatedFiles.push(maskablePath)
-    console.log(`Generated icon-${size}-maskable.png`)
+  for (const master of [MASTER_WHITE, MASTER_BLACK]) {
+    try {
+      await sharp(master).metadata()
+    } catch {
+      throw new Error(
+        `Missing brand master ${master}. Run: python3 scripts/brand/generate-brand-assets.py`,
+      )
+    }
   }
 
-  // Also generate Apple Touch Icon (180x180)
-  const appleSvg = createStandardSvg(180)
-  const applePath = join(publicDir, 'apple-touch-icon.png')
-  await sharp(Buffer.from(appleSvg)).png().toFile(applePath)
-  generatedFiles.push(applePath)
-  console.log('Generated apple-touch-icon.png')
+  const generated = []
 
-  // Optimize all generated files with OxiPNG
+  for (const size of [192, 512]) {
+    generated.push(
+      await plate(MASTER_WHITE, size, SCALE.any, join(publicDir, `icon-${size}.png`)),
+    )
+    generated.push(
+      await plate(
+        MASTER_WHITE,
+        size,
+        SCALE.maskable,
+        join(publicDir, `icon-${size}-maskable.png`),
+      ),
+    )
+  }
+
+  generated.push(
+    await plate(
+      MASTER_WHITE,
+      180,
+      SCALE.apple,
+      join(publicDir, 'apple-touch-icon.png'),
+    ),
+  )
+
   console.log('\nOptimizing with OxiPNG...')
-  for (const filePath of generatedFiles) {
-    optimizePng(filePath)
-  }
+  for (const filePath of generated) optimizePng(filePath)
 
   console.log('\nAll icons generated and optimized successfully!')
 }
 
-generateIcons().catch(console.error)
+generateIcons().catch((error) => {
+  console.error(error.message || error)
+  process.exit(1)
+})

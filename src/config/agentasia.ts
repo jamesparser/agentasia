@@ -15,12 +15,13 @@ export const MANAGED_GATEWAY_DEFAULT = 'https://agentasia-gateway.realcryptocap.
 export const AGENTASIA = {
   slogan: 'AI that speaks your language',
   // Raster only: the brief rules out SVG, and the upstream devs.new triangle is
-  // not ours to use. `logo` is the bold silhouette that survives 16px;
-  // `logoDetailed` is the same naga with its line detail for large placements
-  // (hero, about, store listings) where the extra definition reads.
-  logo: '/brand/naga-bold-black.png',
-  logoDark: '/brand/naga-bold-white.png',
-  logoDetailed: '/brand/naga-detailed-black.png',
+  // not ours to use. `logo` is the filled naga mass that survives 16px;
+  // `logoDetailed` is the same artwork as line art, for large placements (hero,
+  // about, store listings) where the stroke detail reads. Both are generated from
+  // scripts/brand/agentasia-naga-source.jpg - do not hand-edit the PNGs.
+  logo: '/brand/naga-solid-black.png',
+  logoDark: '/brand/naga-solid-white.png',
+  logoDetailed: '/brand/naga-ink-black.png',
   // Plan -> model is a server decision, not a user setting: free users get
   // Nemotron Nano and no model picker; paid plans get a larger Nemotron.
   // IDs verified against Token Factory /v1/models on 2026-09-28.
