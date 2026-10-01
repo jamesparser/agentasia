@@ -76,6 +76,13 @@ function createToolCall(
 }
 
 describe('Tool Executor', () => {
+  // This hook re-imports the whole executor dependency graph on every test, by
+  // design: `vi.resetModules()` is how the file gets a clean registry per case.
+  // 55 fresh module graphs cost 12-15s of hook time in total, which passes on
+  // its own but intermittently crosses Vitest's 10s default once the rest of the
+  // suite is competing for the same cores. Budgeted explicitly rather than
+  // raised globally, so a genuine hang still fails and other files keep the
+  // default.
   beforeEach(async () => {
     vi.clearAllMocks()
     resetMockDb(mockDb)
@@ -86,7 +93,7 @@ describe('Tool Executor', () => {
 
     // Re-import the module fresh
     executorModule = await import('@/lib/tool-executor/executor')
-  })
+  }, 30_000)
 
   afterEach(() => {
     vi.restoreAllMocks()

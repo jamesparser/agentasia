@@ -40,6 +40,26 @@ vi.mock('@/stores/knowledgeStore', () => ({
   ensureReady: vi.fn(async () => {}),
 }))
 
+/**
+ * searchKnowledge falls back to `CredentialService.getActiveConfig()` whenever
+ * the caller does not pass an explicit llmConfig (service.ts:564). That reads
+ * stored credentials and decrypts them, and the key is PBKDF2 with 100,000
+ * iterations (src/lib/crypto/index.ts:59), so every test in this file paid a
+ * real key derivation to assert something about relevance scoring. With a
+ * working test localStorage that made 15 of these tests exceed Vitest's 5s
+ * default; "should return empty results when no items exist" took 8.3s to search
+ * an empty array.
+ *
+ * Default to "no active credentials", which is the branch under test for
+ * scoring. The two tests that exercise the credential path spy on this same
+ * object and still override it.
+ */
+vi.mock('@/lib/credential-service', () => ({
+  CredentialService: {
+    getActiveConfig: vi.fn(async () => null),
+  },
+}))
+
 // Helper to set mock knowledge items
 function setMockItems(items: KnowledgeItem[]) {
   mockKnowledgeStore.items = items
