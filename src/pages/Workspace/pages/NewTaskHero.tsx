@@ -8,6 +8,7 @@ import { Icon, PromptArea, Title } from '@/components'
 import { DevsIcon } from '@/components/DevsIcon'
 import { AGENTASIA } from '@/config/agentasia'
 import { useDraftPrompt } from '@/hooks/useDraftPrompt'
+import { usePWAInstallPrompt } from '@/hooks/usePWAInstallPrompt'
 import type { PromptMode } from '@/components/PromptArea'
 import { useI18n, useUrl } from '@/i18n'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -73,6 +74,17 @@ export function NewTaskHero({
   const { lang, t } = useI18n()
   const url = useUrl(lang)
   const navigate = useNavigate()
+
+  /* The install prompt lived only in src/pages/Index, which is not routed - so
+     nothing ever offered to install the app, despite the manifest, icons and
+     service worker all being in place. This hero is the page visitors actually
+     land on, and it is the page a phone browser shows the prompt on. */
+  usePWAInstallPrompt({
+    title: t('Install AgentAsia'),
+    description: t(
+      'Install this app on your device for a better experience and offline access.',
+    ),
+  })
 
   // The composer on the landing page and the new-task route. Uncontrolled here,
   // so without a draft store the text is gone the moment you open another
