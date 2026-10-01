@@ -5,6 +5,18 @@ import {
   detectPreferredLanguage,
   hasLanguagePrefix,
 } from '@/lib/detect-language'
+import { languages } from '@/i18n/locales'
+
+/** A language code the app genuinely does not ship, chosen from the live
+ * catalogue so adding a locale cannot quietly invalidate these tests. */
+const UNSUPPORTED = ['sw', 'nl', 'fa', 'he', 'tr', 'ta'].find(
+  (code) => !(code in languages),
+)
+if (!UNSUPPORTED) {
+  throw new Error(
+    'No unsupported language code left to test with; pick another in this file.',
+  )
+}
 
 describe('detect-language', () => {
   describe('detectPreferredLanguage', () => {
@@ -32,13 +44,19 @@ describe('detect-language', () => {
       expect(detectPreferredLanguage()).toBe('fr')
     })
 
+    // Both of these used to lead with 'zh-CN' as the "unsupported" language.
+    // zh-CN gained a locale pack in September, so it is now a valid match and
+    // the function correctly returns it, which made the assertions fail while
+    // the behaviour was right. Deriving an unsupported code from the live
+    // catalogue keeps the tests honest as languages are added; hard-coding one
+    // means the next locale added silently breaks an unrelated test.
     it('should fall back to second preference if first is not supported', () => {
-      vi.stubGlobal('navigator', { languages: ['zh-CN', 'es-ES', 'en'] })
+      vi.stubGlobal('navigator', { languages: [UNSUPPORTED, 'es-ES', 'en'] })
       expect(detectPreferredLanguage()).toBe('es')
     })
 
     it('should return default language when no supported language found', () => {
-      vi.stubGlobal('navigator', { languages: ['zh-CN', 'ja-JP', 'ru-RU'] })
+      vi.stubGlobal('navigator', { languages: [UNSUPPORTED, `${UNSUPPORTED}-RU`] })
       expect(detectPreferredLanguage()).toBe('en')
     })
 
