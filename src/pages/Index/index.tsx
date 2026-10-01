@@ -1,12 +1,12 @@
 import { useI18n, useUrl } from '@/i18n'
 import { useDraftPrompt } from '@/hooks/useDraftPrompt'
-import { Container, Icon, PromptArea, Section, Title } from '@/components'
+import { Icon, PromptArea, Section, Title } from '@/components'
 import type { PromptMode } from '@/components/PromptArea'
 import { DevsIcon } from '@/components/DevsIcon'
 import { AGENTASIA } from '@/config/agentasia'
 import { EasySetupModal } from '@/components/EasySetup/EasySetupModal'
 import DefaultLayout from '@/layouts/Default'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Agent, InstalledSkill, SessionIntent } from '@/types'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -16,16 +16,10 @@ import { useEasySetup } from '@/hooks/useEasySetup'
 import { usePWAInstallPrompt } from '@/hooks/usePWAInstallPrompt'
 import {
   Alert,
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
   Link,
 } from '@heroui/react'
 import { motion } from 'framer-motion'
 import { motionVariants } from './motion'
-import { getAgentsByCategory } from '@/stores/agentStore'
 // import { loadAllMethodologies } from '@/stores/methodologiesStore'
 // import type { Methodology } from '@/types/methodology.types'
 import localeI18n from './i18n'
@@ -42,10 +36,8 @@ export const IndexPage = () => {
   const [isSending, setIsSending] = useState(false)
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-  const [agents, setAgents] = useState<Agent[]>([])
   const [mode, setMode] = useState<PromptMode>('chat')
   // const [methodologies, setMethodologies] = useState<Methodology[]>([])
-  const [isLoadingAgents, setIsLoadingAgents] = useState(true)
   // const [isLoadingMethodologies, setIsLoadingMethodologies] = useState(true)
 
   const { createSession } = useSessionStore()
@@ -64,34 +56,6 @@ export const IndexPage = () => {
     ),
   })
 
-  // Load agents and methodologies on mount
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setIsLoadingAgents(true)
-        // Always include default agents on the Index page for use cases
-        const { agentsByCategory, orderedCategories } =
-          await getAgentsByCategory(lang, { includeDefaultAgents: true })
-        // Flatten all agents from all categories
-        const allAgents = orderedCategories.flatMap(
-          (category) => agentsByCategory[category] || [],
-        )
-
-        // Create a map for quick agent lookup
-        const agentsMap = new Map<string, Agent>()
-        allAgents.forEach((agent) => {
-          agentsMap.set(agent.id, agent)
-        })
-
-        setAgents(allAgents.filter((agent) => agent.id !== 'devs'))
-      } catch (error) {
-        console.error('Failed to load agents:', error)
-      } finally {
-        setIsLoadingAgents(false)
-      }
-    }
-    loadData()
-  }, [lang])
 
   // useEffect(() => {
   //   const loadData = async () => {
@@ -122,32 +86,6 @@ export const IndexPage = () => {
     })
   }
 
-  const handleUseCaseClick = (
-    useCase: {
-      prompt: string
-      id: string
-      title?: string
-      agent: Agent
-    },
-    focus = true,
-  ) => {
-    // Find the agent from the map
-    if (useCase.agent) {
-      setSelectedAgent(useCase.agent)
-    }
-    setPrompt(
-      useCase.agent.i18n?.[lang]?.examples?.find((ex) => ex.id === useCase.id)
-        ?.prompt ?? useCase.prompt,
-    )
-
-    if (focus) {
-      // Focus the prompt area
-      ;(document.querySelector('[data-testid="prompt-input"]') as any)?.focus()
-
-      // Scroll to the prompt area
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
 
   const onSubmitToAgent = async (
     cleanedPrompt?: string,

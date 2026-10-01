@@ -1,10 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  Button,
-  ScrollShadow,
-} from '@heroui/react'
-import { Icon, PromptArea, Title } from '@/components'
+import { ScrollShadow } from '@heroui/react'
+import { PromptArea, Title } from '@/components'
 import { DevsIcon } from '@/components/DevsIcon'
 import { AGENTASIA } from '@/config/agentasia'
 import { useDraftPrompt } from '@/hooks/useDraftPrompt'
@@ -12,7 +9,6 @@ import { usePWAInstallPrompt } from '@/hooks/usePWAInstallPrompt'
 import type { PromptMode } from '@/components/PromptArea'
 import { useI18n, useUrl } from '@/i18n'
 import { useSessionStore } from '@/stores/sessionStore'
-import { getAgentsByCategory } from '@/stores/agentStore'
 import { errorToast } from '@/lib/toast'
 import { uuidToBase64url } from '@/lib/url'
 import type { Agent, InstalledSkill, SessionIntent } from '@/types'
@@ -102,63 +98,10 @@ export function NewTaskHero({
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [mode, setMode] = useState<PromptMode>('chat')
-  const [agents, setAgents] = useState<Agent[]>([])
-  const [isLoadingAgents, setIsLoadingAgents] = useState(true)
 
   const { createSession } = useSessionStore()
   const { platformName } = userSettings()
 
-  useEffect(() => {
-    if (demo) {
-      setIsLoadingAgents(false)
-      return
-    }
-    let cancelled = false
-    const loadData = async () => {
-      try {
-        setIsLoadingAgents(true)
-        const { agentsByCategory, orderedCategories } =
-          await getAgentsByCategory(lang, { includeDefaultAgents: true })
-        if (cancelled) return
-        const allAgents = orderedCategories.flatMap(
-          (category) => agentsByCategory[category] || [],
-        )
-        setAgents(allAgents.filter((agent) => agent.id !== 'devs'))
-      } catch (error) {
-        console.error('Failed to load agents:', error)
-      } finally {
-        if (!cancelled) setIsLoadingAgents(false)
-      }
-    }
-    loadData()
-    return () => {
-      cancelled = true
-    }
-  }, [lang, demo])
-
-  const handleUseCaseClick = useCallback(
-    (
-      useCase: {
-        prompt: string
-        id: string
-        title?: string
-        agent: Agent
-      },
-      focus = true,
-    ) => {
-      if (useCase.agent) setSelectedAgent(useCase.agent)
-      setPrompt(
-        useCase.agent.i18n?.[lang]?.examples?.find((ex) => ex.id === useCase.id)
-          ?.prompt ?? useCase.prompt,
-      )
-      if (focus) {
-        ;(
-          document.querySelector('[data-testid="prompt-input"]') as any
-        )?.focus()
-      }
-    },
-    [lang],
-  )
 
   const onSubmitToAgent = useCallback(
     async (

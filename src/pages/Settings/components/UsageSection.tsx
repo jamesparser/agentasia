@@ -192,7 +192,7 @@ export function SubscriptionSection() {
                 {!isCurrent && (
                   <Button
                     size="sm"
-                    variant={id === 'pro' ? 'primary' : 'bordered'}
+                    variant={id === 'pro' ? 'solid' : 'bordered'}
                     className="mt-1 self-start"
                     onPress={() => {
                       setNotice(false)
