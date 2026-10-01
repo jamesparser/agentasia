@@ -44,6 +44,7 @@ import {
   TracesSection,
   UsageSection,
   SubscriptionSection,
+  ScheduledTasksSection,
 } from './components'
 import { FilesSection } from '@/pages/Knowledge/components'
 import { IconName } from '@/lib/types'
@@ -67,6 +68,7 @@ type SectionKey =
   | 'local-backup'
   | 'sync'
   | 'subscription'
+  | 'scheduled-tasks'
 
 type SectionGroup =
   | 'configure'
@@ -144,6 +146,7 @@ const SettingsContentInner = () => {
     'local-backup',
     'sync',
     'subscription',
+    'scheduled-tasks',
   ]
 
   // Use the hash highlight hook for element-level deep linking
@@ -222,6 +225,12 @@ const SettingsContentInner = () => {
       key: 'connectors',
       label: t('Connectors'),
       icon: 'EvPlug',
+      group: 'extend',
+    },
+    {
+      key: 'scheduled-tasks',
+      label: t('Scheduled Tasks'),
+      icon: 'ClockRotateRight',
       group: 'extend',
     },
     // { key: 'security', label: t('Secure Storage'), icon: 'Lock', group: 'configure' },
@@ -333,6 +342,8 @@ const SettingsContentInner = () => {
         )
       case 'subscription':
         return <SubscriptionSection />
+      case 'scheduled-tasks':
+        return <ScheduledTasksSection />
       case 'local-backup':
         return <LocalBackupSection />
       case 'sync':
