@@ -50,6 +50,14 @@ export const es: I18n = {
   'Connect Model Context Protocol servers to extend agent capabilities.':
     'Conecta servidores Model Context Protocol para ampliar las capacidades de los agentes.',
   'Add your first connector': 'Agrega tu primer conector',
+  'Add Custom App': 'Agregar aplicación personalizada',
+  'Configure your custom app connection. Only remote HTTP MCP servers are supported in this version.': 'Configure la conexión de su aplicación personalizada. En esta versión solo se admiten servidores HTTP MCP remotos.',
+  'Name': 'Nombre',
+  'MCP server URL': 'URL del servidor MCP',
+  'What does this server do?': '¿Qué hace este servidor?',
+  'Describe what this server does...': 'Describe lo que hace este servidor...',
+  'Test & add app': 'Probar y agregar aplicación',
+  'Find the URL in the app\'s MCP setup guide. The MCP server must allow this site through CORS. Local HTTP servers and secrets need a secure AgentAsia gateway.': 'Busque la URL en la guía de configuración de MCP de la aplicación. El servidor MCP debe permitir este sitio a través de CORS. Los servidores HTTP locales y los secretos necesitan una puerta de enlace segura de AgentAsia.',
 
   // Wizard - Provider Selection
   'Choose a service to connect to your knowledge base:':

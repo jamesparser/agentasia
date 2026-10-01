@@ -42,6 +42,14 @@ export const en = [
   'No MCP connectors yet',
   'Connect Model Context Protocol servers to extend agent capabilities.',
   'Add your first connector',
+  'Add Custom App',
+  'Configure your custom app connection. Only remote HTTP MCP servers are supported in this version.',
+  'Name',
+  'MCP server URL',
+  'What does this server do?',
+  'Describe what this server does...',
+  'Test & add app',
+  'Find the URL in the app\'s MCP setup guide. The MCP server must allow this site through CORS. Local HTTP servers and secrets need a secure AgentAsia gateway.',
 
   // Wizard - Provider Selection
   'Choose a service to connect to your knowledge base:',

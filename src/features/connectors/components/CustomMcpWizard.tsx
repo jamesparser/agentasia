@@ -9,8 +9,10 @@ import {
   ModalHeader,
   Textarea,
 } from '@heroui/react'
+import { useI18n } from '@/i18n'
 import { useConnectorStore } from '../stores'
 import { discoverHttpMcp } from '../lib/mcp-http'
+import localI18n from '../pages/i18n'
 
 interface CustomMcpWizardProps {
   isOpen: boolean
@@ -20,6 +22,7 @@ interface CustomMcpWizardProps {
 /** Configure a remote HTTP MCP server. Credentials are intentionally not
  * collected here: this browser-only build must never sync plaintext secrets. */
 export function CustomMcpWizard({ isOpen, onClose }: CustomMcpWizardProps) {
+  const { t } = useI18n(localI18n)
   const { addConnector } = useConnectorStore()
   const [name, setName] = useState('My Custom App')
   const [serverUrl, setServerUrl] = useState('')
@@ -73,41 +76,42 @@ export function CustomMcpWizard({ isOpen, onClose }: CustomMcpWizardProps) {
     <Modal isOpen={isOpen} onClose={onClose} placement="center">
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          Add Custom App
+          {t('Add Custom App')}
         </ModalHeader>
         <ModalBody>
           <p className="text-sm text-default-500">
-            Configure your custom app connection. Only remote HTTP MCP servers
-            are supported in this version.
+            {t(
+              'Configure your custom app connection. Only remote HTTP MCP servers are supported in this version.',
+            )}
           </p>
-          <Input label="Name" value={name} onValueChange={setName} />
+          <Input label={t('Name')} value={name} onValueChange={setName} />
           <Input
-            label="MCP server URL"
+            label={t('MCP server URL')}
             placeholder="https://mcp.example.com"
             value={serverUrl}
             onValueChange={setServerUrl}
             type="url"
           />
           <Textarea
-            label="What does this server do?"
-            placeholder="Describe what this server does..."
+            label={t('What does this server do?')}
+            placeholder={t('Describe what this server does...')}
             value={description}
             onValueChange={setDescription}
           />
           <p className="text-xs text-default-500">
-            Find the URL in the app&apos;s MCP setup guide. The MCP server must
-            allow this site through CORS. Local HTTP servers and secrets need a
-            secure AgentAsia gateway.
+            {t(
+              "Find the URL in the app's MCP setup guide. The MCP server must allow this site through CORS. Local HTTP servers and secrets need a secure AgentAsia gateway.",
+            )}
           </p>
           {error && <p className="text-sm text-danger">{error}</p>}
           {message && <p className="text-sm text-success">{message}</p>}
         </ModalBody>
         <ModalFooter>
           <Button variant="flat" onPress={onClose}>
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button color="primary" isLoading={isTesting} onPress={save}>
-            Test &amp; add app
+            {t('Test & add app')}
           </Button>
         </ModalFooter>
       </ModalContent>

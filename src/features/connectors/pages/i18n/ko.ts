@@ -50,6 +50,14 @@ export const ko: I18n = {
   'Connect Model Context Protocol servers to extend agent capabilities.':
     'Model Context Protocol 서버를 연결하여 에이전트 기능을 확장하세요.',
   'Add your first connector': '첫 번째 커넥터를 추가하세요',
+  'Add Custom App': '맞춤형 앱 추가',
+  'Configure your custom app connection. Only remote HTTP MCP servers are supported in this version.': '맞춤형 앱 연결을 구성하세요. 이 버전에서는 원격 HTTP MCP 서버만 지원됩니다.',
+  'Name': '이름',
+  'MCP server URL': 'MCP 서버 URL',
+  'What does this server do?': '이 서버는 무엇을 합니까?',
+  'Describe what this server does...': '이 서버의 기능을 설명하세요...',
+  'Test & add app': '앱 테스트 및 추가',
+  'Find the URL in the app\'s MCP setup guide. The MCP server must allow this site through CORS. Local HTTP servers and secrets need a secure AgentAsia gateway.': '앱의 MCP 설정 가이드에서 URL을 찾으세요. MCP 서버는 CORS를 통해 이 사이트를 허용해야 합니다. 로컬 HTTP 서버 및 비밀에는 보안 AgentAsia 게이트웨이가 필요합니다.',
 
   // Wizard - Provider Selection
   'Choose a service to connect to your knowledge base:':

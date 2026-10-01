@@ -62,6 +62,11 @@ const DEVS_TO_MODELS_DEV_MAP: Record<LLMProvider, string | string[] | null> = {
   'vertex-ai': ['google-vertex', 'google-vertex-anthropic'], // Gemini + Claude on Vertex AI
   mistral: 'mistral',
   openrouter: 'openrouter',
+  // Both are real models.dev providers (deepseek 4 models, venice 115), verified
+  // against https://models.dev/api.json. They were simply never added to this
+  // map, which is why `tsc` reported the Record as incomplete.
+  deepseek: 'deepseek',
+  venice: 'venice',
   // Local providers - not in models.dev
   local: null,
   ollama: null,
@@ -392,6 +397,8 @@ const EMPTY_REGISTRY: ModelRegistry = {
   'vertex-ai': [],
   mistral: [],
   openrouter: [],
+  deepseek: [],
+  venice: [],
   huggingface: [],
   'openai-compatible': [],
   'lm-studio': [],
