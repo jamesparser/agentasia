@@ -42,8 +42,7 @@ bill surprise); power users may point at Pipedream/Zapier/self-hosted instead.
 
 **Built with:** Nebius Token Factory · NVIDIA Nemotron 3 (Nano 30B-A3B is the free
 tier; Super 120B-A12B and Ultra 550B are selectable by plan) · Parakeet ASR, run
-on-device in the browser · Tavily · Mem0 (user BYOK) · MCP · Vercel + Cloudflare
-Pages (frontend)
+on-device in the browser · Tavily · MCP · Vercel + Cloudflare Pages (frontend)
 
 **Not claimed as built:** Nemotron 3.5 ASR Streaming 0.6B and Magpie TTS
 Multilingual are the *planned* paid-tier voice ends. They are not wired: there is
@@ -53,6 +52,13 @@ operating system's own voices, with Kokoro/Supertonic in Live mode. The hero dem
 therefore speaks Japanese through system voices, not Magpie.
 
 ---
+
+**Memory, stated precisely:** `GET /v1/memory/policy` is live and public, and it
+answers honestly (`hostedByAgentAsia: false`, `defaultBackend: local-encrypted`,
+`keyRetention: none`). The BYOK Mem0 and memory-search routes are written on the
+gateway but sit behind the admin token and have no settings UI, so a user cannot
+reach them today. User memory in the shipped app is the local encrypted store,
+full stop.
 
 ## 1. What it is and what it does
 
