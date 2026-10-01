@@ -26,6 +26,39 @@ import { getProxyRoutes } from './vite-proxy-routes'
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
 const APP_VERSION = packageJson.version
 
+/**
+ * `<title>` is rendered into every static page at build time, and the lookup
+ * used to be a single unguarded chain: `meta[lang]?.[page]?.title`. Two groups
+ * fell off it. Pages with no entry in `en.meta.ts` (16 of the 21), and every
+ * page in every locale except the six that ship a `.meta.ts`. The template then
+ * interpolated `undefined` as the literal string, so `/ur/settings/` and the
+ * 404 page opened as "AgentAsia · undefined" - in the tab, in link previews,
+ * and in whatever a search engine or a judge's browser history keeps.
+ *
+ * Resolution order: this locale, then English, then the page name itself, so no
+ * code path can produce "undefined". Falling back to English is deliberate and
+ * matches what `description` already does. An untranslated but correct title is
+ * useful; a broken one is a defect. Inventing titles for 18 locales x 18 pages
+ * that nobody has reviewed would be worse than both.
+ */
+const pageMeta = meta as Record<string, Record<string, { title?: string; description?: string }> | undefined>
+
+const humanizePage = (page: string): string =>
+  page
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[-_]/g, ' ')
+    .trim()
+
+const titleFor = (lang: Lang, page: string): string =>
+  pageMeta[lang]?.[page]?.title ??
+  pageMeta[defaultLang]?.[page]?.title ??
+  humanizePage(page)
+
+const descriptionFor = (lang: Lang, page: string): string =>
+  pageMeta[lang]?.[page]?.description ??
+  pageMeta[defaultLang]?.[page]?.description ??
+  PRODUCT.description
+
 // Dynamically list all pages with their full paths
 const pageFiles = globSync('*/index.{tsx,mdx}', { cwd: './src/pages' })
 const pagesList = pageFiles
@@ -48,9 +81,7 @@ const pagesList = pageFiles
           : `${lang ? `${lang}/` : ''}${e.index ? '' : `${e.page.toLowerCase()}/`}index`
       }.html` as `${string}.html`,
     title: (lang: Lang) =>
-      e.index
-        ? PRODUCT.displayName
-        : `${PRODUCT.displayName} · ${meta[lang || defaultLang]?.[e.page]?.title}`,
+      e.index ? PRODUCT.displayName : `${PRODUCT.displayName} · ${titleFor(lang, e.page)}`,
   }))
 
 // Generate localized pages
@@ -58,8 +89,7 @@ const pages = langs.reduce((acc, lang = defaultLang) => {
   pagesList.forEach(({ page, name, entry, filename, title }) => {
     const isIndex = page === 'Index'
     const _title = title(lang)
-    const _description =
-      meta[lang || defaultLang]?.[page]?.description ?? PRODUCT.description
+    const _description = descriptionFor(lang, page)
     console.log(
       `Adding page: [${lang}] /${isIndex ? '' : page.toLowerCase()}/`,
       {
