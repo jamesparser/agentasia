@@ -2,6 +2,8 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Icon, Title } from '@/components'
 import { useI18n, useUrl } from '@/i18n'
+import { auth, useAuth } from '@/lib/auth'
+import { SignInDialog } from '@/components/auth/SignInDialog'
 import {
   ALL_SPACES_ID,
   ALL_SPACES_URL_SEGMENT,
@@ -408,6 +410,77 @@ function AboutButton({ showKbd }: { showKbd?: boolean }) {
   )
 }
 
+/**
+ * Account control. Renders nothing until an OAuth client is configured, so the
+ * shipping demo shows no dead "Sign in" affordance - see
+ * src/lib/auth/authProvider.ts for why there is no client yet.
+ */
+function AccountButton({ showKbd }: { showKbd?: boolean }) {
+  const { t } = useI18n()
+  const { user, isSignedIn, isConfigured } = useAuth()
+  const [showSignIn, setShowSignIn] = useState(false)
+
+  if (!isConfigured) return null
+
+  if (!isSignedIn) {
+    return (
+      <>
+        <Tooltip delay={0}>
+          <Button
+            isIconOnly
+            variant="ghost"
+            size="sm"
+            onPress={() => setShowSignIn(true)}
+            aria-label={t('Sign in')}
+          >
+            <Icon name="User" className="text-muted" size="sm" />
+          </Button>
+          <Tooltip.Content
+            className={showKbd ? 'flex items-center gap-2' : ''}
+            placement={showKbd ? undefined : 'right'}
+          >
+            {t('Sign in')}
+          </Tooltip.Content>
+        </Tooltip>
+        <SignInDialog isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Tooltip delay={0}>
+        <Button
+          isIconOnly
+          variant="ghost"
+          size="sm"
+          aria-label={`${t('Account')}${user?.email ? ` (${user.email})` : ''}`}
+          onPress={() => {
+            if (window.confirm(t('Sign out of AgentAsia?'))) void auth.signOut()
+          }}
+          className="rounded-full"
+        >
+          {user?.photoURL ? (
+            <img
+              src={user.photoURL}
+              alt=""
+              className="h-5 w-5 rounded-full object-cover"
+            />
+          ) : (
+            <Icon name="User" className="text-muted" size="sm" />
+          )}
+        </Button>
+        <Tooltip.Content
+          className={showKbd ? 'flex items-center gap-2' : ''}
+          placement={showKbd ? undefined : 'right'}
+        >
+          {user?.email ?? t('Account')}
+        </Tooltip.Content>
+      </Tooltip>
+    </>
+  )
+}
+
 // --- Main Sidebar ---
 
 export const Sidebar = memo(function Sidebar({
@@ -605,6 +678,7 @@ export const Sidebar = memo(function Sidebar({
       >
         <NotificationButtonV3 showKbd={!isCollapsed} />
         <ThemeToggleButton showKbd={!isCollapsed} />
+        <AccountButton />
         <AboutButton showKbd={!isCollapsed} />
         <SettingsButton onPress={onOpenSettings} showKbd={!isCollapsed} />
       </div>
@@ -825,6 +899,7 @@ function MobileDrawerContent({
       <div className="flex items-center gap-1 px-1">
         <NotificationButtonV3 />
         <ThemeToggleButton />
+        <AccountButton />
         <AboutButton />
         <SettingsButton onPress={onOpenSettings} />
       </div>

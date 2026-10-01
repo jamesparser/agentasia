@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { warningToast } from '@/lib/toast'
+import { useDeviceTranscription } from './useDeviceTranscription'
 
 type SpeechRecognitionErrorCode =
   | 'no-speech'
@@ -13,6 +14,12 @@ type SpeechRecognitionErrorCode =
 
 interface UseSpeechRecognitionOptions {
   lang?: string
+  /**
+   * 'browser' uses webkitSpeechRecognition (streams to Google, fails offline and
+   * wherever that host is blocked). 'device' runs whisper in the tab. Defaults to
+   * 'browser'; the caller reads the user's preference.
+   */
+  engine?: 'browser' | 'device'
   onTranscript?: (transcript: string) => void
   /**
    * Hands the finished text to the caller.
@@ -32,6 +39,8 @@ interface UseSpeechRecognitionOptions {
 interface UseSpeechRecognitionReturn {
   isRecording: boolean
   isSupported: boolean
+  /** Model download in progress (device engine only). */
+  isWarming: boolean
   startRecording: () => void
   stopRecording: () => void
   toggleRecording: () => void
@@ -39,11 +48,22 @@ interface UseSpeechRecognitionReturn {
 
 export function useSpeechRecognition({
   lang,
+  engine = 'browser',
   onTranscript,
   onFinalTranscript,
   onError,
 }: UseSpeechRecognitionOptions = {}): UseSpeechRecognitionReturn {
   const [isRecording, setIsRecording] = useState(false)
+
+  /* Called unconditionally because hooks cannot be conditional; it is lazy in
+     practice - no model is fetched until start() runs, so choosing the browser
+     engine costs nothing. */
+  const device = useDeviceTranscription({
+    lang,
+    onTranscript,
+    onFinalTranscript,
+    onError: (message) => warningToast('On-device voice input failed', message),
+  })
   const [isSupported, setIsSupported] = useState(false)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const finalTranscriptRef = useRef('')
@@ -207,16 +227,35 @@ export function useSpeechRecognition({
   }, [isRecording])
 
   const toggleRecording = useCallback(() => {
+    if (engine === 'device') {
+      if (device.isListening) void device.stop()
+      else void device.start()
+      return
+    }
     if (isRecording) {
       stopRecording()
     } else {
       startRecording()
     }
-  }, [isRecording, startRecording, stopRecording])
+  }, [engine, device, isRecording, startRecording, stopRecording])
+
+  if (engine === 'device') {
+    return {
+      isRecording: device.isListening,
+      // The device engine works wherever WebAssembly does, including the
+      // networks that break the browser engine.
+      isSupported: true,
+      isWarming: device.isWarming,
+      startRecording: () => void device.start(),
+      stopRecording: () => void device.stop(),
+      toggleRecording,
+    }
+  }
 
   return {
     isRecording,
     isSupported,
+    isWarming: false,
     startRecording,
     stopRecording,
     toggleRecording,

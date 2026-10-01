@@ -10,7 +10,7 @@
  *  - Global system instructions textarea
  */
 
-import { Input, Textarea } from '@heroui/react'
+import { Input, Radio, RadioGroup, Textarea } from '@heroui/react'
 import { useI18n } from '@/i18n'
 import { userSettings } from '@/stores/userStore'
 import { useHashHighlight } from '@/hooks/useHashHighlight'
@@ -24,6 +24,8 @@ export function FeaturesSection() {
 
   // Local-only setting (not space-scopable)
   const speechToTextEnabled = userSettings((state) => state.speechToTextEnabled)
+  const sttEngine = userSettings((state) => state.sttEngine)
+  const setSttEngine = userSettings((state) => state.setSttEngine)
   const setSpeechToTextEnabled = userSettings(
     (state) => state.setSpeechToTextEnabled,
   )
@@ -257,6 +259,44 @@ export function FeaturesSection() {
               )}
             </p>
           </Switch>
+        </div>
+
+        {/* The reason voice can appear to listen and hear nothing: the browser
+            engine streams audio to Google for transcription. Where that host is
+            unreachable it fails with a bare network error and no transcript, so
+            the alternative is a model that runs in this tab. */}
+        <div
+          id="speech-to-text-engine"
+          className={getHighlightClasses('speech-to-text-engine')}
+        >
+          <RadioGroup
+            aria-label={t('Voice input engine')}
+            size="sm"
+            value={sttEngine}
+            onValueChange={(value) => setSttEngine(value as 'browser' | 'device')}
+            className="mt-3"
+            isDisabled={!speechToTextEnabled}
+          >
+            <p className="text-sm font-medium text-default-700">
+              {t('Voice input engine')}
+            </p>
+            <Radio value="browser">
+              <span>{t('Browser (fast)')}</span>
+              <span className="block text-xs text-default-500">
+                {t(
+                  'Sends your speech to Google for transcription. No download. Fails on networks where that service is blocked, and the microphone then appears to do nothing.',
+                )}
+              </span>
+            </Radio>
+            <Radio value="device">
+              <span>{t('On-device (works offline)')}</span>
+              <span className="block text-xs text-default-500">
+                {t(
+                  'Runs Whisper inside this tab. Nothing leaves your device and it works with no internet, but the first use downloads a model of roughly 300 MB and is slower on older hardware.',
+                )}
+              </span>
+            </Radio>
+          </RadioGroup>
         </div>
       </div>
 

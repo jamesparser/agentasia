@@ -8,6 +8,12 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import '@/styles/globals.css'
 import '@/styles/view-transitions.css'
 import 'katex/dist/katex.min.css'
+import { initAuth } from '@/lib/auth'
+
+// Resolves the auth provider before the first render settles. Inert unless
+// VITE_FIREBASE_API_KEY is set - see src/lib/auth/authProvider.ts for why the
+// deployment currently has no credentials.
+void initAuth()
 
 const container = globalThis.document.getElementById('root')
 

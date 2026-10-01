@@ -22,15 +22,20 @@
  * which is the correct default until 1-3 are solved.
  */
 
-import { Card, CardBody } from '@heroui/react'
+import { useState } from 'react'
+import { Button, Card, CardBody } from '@heroui/react'
 
 import { Icon } from '@/components'
 import { useI18n } from '@/i18n'
 import { useSettingsLabel } from '../SettingsContext'
+import { useAuth } from '@/lib/auth'
+import { SignInDialog } from '@/components/auth/SignInDialog'
 
 export function ScheduledTasksSection() {
   const { t } = useI18n()
   useSettingsLabel(t('Scheduled Tasks'))
+  const { user, isSignedIn, isConfigured } = useAuth()
+  const [showSignIn, setShowSignIn] = useState(false)
 
   return (
     <div className="flex flex-col gap-4">
@@ -56,10 +61,35 @@ export function ScheduledTasksSection() {
           </div>
 
           <p className="text-muted text-sm">
-            {t(
-              'Scheduled tasks need an account, so a task keeps running after you close the tab and never runs on anyone else\u2019s behalf. Sign-in with Google and email is being added; until then tasks can only run while this window is open.',
-            )}
+            {isSignedIn
+              ? t(
+                  'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.',
+                )
+              : isConfigured
+                ? t(
+                    'Sign in to create tasks that belong to your account and keep running after you close this tab.',
+                  )
+                : t(
+                    'Scheduled tasks need an account, so a task keeps running after you close the tab and never runs on anyone else\u2019s behalf. Sign-in is not configured for this deployment yet, so tasks can only run while this window is open.',
+                  )}
           </p>
+
+          {!isSignedIn && isConfigured && (
+            <Button
+              color="primary"
+              size="sm"
+              className="self-start"
+              onPress={() => setShowSignIn(true)}
+            >
+              {t('Sign in')}
+            </Button>
+          )}
+
+          {isSignedIn && user?.email && (
+            <p className="text-muted text-xs">
+              {t('Signed in as')} {user.email}
+            </p>
+          )}
 
           <ul className="text-muted flex flex-col gap-1.5 text-sm">
             <li className="flex items-start gap-2">
@@ -77,6 +107,8 @@ export function ScheduledTasksSection() {
           </ul>
         </CardBody>
       </Card>
+
+      <SignInDialog isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
     </div>
   )
 }

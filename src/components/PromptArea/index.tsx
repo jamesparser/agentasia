@@ -4,6 +4,7 @@ import {
   Chip,
   Popover,
   PopoverContent,
+  Spinner,
   PopoverTrigger,
   Textarea,
   type TextAreaProps,
@@ -249,6 +250,7 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
     const speechToTextEnabled = userSettings(
       (state) => state.speechToTextEnabled,
     )
+    const sttEngine = userSettings((state) => state.sttEngine)
 
     // Parse URL fragment for prompt parameter
     const { prompt: urlPrompt } = useUrlFragment()
@@ -361,9 +363,11 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
     const {
       isRecording,
       isSupported: isSpeechRecognitionSupported,
+      isWarming: isSpeechWarming,
       toggleRecording,
     } = useSpeechRecognition({
       lang,
+      engine: sttEngine,
       onTranscript: (transcript) => {
         setPrompt(transcript)
         onValueChange?.(transcript)
@@ -1050,19 +1054,25 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
                     the box by hand. */}
                 {!isLiveMode && speechToTextEnabled && (
                     <Tooltip
-                      content={t('Speak to microphone')}
+                      content={
+                        isSpeechWarming
+                          ? t('Loading the on-device voice model…')
+                          : t('Speak to microphone')
+                      }
                       placement="bottom"
                     >
                       <Button
                         isIconOnly
                         color={isRecording ? 'primary' : 'default'}
-                        isDisabled={!isSpeechRecognitionSupported}
+                        isDisabled={!isSpeechRecognitionSupported || isSpeechWarming}
                         radius="full"
                         variant={isRecording ? 'solid' : 'light'}
                         size="sm"
                         onPress={toggleRecording}
                       >
-                        {isRecording ? (
+                        {isSpeechWarming ? (
+                          <Spinner size="sm" />
+                        ) : isRecording ? (
                           <Icon name="MicrophoneSpeaking" size="sm" />
                         ) : (
                           <Icon name="Microphone" size="sm" />

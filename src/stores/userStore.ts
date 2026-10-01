@@ -72,6 +72,16 @@ export interface LocalSettings {
   isV2SidebarCollapsed: boolean
   isContextualPanelCollapsed: boolean
   speechToTextEnabled: boolean
+  /**
+   * Which speech-to-text engine the prompt box uses.
+   *
+   * 'browser' is webkitSpeechRecognition, which streams audio to Google - it is
+   * free and instant, but it fails with a bare `network` error wherever that
+   * service is unreachable, which is most of the region this product targets.
+   * 'device' runs a whisper model in the tab: works offline and without Google,
+   * at the cost of a one-time model download.
+   */
+  sttEngine: 'browser' | 'device'
   pwaInstallPromptDismissed: boolean
   /** Active space id (local per device) */
   activeSpaceId: string
@@ -100,6 +110,7 @@ const defaultLocalSettings: LocalSettings = {
   isV2SidebarCollapsed: false,
   isContextualPanelCollapsed: false,
   speechToTextEnabled: false,
+  sttEngine: 'browser',
   pwaInstallPromptDismissed: false,
   activeSpaceId: 'default',
   languageOnboardingComplete: false,
@@ -163,6 +174,7 @@ interface UserSettingsStore extends UserSettings {
   toggleV2Sidebar: () => void
   toggleContextualPanel: () => void
   setSpeechToTextEnabled: (enabled: boolean) => void
+  setSttEngine: (engine: 'browser' | 'device') => void
   setPwaInstallPromptDismissed: (dismissed: boolean) => void
   setActiveSpaceId: (id: string) => void
 
@@ -286,6 +298,7 @@ export const userSettings = create<UserSettingsStore>()(
         })),
       setSpeechToTextEnabled: (enabled: boolean) =>
         set({ speechToTextEnabled: enabled }),
+      setSttEngine: (engine: 'browser' | 'device') => set({ sttEngine: engine }),
       setPwaInstallPromptDismissed: (dismissed: boolean) =>
         set({ pwaInstallPromptDismissed: dismissed }),
       setActiveSpaceId: (id: string) => set({ activeSpaceId: id }),
@@ -332,6 +345,7 @@ export const userSettings = create<UserSettingsStore>()(
         isV2SidebarCollapsed: state.isV2SidebarCollapsed,
         isContextualPanelCollapsed: state.isContextualPanelCollapsed,
         speechToTextEnabled: state.speechToTextEnabled,
+        sttEngine: state.sttEngine,
         pwaInstallPromptDismissed: state.pwaInstallPromptDismissed,
         activeSpaceId: state.activeSpaceId,
         languageOnboardingComplete: state.languageOnboardingComplete,
