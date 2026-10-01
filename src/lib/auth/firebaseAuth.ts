@@ -61,13 +61,16 @@ export async function createFirebaseAuth(): Promise<AuthProvider | null> {
   const config = readConfig()
   if (!config) return null
 
-  const [{ initializeApp, getAuth }, firebaseAuth] = await Promise.all([
+  const [{ initializeApp }, firebaseAuth] = await Promise.all([
     import('firebase/app'),
     import('firebase/auth'),
   ])
 
   const app = initializeApp(config)
-  const auth = getAuth(app)
+  // getAuth is a firebase/auth export, not firebase/app. Importing it from
+  // 'firebase/app' typechecks as undefined and would throw the first time a
+  // deployment actually had credentials, which is the one moment this must work.
+  const auth = firebaseAuth.getAuth(app)
 
   let cached: AuthUser | null = null
   const listeners = new Set<(user: AuthUser | null) => void>()
