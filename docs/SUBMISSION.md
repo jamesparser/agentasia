@@ -134,8 +134,10 @@ data, and it is what makes the assistant dependable enough to talk to your famil
   `freemium-agentic-vision` aliases 404 at this gateway. The app never sends them: the
   managed lane resolves a plan to a Nemotron model id in
   `src/lib/llm/managed-lane.ts` and posts that, which is the path verified above. The
-  `modelRouting` block in `src/config/agentasia.ts` that still names those aliases is
-  dead config, read by nothing.
+  config that named them has been deleted, along with an orphaned
+  `src/lib/llm/language-routing.ts` whose policy would have sent Khmer, Lao, Burmese,
+  Tagalog, Javanese, Sundanese and Cebuano to a route that 404s. Chat, Code and Agent
+  are unaffected: those modes live in `src/lib/llm/types.ts`, not in that config.
 - **One-line gateway fix, not applied here:** `x-agentasia-provider` and
   `x-agentasia-model` are sent but not listed in `Access-Control-Expose-Headers`,
   so a judge who checks routing from the browser console sees `null` while
