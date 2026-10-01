@@ -80,6 +80,16 @@ function corsHeaders(res, origin) {
   }
   res.setHeader('access-control-allow-headers', 'content-type, authorization')
   res.setHeader('access-control-allow-methods', 'GET, POST, PATCH, DELETE, OPTIONS')
+  // The routing proof is only useful if a judge can read it. `x-agentasia-provider`
+  // and `x-agentasia-model` are set on every completion, and DevTools > Network
+  // shows them, but a response header is not exposed to JS unless it is listed
+  // here. Without it `res.headers.get('x-agentasia-provider')` returns null in the
+  // browser while the value is plainly on the wire, so the one check we tell judges
+  // to run looks like a failed claim. Verified both ways on 2026-10-01.
+  res.setHeader(
+    'access-control-expose-headers',
+    'x-agentasia-provider, x-agentasia-model',
+  )
 }
 async function readJson(req) {
   let raw = ''

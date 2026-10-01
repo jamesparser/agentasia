@@ -148,14 +148,14 @@ telling a judge: it is the plan table the app reads at runtime.
   `src/lib/llm/language-routing.ts` whose policy would have sent Khmer, Lao, Burmese,
   Tagalog, Javanese, Sundanese and Cebuano to a route that 404s. Chat, Code and Agent
   are unaffected: those modes live in `src/lib/llm/types.ts`, not in that config.
-- **One-line gateway fix, not applied here:** `x-agentasia-provider` and
-  `x-agentasia-model` are sent but not listed in `Access-Control-Expose-Headers`,
-  so a judge who checks routing from the browser console sees `null` while
-  DevTools > Network shows the real value. Verified both ways on 2026-10-01. The
-  fix belongs in `corsHeaders()` in `server/src/index.mjs`, which runs on the VPS
-  and is live infrastructure, so it is flagged rather than edited: add
-  `res.setHeader('access-control-expose-headers', 'x-agentasia-provider, x-agentasia-model')`
-  and restart the service.
+- **Gateway header exposure fixed in code, needs one restart to go live.**
+  `x-agentasia-provider` and `x-agentasia-model` are sent, but a response header
+  is invisible to `fetch()` unless it is listed in `Access-Control-Expose-Headers`,
+  so a judge running the check we tell them to run saw `null` while DevTools
+  showed the real value. `corsHeaders()` now lists both, with a black-box test in
+  `server/test/gateway-auth.test.mjs` that fails without it. `server/` runs as a
+  systemd service on the VPS and is not deployed from this repo, so the running
+  gateway keeps the old behaviour until it is restarted.
 - How to verify Nebius usage yourself: response headers `x-agentasia-provider: nebius`
   and `x-agentasia-model: nvidia/nemotron-3-…`, plus a Token Factory usage screenshot
   in the video.

@@ -45,6 +45,19 @@ const gated = (code) => code === 401 || code === 403 || code === 503
   const health = await fetch(`${s.base}/healthz`)
   assert.equal(health.status, 200, '/healthz stays open for tunnel probes')
 
+  // The submission tells judges to verify Nebius routing from response headers.
+  // x-agentasia-* are set on the response, but a header the server does not list
+  // in Access-Control-Expose-Headers is invisible to fetch(), so the advertised
+  // check returns null and reads as a false claim. Pinned here because the
+  // failure mode is silent and the symptom looks like a lie in the docs.
+  const exposed = String(
+    health.headers.get('access-control-expose-headers') || '',
+  )
+    .split(',')
+    .map((h) => h.trim().toLowerCase())
+  assert.ok(exposed.includes('x-agentasia-provider'), 'provider header must be readable from the browser')
+  assert.ok(exposed.includes('x-agentasia-model'), 'model header must be readable from the browser')
+
   // The route the browser app actually calls must not be gated. It may still
   // answer 503 gateway_disabled because MODEL_GATEWAY_ENABLED is unset here;
   // what must not happen is an admin rejection.
