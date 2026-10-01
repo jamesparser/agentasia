@@ -16,6 +16,8 @@ import { su } from './locales/su'
 import { hi } from './locales/hi'
 import { bn } from './locales/bn'
 import { ur } from './locales/ur'
+import { pt } from './locales/pt'
+import { pl } from './locales/pl'
 
 export const agentAsiaDraftLocales = {
   ja,
@@ -36,4 +38,6 @@ export const agentAsiaDraftLocales = {
   hi,
   bn,
   ur,
+  pt,
+  pl,
 } as const
