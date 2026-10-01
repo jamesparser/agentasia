@@ -41,7 +41,6 @@ export function ConnectorsSection() {
   // grid that returns nothing for non-app categories - which is why every MCP
   // entry read "coming soon".
   const [selectedTab, setSelectedTab] = useState<ConnectorCategory>('app')
-  const [showMcpWizard, setShowMcpWizard] = useState(false)
 
   const {
     connectors,
@@ -116,33 +115,41 @@ export function ConnectorsSection() {
     navigateToList()
   }
 
-  // Redirect to add wizard when no connectors exist
-  useEffect(() => {
-    if (
-      isInitialized &&
-      !isLoading &&
-      currentConnectors.length === 0 &&
-      !activeElement
-    ) {
-      navigateToAdd()
-    }
-  }, [
-    isInitialized,
-    isLoading,
-    currentConnectors.length,
-    activeElement,
-    navigateToAdd,
-  ])
+  // Used to jump straight to the add wizard when the list was empty. That made
+  // the wizard replace the whole section, so the Apps | MCP server tabs and the
+  // Composio card were unreachable for exactly the new user who has no
+  // connectors - and it offered no way to go back short of editing the hash.
+  // The empty state now carries its own add button instead.
+
+  /* The strip is rendered in every branch, not just the list: the wizard and the
+     per-connector screens used to be full-screen replacements with no tabs, so
+     switching Apps <-> MCP server meant editing the URL hash by hand. */
+  const tabStrip = (
+    <Tabs
+      aria-label={t('Connector type')}
+      size="sm"
+      selectedKey={selectedTab}
+      onSelectionChange={(k) => {
+        const next = k as ConnectorCategory
+        setSelectedTab(next)
+        if (activeElement) navigateToList()
+      }}
+      className="mb-6"
+    >
+      <Tab key="app" title={t('Apps')} />
+      <Tab key="mcp" title={t('MCP server')} />
+    </Tabs>
+  )
 
   // --- Sub-route: /new  (wizard) ----------------------------------------
   if (activeElement === 'add') {
     if (selectedTab === 'mcp') {
       return (
         <div data-testid="connectors-settings">
+          {tabStrip}
           <CustomMcpWizard
             isOpen
             onClose={() => {
-              setShowMcpWizard(false)
               navigateToList()
             }}
           />
@@ -151,6 +158,7 @@ export function ConnectorsSection() {
     }
     return (
       <div data-testid="connectors-settings">
+        {tabStrip}
         <ConnectorWizardInline
           category={selectedTab}
           initialProvider={null}
@@ -168,6 +176,7 @@ export function ConnectorsSection() {
       // Unknown connector id — fall back to list
       return (
         <div data-testid="connectors-settings">
+          {tabStrip}
           <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
             <Icon name="WarningTriangle" className="w-8 h-8 text-warning" />
             <p className="text-default-500 text-sm">
@@ -183,6 +192,7 @@ export function ConnectorsSection() {
 
     return (
       <div data-testid="connectors-settings">
+        {tabStrip}
         <ConnectorSettingsInline
           connector={connector}
           onClose={navigateToList}
@@ -195,16 +205,7 @@ export function ConnectorsSection() {
   // --- Default sub-route: list view ------------------------------------
   return (
     <div data-testid="connectors-settings">
-      <Tabs
-        aria-label={t('Connector type')}
-        size="sm"
-        selectedKey={selectedTab}
-        onSelectionChange={(k) => setSelectedTab(k as ConnectorCategory)}
-        className="mb-6"
-      >
-        <Tab key="app" title={t('Apps')} />
-        <Tab key="mcp" title={t('MCP server')} />
-      </Tabs>
+      {tabStrip}
 
       {/* Header with Add Button */}
       <div className="flex justify-between items-center mb-6">
