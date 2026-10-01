@@ -3,10 +3,11 @@
 > Draft submission copy. Anything marked **[pending]** depends on work not yet done
 > or on the live Token Factory key. Do not submit until those are real.
 
-**Track:** Personal AI
-**One-liner:** *Naga is the always-on assistant that speaks your language, cites its
-sources out loud, and remembers you: five heads, five jobs, one NVIDIA Nemotron
-brain on Nebius Token Factory.*
+**Track:** Best Apps and Agents
+**One-liner:** *Naga is the browser app that speaks your language, cites its sources
+out loud, and escalates its own reasoning: Nano for the everyday turn, Super and
+Ultra when the work is hard, all of it on NVIDIA Nemotron through Nebius
+Token Factory.*
 
 **Project name, like a human:** **Naga**: the mythical five-headed serpent that
 guards treasure. In AgentAsia each head is a function, and what it guards is *your
@@ -25,7 +26,8 @@ searches, one remembers.
 
 We deliberately **removed** the "host everyone's Mem0 on our server" design: one shared
 vendor key would put every user's life details on infrastructure we can read, which is
-the opposite of the Personal AI brief and a liability we don't want. Instead users
+the opposite of what an assistant that knows your languages is for, and a liability we
+don't want. Instead users
 connect **one** MCP endpoint that fronts hundreds of apps. We never add integrations
 on their behalf, and we never see their OAuth tokens. That is also why the naga's crest
 gem (memory) is a *guarded treasure* rather than a database row.
@@ -99,16 +101,24 @@ free OpenRouter account caps near **50 requests/day**. So the router now puts
 the guarantee, not the option. This is real engineering proven by our own outage
 data, and it is what makes the assistant dependable enough to talk to your family.
 
-## 2. Why it fits Personal AI
+## 2. Why it fits Best Apps and Agents
+
+The track asks for an app someone would actually use, powered by Nemotron on Nebius
+through Token Factory, reaching for Ultra when reasoning is hard and letting Nano or
+Super handle the fast everyday calls. That escalation ladder is not a story we are
+telling a judge: it is the plan table the app reads at runtime.
 
 | Track asks | Naga |
 |---|---|
-| Always-on | browser app, installable as a PWA, plus a **scheduled tasks** section in Settings. Honest state: the gateway's `/v1/schedules` routes exist but answer 401 (admin-token only) and the scheduler is disabled server-side, so today a task runs while the window is open, not overnight |
-| Private, data under your control | free tier can run inference in the browser; server-side memory is exportable and erasable; Token Factory offers zero-retention inference |
-| Persistent memory | memory and learnings stay in the user's own browser store (encrypted at rest, exportable), shown as the naga's guarded crest gem. Mem0 is BYOK and optional, not a server-side profile: there is no `uid` in the anonymous deployment, so nothing is keyed to one |
-| Reusable skills + tool access | skills + MCP (`ToolTransport = 'builtin' \| 'mcp'`) + connectors |
-| NVIDIA open source model | two, in the build: Nemotron 3 chat/reasoning on Token Factory, and Parakeet ASR running on-device. Nemotron 3.5 ASR and Magpie TTS are planned paid-tier lanes, not shipped |
-| Nebius | every cloud text turn is a Token Factory runtime call, verifiable in the response headers. Nebius Serverless is not used [pending] |
+| An app someone would actually use | A browser app, no install, for the majority of the world that does not work in English. Ethnologue (2025) counts about 1.53bn English speakers of roughly 8bn people, so under 20% of the planet is served by an English-first assistant. AgentAsia opens on a language wheel, answers in that language, and says so out loud when it cannot speak one. Free during beta, and guest mode works with no account |
+| Power it with Nemotron on Nebius through Token Factory | Every cloud turn is a Token Factory call. `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` by default, verifiable in `x-agentasia-provider: nebius` |
+| Nano or Super for the fast, everyday calls | Free, Pro and Small Business plans post Nano 30B-A3B or Super 120B-A12B. `chat_template_kwargs.enable_thinking=false` on the fast lane, measured at 0.91s and $0.0000020 per turn |
+| Reach for Ultra when you need serious reasoning | The Enterprise plan resolves to `nvidia/NVIDIA-Nemotron-3-Ultra-550b-a55b` in `src/config/agentasia.ts`. Model choice is a server decision by plan, never a user dropdown, so escalation cannot be faked from the client |
+| Runs itself, i.e. automation | A **Scheduled Tasks** section ships in Settings. Honest state: the gateway's `/v1/schedules` routes answer 401 (admin-token only) and the scheduler is off server-side, so today a task runs while the window is open, not overnight |
+| Persistent memory | Memory and learnings stay in the user's own browser store (encrypted at rest, exportable), shown as the naga's guarded crest gem. Mem0 is BYOK and optional, not a server-side profile: there is no `uid` in the anonymous deployment, so nothing is keyed to one |
+| Reusable skills + tool access | Skills + MCP (`ToolTransport = 'builtin' \| 'mcp'`) + connectors, plus Tavily as a real tool call with citations |
+| NVIDIA open source model | Two, in the build: Nemotron 3 chat/reasoning on Token Factory, and Parakeet ASR running on-device. Nemotron 3.5 ASR and Magpie TTS are planned paid-tier lanes, not shipped |
+| Nebius | Every cloud text turn is a Token Factory runtime call, verifiable in the response headers |
 
 ## 3. Testing instructions **[partly pending: judge logins + demo video]**
 
