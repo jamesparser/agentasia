@@ -136,6 +136,14 @@ data, and it is what makes the assistant dependable enough to talk to your famil
   `src/lib/llm/managed-lane.ts` and posts that, which is the path verified above. The
   `modelRouting` block in `src/config/agentasia.ts` that still names those aliases is
   dead config, read by nothing.
+- **One-line gateway fix, not applied here:** `x-agentasia-provider` and
+  `x-agentasia-model` are sent but not listed in `Access-Control-Expose-Headers`,
+  so a judge who checks routing from the browser console sees `null` while
+  DevTools > Network shows the real value. Verified both ways on 2026-10-01. The
+  fix belongs in `corsHeaders()` in `server/src/index.mjs`, which runs on the VPS
+  and is live infrastructure, so it is flagged rather than edited: add
+  `res.setHeader('access-control-expose-headers', 'x-agentasia-provider, x-agentasia-model')`
+  and restart the service.
 - How to verify Nebius usage yourself: response headers `x-agentasia-provider: nebius`
   and `x-agentasia-model: nvidia/nemotron-3-…`, plus a Token Factory usage screenshot
   in the video.
