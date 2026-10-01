@@ -4,6 +4,8 @@
  * Displays:
  *  - Interface language selector
  *  - Theme selector (system / light / dark)
+ *  - No color-scheme picker: AgentAsia ships one theme, the LobeHub color
+ *    list was for presentation styling and is not offered to users.
  *  - Platform name override
  *  - Background image upload
  */
@@ -15,8 +17,6 @@ import { useI18n, useUrl, languages, type Lang } from '@/i18n'
 import { userSettings, type ThemeMode } from '@/stores/userStore'
 import { PRODUCT } from '@/config/product'
 import { useBackgroundImage } from '@/hooks/useBackgroundImage'
-import { ColorThemePicker } from '@/components/ColorThemePicker'
-import { PptxThemePicker } from '@/components/PptxThemePicker'
 import { useHashHighlight } from '@/hooks/useHashHighlight'
 import { successToast } from '@/lib/toast'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -43,14 +43,6 @@ export function GeneralSection() {
     _setTheme as (v: ThemeMode | undefined) => void,
   )
 
-  const _colorTheme = userSettings((state) => state.colorTheme)
-  const _setColorTheme = userSettings((state) => state.setColorTheme)
-  const [colorTheme, setColorTheme] = useSpaceScopedSetting(
-    'colorTheme',
-    _colorTheme,
-    _setColorTheme as (v: string | undefined) => void,
-  )
-
   // Synced settings — space-scopable
   const _platformName = userSettings((state) => state.platformName)
   const _setPlatformName = userSettings((state) => state.setPlatformName)
@@ -67,13 +59,6 @@ export function GeneralSection() {
     setBackgroundImageGlobal as (v: string | undefined) => void,
   )
 
-  const _pptxTheme = userSettings((state) => state.pptxTheme)
-  const _setPptxTheme = userSettings((state) => state.setPptxTheme)
-  const [pptxTheme, setPptxTheme] = useSpaceScopedSetting(
-    'pptxTheme',
-    _pptxTheme,
-    _setPptxTheme as (v: string | undefined) => void,
-  )
 
   const handleLanguageChange = (newLanguage: Lang) => {
     setLanguage(newLanguage)
@@ -149,27 +134,10 @@ export function GeneralSection() {
           </SelectItem>
         </Select>
 
-        <div
-          id="color-theme"
-          className={getHighlightClasses('color-theme', 'max-w-lg')}
-        >
-          <p className="text-xs text-default-500 mb-3">
-            {t('Choose a color scheme for the interface')}
-          </p>
-          <ColorThemePicker value={colorTheme} onChange={setColorTheme} />
-        </div>
-
-        {/* AgentAsia: the PPTX presentation-theme picker is hidden. */}
-        <div
-          id="pptx-theme"
-          className="hidden"
-          aria-hidden="true"
-        >
-          <p className="text-xs text-default-500 mb-3">
-            {t('Presentation theme used for generated PPTX slides')}
-          </p>
-          <PptxThemePicker value={pptxTheme} onChange={setPptxTheme} />
-        </div>
+        {/* AgentAsia: no interface color-scheme picker and no PPTX
+            presentation-theme picker. The 12 LobeHub color themes were a
+            presentation styling feature we do not ship; the app stays on the
+            AgentAsia theme and PPTX slides inherit it automatically. */}
       </div>
 
       <div
