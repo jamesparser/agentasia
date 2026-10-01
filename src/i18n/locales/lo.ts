@@ -1069,7 +1069,7 @@ export const lo: Partial<I18n> = {
     'ລຶບຕົວແທນນີ້ບໍ? ອັນນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.',
   Previous: 'ທີ່ຜ່ານມາ',
   Next: 'ຕໍ່ໄປ',
-  '{current} of {total}': '{ປັດຈຸບັນ} ຂອງ {total}',
+  '{current} of {total}': '{current} ຂອງ {total}',
   Profile: 'ໂປຣໄຟລ໌',
   Playground: 'ເດີ່ນຫຼິ້ນ',
   'Esc to cancel · click outside to save':

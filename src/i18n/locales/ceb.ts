@@ -308,7 +308,7 @@ export const ceb: Partial<I18n> = {
     'Nagtrabaho nga wala’y internet pagkahuman sa una nga pagkarga.',
   'Open Source': 'Bukas nga Tinubdan',
   '{license} licensed. Built by the community, for the community.':
-    '{lisensya} lisensyado. Gitukod sa komunidad, alang sa komunidad.',
+    '{license} lisensyado. Gitukod sa komunidad, alang sa komunidad.',
   'Configure your AI provider': 'I-configure ang imong AI provider',
   'Describe your task': 'Ihulagway ang imong buluhaton',
   'Be as detailed as possible to get the best results':
@@ -338,7 +338,7 @@ export const ceb: Partial<I18n> = {
     'Walay instalar nga gikinahanglan. Ang app bug-os nga nagdagan sa imong web browser.',
   'Is this open source?': 'Open source ba kini?',
   'Yes! The project is open source and available on GitHub under the {license} license.':
-    'Oo! Ang proyekto bukas nga tinubdan ug anaa sa GitHub ubos sa lisensya sa {lisensya.',
+    'Oo! Ang proyekto bukas nga tinubdan ug anaa sa GitHub ubos sa {license} nga lisensya.',
   'View on GitHub': 'Tan-awa sa GitHub',
   'Manage and monitor tasks for your organization':
     'Pagdumala ug pagmonitor sa mga buluhaton alang sa imong organisasyon',
@@ -515,7 +515,7 @@ export const ceb: Partial<I18n> = {
   'Select an agent to view their memory synthesis':
     'Pagpili og ahente aron tan-awon ang ilang memory synthesis',
   'Memory Synthesis for {agent}': 'Memory Synthesis para sa {agent}',
-  'Last updated: {date}': 'Katapusan nga gi-update: {petsa}',
+  'Last updated: {date}': 'Katapusang gi-update: {date}',
   'No synthesis generated yet': 'Wala pay namugna nga synthesis',
   'Generate a synthesis to create a summary of all approved memories for this agent.':
     'Paghimo og usa ka synthesis aron makahimo og usa ka summary sa tanan nga giaprobahan nga mga panumduman alang niini nga ahente.',
@@ -562,7 +562,7 @@ export const ceb: Partial<I18n> = {
   '{count} selected': '{count} gipili',
   'Reject Selected': 'Isalikway Gipili',
   'Approve Selected': 'Aprobahan Gipili',
-  'Learned: {date}': 'Nakat-unan: {petsa}',
+  'Learned: {date}': 'Natun-an: {date}',
   'Used {count} times': 'Gigamit {count} ka beses',
   'Memory approved': 'Giaprobahan ang memorya',
   'Memory rejected': 'Gisalikway ang memorya',
@@ -657,7 +657,7 @@ export const ceb: Partial<I18n> = {
   Reconnect: 'Sumpaysumpaya pag-usab',
   'Grant Access': 'Hatag og Access',
   Disconnected: 'Nadiskonekta',
-  'Last sync: {time}': 'Katapusan nga pag-sync: {oras}',
+  'Last sync: {time}': 'Katapusan nga pag-sync: {time}',
   'Document queued for processing': 'Ang dokumento gipila para sa pagproseso',
   'Failed to queue document for processing':
     'Napakyas sa pagpila sa dokumento alang sa pagproseso',
@@ -1100,12 +1100,12 @@ export const ceb: Partial<I18n> = {
     'I-delete kining ahente? Kini dili na mabawi.',
   Previous: 'Kaniadto',
   Next: 'Sunod',
-  '{current} of {total}': '{kasamtangan} sa {total}',
+  '{current} of {total}': '{current} sa {total}',
   Profile: 'Profile',
   Playground: 'Dulaanan',
   'Esc to cancel · click outside to save':
     'Esc aron kanselahon · pag-klik sa gawas aron makatipig',
-  'Test {name}': 'Pagsulay {ngalan}',
+  'Test {name}': 'Sulayi ang {name}',
   'Send a message to try this agent. Nothing is saved.':
     'Pagpadala usa ka mensahe aron sulayan kini nga ahente. Walay naluwas.',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':

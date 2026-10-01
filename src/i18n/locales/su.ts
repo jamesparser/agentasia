@@ -229,7 +229,7 @@ export const su: Partial<I18n> = {
   Upgrade: 'Ningkatkeun',
   'Page not found': 'Kaca teu kapanggih',
   'No AI provider configured. Please [configure one in Settings]({path}).':
-    'Taya panyadia AI ngonpigurasi. Mangga [konpigurasikeun hiji dina Setélan]({jalur}).',
+    'Taya panyadia AI ngonpigurasi. Mangga [konpigurasikeun hiji dina Setélan]({path}).',
   'Thinking…': 'Pikiranâ¦',
   Thoughts: 'Pikiran',
   'My Agents': 'Agen kuring',
@@ -303,7 +303,7 @@ export const su: Partial<I18n> = {
     'Gawéna tanpa internét saatos beban awal.',
   'Open Source': 'Open Source',
   '{license} licensed. Built by the community, for the community.':
-    '{lisensi} dilisensikeun. Diwangun ku masarakat, pikeun masarakat.',
+    '{license} dilisensikeun. Diwangun ku masarakat, pikeun masarakat.',
   'Configure your AI provider': 'Konpigurasikeun panyadia AI anjeun',
   'Describe your task': 'Jelaskeun tugas anjeun',
   'Be as detailed as possible to get the best results':
@@ -330,7 +330,7 @@ export const su: Partial<I18n> = {
     'Taya instalasi diperlukeun. Aplikasina dijalankeun sadayana dina browser wéb anjeun.',
   'Is this open source?': 'Ieu open source?',
   'Yes! The project is open source and available on GitHub under the {license} license.':
-    'Sumuhun! Proyék éta open source sareng sayogi dina GitHub handapeun lisénsi {lisensi}.',
+    'Sumuhun! Proyék éta open source sareng sayogi dina GitHub handapeun lisénsi {license}.',
   'View on GitHub': 'Témbongkeun dina GitHub',
   'Manage and monitor tasks for your organization':
     'Atur sareng pantau tugas pikeun organisasi anjeun',
@@ -408,7 +408,7 @@ export const su: Partial<I18n> = {
   Records: 'Rékaman',
   Indexes: 'Indéks',
   Size: 'Ukuran',
-  'Search {store} by {categories}…': 'Pilarian {toko} dumasar {categories}â¦',
+  'Search {store} by {categories}…': 'Pilarian {store} ku {categories}…',
   'All Records': 'Sadaya Rékam',
   'Filtered Records': 'Rékaman disaring',
   ID: 'ID',
@@ -502,14 +502,14 @@ export const su: Partial<I18n> = {
   'No memories match this filter': 'Taya kenangan cocog filter ieu',
   'Select an agent to view their memory synthesis':
     'Pilih agén pikeun ningali sintésis mémorina',
-  'Memory Synthesis for {agent}': 'Sintésis mémori pikeun {agén}',
-  'Last updated: {date}': 'Panungtungan diropéa: {tanggal}',
+  'Memory Synthesis for {agent}': 'Sintésis mémori pikeun {agent}',
+  'Last updated: {date}': 'panungtungan diropéa: {date}',
   'No synthesis generated yet': 'Taya sintésis dihasilkeun acan',
   'Generate a synthesis to create a summary of all approved memories for this agent.':
     'Ngahasilkeun sintésis pikeun nyieun kasimpulan sadaya kenangan disatujuan pikeun agén ieu.',
   'Select an agent to view and edit their memory':
     'Pilih agén pikeun ningali sareng ngédit mémorina',
-  'Memory for {agent}': 'Mémori pikeun {agén}',
+  'Memory for {agent}': 'Mémori pikeun {agent}',
   'This is what the agent remembers across conversations. It is injected at the start of every chat. Edit it freely.':
     'Ieu naon agén inget sakuliah paguneman. Éta disuntik dina mimiti unggal obrolan. Ngédit éta bebas.',
   'The agent has no memory yet. It will fill this in as you chat, or you can write notes here yourself.':
@@ -534,7 +534,7 @@ export const su: Partial<I18n> = {
   High: 'Luhur',
   Medium: 'Sedeng',
   Low: 'Lemah',
-  'Confidence level: {level}': 'Tingkat kapercayaan: {tingkat}',
+  'Confidence level: {level}': 'Tingkat kapercayaan: {level}',
   'Auto-approved': 'Otomatis disatujuan',
   'Review notes (optional)': 'Catetan ulasan (opsional)',
   'Add notes about this memory...': 'Tambahkeun catetan ngeunaan mémori ieu...',
@@ -549,7 +549,7 @@ export const su: Partial<I18n> = {
   '{count} selected': '{count} dipilih',
   'Reject Selected': 'Nolak Dipilih',
   'Approve Selected': 'Nyatujuan Dipilih',
-  'Learned: {date}': 'Diajar: {tanggal}',
+  'Learned: {date}': 'Diajar: {date}',
   'Used {count} times': 'Dipaké {count} kali',
   'Memory approved': 'Mémori disatujuan',
   'Memory rejected': 'Mémori ditolak',
@@ -1074,12 +1074,12 @@ export const su: Partial<I18n> = {
     'Hapus agén ieu? Ieu teu bisa dibolaykeun.',
   Previous: 'saméméhna',
   Next: 'Salajengna',
-  '{current} of {total}': '{ayeuna} tina {total}',
+  '{current} of {total}': '{current} tina {total}',
   Profile: 'Propil',
   Playground: 'Tempat kaulinan',
   'Esc to cancel · click outside to save':
     'Esc pikeun ngabolaykeun · klik luar pikeun nyimpen',
-  'Test {name}': 'Uji {ngaran}',
+  'Test {name}': 'Nguji {name}',
   'Send a message to try this agent. Nothing is saved.':
     'Kirim pesen pikeun nyobaan agén ieu. Euweuh nu disimpen.',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':

@@ -304,7 +304,7 @@ export const ja: Partial<I18n> = {
     '初期ロード後はインターネットなしで動作します。',
   'Open Source': 'オープンソース',
   '{license} licensed. Built by the community, for the community.':
-    '{ライセンス} ライセンスを取得しました。コミュニティによって、コミュニティのために構築されます。',
+    '{license} ライセンスを取得しました。コミュニティによって、コミュニティのために構築されます。',
   'Configure your AI provider': 'AI プロバイダーを構成する',
   'Describe your task': '自分のタスクについて説明してください',
   'Be as detailed as possible to get the best results':
@@ -505,13 +505,13 @@ export const ja: Partial<I18n> = {
   'Select an agent to view their memory synthesis':
     'エージェントを選択してメモリ合成を表示します',
   'Memory Synthesis for {agent}': '{agent} のメモリ合成',
-  'Last updated: {date}': '最終更新日: {日付}',
+  'Last updated: {date}': '最終更新日: {date}',
   'No synthesis generated yet': '合成はまだ生成されていません',
   'Generate a synthesis to create a summary of all approved memories for this agent.':
     '合成を生成して、このエージェントのすべての承認済みメモリの概要を作成します。',
   'Select an agent to view and edit their memory':
     '記憶を表示および編集するエージェントを選択してください',
-  'Memory for {agent}': '{エージェント} のメモリ',
+  'Memory for {agent}': '{agent} のメモリ',
   'This is what the agent remembers across conversations. It is injected at the start of every chat. Edit it freely.':
     'これは、エージェントが会話を通じて覚えているものです。これは、すべてのチャットの開始時に挿入されます。自由に編集してください。',
   'The agent has no memory yet. It will fill this in as you chat, or you can write notes here yourself.':
@@ -551,7 +551,7 @@ export const ja: Partial<I18n> = {
   '{count} selected': '{count} 個が選択されました',
   'Reject Selected': '選択したものを拒否する',
   'Approve Selected': '選択したものを承認',
-  'Learned: {date}': '学習日: {日付}',
+  'Learned: {date}': '学習済み: {date}',
   'Used {count} times': '{count} 回使用しました',
   'Memory approved': 'メモリが承認されました',
   'Memory rejected': 'メモリが拒否されました',
@@ -1078,12 +1078,12 @@ export const ja: Partial<I18n> = {
     'このエージェントを削除しますか?これを元に戻すことはできません。',
   Previous: '前へ',
   Next: '次へ',
-  '{current} of {total}': '{現在}/{合計}',
+  '{current} of {total}': '{total} の {current}',
   Profile: 'プロフィール',
   Playground: '遊び場',
   'Esc to cancel · click outside to save':
     'Esc でキャンセルします。外側をクリックして保存します',
-  'Test {name}': '{名前}をテストします',
+  'Test {name}': 'テスト{name}',
   'Send a message to try this agent. Nothing is saved.':
     'このエージェントを試すにはメッセージを送信してください。何も保存されません。',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':

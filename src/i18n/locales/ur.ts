@@ -411,7 +411,7 @@ export const ur: Partial<I18n> = {
   Indexes: 'اشاریہ جات',
   Size: 'سائز',
   'Search {store} by {categories}…':
-    '{سٹور} کو {زمرہوں} کے لحاظ سے تلاش کریں۔',
+    '{store} بذریعہ {categories} تلاش کریں…',
   'All Records': 'تمام ریکارڈز',
   'Filtered Records': 'فلٹر شدہ ریکارڈز',
   ID: 'ID',
@@ -1084,7 +1084,7 @@ export const ur: Partial<I18n> = {
     'اس ایجنٹ کو حذف کریں؟ اسے کالعدم نہیں کیا جا سکتا۔',
   Previous: 'پچھلا',
   Next: 'اگلا',
-  '{current} of {total}': '{total} میں سے {موجودہ}',
+  '{current} of {total}': '{current} از {total}',
   Profile: 'پروفائل',
   Playground: 'کھیل کا میدان',
   'Esc to cancel · click outside to save':

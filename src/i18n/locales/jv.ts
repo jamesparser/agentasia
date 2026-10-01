@@ -305,7 +305,7 @@ export const jv: Partial<I18n> = {
     'Bisa tanpa internet sawise mbukak wiwitan.',
   'Open Source': 'Open Source',
   '{license} licensed. Built by the community, for the community.':
-    '{lisensi} dilisensi. Dibangun dening masyarakat, kanggo masyarakat.',
+    '{license} dilisensi. Dibangun dening masyarakat, kanggo masyarakat.',
   'Configure your AI provider': 'Konfigurasi panyedhiya AI',
   'Describe your task': 'Nerangake tugas sampeyan',
   'Be as detailed as possible to get the best results':
@@ -332,7 +332,7 @@ export const jv: Partial<I18n> = {
     'Ora ana instalasi sing dibutuhake. Aplikasi mlaku kabeh ing browser web sampeyan.',
   'Is this open source?': 'Apa iki open source?',
   'Yes! The project is open source and available on GitHub under the {license} license.':
-    'ya wis! Proyek iki mbukak sumber lan kasedhiya ing GitHub miturut lisensi {lisensi}.',
+    'ya wis! Proyek kasebut mbukak sumber lan kasedhiya ing GitHub miturut lisensi {license}.',
   'View on GitHub': 'Deleng ing GitHub',
   'Manage and monitor tasks for your organization':
     'Ngatur lan ngawasi tugas kanggo organisasi sampeyan',
@@ -409,7 +409,7 @@ export const jv: Partial<I18n> = {
   Records: 'Cathetan',
   Indexes: 'Indeks',
   Size: 'Ukuran',
-  'Search {store} by {categories}…': 'Telusuri {toko} miturut {kategori}â¦',
+  'Search {store} by {categories}…': 'Telusuri {store} dening {categories}…',
   'All Records': 'Kabeh Rekaman',
   'Filtered Records': 'Cathetan sing disaring',
   ID: 'ID',
@@ -504,14 +504,14 @@ export const jv: Partial<I18n> = {
     'Ora ana kenangan sing cocog karo filter iki',
   'Select an agent to view their memory synthesis':
     'Pilih agen kanggo ndeleng sintesis memori',
-  'Memory Synthesis for {agent}': 'Sintesis Memori kanggo {agen}',
-  'Last updated: {date}': 'Dianyari pungkasan: {tanggal}',
+  'Memory Synthesis for {agent}': 'Sintesis memori kanggo {agent}',
+  'Last updated: {date}': 'Dianyari pungkasan: {date}',
   'No synthesis generated yet': 'Durung digawe sintesis',
   'Generate a synthesis to create a summary of all approved memories for this agent.':
     'Gawe sintesis kanggo nggawe ringkesan kabeh kenangan sing disetujoni kanggo agen iki.',
   'Select an agent to view and edit their memory':
     'Pilih agen kanggo ndeleng lan ngowahi memori',
-  'Memory for {agent}': 'Memori kanggo {agen}',
+  'Memory for {agent}': 'Memori kanggo {agent}',
   'This is what the agent remembers across conversations. It is injected at the start of every chat. Edit it freely.':
     'Iki sing dielingi agen ing obrolan. Iki disuntikake ing wiwitan saben obrolan. Sunting kanthi bebas.',
   'The agent has no memory yet. It will fill this in as you chat, or you can write notes here yourself.':
@@ -551,7 +551,7 @@ export const jv: Partial<I18n> = {
   '{count} selected': '{count} dipilih',
   'Reject Selected': 'Nolak Dipilih',
   'Approve Selected': 'Setuju Dipilih',
-  'Learned: {date}': 'Sinau: {tanggal}',
+  'Learned: {date}': 'Sinau: {date}',
   'Used {count} times': 'Digunakake {count} kaping',
   'Memory approved': 'Memori disetujoni',
   'Memory rejected': 'Memori ditolak',
@@ -639,7 +639,7 @@ export const jv: Partial<I18n> = {
   Reconnect: 'Sambungake maneh',
   'Grant Access': 'Grant Akses',
   Disconnected: 'Pedhot',
-  'Last sync: {time}': 'Sinkronisasi pungkasan: {wektu}',
+  'Last sync: {time}': 'Sinkronisasi pungkasan: {time}',
   'Document queued for processing': 'Dokumen antri kanggo diproses',
   'Failed to queue document for processing':
     'Gagal ngantri dokumen kanggo diproses',
@@ -1078,12 +1078,12 @@ export const jv: Partial<I18n> = {
     'Mbusak agen iki? Iki ora bisa dibatalake.',
   Previous: 'Sadurunge',
   Next: 'Sabanjure',
-  '{current} of {total}': '{saiki} saka {total}',
+  '{current} of {total}': '{current} saka {total}',
   Profile: 'Profile',
   Playground: 'Papan dolanan',
   'Esc to cancel · click outside to save':
     'Esc kanggo mbatalake · klik njaba kanggo nyimpen',
-  'Test {name}': 'Tes {jeneng}',
+  'Test {name}': 'Tes {name}',
   'Send a message to try this agent. Nothing is saved.':
     'Kirim pesen kanggo nyoba agen iki. Ora ana sing disimpen.',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':

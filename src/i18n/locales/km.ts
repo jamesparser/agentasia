@@ -510,7 +510,7 @@ export const km: Partial<I18n> = {
     'បង្កើតការសំយោគដើម្បីបង្កើតការសង្ខេបនៃការចងចាំដែលបានអនុម័តទាំងអស់សម្រាប់ភ្នាក់ងារនេះ។',
   'Select an agent to view and edit their memory':
     'ជ្រើសរើសភ្នាក់ងារដើម្បីមើល និងកែសម្រួលការចងចាំរបស់ពួកគេ។',
-  'Memory for {agent}': 'អង្គចងចាំសម្រាប់ {ភ្នាក់ងារ}',
+  'Memory for {agent}': 'អង្គចងចាំសម្រាប់ {agent}',
   'This is what the agent remembers across conversations. It is injected at the start of every chat. Edit it freely.':
     'នេះគឺជាអ្វីដែលភ្នាក់ងារចងចាំឆ្លងកាត់ការសន្ទនា។ វាត្រូវបានចាក់នៅពេលចាប់ផ្តើមរាល់ការជជែក។ កែសម្រួលវាដោយសេរី។',
   'The agent has no memory yet. It will fill this in as you chat, or you can write notes here yourself.':
@@ -1081,7 +1081,7 @@ export const km: Partial<I18n> = {
     'លុបភ្នាក់ងារនេះ? នេះមិនអាចត្រឡប់វិញបានទេ។',
   Previous: 'មុន',
   Next: 'បន្ទាប់',
-  '{current} of {total}': '{បច្ចុប្បន្ន} នៃ {total}',
+  '{current} of {total}': '{current} នៃ {total}',
   Profile: 'ប្រវត្តិរូប',
   Playground: 'សួនកុមារ',
   'Esc to cancel · click outside to save':

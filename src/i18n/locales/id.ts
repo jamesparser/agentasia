@@ -409,7 +409,7 @@ export const id: Partial<I18n> = {
   Indexes: 'Indeks',
   Size: 'Ukuran',
   'Search {store} by {categories}…':
-    'Telusuri {toko} berdasarkan {kategori}â¦',
+    'Cari {store} dengan {categories}…',
   'All Records': 'Semua Catatan',
   'Filtered Records': 'Catatan yang Difilter',
   ID: 'tanda pengenal',
@@ -511,7 +511,7 @@ export const id: Partial<I18n> = {
     'Hasilkan sintesis untuk membuat ringkasan semua memori yang disetujui untuk agen ini.',
   'Select an agent to view and edit their memory':
     'Pilih agen untuk melihat dan mengedit memorinya',
-  'Memory for {agent}': 'Memori untuk {agen}',
+  'Memory for {agent}': 'Memori untuk {agent}',
   'This is what the agent remembers across conversations. It is injected at the start of every chat. Edit it freely.':
     'Inilah yang diingat agen selama percakapan. Itu disuntikkan di awal setiap obrolan. Edit dengan bebas.',
   'The agent has no memory yet. It will fill this in as you chat, or you can write notes here yourself.':
@@ -551,7 +551,7 @@ export const id: Partial<I18n> = {
   '{count} selected': '{count} dipilih',
   'Reject Selected': 'Tolak yang Dipilih',
   'Approve Selected': 'Setujui Yang Dipilih',
-  'Learned: {date}': 'Dipelajari: {tanggal}',
+  'Learned: {date}': 'Dipelajari: {date}',
   'Used {count} times': 'Digunakan {count} kali',
   'Memory approved': 'Memori disetujui',
   'Memory rejected': 'Memori ditolak',
@@ -763,7 +763,7 @@ export const id: Partial<I18n> = {
   'Experimental: Prevents UI freezing during sync':
     'Eksperimental: Mencegah pembekuan UI selama sinkronisasi',
   'Status:': 'Status:',
-  '{count} peer': '{hitungan} rekan',
+  '{count} peer': '{count} rekan',
   '{count} peers': '{count} rekan',
   Peer: 'Rekan',
   Device: 'Perangkat',
@@ -1078,12 +1078,12 @@ export const id: Partial<I18n> = {
     'Hapus agen ini? Hal ini tidak dapat dibatalkan.',
   Previous: 'Sebelumnya',
   Next: 'Selanjutnya',
-  '{current} of {total}': '{saat ini} dari {total}',
+  '{current} of {total}': '{current} dari {total}',
   Profile: 'Profil',
   Playground: 'Taman bermain',
   'Esc to cancel · click outside to save':
     'Esc untuk membatalkan · klik di luar untuk menyimpan',
-  'Test {name}': 'Tes {nama}',
+  'Test {name}': 'Uji {name}',
   'Send a message to try this agent. Nothing is saved.':
     'Kirim pesan untuk mencoba agen ini. Tidak ada yang disimpan.',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':

@@ -304,7 +304,7 @@ export const vi: Partial<I18n> = {
     'Hoạt động mà không cần internet sau lần tải đầu tiên.',
   'Open Source': 'Nguồn mở',
   '{license} licensed. Built by the community, for the community.':
-    '{giấy phép} được cấp phép. Được xây dựng bởi cộng đồng, vì cộng đồng.',
+    '{license} được cấp phép. Được xây dựng bởi cộng đồng, vì cộng đồng.',
   'Configure your AI provider': 'Định cấu hình nhà cung cấp AI của bạn',
   'Describe your task': 'Mô tả nhiệm vụ của bạn',
   'Be as detailed as possible to get the best results':
@@ -765,7 +765,7 @@ export const vi: Partial<I18n> = {
   'Experimental: Prevents UI freezing during sync':
     'Thử nghiệm: Ngăn chặn tình trạng đóng băng giao diện người dùng trong quá trình đồng bộ hóa',
   'Status:': 'Tình trạng:',
-  '{count} peer': '{đếm} ngang hàng',
+  '{count} peer': '{count} ngang hàng',
   '{count} peers': '{count} đồng nghiệp',
   Peer: 'ngang hàng',
   Device: 'Thiết bị',
@@ -1080,11 +1080,11 @@ export const vi: Partial<I18n> = {
     'Xóa tác nhân này? Điều này không thể hoàn tác được.',
   Previous: 'trước đó',
   Next: 'Tiếp theo',
-  '{current} of {total}': '{hiện tại} trong tổng số {total}',
+  '{current} of {total}': '{current} của {total}',
   Profile: 'Hồ sơ',
   Playground: 'Sân chơi',
   'Esc to cancel · click outside to save': 'Esc để hủy · bấm ra ngoài để lưu',
-  'Test {name}': 'Kiểm tra {tên}',
+  'Test {name}': 'Kiểm tra {name}',
   'Send a message to try this agent. Nothing is saved.':
     'Gửi tin nhắn để thử đại lý này. Không có gì được cứu.',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':

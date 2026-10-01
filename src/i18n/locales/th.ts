@@ -508,7 +508,7 @@ export const th: Partial<I18n> = {
     'สร้างการสังเคราะห์เพื่อสร้างข้อมูลสรุปของความทรงจำที่ได้รับการอนุมัติทั้งหมดสำหรับตัวแทนนี้',
   'Select an agent to view and edit their memory':
     'เลือกตัวแทนเพื่อดูและแก้ไขหน่วยความจำ',
-  'Memory for {agent}': 'หน่วยความจำสำหรับ {ตัวแทน}',
+  'Memory for {agent}': 'หน่วยความจำสำหรับ {agent}',
   'This is what the agent remembers across conversations. It is injected at the start of every chat. Edit it freely.':
     'นี่คือสิ่งที่ตัวแทนจดจำระหว่างการสนทนา มันถูกแทรกเมื่อเริ่มต้นการแชททุกครั้ง แก้ไขได้อย่างอิสระ',
   'The agent has no memory yet. It will fill this in as you chat, or you can write notes here yourself.':
@@ -533,7 +533,7 @@ export const th: Partial<I18n> = {
   High: 'สูง',
   Medium: 'ปานกลาง',
   Low: 'ต่ำ',
-  'Confidence level: {level}': 'ระดับความเชื่อมั่น: {ระดับ}',
+  'Confidence level: {level}': 'ระดับความเชื่อมั่น: {level}',
   'Auto-approved': 'อนุมัติอัตโนมัติ',
   'Review notes (optional)': 'บันทึกการทบทวน (ไม่บังคับ)',
   'Add notes about this memory...': 'เพิ่มบันทึกเกี่ยวกับความทรงจำนี้...',
@@ -1069,12 +1069,12 @@ export const th: Partial<I18n> = {
     'ลบตัวแทนนี้ใช่ไหม สิ่งนี้ไม่สามารถยกเลิกได้',
   Previous: 'ก่อนหน้า',
   Next: 'ถัดไป',
-  '{current} of {total}': '{ปัจจุบัน} จาก {ทั้งหมด}',
+  '{current} of {total}': '{current} ของ {total}',
   Profile: 'โปรไฟล์',
   Playground: 'สนามเด็กเล่น',
   'Esc to cancel · click outside to save':
     'Esc เพื่อยกเลิก · คลิกด้านนอกเพื่อบันทึก',
-  'Test {name}': 'ทดสอบ {ชื่อ}',
+  'Test {name}': 'ทดสอบ {name}',
   'Send a message to try this agent. Nothing is saved.':
     'ส่งข้อความเพื่อลองใช้ตัวแทนนี้ ไม่มีอะไรถูกบันทึกไว้',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':

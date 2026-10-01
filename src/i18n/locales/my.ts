@@ -417,7 +417,7 @@ export const my: Partial<I18n> = {
   Indexes: 'အညွှန်းများ',
   Size: 'အရွယ်အစား',
   'Search {store} by {categories}…':
-    '{စတိုး} ကို {အမျိုးအစား} အလိုက် ရှာဖွေပါ။',
+    '{store} ကို {categories} ဖြင့် ရှာပါ...',
   'All Records': 'မှတ်တမ်းအားလုံး',
   'Filtered Records': 'စစ်ထုတ်ထားသော မှတ်တမ်းများ',
   ID: 'အမှတ်သညာ',
@@ -1103,7 +1103,7 @@ export const my: Partial<I18n> = {
     'ဤအေးဂျင့်ကို ဖျက်မလား။ ဒါကို ပြန်ပြင်လို့ မရပါဘူး။',
   Previous: 'အရင်',
   Next: 'နောက်တစ်ခု',
-  '{current} of {total}': '{စုစုပေါင်း} ၏ {လက်ရှိ}',
+  '{current} of {total}': '{total} ၏ {current}',
   Profile: 'ကိုယ်ရေးအကျဉ်း',
   Playground: 'ကစားကွင်း',
   'Esc to cancel · click outside to save':

@@ -1084,7 +1084,7 @@ export const ms: Partial<I18n> = {
   Playground: 'Taman permainan',
   'Esc to cancel · click outside to save':
     'Esc untuk membatalkan · klik di luar untuk menyimpan',
-  'Test {name}': 'Uji {nama}',
+  'Test {name}': 'Uji {name}',
   'Send a message to try this agent. Nothing is saved.':
     'Hantar mesej untuk mencuba ejen ini. Tiada apa yang disimpan.',
   'Lower values produce focused and deterministic output. Higher values increase creativity and variation.':
