@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { warningToast } from '@/lib/toast'
 import { useDeviceTranscription } from './useDeviceTranscription'
 
+const CONSENT_KEY = 'agentasia:stt-device-consent'
+
 type SpeechRecognitionErrorCode =
   | 'no-speech'
   | 'aborted'
@@ -65,6 +67,12 @@ export function useSpeechRecognition({
     onError: (message) => warningToast('On-device voice input failed', message),
   })
   const [isSupported, setIsSupported] = useState(false)
+  const [supportChecked, setSupportChecked] = useState(false)
+  // True once the browser engine has failed in a way only the on-device engine can
+  // fix (speech service unreachable, language unsupported) and the user agreed to
+  // the one-time model download.
+  const [forceDevice, setForceDevice] = useState(false)
+  const fallbackRef = useRef<(() => boolean) | null>(null)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const finalTranscriptRef = useRef('')
   // onresult stops the session and onend fires too; without this the same
@@ -92,6 +100,7 @@ export function useSpeechRecognition({
       (window as any).webkitSpeechRecognition
 
     setIsSupported(!!SpeechRecognition)
+    setSupportChecked(true)
   }, [])
 
   // Initialize speech recognition
@@ -157,6 +166,7 @@ export function useSpeechRecognition({
           // session opens, says nothing, and ends - which looks exactly like "it
           // is listening but not hearing me". Say so, and name the path that
           // does transcribe on-device (Live mode's whisper/granite engines).
+          if (fallbackRef.current?.()) break
           warningToast(
             'Voice input could not reach the transcription service',
             'This browser sends speech to Google for transcription and that call failed. Try Live mode, which transcribes on your device.',
@@ -179,6 +189,7 @@ export function useSpeechRecognition({
           // Silent error - no speech detected is not necessarily an error
           break
         case 'language-not-supported':
+          if (fallbackRef.current?.()) break
           warningToast(
             'This browser cannot transcribe this language',
             'Try Live mode, which uses an on-device model instead.',
@@ -226,10 +237,44 @@ export function useSpeechRecognition({
     setIsRecording(false)
   }, [isRecording])
 
+  // Browsers without webkitSpeechRecognition (Firefox, some Chromium builds) and
+  // browsers whose speech service is unreachable both end up on the device engine,
+  // so the mic works instead of silently doing nothing.
+  const useDevice =
+    engine === 'device' || forceDevice || (supportChecked && !isSupported)
+
+  fallbackRef.current = () => {
+    if (typeof window === 'undefined') return false
+    let agreed = false
+    try {
+      agreed = localStorage.getItem(CONSENT_KEY) === '1'
+    } catch {
+      /* private mode: ask every time */
+    }
+    if (!agreed) {
+      agreed = window.confirm(
+        'This browser cannot reach its speech service. Switch to on-device voice input? It downloads a speech model (a few hundred MB) once, then works without a connection.',
+      )
+      if (!agreed) return false
+      try {
+        localStorage.setItem(CONSENT_KEY, '1')
+      } catch {
+        /* ignore */
+      }
+    }
+    setIsRecording(false)
+    setForceDevice(true)
+    void device.start()
+    return true
+  }
+
   const toggleRecording = useCallback(() => {
-    if (engine === 'device') {
+    if (useDevice) {
       if (device.isListening) void device.stop()
-      else void device.start()
+      // Reaching the device engine by fallback (not by the user's own setting)
+      // still needs the one-time download consent.
+      else if (engine === 'device' || forceDevice) void device.start()
+      else fallbackRef.current?.()
       return
     }
     if (isRecording) {
@@ -237,9 +282,9 @@ export function useSpeechRecognition({
     } else {
       startRecording()
     }
-  }, [engine, device, isRecording, startRecording, stopRecording])
+  }, [useDevice, engine, forceDevice, device, isRecording, startRecording, stopRecording])
 
-  if (engine === 'device') {
+  if (useDevice) {
     return {
       isRecording: device.isListening,
       // The device engine works wherever WebAssembly does, including the
