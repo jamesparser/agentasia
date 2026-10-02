@@ -302,7 +302,8 @@ export const TasksContent = () => {
 }
 
 export const TasksPage = () => {
-  const { t, url } = useI18n(localI18n)
+  const { url } = useI18n(localI18n)
+  const { t: tMain } = useI18n()
 
   const header: HeaderProps = {
     color: 'bg-secondary-50',
@@ -312,22 +313,22 @@ export const TasksPage = () => {
     },
     title: (
       <>
-        {t('Tasks')}
+        {tMain('Tasks')}
         <Chip size="sm" variant="flat" className="ml-2 align-middle">
           Beta
         </Chip>
       </>
     ),
-    subtitle: t('Manage and monitor tasks for your organization'),
+    subtitle: tMain('Manage and monitor tasks for your organization'),
     cta: {
-      label: t('New Task'),
+      label: tMain('New Task'),
       href: url(''),
       icon: 'Plus',
     },
   }
 
   return (
-    <DefaultLayout title={t('Tasks')} header={header}>
+    <DefaultLayout title={tMain('Tasks')} header={header}>
       <Section>
         <Container>
           <TasksContent />
