@@ -56,6 +56,26 @@ function pickVoice(
   )
 }
 
+/** Break text into pieces of at most `max` characters on sentence boundaries. */
+export function splitForSpeech(text: string, max = 200): string[] {
+  const sentences = text.match(/[^.!?。！？\n]+[.!?。！？]*\s*/g) ?? [text]
+  const out: string[] = []
+  let cur = ''
+  for (const raw of sentences) {
+    let sentence = raw
+    while (sentence.length > max) {
+      const cut = sentence.lastIndexOf(' ', max)
+      const at = cut > max / 2 ? cut : max
+      if (cur) { out.push(cur.trim()); cur = '' }
+      out.push(sentence.slice(0, at).trim())
+      sentence = sentence.slice(at)
+    }
+    if ((cur + sentence).length > max) { if (cur) out.push(cur.trim()); cur = sentence } else cur += sentence
+  }
+  if (cur.trim()) out.push(cur.trim())
+  return out.filter(Boolean)
+}
+
 export interface SpeakAloud {
   /** True while a reply is being read out. */
   isSpeaking: boolean
@@ -123,15 +143,29 @@ export function useSpeakAloud(language: string): SpeakAloud {
       }
 
       s.cancel()
-      const u = new SpeechSynthesisUtterance(clean)
-      u.voice = voice
-      u.lang = voice.lang
-      u.rate = 1
-      u.onend = () => setIsSpeaking(false)
-      u.onerror = () => setIsSpeaking(false)
-      utterRef.current = u
+      // Chrome silently stops a single utterance after roughly 15 seconds, so a
+      // long reply goes out as short sentence-sized pieces queued in order.
+      const chunks = splitForSpeech(clean)
+      const utterances = chunks.map((piece, i) => {
+        const u = new SpeechSynthesisUtterance(piece)
+        u.voice = voice
+        u.lang = voice.lang
+        u.rate = 1
+        const last = i === chunks.length - 1
+        u.onend = () => {
+          if (last) setIsSpeaking(false)
+        }
+        u.onerror = (e) => {
+          // 'canceled' and 'interrupted' are our own stop; anything else ends the read.
+          if (e.error !== 'canceled' && e.error !== 'interrupted') setIsSpeaking(false)
+        }
+        return u
+      })
+      utterRef.current = utterances[utterances.length - 1] ?? null
       setIsSpeaking(true)
-      s.speak(u)
+      // Chrome drops a speak() issued in the same tick as cancel(), which sounds
+      // like the speaker button doing nothing. A short defer avoids it.
+      window.setTimeout(() => utterances.forEach((u) => s.speak(u)), 60)
     },
     [s, voice, plan.speakable, isSpeaking],
   )
