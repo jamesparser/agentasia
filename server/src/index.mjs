@@ -16,8 +16,9 @@ import { assertWithinBudget, recordSpend, spendSummary } from './spend-guard.mjs
 import { runAgentTurn } from './agent-loop.mjs'
 import { resolveGatewayTarget, getAllProviders } from './model-router.mjs'
 import { addMemory, searchMemory, deleteAllMemory, memoryPolicy } from './memory.mjs'
-import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from './schedules.mjs'
-import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
+import { createSchedule, listSchedules, updateSchedule, deleteSchedule, allSchedules } from './schedules.mjs'
+import { listScheduleRuns, startScheduleWorker, runTask } from './schedule-worker.mjs'
+import { executeScheduledTask } from './schedule-runner.mjs'
 import { authenticate, mintDevToken } from './auth.mjs'
 import { resolvePlan, assertWithinAllowance, recordUsage, usageReport, setPlan } from './entitlements.mjs'
 
@@ -40,6 +41,10 @@ const host = process.env.BIND_HOST || '127.0.0.1'
  * and key health. /v1/search spends the shared Tavily quota outright.
  */
 const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/usage', 'POST /v1/dev/session'])
+// Scheduled tasks are per-user: public at the door, but every handler below
+// requires a verified token and only ever touches that caller's own tasks.
+const SCHEDULE_ROUTE = /^\/v1\/(schedules(\/[^/]+(\/run)?)?|schedule-runs)$/
+const isPublicRoute = (method, path) => PUBLIC_ROUTES.has(`${method} ${path}`) || SCHEDULE_ROUTE.test(path)
 
 /** Fail closed: if no token is configured, privileged routes are unavailable. */
 function privilegedAllowed(req) {
@@ -100,6 +105,22 @@ async function readJson(req) {
   return raw ? JSON.parse(raw) : {}
 }
 
+// ── Scheduled task execution (same plan, allowance and spend rules as chat) ──
+const runScheduled = (task) =>
+  executeScheduledTask(task, {
+    resolvePlan,
+    assertWithinAllowance,
+    recordUsage,
+    assertWithinBudget,
+    recordSpend,
+    runTurn: ({ model, maxTokens, messages }) =>
+      runAgentTurn({
+        messages,
+        model,
+        route: async (params) => (await routeGatewayChat({ model, max_tokens: maxTokens, ...params })).result,
+      }),
+  })
+
 // ── Server ─────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
   const requestId = randomUUID()
@@ -122,7 +143,7 @@ const server = http.createServer(async (req, res) => {
   // the browser app does not call is closed unless GATEWAY_ADMIN_TOKEN is
   // presented. Local operator calls work the same way; pass the token or use an
   // ssh tunnel plus a token, never an unauthenticated exception.
-  if (!PUBLIC_ROUTES.has(`${req.method} ${p}`)) {
+  if (!isPublicRoute(req.method, p)) {
     const auth = privilegedAllowed(req)
     if (!auth.ok) {
       return json(res, auth.reason === 'admin_not_configured' ? 503 : 401, {
@@ -417,29 +438,34 @@ const server = http.createServer(async (req, res) => {
       return json(res, 200, { ...(await spendSummary()), requestId })
     }
 
-    // ── Schedules ──────────────────────────────────────────────
-    if (p === '/v1/schedules') {
+    // ── Schedules (per user, token authenticated) ───────────────
+    if (SCHEDULE_ROUTE.test(p)) {
       if (process.env.SCHEDULER_ENABLED !== 'true') {
         return json(res, 503, { error: 'scheduler_disabled', requestId })
       }
-      if (req.method === 'GET') return json(res, 200, await listSchedules())
-      if (req.method === 'POST') return json(res, 201, await createSchedule(await readJson(req)))
-    }
-
-    if (req.method === 'GET' && p === '/v1/schedule-runs') {
-      if (process.env.SCHEDULER_ENABLED !== 'true') {
-        return json(res, 503, { error: 'scheduler_disabled', requestId })
+      let principal
+      try { principal = await authenticate(req) } catch (error) {
+        return json(res, 401, { error: error.code || 'invalid_token', requestId })
       }
-      return json(res, 200, await listScheduleRuns(url.searchParams.get('scheduleId') || undefined))
-    }
-
-    const schedMatch = p.match(/^\/v1\/schedules\/([^/]+)(?:\/(run))?$/)
-    if (schedMatch && process.env.SCHEDULER_ENABLED === 'true') {
-      if (req.method === 'PATCH') {
-        return json(res, 200, await updateSchedule(schedMatch[1], await readJson(req)))
-      }
-      if (req.method === 'POST' && schedMatch[2] === 'run') {
-        return json(res, 202, await queueScheduleRun(schedMatch[1]))
+      if (!principal) return json(res, 401, { error: 'sign_in_required', requestId })
+      const owner = principal.uid
+      try {
+        if (p === '/v1/schedules' && req.method === 'GET') return json(res, 200, { schedules: await listSchedules(owner), requestId })
+        if (p === '/v1/schedules' && req.method === 'POST') return json(res, 201, { schedule: await createSchedule(await readJson(req), owner), requestId })
+        if (p === '/v1/schedule-runs' && req.method === 'GET') {
+          return json(res, 200, { runs: await listScheduleRuns(owner, url.searchParams.get('scheduleId') || undefined), requestId })
+        }
+        const m = p.match(/^\/v1\/schedules\/([^/]+)(\/run)?$/)
+        if (m && req.method === 'PATCH' && !m[2]) return json(res, 200, { schedule: await updateSchedule(owner, m[1], await readJson(req)), requestId })
+        if (m && req.method === 'DELETE' && !m[2]) return json(res, 200, { ...(await deleteSchedule(owner, m[1])), requestId })
+        if (m && req.method === 'POST' && m[2]) {
+          const task = (await allSchedules()).find((t) => t.id === m[1] && t.ownerUid === owner)
+          if (!task) return json(res, 404, { error: 'schedule_not_found', requestId })
+          return json(res, 200, { run: await runTask(task, runScheduled), requestId })
+        }
+        return json(res, 405, { error: 'method_not_allowed', requestId })
+      } catch (error) {
+        return json(res, error.statusCode || 500, { error: error.code || error.message, requestId })
       }
     }
 
@@ -452,7 +478,7 @@ const server = http.createServer(async (req, res) => {
 })
 
 // ── Start ──────────────────────────────────────────────────────
-if (process.env.SCHEDULER_ENABLED === 'true') startScheduleWorker()
+if (process.env.SCHEDULER_ENABLED === 'true') startScheduleWorker(runScheduled)
 server.listen(port, host, () => {
   console.log(`AgentAsia API listening on http://${host}:${port}`)
   console.log(`  Model Gateway: ${process.env.MODEL_GATEWAY_ENABLED === 'true' ? 'ENABLED' : 'disabled'}`)

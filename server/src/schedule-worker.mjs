@@ -1,34 +1,58 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { randomUUID } from 'node:crypto'
-import { listSchedules, updateSchedule } from './schedules.mjs'
+import { allSchedules, markRan } from './schedules.mjs'
 
-const runsPath = process.env.SCHEDULE_RUNS_FILE || '/data/schedule-runs.json'
-async function loadRuns() { try { return JSON.parse(await readFile(runsPath, 'utf8')) } catch { return [] } }
-async function saveRuns(runs) { await mkdir(dirname(runsPath), { recursive: true }); await writeFile(runsPath, JSON.stringify(runs.slice(-500), null, 2)) }
-export async function listScheduleRuns(scheduleId) { const runs = await loadRuns(); return scheduleId ? runs.filter((run) => run.scheduledTaskId === scheduleId) : runs }
-function nextRun(task, now) {
-  if (task.frequency === 'once') return null
-  const next = new Date(now)
-  if (task.frequency === 'daily') next.setUTCDate(next.getUTCDate() + 1)
-  else if (task.frequency === 'weekly') next.setUTCDate(next.getUTCDate() + 7)
-  else if (task.frequency === 'monthly') next.setUTCMonth(next.getUTCMonth() + 1)
-  else return new Date(now.getTime() + 60 * 60 * 1000) // cron parser comes with the durable worker service
-  return next
+const runsPath = () => process.env.SCHEDULE_RUNS_FILE || '/data/schedule-runs.json'
+async function loadRuns() { try { return JSON.parse(await readFile(runsPath(), 'utf8')) } catch { return [] } }
+let queue = Promise.resolve()
+const serial = (fn) => { const next = queue.catch(() => {}).then(fn); queue = next; return next }
+function appendRun(run) {
+  return serial(async () => {
+    const path = runsPath()
+    const runs = [...(await loadRuns()), run].slice(-1000)
+    await mkdir(dirname(path), { recursive: true })
+    await writeFile(`${path}.tmp`, JSON.stringify(runs, null, 2))
+    await rename(`${path}.tmp`, path)
+  })
 }
-export async function processDueSchedules(now = new Date()) {
-  const tasks = await listSchedules(); const runs = []
-  for (const task of tasks) {
+
+/** One owner's runs only, newest last. */
+export async function listScheduleRuns(owner, scheduleId) {
+  return (await loadRuns())
+    .filter((r) => r.ownerUid === owner && (!scheduleId || r.scheduledTaskId === scheduleId))
+    .map(({ ownerUid, ...run }) => run)
+}
+
+/** Run one task now (due run or run-now) and record the outcome. */
+export async function runTask(task, execute, now = new Date()) {
+  const startedAt = now.toISOString()
+  // Advance the clock first so a slow run can never be picked up twice.
+  const outcome = await execute(task)
+  const run = { id: randomUUID(), ownerUid: task.ownerUid, scheduledTaskId: task.id, startedAt, completedAt: new Date().toISOString(), ...outcome }
+  await appendRun(run)
+  const { ownerUid, ...visible } = run
+  return visible
+}
+
+export async function processDueSchedules({ now = new Date(), execute }) {
+  if (typeof execute !== 'function') throw new Error('execute_required')
+  const runs = []
+  for (const task of await allSchedules()) {
     if (task.status !== 'active' || new Date(task.nextRunAt) > now) continue
-    const run = { id: randomUUID(), scheduledTaskId: task.id, status: 'awaiting_approval', startedAt: now.toISOString(), completedAt: now.toISOString(), reason: 'Worker never invokes models or connector tools without an authenticated user approval flow.' }
-    runs.push(run)
-    const next = nextRun(task, now)
-    await updateSchedule(task.id, { lastRunAt: now.toISOString(), nextRunAt: next?.toISOString(), status: next ? 'active' : 'completed' })
+    await markRan(task.id, now)
+    runs.push(await runTask(task, execute, now))
   }
-  if (runs.length) { const allRuns = await loadRuns(); await saveRuns([...allRuns, ...runs]) }
   return runs
 }
-export function startScheduleWorker(intervalMs = Number(process.env.SCHEDULE_WORKER_INTERVAL_MS || 60000)) {
-  const tick = () => processDueSchedules().catch((error) => console.error('schedule worker failed', error))
-  tick(); return setInterval(tick, intervalMs)
+
+export function startScheduleWorker(execute, intervalMs = Number(process.env.SCHEDULE_WORKER_INTERVAL_MS || 60000)) {
+  let busy = false
+  const tick = async () => {
+    if (busy) return
+    busy = true
+    try { await processDueSchedules({ execute }) } catch (error) { console.error('schedule worker failed', error) } finally { busy = false }
+  }
+  tick()
+  return setInterval(tick, intervalMs)
 }
