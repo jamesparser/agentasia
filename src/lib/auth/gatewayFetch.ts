@@ -13,8 +13,15 @@ export const gatewayFetch: typeof fetch = async (input, init) => {
   const base = gatewayBase()
   if (!base || !url.startsWith(base)) return fetch(input, init)
   const token = await auth.getIdToken().catch(() => null)
-  if (!token) return fetch(input, init)
   const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined))
-  headers.set('authorization', `Bearer ${token}`)
+  if (token) {
+    headers.set('authorization', `Bearer ${token}`)
+  } else {
+    // Signed out: the provider layer still adds a placeholder `Bearer` key for the
+    // managed credential. The gateway reads any Authorization header as a Firebase
+    // ID token and answers `malformed_token`, so a guest's message failed. Anonymous
+    // callers must send no Authorization header at all.
+    headers.delete('authorization')
+  }
   return fetch(input, { ...init, headers })
 }
