@@ -87,3 +87,7 @@ Routes, all needing a bearer token: `GET/POST /v1/schedules`, `PATCH/DELETE /v1/
 What a task can do: it runs the saved prompt with web search on the owner's plan model. Each run counts against the owner's daily allowance, and a run is skipped when the allowance or the gateway budget is used up. It cannot read browser memory, skills or connectors, because those exist only in the browser. Frequencies are once, daily, weekly and monthly, with a fixed UTC offset taken from the browser at creation time, so in a region with daylight saving the local hour shifts by one when the clocks change. Phnom Penh has no daylight saving.
 
 Deploy order: restart the gateway with the new files, set `SCHEDULER_ENABLED=true`, then open Settings, Scheduled Tasks, create a task and press Run now to confirm a result appears.
+
+## Web search allowance (Tavily)
+
+`POST /v1/search` is open to every signed-in plan, free included, and is metered per user per day: free 25, pro 300, small business 1500, enterprise 6000 (`dailySearches` in `server/src/entitlements.mjs`). Over the limit it answers 429 `daily_search_allowance_reached`. With `AUTH_REQUIRED=true` an anonymous call gets 401. The Tavily key stays on the gateway as `TAVILY_API_KEY`; the browser never sees it. The app's agent calls this route through its `web_search` tool.
