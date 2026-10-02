@@ -84,6 +84,6 @@ Environment variables for the gateway:
 
 Routes, all needing a bearer token: `GET/POST /v1/schedules`, `PATCH/DELETE /v1/schedules/:id`, `POST /v1/schedules/:id/run`, `GET /v1/schedule-runs`.
 
-What a task can do: it runs the saved prompt with web search on the owner's plan model. Each run counts against the owner's daily allowance, and a run is skipped when the allowance or the gateway budget is used up. It cannot read browser memory, skills or connectors, because those exist only in the browser. Frequencies are once, daily, weekly and monthly, with a fixed UTC offset taken from the browser at creation time, so a task keeps its clock hour across daylight saving changes only by being edited.
+What a task can do: it runs the saved prompt with web search on the owner's plan model. Each run counts against the owner's daily allowance, and a run is skipped when the allowance or the gateway budget is used up. It cannot read browser memory, skills or connectors, because those exist only in the browser. Frequencies are once, daily, weekly and monthly, with a fixed UTC offset taken from the browser at creation time, so in a region with daylight saving the local hour shifts by one when the clocks change. Phnom Penh has no daylight saving.
 
 Deploy order: restart the gateway with the new files, set `SCHEDULER_ENABLED=true`, then open Settings, Scheduled Tasks, create a task and press Run now to confirm a result appears.
