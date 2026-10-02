@@ -195,7 +195,7 @@ export function getAvailableSTTProviders(
       type: 'assemblyai',
       name: t('AssemblyAI'),
       description: t(
-        'Cloud transcription, no download. Sends audio to the AgentAsia gateway and is metered per day.',
+        'Cloud transcription, no download. Your voice audio goes to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. Metered per day. Pick the browser option to keep audio on your device.',
       ),
       isLocal: false,
     },
