@@ -80,10 +80,7 @@ const gated = (code) => code === 401 || code === 403 || code === 503
     ['POST', '/v1/providers'],
     ['DELETE', '/v1/providers/nebius'],
     ['GET', '/v1/providers/health'],
-    ['POST', '/v1/search'],
     ['POST', '/v1/memory'],
-    ['GET', '/v1/schedules'],
-    ['POST', '/v1/schedules'],
   ]) {
     const r = await fetch(`${s.base}${path}`, {
       method,
@@ -93,6 +90,33 @@ const gated = (code) => code === 401 || code === 403 || code === 503
     assert.ok(gated(r.status), `${method} ${path} returned ${r.status}, expected a refusal`)
     const body = await r.json()
     assert.equal(body.error, 'admin_not_configured', `${path} must fail closed, not open`)
+  }
+
+  // Two route families are deliberately not admin gated, because the browser app
+  // calls them for the signed-in caller and they are metered per uid instead.
+  // They still have to refuse rather than act or spend:
+  //   /v1/search    => 503 tavily_not_configured with no Tavily key
+  //   /v1/schedules => 503 scheduler_disabled until SCHEDULER_ENABLED is set,
+  //                    and 401 sign_in_required with no caller token once it is
+  // (the scheduler-on path is covered in schedules.test.mjs). Pinned separately
+  // because folding them into the admin list above asserts a contract these routes
+  // were never meant to have, and hides the refusal that actually matters.
+  const search = await fetch(`${s.base}/v1/search`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: '{}',
+  })
+  assert.equal(search.status, 503, '/v1/search must refuse when Tavily is not configured')
+  assert.equal((await search.json()).error, 'tavily_not_configured')
+
+  for (const [method, path] of [['GET', '/v1/schedules'], ['POST', '/v1/schedules']]) {
+    const r = await fetch(`${s.base}${path}`, {
+      method,
+      headers: { 'content-type': 'application/json' },
+      body: method === 'GET' ? undefined : '{}',
+    })
+    assert.equal(r.status, 503, `${method} ${path} must refuse while the scheduler is off`)
+    assert.equal((await r.json()).error, 'scheduler_disabled')
   }
   await stop(s)
   console.log('  [1] unconfigured token => privileged routes fail closed, public routes reachable')
