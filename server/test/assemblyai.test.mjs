@@ -15,11 +15,11 @@ const stub = http.createServer((req, res) => {
       res.writeHead(200, { 'content-type': 'application/json' })
       return res.end(JSON.stringify({ upload_url: 'https://stub.example/audio' }))
     }
-    if (req.url === '/v2/transcripts') {
+    if (req.url === '/v2/transcript') {
       res.writeHead(200, { 'content-type': 'application/json' })
       return res.end(JSON.stringify({ id: 'tr_1', status: 'queued' }))
     }
-    if (req.url === '/v2/transcripts/tr_1') {
+    if (req.url === '/v2/transcript/tr_1') {
       res.writeHead(200, { 'content-type': 'application/json' })
       return res.end(JSON.stringify({
         id: 'tr_1',
@@ -60,7 +60,7 @@ assert.equal(out.text, 'hello from the stub')
 assert.equal(out.language, 'en')
 assert.equal(out.audioDuration, 1.5)
 assert.equal(calls[0].auth, 'aai-test', 'key sent in the authorization header, never logged')
-assert.equal(calls[1].path, '/v2/transcripts')
+assert.equal(calls[1].path, '/v2/transcript')
 assert.equal(JSON.parse(calls[1].body).speech_model, 'universal')
 
 const answer = await understandSpeech({ transcriptId: 'tr_1', prompt: 'what was decided?', maxTokens: 99 }, env)

@@ -72,7 +72,7 @@ export async function transcribeAudio(input, env = process.env) {
     throw e
   }
   const uploadUrl = await uploadAudio(bytes, env)
-  const created = await aai('/v2/transcripts', {
+  const created = await aai('/v2/transcript', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -88,7 +88,7 @@ export async function transcribeAudio(input, env = process.env) {
   }
   for (let i = 0; i < POLL_MAX; i += 1) {
     await sleep(POLL_MS)
-    const t = await aai(`/v2/transcripts/${created.id}`, {}, env)
+    const t = await aai(`/v2/transcript/${created.id}`, {}, env)
     if (t.status === 'completed') {
       return {
         id: t.id,
