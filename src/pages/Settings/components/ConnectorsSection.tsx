@@ -22,6 +22,8 @@ import { useConnectorStore } from '@/features/connectors/stores'
 import { ConnectorCard } from '@/features/connectors/components'
 import { ConnectorWizardInline } from '@/features/connectors/components/ConnectorWizardInline'
 import { CustomMcpWizard } from '@/features/connectors/components/CustomMcpWizard'
+import { McpCatalog } from '@/features/connectors/components/McpCatalog'
+import type { McpPreset } from '@/features/connectors/lib/mcp-presets'
 import { ConnectorSettingsInline } from '@/features/connectors/components/ConnectorSettingsInline'
 import type { ConnectorCategory } from '@/features/connectors/types'
 import { useSettingsScope } from '../SettingsContext'
@@ -41,6 +43,7 @@ export function ConnectorsSection() {
   // grid that returns nothing for non-app categories - which is why every MCP
   // entry read "coming soon".
   const [selectedTab, setSelectedTab] = useState<ConnectorCategory>('app')
+  const [preset, setPreset] = useState<McpPreset | null>(null)
 
   const {
     connectors,
@@ -267,27 +270,19 @@ export function ConnectorsSection() {
             the populated grid was never visible to a new user - which is the only
             user who needs to see it. */}
 
-            {/* Composio is advertised here but not wired: there is no client code
-                and no gateway route for it (config has it as
-                'planned-server-side'). Shown as a disabled card with a reason
-                rather than a button that does nothing. */}
-            <div
-              className="border-dashed border-divider text-default-400 flex flex-col items-start gap-1 rounded-xl border p-4"
-              aria-disabled="true"
-            >
-              <div className="flex items-center gap-2">
-                <Icon name="EvPlug" className="w-4 h-4" />
-                <span className="text-sm font-medium">Composio</span>
-                <span className="bg-default-100 text-default-500 dark:bg-default-100/50 rounded-full px-2 py-0.5 text-xs">
-                  {t('Coming soon')}
-                </span>
-              </div>
-              <p className="text-xs">
-                {t(
-                  'One connection to hundreds of apps. Needs a server-side integration before it can be enabled.',
-                )}
-              </p>
-            </div>
+        {selectedTab === 'mcp' && (
+          <div className="mt-8">
+            <McpCatalog
+              onPick={setPreset}
+              onOpenApps={() => setSelectedTab('app')}
+            />
+            <CustomMcpWizard
+              isOpen={preset !== null}
+              preset={preset}
+              onClose={() => setPreset(null)}
+            />
+          </div>
+        )}
       </div>
     </div>
   )

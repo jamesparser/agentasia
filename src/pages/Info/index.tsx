@@ -41,7 +41,7 @@ export function InfoPage() {
         <div>
           <h1 className="text-foreground text-3xl font-semibold">AgentAsia</h1>
           <p className="text-foreground-500 mt-1 text-base">
-            {AGENTASIA.slogan}
+            {t(AGENTASIA.slogan)}
           </p>
         </div>
 

@@ -30,6 +30,7 @@ import { navigateWithTransition } from '@/lib/navigation-transition'
 
 export const IndexPage = () => {
   const { lang, t } = useI18n(localeI18n)
+  const { t: tMain } = useI18n()
   const url = useUrl(lang)
   const navigate = useNavigate()
   const [prompt, setPrompt] = useDraftPrompt('new-task')
@@ -270,7 +271,7 @@ export const IndexPage = () => {
 
             <motion.div {...motionVariants.title}>
               <Title
-                subtitle={AGENTASIA.slogan}
+                subtitle={tMain(AGENTASIA.slogan)}
                 className="!text-2xl sm:!text-3xl md:!text-4xl font-light"
                 subtitleClassName="text-md md:text-xl"
               >

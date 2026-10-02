@@ -275,7 +275,7 @@ export function NewTaskHero({
           <DevsIcon size="6xl" className="opacity-50" />
 
           <Title
-            subtitle={AGENTASIA.slogan}
+            subtitle={t(AGENTASIA.slogan)}
             className="!text-2xl text-center sm:!text-3xl md:!text-4xl font-light"
             subtitleClassName="text-md md:text-xl text-center"
           >

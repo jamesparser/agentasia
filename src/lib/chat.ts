@@ -85,6 +85,8 @@ import { PPTX_TOOL_DEFINITIONS } from '@/lib/pptx-tools/types'
 // Import tool DEFINITIONS from their source modules (not the `@/tools/plugins`
 // barrel) so the heavy plugin handlers (WASM sandbox, pptx, connectors) stay
 // out of the boot graph (REPORT §4 Phase 1).
+import { getMcpToolDefinitions, registerMcpTools } from '@/features/connectors/lib/mcp-tools'
+import { WEB_SEARCH_TOOL_DEFINITION } from '@/tools/plugins/web-search'
 import {
   WIKIPEDIA_SEARCH_TOOL_DEFINITION,
   WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
@@ -241,6 +243,7 @@ function getAgentToolDefinitions(_agent: Agent): ToolDefinition[] {
     // ...Object.values(PRESENTATION_TOOL_DEFINITIONS),
     ...Object.values(PPTX_TOOL_DEFINITIONS),
     // Research tools
+    WEB_SEARCH_TOOL_DEFINITION,
     WIKIPEDIA_SEARCH_TOOL_DEFINITION,
     WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
     WIKIDATA_SEARCH_TOOL_DEFINITION,
@@ -529,6 +532,9 @@ async function executeToolCalls(
   if (!areOrchestrationToolsRegistered()) {
     registerOrchestrationTools()
   }
+
+  // MCP servers the user connected: register their tools for this run
+  await registerMcpTools()
 
   // Ensure memory tools (the `remember` tool) are registered
   if (!areMemoryToolsRegistered()) {
@@ -907,7 +913,10 @@ ${connectorBlocks}`
     // Get tool definitions from agent's configured tools
     const toolDefinitions = getAgentToolDefinitions(agent)
     // Add connector tools if any connectors are active
-    const connectorTools = await getConnectorToolDefinitions()
+    const connectorTools = [
+      ...(await getConnectorToolDefinitions()),
+      ...getMcpToolDefinitions(),
+    ]
     console.log(
       '▶ connector tools:',
       connectorTools.length,

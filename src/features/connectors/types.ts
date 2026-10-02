@@ -121,6 +121,12 @@ export interface McpConfig {
   capabilities?: string[]
   discoveredTools?: McpTool[]
   discoveredResources?: McpResource[]
+  /** Which catalog entry this came from, if any (see lib/mcp-presets). */
+  presetId?: string
+  /** Header scheme for the user's token. Default 'Bearer'. */
+  authScheme?: 'Bearer' | 'Token'
+  /** serverUrl with `{token}` where the user's key goes (e.g. Firecrawl). */
+  urlTemplate?: string
 }
 
 /**
@@ -130,6 +136,7 @@ export interface McpTool {
   name: string
   description?: string
   inputSchema?: Record<string, unknown>
+  annotations?: { readOnlyHint?: boolean; title?: string }
 }
 
 /**

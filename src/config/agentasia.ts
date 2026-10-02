@@ -13,7 +13,7 @@
 export const MANAGED_GATEWAY_DEFAULT = 'https://agentasia-gateway.realcryptocap.com'
 
 export const AGENTASIA = {
-  slogan: 'AI that speaks your language',
+  slogan: 'AI that speaks your language' as const,
   // Raster only: the brief rules out SVG, and the upstream devs.new triangle is
   // not ours to use. `logo`/`logoDark` are the head crop, which is the only form
   // of the drawing that stays legible at tab and header sizes; `logoDetailed` is

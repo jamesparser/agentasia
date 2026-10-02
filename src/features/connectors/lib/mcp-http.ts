@@ -8,6 +8,8 @@ export interface McpDiscoveryResult {
 export interface McpAuth {
   /** Bearer token the user supplied for their own account on that server. */
   token?: string
+  /** Header scheme, default Bearer. */
+  scheme?: 'Bearer' | 'Token'
 }
 
 /** Streamable HTTP servers may answer with a JSON body or a text/event-stream. */
@@ -48,7 +50,7 @@ export function createMcpSession(serverUrl: string, auth: McpAuth = {}) {
       headers: {
         Accept: 'application/json, text/event-stream',
         'Content-Type': 'application/json',
-        ...(auth.token ? { Authorization: `Bearer ${auth.token}` } : {}),
+        ...(auth.token ? { Authorization: `${auth.scheme ?? 'Bearer'} ${auth.token}` } : {}),
         ...(sessionId ? { 'Mcp-Session-Id': sessionId } : {}),
       },
       body: JSON.stringify({

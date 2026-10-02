@@ -51,6 +51,10 @@ import { CODE_TOOL_DEFINITIONS } from '@/lib/code-tools'
 // module; imported lazily inside the handler below (REPORT §4 Phase 1).
 import { connectors as connectorsMap } from '@/lib/yjs/maps'
 import type { Connector } from '@/features/connectors/types'
+import { userSettings } from '@/stores/userStore'
+import { languages } from '@/i18n'
+import { getMcpToolDefinitions, registerMcpTools } from '@/features/connectors/lib/mcp-tools'
+import { WEB_SEARCH_TOOL_DEFINITION } from '@/tools/plugins/web-search'
 import {
   WIKIPEDIA_SEARCH_TOOL_DEFINITION,
   WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
@@ -169,6 +173,7 @@ async function collectTools(scope?: AgentScope): Promise<ToolDefinition[]> {
   if (!areMathToolsRegistered()) registerMathTools()
   if (!areCodeToolsRegistered()) registerCodeTools()
   if (!areResearchToolsRegistered()) registerResearchTools()
+  await registerMcpTools()
   if (!areSkillToolsRegistered()) registerSkillTools()
   if (!areConnectorToolsRegistered()) registerConnectorTools()
   if (!arePresentationToolsRegistered()) registerPresentationTools()
@@ -182,6 +187,7 @@ async function collectTools(scope?: AgentScope): Promise<ToolDefinition[]> {
     ...Object.values(CODE_TOOL_DEFINITIONS),
     // ...Object.values(PRESENTATION_TOOL_DEFINITIONS),
     ...Object.values(PPTX_TOOL_DEFINITIONS),
+    WEB_SEARCH_TOOL_DEFINITION,
     WIKIPEDIA_SEARCH_TOOL_DEFINITION,
     WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
     WIKIDATA_SEARCH_TOOL_DEFINITION,
@@ -194,7 +200,10 @@ async function collectTools(scope?: AgentScope): Promise<ToolDefinition[]> {
   ]
 
   // Add connector tools (dynamic, based on active connectors)
-  const connectorTools = await getConnectorToolDefinitions()
+  const connectorTools = [
+    ...(await getConnectorToolDefinitions()),
+    ...getMcpToolDefinitions(),
+  ]
   allTools.push(...connectorTools)
 
   if (!scope) return allTools
@@ -308,9 +317,12 @@ async function buildSystemPrompt(
   if (memoryContext) parts.push(memoryContext)
   if (skillInstructions) parts.push(skillInstructions)
   parts.push(taskContext)
+  parts.push(
+    `ALWAYS respond in ${languages[userSettings.getState().language]} as this is the user's language.`,
+  )
 
   parts.push(
-    `\n\n## Execution Instructions\nYou are an autonomous agent executing a task. You have access to tools — use them proactively.\n\n**Research tools:** When the task involves factual questions, historical dates, names, biographical details, or any verifiable information, you MUST use the available research tools (wikipedia_search, wikipedia_article, wikidata_search, arxiv_search, etc.) to look up accurate information rather than relying on your training data alone. Search first, answer second.\n\n**Other tools:** Use knowledge tools to search the user's knowledge base, math tools for calculations, and code tools when code execution is needed.\n\nWhen you have fully addressed all requirements, provide your final deliverable. Be thorough and ensure all requirements are addressed.`,
+    `\n\n## Execution Instructions\nYou are an autonomous agent executing a task. You have access to tools — use them proactively.\n\n**Research tools:** When the task involves factual questions, historical dates, names, biographical details, or any verifiable information, you MUST use the available research tools (web_search for anything current, wikipedia_search, wikipedia_article, wikidata_search, arxiv_search, etc.) to look up accurate information rather than relying on your training data alone. Search first, answer second.\n\n**Other tools:** Use knowledge tools to search the user's knowledge base, math tools for calculations, and code tools when code execution is needed.\n\nWhen you have fully addressed all requirements, provide your final deliverable. Be thorough and ensure all requirements are addressed.`,
   )
 
   return parts.join('\n')
