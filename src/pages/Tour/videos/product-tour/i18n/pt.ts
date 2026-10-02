@@ -18,7 +18,7 @@ export const pt: I18n = {
   'No third party.': 'Nenhum terceiro.',
   'Your keys. Your data.': 'Suas chaves. Seus dados.',
   'OPEN SOURCE · BROWSER-NATIVE · YOURS': 'CÓDIGO ABERTO · NATIVO DO NAVEGADOR · SEU',
-  'agentasia.vercel.app': 'agenteasia.vercel.app',
+  'agentasia.vercel.app': 'agentasia.vercel.app',
   'Now you can.': 'Agora você pode.',
   'Open agentasia.vercel.app →': 'Abra agentasia.vercel.app →',
   'No signup · No install · Free': 'Sem inscrição · Sem instalação · Gratuito',

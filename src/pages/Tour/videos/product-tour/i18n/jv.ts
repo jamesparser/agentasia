@@ -20,7 +20,7 @@ export const jv: I18n = {
   'OPEN SOURCE · BROWSER-NATIVE · YOURS': 'OPEN SUMBER · BROWSER-NATIVE · Panjenengan',
   'agentasia.vercel.app': 'agentasia.vercel.app',
   'Now you can.': 'Saiki sampeyan bisa.',
-  'Open agentasia.vercel.app →': 'Bukak agenasia.vercel.app →',
+  'Open agentasia.vercel.app →': 'Bukak agentasia.vercel.app →',
   'No signup · No install · Free': 'Ora ndhaptar · Ora nginstal · Gratis',
   'github.com/codename-co/devs · MIT': 'github.com/codename-co/devs · MIT',
   '4 agents · 3 tools · 11s': '4 agen · 3 alat · 11 d',

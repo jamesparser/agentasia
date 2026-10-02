@@ -18,7 +18,7 @@ export const ja: I18n = {
   'No third party.': '第三者はいません。',
   'Your keys. Your data.': 'あなたの鍵。あなたのデータ。',
   'OPEN SOURCE · BROWSER-NATIVE · YOURS': 'オープンソース · ブラウザネイティブ · あなたのもの',
-  'agentasia.vercel.app': 'エージェントシア.vercel.app',
+  'agentasia.vercel.app': 'agentasia.vercel.app',
   'Now you can.': '今ならそれが可能です。',
   'Open agentasia.vercel.app →': 'agentasia.vercel.app を開く →',
   'No signup · No install · Free': 'サインアップ不要、インストール不要、無料',

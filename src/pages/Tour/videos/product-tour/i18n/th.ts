@@ -22,7 +22,7 @@ export const th: I18n = {
   'Now you can.': 'ตอนนี้คุณสามารถ',
   'Open agentasia.vercel.app →': 'เปิด agentasia.vercel.app →',
   'No signup · No install · Free': 'ไม่ต้องสมัคร · ไม่มีการติดตั้ง · ฟรี',
-  'github.com/codename-co/devs · MIT': 'github.com/codename-co/devs · เอ็มไอที',
+  'github.com/codename-co/devs · MIT': 'github.com/codename-co/devs · MIT',
   '4 agents · 3 tools · 11s': 'เจ้าหน้าที่ 4 คน · เครื่องมือ 3 ชิ้น · 11 วินาที',
   'Breaking this into parallel subtasks. Recruiting Research, Analysis, Writing, and Review…': 'แบ่งสิ่งนี้ออกเป็นงานย่อยแบบคู่ขนาน การสรรหางานวิจัย การวิเคราะห์ การเขียน และการทบทวน...',
   'Searching knowledge base': 'การค้นหาฐานความรู้',
