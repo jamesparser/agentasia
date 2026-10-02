@@ -1143,4 +1143,9 @@ export const lo: Partial<I18n> = {
   'Signed in as': 'ເຂົ້າສູ່ລະບົບເປັນ',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'ເຂົ້າສູ່ລະບົບແລ້ວ. ຕົວກຳນົດເວລາຍັງຖືກປິດໃຊ້ງານຢູ່ໃນເຊີບເວີ, ດັ່ງນັ້ນໜ້າວຽກຕ່າງໆຈຶ່ງຖືກບັນທຶກແຕ່ຍັງບໍ່ທັນໄດ້ປະຕິບັດເທື່ອ.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'ແຜນການ, ວຽກທີ່ກຳນົດເວລາໄວ້ ແລະໜ່ວຍຄວາມຈຳຕົວແທນຂອງທ່ານປະຕິບັດຕາມບັນຊີຂອງທ່ານແທນໂປຣແກຣມທ່ອງເວັບນີ້.',
+  'Create your free AgentAsia account': 'ສ້າງບັນຊີ AgentAsia ຟຣີຂອງທ່ານ',
+  'Free during the beta, until December 25, 2026.': 'ໃຊ້ຟຣີໃນໄລຍະເບຕ້າ ຮອດວັນທີ 25 ທັນວາ 2026.',
+  'Requests today': 'ຄຳຮ້ອງຂໍມື້ນີ້',
+  'Tokens today': 'ໂທເຄັນມື້ນີ້',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'ເບຕ້າ: ທຸກແພັກເກັດໃຊ້ຟຣີຮອດ 25 ທັນວາ. ແພັກເກັດແບບຈ່າຍເງິນຈະເປີດຫຼັງຈາກນັ້ນ.',
 }

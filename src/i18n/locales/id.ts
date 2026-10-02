@@ -1152,4 +1152,9 @@ export const id: Partial<I18n> = {
   'Signed in as': 'Masuk sebagai',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'Masuk. Penjadwal masih dinonaktifkan di server, sehingga tugas disimpan tetapi belum dijalankan.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'Paket Anda, tugas terjadwal, dan memori agen mengikuti akun Anda, bukan browser ini.',
+  'Create your free AgentAsia account': 'Buat akun AgentAsia gratis Anda',
+  'Free during the beta, until December 25, 2026.': 'Gratis selama beta, hingga 25 Desember 2026.',
+  'Requests today': 'Permintaan hari ini',
+  'Tokens today': 'Token hari ini',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: semua paket gratis hingga 25 Desember. Paket berbayar dibuka setelahnya.',
 }

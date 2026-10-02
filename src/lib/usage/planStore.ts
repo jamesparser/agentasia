@@ -14,6 +14,8 @@ import { useSyncExternalStore } from 'react'
 
 import type { PlanId } from '@/lib/llm/managed-lane'
 
+import { useGatewayUsage } from './gatewayUsage'
+
 const KEY = 'agentasia:plan'
 const PLANS: PlanId[] = ['free', 'pro', 'smallBusiness', 'enterprise']
 
@@ -36,7 +38,12 @@ const subscribe = (fn: () => void) => {
 }
 
 export function usePlan(): PlanId {
-  return useSyncExternalStore(subscribe, () => cached, () => 'free')
+  // The plan shown is the one the gateway resolved from the verified token. The
+  // localStorage value below is only a fallback for signed-out visitors and tests:
+  // it changes what this screen displays, never what the server allows.
+  const server = useGatewayUsage()
+  const local = useSyncExternalStore<PlanId>(subscribe, () => cached, () => 'free')
+  return server?.signedIn ? server.plan : local
 }
 
 /**

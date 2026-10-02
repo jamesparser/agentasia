@@ -1265,4 +1265,9 @@ export const es: I18n = {
   'Signed in as': 'Iniciado sesión como',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'Ha iniciado sesión. El programador todavía está deshabilitado en el servidor, por lo que las tareas se guardan pero aún no se ejecutan.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'Su plan, tareas programadas y memoria del agente siguen su cuenta en lugar de este navegador.',
+  'Create your free AgentAsia account': 'Crea tu cuenta gratuita de AgentAsia',
+  'Free during the beta, until December 25, 2026.': 'Gratis durante la beta, hasta el 25 de diciembre de 2026.',
+  'Requests today': 'Solicitudes hoy',
+  'Tokens today': 'Tokens hoy',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: todos los planes son gratuitos hasta el 25 de diciembre. Los planes de pago se abrirán después.',
 } as const

@@ -1177,4 +1177,9 @@ export const my: Partial<I18n> = {
   'Signed in as': 'အဖြစ် ဝင်ရောက်ခဲ့သည်။',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'လက်မှတ်ထိုးဝင်ထားသည်။ အချိန်ဇယားကို ဆာဗာတွင် ပိတ်ထားဆဲဖြစ်သောကြောင့် လုပ်ဆောင်စရာများကို သိမ်းဆည်းထားသော်လည်း မလုပ်ဆောင်ရသေးပါ။',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'သင်၏ အစီအစဉ်၊ စီစဉ်ထားသော အလုပ်များနှင့် အေးဂျင့်မှတ်ဉာဏ်သည် ဤဘရောက်ဆာအစား သင့်အကောင့်ကို လိုက်နာပါ။',
+  'Create your free AgentAsia account': 'သင့်အခမဲ့ AgentAsia အကောင့်ကို ဖန်တီးပါ',
+  'Free during the beta, until December 25, 2026.': 'ဘီတာကာလအတွင်း ၂၀၂၆ ဒီဇင်ဘာ ၂၅ ရက်အထိ အခမဲ့ဖြစ်သည်။',
+  'Requests today': 'ယနေ့ တောင်းဆိုမှုများ',
+  'Tokens today': 'ယနေ့ တိုကင်များ',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'ဘီတာ: အစီအစဉ်အားလုံး ဒီဇင်ဘာ ၂၅ ရက်အထိ အခမဲ့ဖြစ်သည်။ ငွေပေးချေသော အစီအစဉ်များကို ထို့နောက် ဖွင့်လှစ်မည်။',
 }

@@ -1268,4 +1268,9 @@ export const de: I18n = {
   'Signed in as': 'Angemeldet als',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'Angemeldet. Der Planer ist auf dem Server noch deaktiviert, daher werden Aufgaben gespeichert, aber noch nicht ausgeführt.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'Ihr Plan, Ihre geplanten Aufgaben und der Agentenspeicher folgen Ihrem Konto und nicht diesem Browser.',
+  'Create your free AgentAsia account': 'Erstelle dein kostenloses AgentAsia-Konto',
+  'Free during the beta, until December 25, 2026.': 'Kostenlos während der Beta bis zum 25. Dezember 2026.',
+  'Requests today': 'Anfragen heute',
+  'Tokens today': 'Tokens heute',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: Alle Tarife sind bis zum 25. Dezember kostenlos. Bezahlte Tarife starten danach.',
 } as const

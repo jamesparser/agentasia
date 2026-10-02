@@ -8,6 +8,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import '@/styles/globals.css'
 import '@/styles/view-transitions.css'
 import 'katex/dist/katex.min.css'
+import { AuthGate } from '@/components/auth/AuthGate'
 import { initAuth } from '@/lib/auth'
 
 // Resolves the auth provider before the first render settles. Inert unless
@@ -23,7 +24,9 @@ if (container) {
       <ErrorBoundary>
         <BrowserRouter>
           <Providers>
-            <Router />
+            <AuthGate>
+              <Router />
+            </AuthGate>
           </Providers>
         </BrowserRouter>
       </ErrorBoundary>

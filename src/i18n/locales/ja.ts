@@ -1152,4 +1152,9 @@ export const ja: Partial<I18n> = {
   'Signed in as': 'としてサインインしました',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'サインインしています。スケジューラーはサーバー上でまだ無効になっているため、タスクは保存されていますが、まだ実行されていません。',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'あなたの計画、スケジュールされたタスク、およびエージェントのメモリは、このブラウザの代わりにあなたのアカウントに従います。',
+  'Create your free AgentAsia account': '無料の AgentAsia アカウントを作成',
+  'Free during the beta, until December 25, 2026.': 'ベータ期間中は 2026年12月25日まで無料です。',
+  'Requests today': '今日のリクエスト',
+  'Tokens today': '今日のトークン',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'ベータ: すべてのプランは12月25日まで無料です。有料プランはその後に開始されます。',
 }

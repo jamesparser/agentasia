@@ -1170,4 +1170,9 @@ export const fil: Partial<I18n> = {
   'Signed in as': 'Naka-sign in bilang',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'Naka-sign in. Naka-disable pa rin ang scheduler sa server, kaya nai-save ang mga gawain ngunit hindi pa naisasagawa.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'Ang iyong plano, mga naka-iskedyul na gawain at memorya ng ahente ay sumusunod sa iyong account sa halip na sa browser na ito.',
+  'Create your free AgentAsia account': 'Gumawa ng iyong libreng AgentAsia account',
+  'Free during the beta, until December 25, 2026.': 'Libre sa panahon ng beta, hanggang Disyembre 25, 2026.',
+  'Requests today': 'Mga kahilingan ngayon',
+  'Tokens today': 'Mga token ngayon',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: libre ang lahat ng plano hanggang Disyembre 25. Magbubukas ang mga bayad na plano pagkatapos.',
 }

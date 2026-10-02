@@ -1188,4 +1188,9 @@ export const pl: Partial<I18n> = {
   Account: 'Konto',
   'Sign out of AgentAsia?': 'Wylogować się z AgentAsia?',
   'Sign out': 'Wyloguj się',
+  'Create your free AgentAsia account': 'Utwórz darmowe konto AgentAsia',
+  'Free during the beta, until December 25, 2026.': 'Za darmo w trakcie bety, do 25 grudnia 2026 r.',
+  'Requests today': 'Żądania dzisiaj',
+  'Tokens today': 'Tokeny dzisiaj',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: wszystkie plany są bezpłatne do 25 grudnia. Plany płatne ruszą później.',
 }

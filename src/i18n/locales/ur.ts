@@ -1158,4 +1158,9 @@ export const ur: Partial<I18n> = {
   'Signed in as': 'بطور سائن ان',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'سائن ان ہے۔ سرور پر شیڈولر اب بھی غیر فعال ہے، اس لیے کام محفوظ کیے گئے ہیں لیکن ابھی تک عمل میں نہیں آئے ہیں۔',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'آپ کا منصوبہ، طے شدہ کام اور ایجنٹ کی میموری اس براؤزر کے بجائے آپ کے اکاؤنٹ کی پیروی کرتی ہے۔',
+  'Create your free AgentAsia account': 'اپنا مفت AgentAsia اکاؤنٹ بنائیں',
+  'Free during the beta, until December 25, 2026.': 'بیٹا کے دوران 25 دسمبر 2026 تک مفت۔',
+  'Requests today': 'آج کی درخواستیں',
+  'Tokens today': 'آج کے ٹوکن',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'بیٹا: تمام پلان 25 دسمبر تک مفت ہیں۔ ادائیگی والے پلان اس کے بعد کھلیں گے۔',
 }

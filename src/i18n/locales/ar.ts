@@ -1245,4 +1245,9 @@ export const ar: I18n = {
   'Signed in as': 'تم تسجيل الدخول باسم',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'تم تسجيل الدخول. لا يزال برنامج الجدولة معطلاً على الخادم، لذا يتم حفظ المهام ولكن لم يتم تنفيذها بعد.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'تتبع خطتك والمهام المجدولة وذاكرة الوكيل حسابك بدلاً من هذا المتصفح.',
+  'Create your free AgentAsia account': 'أنشئ حسابك المجاني في AgentAsia',
+  'Free during the beta, until December 25, 2026.': 'مجاني خلال الفترة التجريبية حتى 25 ديسمبر 2026.',
+  'Requests today': 'الطلبات اليوم',
+  'Tokens today': 'الرموز اليوم',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'النسخة التجريبية: جميع الخطط مجانية حتى 25 ديسمبر. ستُفتح الخطط المدفوعة بعد ذلك.',
 } as const

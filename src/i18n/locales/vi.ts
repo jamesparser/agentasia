@@ -1153,4 +1153,9 @@ export const vi: Partial<I18n> = {
   'Signed in as': 'Đã đăng nhập với tư cách',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'Đã đăng nhập. Bộ lập lịch vẫn bị tắt trên máy chủ, do đó các tác vụ được lưu nhưng chưa được thực thi.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'Kế hoạch, nhiệm vụ theo lịch trình và bộ nhớ tác nhân sẽ theo dõi tài khoản của bạn thay vì trình duyệt này.',
+  'Create your free AgentAsia account': 'Tạo tài khoản AgentAsia miễn phí của bạn',
+  'Free during the beta, until December 25, 2026.': 'Miễn phí trong thời gian thử nghiệm, đến ngày 25 tháng 12 năm 2026.',
+  'Requests today': 'Yêu cầu hôm nay',
+  'Tokens today': 'Token hôm nay',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'Bản thử nghiệm: mọi gói đều miễn phí đến 25 tháng 12. Các gói trả phí sẽ mở sau đó.',
 }

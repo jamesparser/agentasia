@@ -1155,4 +1155,9 @@ export const km: Partial<I18n> = {
   'Signed in as': 'បានចូលជា',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'ចូល។ កម្មវិធីកំណត់ពេលនៅតែបិទនៅលើម៉ាស៊ីនមេ ដូច្នេះភារកិច្ចត្រូវបានរក្សាទុក ប៉ុន្តែមិនទាន់បានប្រតិបត្តិនៅឡើយ។',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'ផែនការរបស់អ្នក កិច្ចការដែលបានកំណត់ពេល និងអង្គចងចាំភ្នាក់ងារធ្វើតាមគណនីរបស់អ្នកជំនួសឱ្យកម្មវិធីរុករកនេះ។',
+  'Create your free AgentAsia account': 'បង្កើតគណនី AgentAsia ឥតគិតថ្លៃរបស់អ្នក',
+  'Free during the beta, until December 25, 2026.': 'ឥតគិតថ្លៃក្នុងអំឡុងបេតា រហូតដល់ថ្ងៃទី ២៥ ធ្នូ ២០២៦។',
+  'Requests today': 'សំណើថ្ងៃនេះ',
+  'Tokens today': 'តូខឹនថ្ងៃនេះ',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'បេតា៖ គ្រប់គម្រោងទាំងអស់ឥតគិតថ្លៃរហូតដល់ថ្ងៃទី ២៥ ធ្នូ។ គម្រោងបង់ប្រាក់នឹងបើកក្រោយនោះ។',
 }

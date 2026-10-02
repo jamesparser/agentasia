@@ -1143,4 +1143,9 @@ export const th: Partial<I18n> = {
   'Signed in as': 'ลงชื่อเข้าใช้เป็น',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'ลงชื่อเข้าใช้แล้ว ตัวกำหนดเวลายังคงปิดใช้งานบนเซิร์ฟเวอร์ ดังนั้นงานต่างๆ จะถูกบันทึกแต่ยังไม่ได้ดำเนินการ',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'แผน งานที่กำหนดเวลาไว้ และหน่วยความจำของเจ้าหน้าที่จะติดตามบัญชีของคุณแทนเบราว์เซอร์นี้',
+  'Create your free AgentAsia account': 'สร้างบัญชี AgentAsia ฟรีของคุณ',
+  'Free during the beta, until December 25, 2026.': 'ใช้ฟรีในช่วงเบต้า ถึงวันที่ 25 ธันวาคม 2026',
+  'Requests today': 'คำขอวันนี้',
+  'Tokens today': 'โทเค็นวันนี้',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'เบต้า: ทุกแพ็กเกจใช้ฟรีถึง 25 ธันวาคม แพ็กเกจแบบชำระเงินจะเปิดหลังจากนั้น',
 }

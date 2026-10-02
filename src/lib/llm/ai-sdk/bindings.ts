@@ -13,6 +13,7 @@
 import type { LLMConfig } from '@/types'
 import { getHuggingFaceRouterHost } from '@/lib/huggingface'
 import { gatewayBase } from '@/lib/llm/managed-lane'
+import { gatewayFetch } from '@/lib/auth/gatewayFetch'
 import type { AiSdkBinding, AiSdkModelConfig, FullConfig } from './adapter'
 
 // ── Shared HTTP helpers (the only fetch code left in the LLM layer) ──────────
@@ -238,6 +239,8 @@ export function makeCompatBinding(opts: CompatOptions): AiSdkBinding {
         name: opts.name,
         baseURL,
         ...(config.apiKey ? { apiKey: config.apiKey } : {}),
+        // Adds the caller's token for the managed gateway only (see gatewayFetch).
+        fetch: gatewayFetch,
       })
       return provider(config.modelId)
     },

@@ -41,6 +41,8 @@ export interface AuthUser {
 
 export interface AuthProvider {
   readonly configured: boolean
+  /** Resolves once the first auth state (signed in or out) is known. */
+  readonly ready?: Promise<void>
   currentUser(): AuthUser | null
   subscribe(listener: (user: AuthUser | null) => void): () => void
   signInWithGoogle(): Promise<AuthUser>
@@ -86,10 +88,31 @@ export class AuthNotConfiguredError extends Error {
 
 /** True only when a real auth backend has been wired in via env. */
 export function isAuthConfigured(): boolean {
-  return Boolean(
-    typeof import.meta !== 'undefined' &&
-      import.meta.env &&
-      (import.meta.env as Record<string, string | undefined>)
-        .VITE_FIREBASE_API_KEY,
-  )
+  const env =
+    typeof import.meta !== 'undefined'
+      ? ((import.meta.env ?? {}) as Record<string, string | undefined>)
+      : {}
+  return Boolean(env.VITE_FIREBASE_API_KEY) || isDevAuthEnabled()
+}
+
+/**
+ * Dev-only sign-in against a gateway that has GATEWAY_DEV_AUTH_SECRET set. It
+ * mints a signed local principal so the whole account path (quota, plan, usage)
+ * can be exercised without an OAuth client. Never enabled by default.
+ */
+export function isDevAuthEnabled(): boolean {
+  const env =
+    typeof import.meta !== 'undefined'
+      ? ((import.meta.env ?? {}) as Record<string, string | undefined>)
+      : {}
+  return env.VITE_DEV_AUTH === '1'
+}
+
+/** When true, the app asks for an account before anything else (beta mode). */
+export function isLoginRequired(): boolean {
+  const env =
+    typeof import.meta !== 'undefined'
+      ? ((import.meta.env ?? {}) as Record<string, string | undefined>)
+      : {}
+  return env.VITE_REQUIRE_LOGIN === '1' && isAuthConfigured()
 }

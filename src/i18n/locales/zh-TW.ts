@@ -1120,4 +1120,9 @@ export const zh_TW: Partial<I18n> = {
   'Signed in as': '登入身份',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': '已登入。伺服器上的計劃程序仍處於停用狀態，因此任務已儲存但尚未執行。',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': '您的計劃、計劃任務和代理記憶體將遵循您的帳戶而不是此瀏覽器。',
+  'Create your free AgentAsia account': '建立你的免費 AgentAsia 帳戶',
+  'Free during the beta, until December 25, 2026.': '測試期間免費，至 2026 年 12 月 25 日。',
+  'Requests today': '今日請求數',
+  'Tokens today': '今日權杖數',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': '測試版：所有方案在 12 月 25 日前免費，付費方案隨後開放。',
 }

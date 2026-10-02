@@ -1244,4 +1244,9 @@ export const ko: I18n = {
   'Signed in as': '다음 계정으로 로그인됨',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': '로그인했습니다. 서버에서 스케줄러가 여전히 비활성화되어 있으므로 작업이 저장되지만 아직 실행되지는 않습니다.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': '귀하의 계획, 예약된 작업 및 에이전트 메모리는 이 브라우저 대신 귀하의 계정을 따릅니다.',
+  'Create your free AgentAsia account': '무료 AgentAsia 계정을 만드세요',
+  'Free during the beta, until December 25, 2026.': '베타 기간 동안 2026년 12월 25일까지 무료입니다.',
+  'Requests today': '오늘의 요청',
+  'Tokens today': '오늘의 토큰',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': '베타: 모든 요금제가 12월 25일까지 무료입니다. 유료 요금제는 그 이후에 시작됩니다.',
 } as const

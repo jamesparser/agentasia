@@ -1174,4 +1174,9 @@ export const ceb: Partial<I18n> = {
   'Signed in as': 'Naka-sign in isip',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'Naka-sign in. Ang scheduler gi-disable gihapon sa server, mao nga ang mga buluhaton gitipigan apan wala pa ma-execute.',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'Ang imong plano, naka-iskedyul nga mga buluhaton ug memorya sa ahente nagsunod sa imong account imbes sa kini nga browser.',
+  'Create your free AgentAsia account': 'Himoa ang imong libre nga AgentAsia account',
+  'Free during the beta, until December 25, 2026.': 'Libre sa panahon sa beta, hangtod Disyembre 25, 2026.',
+  'Requests today': 'Mga hangyo karon',
+  'Tokens today': 'Mga token karon',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: libre ang tanang plano hangtod Disyembre 25. Maabli ang bayad nga mga plano pagkahuman.',
 }

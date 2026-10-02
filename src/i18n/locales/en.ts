@@ -1181,4 +1181,9 @@ export const en = [
   'Account',
   'Sign out of AgentAsia?',
   'Sign out',
+  'Create your free AgentAsia account',
+  'Free during the beta, until December 25, 2026.',
+  'Requests today',
+  'Tokens today',
+  'Beta: every plan is free until December 25. Paid plans open afterward.',
 ] as const

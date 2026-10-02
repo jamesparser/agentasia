@@ -75,8 +75,13 @@ export async function createFirebaseAuth(): Promise<AuthProvider | null> {
   let cached: AuthUser | null = null
   const listeners = new Set<(user: AuthUser | null) => void>()
 
+  let markReady: () => void = () => {}
+  const ready = new Promise<void>((resolve) => {
+    markReady = resolve
+  })
   firebaseAuth.onAuthStateChanged(auth, (user) => {
     cached = user ? toUser(user) : null
+    markReady()
     listeners.forEach((l) => l(cached))
   })
 
@@ -87,6 +92,7 @@ export async function createFirebaseAuth(): Promise<AuthProvider | null> {
 
   return {
     configured: true,
+    ready,
     currentUser: () => cached,
     subscribe: (listener) => {
       listeners.add(listener)

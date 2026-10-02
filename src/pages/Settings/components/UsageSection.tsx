@@ -24,6 +24,7 @@ import { AGENTASIA } from '@/config/agentasia'
 import type { PlanId } from '@/lib/llm/managed-lane'
 import { getUsage, PLAN_ALLOWANCE } from '@/lib/usage/localUsage'
 import { planLabel, requestUpgrade, usePlan } from '@/lib/usage/planStore'
+import { useGatewayUsage } from '@/lib/usage/gatewayUsage'
 import { useSettingsLabel } from '../SettingsContext'
 
 const PLAN_ORDER: PlanId[] = ['free', 'pro', 'smallBusiness', 'enterprise']
@@ -41,12 +42,7 @@ function UpgradeNotice({ onDismiss }: { onDismiss: () => void }) {
       className="border-warning bg-warning-50 dark:bg-warning-500/10 mt-4 rounded-xl border p-3"
     >
       <p className="text-warning text-sm font-medium">
-        {t('Billing is not connected yet, so this upgrade could not be completed.')}
-      </p>
-      <p className="text-muted mt-1 text-xs">
-        {t(
-          'Plans and limits are enforced by the gateway. Connect a payment provider to take upgrades.',
-        )}
+        {t('Beta: every plan is free until December 25. Paid plans open afterward.')}
       </p>
       <Button size="sm" variant="light" className="mt-2" onPress={onDismiss}>
         {t('Dismiss')}
@@ -61,8 +57,13 @@ export function UsageSection() {
   useSettingsLabel(t('Usage'))
   const [dismissed, setDismissed] = useState(false)
 
+  const server = useGatewayUsage()
   const usage = getUsage(plan)
-  const pct = Math.round(usage.fraction * 100)
+  const pct = server?.signedIn
+    ? Math.round(
+        Math.min(1, server.used.requests / Math.max(1, server.limits.requests)) * 100,
+      )
+    : Math.round(usage.fraction * 100)
 
   const onUpgrade = useCallback(() => {
     setDismissed(false)
@@ -77,7 +78,9 @@ export function UsageSection() {
       <div>
         <h3 className="text-foreground text-lg font-semibold">{t('Usage')}</h3>
         <p className="text-muted text-sm">
-          {t('Requests made with AgentAsia this month.')}
+          {server?.signedIn
+            ? t('Requests today')
+            : t('Requests made with AgentAsia this month.')}
         </p>
       </div>
 
@@ -103,13 +106,28 @@ export function UsageSection() {
 
           <div className="flex items-baseline justify-between">
             <span className="text-foreground text-2xl font-semibold tabular-nums">
-              {usage.remaining.toLocaleString()}
+              {(server?.signedIn ? server.remaining.requests : usage.remaining).toLocaleString()}
             </span>
             <span className="text-muted text-sm">
-              {t('left of')} {usage.allowance.toLocaleString()} ·{' '}
-              {usage.requests.toLocaleString()} {t('used')}
+              {t('left of')}{' '}
+              {(server?.signedIn ? server.limits.requests : usage.allowance).toLocaleString()} ·{' '}
+              {(server?.signedIn ? server.used.requests : usage.requests).toLocaleString()}{' '}
+              {t('used')}
             </span>
           </div>
+
+          {server?.signedIn && (
+            <p className="text-muted text-xs tabular-nums">
+              {t('Tokens today')}: {server.used.tokens.toLocaleString()} /{' '}
+              {server.limits.tokens.toLocaleString()}
+            </p>
+          )}
+
+          {server?.beta.active && !server.beta.paidTiersEnabled && (
+            <p className="text-muted text-xs">
+              {t('Beta: every plan is free until December 25. Paid plans open afterward.')}
+            </p>
+          )}
 
           {usage.limitHit && (
             <p className="text-danger text-xs">
@@ -117,11 +135,13 @@ export function UsageSection() {
             </p>
           )}
 
-          <p className="text-muted text-xs">
-            {t(
-              'Counted on this device. The gateway enforces the real limit and does not yet publish it to the browser.',
-            )}
-          </p>
+          {!server?.signedIn && (
+            <p className="text-muted text-xs">
+              {t(
+                'Counted on this device. The gateway enforces the real limit and does not yet publish it to the browser.',
+              )}
+            </p>
+          )}
         </CardBody>
       </Card>
 

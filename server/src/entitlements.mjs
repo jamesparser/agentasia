@@ -11,7 +11,7 @@ export const PLAN_IDS = ['free', 'pro', 'smallBusiness', 'enterprise']
 
 // Model ids mirror src/config/agentasia.ts and the PRICES table in spend-guard.
 export const PLAN_ALLOWANCE = {
-  free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 60, dailyTokens: 60_000, maxTokens: 1500 },
+  free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 25, dailyTokens: 40_000, maxTokens: 1500 },
   pro: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 500, dailyTokens: 600_000, maxTokens: 4000 },
   smallBusiness: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 2500, dailyTokens: 3_000_000, maxTokens: 6000 },
   enterprise: { model: 'nvidia/Nemotron-3-Ultra-550b-a55b', dailyRequests: 10_000, dailyTokens: 12_000_000, maxTokens: 8000 },

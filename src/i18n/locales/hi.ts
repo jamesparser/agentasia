@@ -1156,4 +1156,9 @@ export const hi: Partial<I18n> = {
   'Signed in as': 'के रूप में साइन इन किया गया',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': 'साइन इन किया गया है। शेड्यूलर अभी भी सर्वर पर अक्षम है, इसलिए कार्य सहेजे गए हैं लेकिन अभी तक निष्पादित नहीं हुए हैं।',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': 'आपकी योजना, निर्धारित कार्य और एजेंट मेमोरी इस ब्राउज़र के बजाय आपके खाते का अनुसरण करते हैं।',
+  'Create your free AgentAsia account': 'अपना मुफ़्त AgentAsia खाता बनाएँ',
+  'Free during the beta, until December 25, 2026.': 'बीटा के दौरान 25 दिसंबर 2026 तक मुफ़्त।',
+  'Requests today': 'आज के अनुरोध',
+  'Tokens today': 'आज के टोकन',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': 'बीटा: सभी प्लान 25 दिसंबर तक मुफ़्त हैं। सशुल्क प्लान उसके बाद खुलेंगे।',
 }

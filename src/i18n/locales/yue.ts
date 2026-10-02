@@ -1121,4 +1121,9 @@ export const yue: Partial<I18n> = {
   'Signed in as': '登入為',
   'Signed in. The scheduler is still disabled on the server, so tasks are saved but not yet executed.': '登入咗。伺服器上面嘅調度程式仍然停用，所以任務已經儲存咗，但係仲未執行。',
   'Your plan, scheduled tasks and agent memory follow your account instead of this browser.': '你嘅計劃、預定任務同埋代理記憶體會跟住你嘅帳戶而唔係呢個瀏覽器。',
+  'Create your free AgentAsia account': '開立你嘅免費 AgentAsia 帳戶',
+  'Free during the beta, until December 25, 2026.': '測試期間免費，去到 2026 年 12 月 25 日。',
+  'Requests today': '今日請求數',
+  'Tokens today': '今日權杖數',
+  'Beta: every plan is free until December 25. Paid plans open afterward.': '測試版：所有方案喺 12 月 25 日前免費，收費方案之後開放。',
 }
