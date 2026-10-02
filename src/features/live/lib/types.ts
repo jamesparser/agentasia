@@ -17,6 +17,7 @@ export type STTProviderType =
   | 'cohere' // onnx-community/cohere-transcribe-03-2026-ONNX (Cohere, 14 languages, 2B params)
   | 'granite' // onnx-community/granite-4.0-1b-speech-ONNX (multilingual, ~1B params)
   | 'vibevoice' // microsoft/VibeVoice-Realtime-0.5B (open-source, real-time speech, ~500MB)
+  | 'assemblyai' // AssemblyAI Universal (cloud, opt in, metered at the gateway)
   | 'gemini-live' // Gemini Live API (cloud, bidirectional)
   | 'lm-studio' // Local LM Studio server
 

@@ -11,10 +11,10 @@ export const PLAN_IDS = ['free', 'pro', 'smallBusiness', 'enterprise']
 
 // Model ids mirror src/config/agentasia.ts and the PRICES table in spend-guard.
 export const PLAN_ALLOWANCE = {
-  free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 25, dailySearches: 25, dailyTokens: 40_000, maxTokens: 1500 },
-  pro: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 500, dailySearches: 300, dailyTokens: 600_000, maxTokens: 4000 },
-  smallBusiness: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 2500, dailySearches: 1500, dailyTokens: 3_000_000, maxTokens: 6000 },
-  enterprise: { model: 'nvidia/Nemotron-3-Ultra-550b-a55b', dailyRequests: 10_000, dailySearches: 6000, dailyTokens: 12_000_000, maxTokens: 8000 },
+  free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 25, dailySearches: 25, dailyAudio: 10, dailyTokens: 40_000, maxTokens: 1500 },
+  pro: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 500, dailySearches: 300, dailyAudio: 120, dailyTokens: 600_000, maxTokens: 4000 },
+  smallBusiness: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 2500, dailySearches: 1500, dailyAudio: 600, dailyTokens: 3_000_000, maxTokens: 6000 },
+  enterprise: { model: 'nvidia/Nemotron-3-Ultra-550b-a55b', dailyRequests: 10_000, dailySearches: 6000, dailyAudio: 2400, dailyTokens: 12_000_000, maxTokens: 8000 },
 }
 
 const day = (now = Date.now()) => new Date(now).toISOString().slice(0, 10)
@@ -83,7 +83,7 @@ export async function setPlan(uid, plan, { until = null, source = 'admin' } = {}
 export async function usageToday(uid, env = process.env, now = Date.now()) {
   const all = await readJson(usagePath(env), {})
   const rec = all[uid]?.[day(now)] || { requests: 0, tokens: 0 }
-  return { day: day(now), requests: rec.requests || 0, tokens: rec.tokens || 0, searches: rec.searches || 0 }
+  return { day: day(now), requests: rec.requests || 0, tokens: rec.tokens || 0, searches: rec.searches || 0, audio: rec.audio || 0 }
 }
 
 /** Throws a 429 error when today's allowance is spent. */
@@ -110,6 +110,18 @@ export async function assertSearchAllowance(uid, entitlement, env = process.env,
   return used
 }
 
+/** Throws a 429 error when today's cloud speech calls (AssemblyAI) are spent. */
+export async function assertAudioAllowance(uid, entitlement, env = process.env, now = Date.now()) {
+  const used = await usageToday(uid, env, now)
+  if (used.audio >= entitlement.dailyAudio) {
+    throw Object.assign(new Error('daily_audio_allowance_reached'), {
+      statusCode: 429,
+      allowance: { plan: entitlement.plan, used, dailyAudio: entitlement.dailyAudio },
+    })
+  }
+  return used
+}
+
 export function recordSearch(uid, env = process.env, now = Date.now()) {
   const path = usagePath(env)
   return serial(path, async () => {
@@ -119,6 +131,19 @@ export function recordSearch(uid, env = process.env, now = Date.now()) {
     for (const k of Object.keys(slot).sort().slice(0, -6)) if (k !== d) delete slot[k]
     const rec = (slot[d] ||= { requests: 0, tokens: 0 })
     rec.searches = (rec.searches || 0) + 1
+    await writeAtomic(path, all)
+  })
+}
+
+export function recordAudio(uid, env = process.env, now = Date.now()) {
+  const path = usagePath(env)
+  return serial(path, async () => {
+    const all = await readJson(path, {})
+    const d = day(now)
+    const slot = (all[uid] ||= {})
+    for (const k of Object.keys(slot).sort().slice(0, -6)) if (k !== d) delete slot[k]
+    const rec = (slot[d] ||= { requests: 0, tokens: 0 })
+    rec.audio = (rec.audio || 0) + 1
     await writeAtomic(path, all)
   })
 }
@@ -151,9 +176,10 @@ export async function usageReport(principal, env = process.env, now = Date.now()
     beta: ent.beta,
     day: used.day,
     used: { requests: used.requests, tokens: used.tokens },
-    limits: { requests: ent.dailyRequests, tokens: ent.dailyTokens, searches: ent.dailySearches, maxTokensPerReply: ent.maxTokens },
+    limits: { requests: ent.dailyRequests, tokens: ent.dailyTokens, searches: ent.dailySearches, audio: ent.dailyAudio, maxTokensPerReply: ent.maxTokens },
     remaining: {
       searches: Math.max(0, ent.dailySearches - (used.searches || 0)),
+      audio: Math.max(0, (ent.dailyAudio || 0) - (used.audio || 0)),
       requests: Math.max(0, ent.dailyRequests - used.requests),
       tokens: Math.max(0, ent.dailyTokens - used.tokens),
     },

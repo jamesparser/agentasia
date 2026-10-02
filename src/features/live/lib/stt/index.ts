@@ -66,6 +66,13 @@ export async function createSTTProvider(
       )
     }
 
+    case 'assemblyai': {
+      // Cloud speech through the gateway. No model download; the key stays on
+      // the server and every call is metered per user.
+      const { AssemblyAISttProvider } = await import('./assemblyai')
+      return new AssemblyAISttProvider()
+    }
+
     case 'gemini-live':
       // Gemini Live is handled separately as a bidirectional provider
       throw new Error('Use GeminiLiveProvider directly for gemini-live STT')
@@ -181,6 +188,16 @@ export function getAvailableSTTProviders(
       disabledReason: !hasWebGPU
         ? t('VibeVoice requires WebGPU')
         : undefined,
+    },
+    {
+      // Cloud speech, opt in only. Never the default: the owner pays per use
+      // from a free credit pool, so the user has to pick it on purpose.
+      type: 'assemblyai',
+      name: t('AssemblyAI'),
+      description: t(
+        'Cloud transcription, no download. Sends audio to the AgentAsia gateway and is metered per day.',
+      ),
+      isLocal: false,
     },
     {
       type: 'gemini-live',

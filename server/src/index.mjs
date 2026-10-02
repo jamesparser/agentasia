@@ -12,6 +12,7 @@ import {
   listDynamicProviders,
 } from './model-router.mjs'
 import { webSearch, searchConfigured } from './tools/websearch.mjs'
+import { transcribeAudio, understandSpeech, assemblyConfigured } from './tools/assemblyai.mjs'
 import { assertWithinBudget, recordSpend, spendSummary } from './spend-guard.mjs'
 import { runAgentTurn } from './agent-loop.mjs'
 import { resolveGatewayTarget, getAllProviders } from './model-router.mjs'
@@ -21,7 +22,7 @@ import { createSchedule, listSchedules, updateSchedule, deleteSchedule, allSched
 import { listScheduleRuns, startScheduleWorker, runTask } from './schedule-worker.mjs'
 import { executeScheduledTask } from './schedule-runner.mjs'
 import { authenticate, mintDevToken } from './auth.mjs'
-import { resolvePlan, assertWithinAllowance, recordUsage, assertSearchAllowance, recordSearch, usageReport, setPlan } from './entitlements.mjs'
+import { resolvePlan, assertWithinAllowance, recordUsage, assertSearchAllowance, recordSearch, assertAudioAllowance, recordAudio, usageReport, setPlan } from './entitlements.mjs'
 
 const port = Number(process.env.PORT || 8787)
 // Bind localhost by default: this process is meant to sit behind a tunnel/proxy.
@@ -41,7 +42,7 @@ const host = process.env.BIND_HOST || '127.0.0.1'
  * working provider, and GET /v1/spend / /v1/providers/health leak budget state
  * and key health. /v1/search spends the shared Tavily quota outright.
  */
-const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/models', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search'])
+const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/models', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search', 'POST /v1/speech/transcribe', 'POST /v1/speech/understand'])
 // Scheduled tasks are per-user: public at the door, but every handler below
 // requires a verified token and only ever touches that caller's own tasks.
 const SCHEDULE_ROUTE = /^\/v1\/(schedules(\/[^/]+(\/run)?)?|schedule-runs)$/
@@ -444,6 +445,37 @@ const server = http.createServer(async (req, res) => {
         const body = await readJson(req)
         const out = await webSearch(body)
         if (principal) await recordSearch(principal.uid)
+        return json(res, 200, out)
+      } catch (error) {
+        if (error.allowance) return json(res, 429, { error: error.message, ...error.allowance, requestId })
+        return json(res, error.statusCode || 502, { error: error.message, requestId })
+      }
+    }
+
+    // ── AssemblyAI cloud speech (opt in, never a default) ─────────────
+    // The browser cannot hold this key, so both capabilities are proxied here:
+    // transcription through the Universal speech model and audio questions
+    // through LeMUR. Metered per user per day like search; the on-device
+    // providers stay the defaults and this route is only called when the user
+    // picks the cloud option in voice settings.
+    if (req.method === 'POST' && (p === '/v1/speech/transcribe' || p === '/v1/speech/understand')) {
+      if (!assemblyConfigured(process.env)) {
+        return json(res, 503, { error: 'assemblyai_not_configured', requestId })
+      }
+      let principal
+      try { principal = await authenticate(req) } catch (error) {
+        return json(res, 401, { error: error.code || 'invalid_token', requestId })
+      }
+      if (!principal && process.env.AUTH_REQUIRED === 'true') {
+        return json(res, 401, { error: 'sign_in_required', requestId })
+      }
+      try {
+        if (principal) await assertAudioAllowance(principal.uid, await resolvePlan(principal.uid))
+        const body = await readJson(req)
+        const out = p === '/v1/speech/transcribe'
+          ? await transcribeAudio(body)
+          : await understandSpeech(body)
+        if (principal) await recordAudio(principal.uid)
         return json(res, 200, out)
       } catch (error) {
         if (error.allowance) return json(res, 429, { error: error.message, ...error.allowance, requestId })
