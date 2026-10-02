@@ -170,4 +170,8 @@ export const ja: I18n = {
   'Thoughts': '思い',
   'Delete conversation': '会話を削除する',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'この会話を削除してもよろしいですか?この操作は元に戻すことができません。',
+  'Define your agent\'s personality and capabilities': 'エージェントの個性と機能を定義します',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'エージェントの個性、スキル、制約、目標についての詳細な指示…',
+  'Detailed instructions for the agent\'s behavior': 'エージェントの動作についての詳細な指示',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'どのようなエージェントが欲しいか教えてください。こちらで作成します。',
 } as const

@@ -222,4 +222,7 @@ export const bn: I18n = {
   'Workspace border indicates privacy mode': 'ওয়ার্কস্পেস সীমানা গোপনীয়তা মোড নির্দেশ করে',
   'Blocked': 'অবরুদ্ধ',
   'Trusted': 'বিশ্বস্ত',
+  'These instructions will be prepended to every agent\'s instructions': 'এই নির্দেশগুলো প্রতিটি এজেন্টের নির্দেশের আগে যুক্ত হবে',
+  'Sign in or create an account on the provider\'s website.': 'প্রদানকারীর ওয়েবসাইটে সাইন ইন করুন বা অ্যাকাউন্ট তৈরি করুন।',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'এই নির্দেশগুলো এই স্পেসের প্রতিটি এজেন্টের নির্দেশের আগে যুক্ত হবে',
 } as const

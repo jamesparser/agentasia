@@ -170,4 +170,8 @@ export const zh_CN: I18n = {
   'Thoughts': '想法',
   'Delete conversation': '删除对话',
   'Are you sure you want to delete this conversation? This action cannot be undone.': '您确定要删除此对话吗？此操作无法撤消。',
+  'Define your agent\'s personality and capabilities': '定义代理的个性和能力',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': '关于代理的个性、技能、约束和目标的详细指令…',
+  'Detailed instructions for the agent\'s behavior': '关于代理行为的详细指令',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': '告诉我们你想要什么样的代理，我们来为你创建。',
 } as const

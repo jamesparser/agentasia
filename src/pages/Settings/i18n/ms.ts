@@ -222,4 +222,7 @@ export const ms: I18n = {
   'Workspace border indicates privacy mode': 'Sempadan ruang kerja menunjukkan mod privasi',
   'Blocked': 'Disekat',
   'Trusted': 'Dipercayai',
+  'These instructions will be prepended to every agent\'s instructions': 'Arahan ini akan ditambah di hadapan arahan setiap ejen',
+  'Sign in or create an account on the provider\'s website.': 'Log masuk atau cipta akaun di laman web penyedia.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'Arahan ini akan ditambah di hadapan arahan setiap ejen dalam ruang ini',
 } as const

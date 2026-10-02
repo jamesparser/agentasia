@@ -170,4 +170,8 @@ export const su: I18n = {
   'Thoughts': 'Pikiran',
   'Delete conversation': 'Pupus paguneman',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Naha anjeun yakin hoyong mupus paguneman ieu? Peta ieu teu bisa dibolaykeun.',
+  'Define your agent\'s personality and capabilities': 'Tangtukeun kapribadian jeung kamampuh agén anjeun',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Parentah lengkep ngeunaan kapribadian, kaahlian, wates, jeung tujuan agén…',
+  'Detailed instructions for the agent\'s behavior': 'Parentah lengkep ngeunaan paripolah agén',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Béjaan kami agén naon anu anjeun hoyong, tur kami bakal nyieun pikeun anjeun.',
 } as const

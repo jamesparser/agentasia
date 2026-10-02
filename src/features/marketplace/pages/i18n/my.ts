@@ -207,4 +207,9 @@ export const my: I18n = {
   'Duplicate & edit': 'ပွားပြီး တည်းဖြတ်ပါ။',
   'Run': 'ပြေး',
   'or create manually': 'သို့မဟုတ် ကိုယ်တိုင်ဖန်တီးပါ။',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'မကြာမီ အသိုင်းအဝိုင်းက ဖန်တီးထားသော အက်ပ်များ၊ အေးဂျင့်များ၊ ချိတ်ဆက်ကိရိယာများနှင့် ကိရိယာများကို ရှာဖွေတပ်ဆင်နိုင်မည်ဖြစ်သည်။',
+  'Want to be notified when it\'s ready?': 'အဆင်သင့်ဖြစ်သည့်အခါ အသိပေးစေလိုပါသလား။',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'သင့်တိုးချဲ့မှုကို ဖန်တီးပြီးပါပြီ။ ၎င်းကို ကြိုကြည့်နိုင်သည်၊ ကုဒ်ကို တိုက်ရိုက်တည်းဖြတ်နိုင်သည်၊ သို့မဟုတ် ကျွန်ုပ်ပြုလုပ်စေလိုသော ပြောင်းလဲမှုများကို ဖော်ပြနိုင်သည်။',
+  'Describe changes you\'d like to make': 'သင်ပြုလုပ်လိုသော ပြောင်းလဲမှုများကို ဖော်ပြပါ',
+  'Describe what you\'d like to change...': 'သင်ပြောင်းလိုသည်ကို ဖော်ပြပါ...',
 } as const

@@ -84,4 +84,5 @@ export const zh_CN: I18n = {
   'Toggle full screen': '切换全屏',
   'Show shortcuts': '显示快捷方式',
   'Close this overlay': '关闭此叠加层',
+  '## Climate adaptation briefing — 5 major cities\n\n**Cities surveyed:** Amsterdam · Singapore · Copenhagen · Medellín · Rotterdam\n\n### Comparative strategies\n\n1. **Amsterdam** — floating infrastructure, canal surge control\n2. **Singapore** — NEWater system, urban heat island mitigation\n3. **Copenhagen** — 100% renewable target, 20-min city model\n4. **Medellín** — green corridors, urban acupuncture model\n5. **Rotterdam** — water squares, rooftop gardens, floating pavilions\n\n> Strategy comparison and presentation deck attached.': '## 5 个主要城市的气候适应简报\n\n**调查的城市:** Amsterdam · Singapore · Copenhagen · Medellín · Rotterdam\n\n### 策略比较\n\n1. **Amsterdam**: 浮动基础设施，运河风暴潮控制\n2. **Singapore**: NEWater 系统，城市热岛缓解\n3. **Copenhagen**: 100% 可再生能源目标，20 分钟城市模式\n4. **Medellín**: 绿色走廊，城市针灸模式\n5. **Rotterdam**: 雨水广场，屋顶花园，浮动展馆\n\n> 已附上策略比较和演示文稿。',
 } as const

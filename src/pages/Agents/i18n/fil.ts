@@ -170,4 +170,8 @@ export const fil: I18n = {
   'Thoughts': 'Mga kaisipan',
   'Delete conversation': 'Tanggalin ang pag-uusap',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Sigurado ka bang gusto mong tanggalin ang pag-uusap na ito? Ang pagkilos na ito ay hindi maaaring i-undo.',
+  'Define your agent\'s personality and capabilities': 'Tukuyin ang personalidad at kakayahan ng iyong ahente',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Detalyadong tagubilin tungkol sa personalidad, kasanayan, limitasyon, at layunin ng ahente…',
+  'Detailed instructions for the agent\'s behavior': 'Detalyadong tagubilin tungkol sa pag-uugali ng ahente',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Sabihin sa amin kung anong uri ng ahente ang gusto mo, at gagawin namin ito para sa iyo.',
 } as const

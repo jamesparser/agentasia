@@ -207,4 +207,9 @@ export const ms: I18n = {
   'Duplicate & edit': 'Duplikat & edit',
   'Run': 'Lari',
   'or create manually': 'atau buat secara manual',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Tidak lama lagi anda boleh menemui dan memasang aplikasi, ejen, penyambung dan alat yang dibina komuniti.',
+  'Want to be notified when it\'s ready?': 'Mahu dimaklumkan apabila sedia?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Sambungan anda telah dicipta! Anda boleh pratonton, edit kod terus, atau terangkan perubahan yang anda mahu saya buat.',
+  'Describe changes you\'d like to make': 'Terangkan perubahan yang anda mahu buat',
+  'Describe what you\'d like to change...': 'Terangkan apa yang anda mahu ubah...',
 } as const

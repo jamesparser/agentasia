@@ -207,4 +207,9 @@ export const yue: I18n = {
   'Duplicate & edit': '複製同編輯',
   'Run': '跑',
   'or create manually': '或者手動建立',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': '好快你就可以搵到同安裝社群製作嘅應用程式、代理、連接器同工具。',
+  'Want to be notified when it\'s ready?': '想喺準備好嘅時候收到通知嗎？',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': '你嘅擴充功能已經建立好喇！你可以預覽、直接編輯程式碼，或者描述你想我做嘅修改。',
+  'Describe changes you\'d like to make': '描述你想做嘅修改',
+  'Describe what you\'d like to change...': '描述你想改嘅內容...',
 } as const

@@ -222,4 +222,7 @@ export const vi: I18n = {
   'Workspace border indicates privacy mode': 'Đường viền không gian làm việc biểu thị chế độ quyền riêng tư',
   'Blocked': 'Bị chặn',
   'Trusted': 'đáng tin cậy',
+  'These instructions will be prepended to every agent\'s instructions': 'Các hướng dẫn này sẽ được thêm vào đầu hướng dẫn của mọi tác tử',
+  'Sign in or create an account on the provider\'s website.': 'Đăng nhập hoặc tạo tài khoản trên trang web của nhà cung cấp.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'Các hướng dẫn này sẽ được thêm vào đầu hướng dẫn của mọi tác tử trong không gian này',
 } as const

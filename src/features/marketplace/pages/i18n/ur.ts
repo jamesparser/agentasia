@@ -207,4 +207,9 @@ export const ur: I18n = {
   'Duplicate & edit': 'ڈپلیکیٹ اور ترمیم کریں۔',
   'Run': 'دوڑو',
   'or create manually': 'یا دستی طور پر تخلیق کریں۔',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'جلد ہی آپ کمیونٹی کی بنائی ہوئی ایپس، ایجنٹس، کنیکٹرز اور ٹولز تلاش اور انسٹال کر سکیں گے۔',
+  'Want to be notified when it\'s ready?': 'کیا تیار ہونے پر اطلاع چاہتے ہیں؟',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'آپ کی ایکسٹینشن بن گئی ہے! آپ اس کا پیش منظر دیکھ سکتے ہیں، کوڈ براہ راست ایڈٹ کر سکتے ہیں، یا وہ تبدیلیاں بیان کر سکتے ہیں جو آپ چاہتے ہیں۔',
+  'Describe changes you\'d like to make': 'وہ تبدیلیاں بیان کریں جو آپ کرنا چاہتے ہیں',
+  'Describe what you\'d like to change...': 'بیان کریں کہ آپ کیا بدلنا چاہتے ہیں...',
 } as const

@@ -222,4 +222,7 @@ export const fil: I18n = {
   'Workspace border indicates privacy mode': 'Ang hangganan ng workspace ay nagpapahiwatig ng privacy mode',
   'Blocked': 'Naka-block',
   'Trusted': 'Pinagkakatiwalaan',
+  'These instructions will be prepended to every agent\'s instructions': 'Idadagdag ang mga tagubiling ito sa simula ng mga tagubilin ng bawat ahente',
+  'Sign in or create an account on the provider\'s website.': 'Mag-sign in o gumawa ng account sa website ng provider.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'Idadagdag ang mga tagubiling ito sa simula ng mga tagubilin ng bawat ahente sa espasyong ito',
 } as const

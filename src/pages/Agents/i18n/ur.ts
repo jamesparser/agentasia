@@ -170,4 +170,8 @@ export const ur: I18n = {
   'Thoughts': 'خیالات',
   'Delete conversation': 'گفتگو کو حذف کریں۔',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'کیا آپ واقعی اس گفتگو کو حذف کرنا چاہتے ہیں؟ اس کارروائی کو کالعدم نہیں کیا جا سکتا۔',
+  'Define your agent\'s personality and capabilities': 'اپنے ایجنٹ کی شخصیت اور صلاحیتیں متعین کریں',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'ایجنٹ کی شخصیت، مہارتوں، پابندیوں اور اہداف کے بارے میں تفصیلی ہدایات…',
+  'Detailed instructions for the agent\'s behavior': 'ایجنٹ کے رویے کے بارے میں تفصیلی ہدایات',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'ہمیں بتائیں کہ آپ کو کس قسم کا ایجنٹ چاہیے، ہم اسے آپ کے لیے بنا دیں گے۔',
 } as const

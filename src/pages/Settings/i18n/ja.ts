@@ -222,4 +222,7 @@ export const ja: I18n = {
   'Workspace border indicates privacy mode': 'ワークスペースの境界線はプライバシー モードを示します',
   'Blocked': 'ブロックされました',
   'Trusted': '信頼できる',
+  'These instructions will be prepended to every agent\'s instructions': 'この指示はすべてのエージェントの指示の前に追加されます',
+  'Sign in or create an account on the provider\'s website.': 'プロバイダーのウェブサイトでサインインするか、アカウントを作成してください。',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'この指示は、このスペース内のすべてのエージェントの指示の前に追加されます',
 } as const

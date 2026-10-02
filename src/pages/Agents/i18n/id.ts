@@ -170,4 +170,8 @@ export const id: I18n = {
   'Thoughts': 'Pikiran',
   'Delete conversation': 'Hapus percakapan',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Apakah Anda yakin ingin menghapus percakapan ini? Tindakan ini tidak dapat dibatalkan.',
+  'Define your agent\'s personality and capabilities': 'Tentukan kepribadian dan kemampuan agen Anda',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Instruksi terperinci tentang kepribadian, keterampilan, batasan, dan tujuan agen…',
+  'Detailed instructions for the agent\'s behavior': 'Instruksi terperinci tentang perilaku agen',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Beri tahu kami jenis agen yang Anda inginkan, dan kami akan membuatkannya.',
 } as const

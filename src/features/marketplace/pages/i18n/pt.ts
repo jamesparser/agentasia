@@ -207,4 +207,9 @@ export const pt: I18n = {
   'Duplicate & edit': 'Duplicar e editar',
   'Run': 'Corre',
   'or create manually': 'ou crie manualmente',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Em breve você poderá descobrir e instalar aplicativos, agentes, conectores e ferramentas criados pela comunidade.',
+  'Want to be notified when it\'s ready?': 'Quer ser avisado quando estiver pronto?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Sua extensão foi criada! Você pode visualizá-la, editar o código diretamente ou descrever as alterações que gostaria que eu fizesse.',
+  'Describe changes you\'d like to make': 'Descreva as alterações que você quer fazer',
+  'Describe what you\'d like to change...': 'Descreva o que você quer alterar...',
 } as const

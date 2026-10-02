@@ -207,4 +207,9 @@ export const fil: I18n = {
   'Duplicate & edit': 'I-duplicate at i-edit',
   'Run': 'Takbo',
   'or create manually': 'o gumawa ng mano-mano',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Malapit mo nang matuklasan at ma-install ang mga app, ahente, connector, at tool na ginawa ng komunidad.',
+  'Want to be notified when it\'s ready?': 'Gusto mo bang makatanggap ng abiso kapag handa na ito?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Nagawa na ang iyong extension! Maaari mo itong i-preview, direktang i-edit ang code, o ilarawan ang mga pagbabagong gusto mong gawin ko.',
+  'Describe changes you\'d like to make': 'Ilarawan ang mga pagbabagong gusto mong gawin',
+  'Describe what you\'d like to change...': 'Ilarawan kung ano ang gusto mong baguhin...',
 } as const

@@ -170,4 +170,8 @@ export const ceb: I18n = {
   'Thoughts': 'Mga hunahuna',
   'Delete conversation': 'Pagtangtang sa panag-istoryahanay',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Sigurado ka ba nga gusto nimong papason kini nga panag-istoryahanay? Kini nga aksyon dili mabawi.',
+  'Define your agent\'s personality and capabilities': 'Ilha ang personalidad ug abilidad sa imong ahente',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Detalyadong panudlo bahin sa personalidad, kahanas, limitasyon, ug tumong sa ahente…',
+  'Detailed instructions for the agent\'s behavior': 'Detalyadong panudlo bahin sa kinaiya sa ahente',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Sultihi mi kung unsang matanga sa ahente ang gusto nimo, ug among himuon kini para nimo.',
 } as const

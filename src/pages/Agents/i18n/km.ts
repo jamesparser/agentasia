@@ -170,4 +170,8 @@ export const km: I18n = {
   'Thoughts': 'គំនិត',
   'Delete conversation': 'លុបការសន្ទនា',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'តើអ្នកប្រាកដថាចង់លុបការសន្ទនានេះទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
+  'Define your agent\'s personality and capabilities': 'កំណត់ទម្រង់ និងសមត្ថភាពរបស់ភ្នាក់ងាររបស់អ្នក',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'ការណែនាំលម្អិតអំពីទម្រង់ ជំនាញ ដែនកំណត់ និងគោលដៅរបស់ភ្នាក់ងារ…',
+  'Detailed instructions for the agent\'s behavior': 'ការណែនាំលម្អិតអំពីឥរិយាបថរបស់ភ្នាក់ងារ',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'ប្រាប់យើងថាអ្នកចង់បានភ្នាក់ងារប្រភេទណា ហើយយើងនឹងបង្កើតឱ្យអ្នក។',
 } as const

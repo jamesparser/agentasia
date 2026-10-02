@@ -222,4 +222,7 @@ export const my: I18n = {
   'Workspace border indicates privacy mode': 'အလုပ်ခွင်ဘောင်သည် သီးသန့်မုဒ်ကို ညွှန်ပြသည်။',
   'Blocked': 'ပိတ်ဆို့ထားသည်။',
   'Trusted': 'ယုံတယ်။',
+  'These instructions will be prepended to every agent\'s instructions': 'ဤညွှန်ကြားချက်များကို အေးဂျင့်တိုင်း၏ ညွှန်ကြားချက်များရှေ့တွင် ထည့်သွင်းပါမည်',
+  'Sign in or create an account on the provider\'s website.': 'ဝန်ဆောင်မှုပေးသူ၏ ဝက်ဘ်ဆိုက်တွင် လက်မှတ်ထိုးဝင်ပါ သို့မဟုတ် အကောင့်ဖွင့်ပါ။',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'ဤညွှန်ကြားချက်များကို ဤနေရာရှိ အေးဂျင့်တိုင်း၏ ညွှန်ကြားချက်များရှေ့တွင် ထည့်သွင်းပါမည်',
 } as const

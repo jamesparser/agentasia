@@ -207,4 +207,9 @@ export const vi: I18n = {
   'Duplicate & edit': 'Nhân bản và chỉnh sửa',
   'Run': 'Chạy',
   'or create manually': 'hoặc tạo thủ công',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Sắp tới bạn sẽ có thể khám phá và cài đặt các ứng dụng, tác tử, trình kết nối và công cụ do cộng đồng xây dựng.',
+  'Want to be notified when it\'s ready?': 'Bạn có muốn được thông báo khi sẵn sàng không?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Tiện ích mở rộng của bạn đã được tạo! Bạn có thể xem trước, chỉnh sửa mã trực tiếp hoặc mô tả những thay đổi bạn muốn tôi thực hiện.',
+  'Describe changes you\'d like to make': 'Mô tả những thay đổi bạn muốn thực hiện',
+  'Describe what you\'d like to change...': 'Mô tả những gì bạn muốn thay đổi...',
 } as const

@@ -222,4 +222,7 @@ export const su: I18n = {
   'Workspace border indicates privacy mode': 'Wates ruang kerja nunjukkeun mode privasi',
   'Blocked': 'Diblokir',
   'Trusted': 'Dipercanten',
+  'These instructions will be prepended to every agent\'s instructions': 'Parentah ieu bakal ditambahkeun di hareup parentah unggal agén',
+  'Sign in or create an account on the provider\'s website.': 'Lebet atanapi jieun akun dina situs wéb panyayogi.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'Parentah ieu bakal ditambahkeun di hareup parentah unggal agén dina rohangan ieu',
 } as const

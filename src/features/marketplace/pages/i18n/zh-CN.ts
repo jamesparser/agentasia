@@ -207,4 +207,9 @@ export const zh_CN: I18n = {
   'Duplicate & edit': '复制和编辑',
   'Run': '运行',
   'or create manually': '或手动创建',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': '很快你就可以发现并安装社区构建的应用、代理、连接器和工具。',
+  'Want to be notified when it\'s ready?': '希望在准备好时收到通知吗？',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': '你的扩展已创建！你可以预览它、直接编辑代码，或描述你希望我做出的更改。',
+  'Describe changes you\'d like to make': '描述你想做的更改',
+  'Describe what you\'d like to change...': '描述你想更改的内容...',
 } as const

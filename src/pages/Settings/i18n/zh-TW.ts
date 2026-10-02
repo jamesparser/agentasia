@@ -222,4 +222,7 @@ export const zh_TW: I18n = {
   'Workspace border indicates privacy mode': '工作區邊框指示隱私模式',
   'Blocked': '被阻止',
   'Trusted': '值得信賴',
+  'These instructions will be prepended to every agent\'s instructions': '這些指令將加入每個代理的指令之前',
+  'Sign in or create an account on the provider\'s website.': '請在提供者的網站上登入或建立帳戶。',
+  'These instructions will be prepended to every agent\'s instructions in this space': '這些指令將加入此空間中每個代理的指令之前',
 } as const

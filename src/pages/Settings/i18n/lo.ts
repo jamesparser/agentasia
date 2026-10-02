@@ -222,4 +222,7 @@ export const lo: I18n = {
   'Workspace border indicates privacy mode': 'ຂອບພື້ນທີ່ເຮັດວຽກສະແດງເຖິງໂໝດຄວາມເປັນສ່ວນຕົວ',
   'Blocked': 'ບລັອກ',
   'Trusted': 'ເຊື່ອຖືໄດ້',
+  'These instructions will be prepended to every agent\'s instructions': 'ຄຳແນະນຳເຫຼົ່ານີ້ຈະຖືກເພີ່ມໄວ້ໜ້າຄຳແນະນຳຂອງເອເຈນທຸກຕົວ',
+  'Sign in or create an account on the provider\'s website.': 'ເຂົ້າສູ່ລະບົບ ຫຼື ສ້າງບັນຊີຢູ່ເວັບໄຊຂອງຜູ້ໃຫ້ບໍລິການ.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'ຄຳແນະນຳເຫຼົ່ານີ້ຈະຖືກເພີ່ມໄວ້ໜ້າຄຳແນະນຳຂອງເອເຈນທຸກຕົວໃນພື້ນທີ່ນີ້',
 } as const

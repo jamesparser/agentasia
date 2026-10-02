@@ -207,4 +207,9 @@ export const km: I18n = {
   'Duplicate & edit': 'ចម្លង និងកែសម្រួល',
   'Run': 'រត់',
   'or create manually': 'ឬបង្កើតដោយដៃ',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'ក្នុងពេលឆាប់ៗនេះ អ្នកនឹងអាចស្វែងរក និងដំឡើងកម្មវិធី ភ្នាក់ងារ ឧបករណ៍ភ្ជាប់ និងឧបករណ៍ដែលសហគមន៍បានបង្កើត។',
+  'Want to be notified when it\'s ready?': 'ចង់ឱ្យជូនដំណឹងនៅពេលរួចរាល់ឬទេ?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'ផ្នែកបន្ថែមរបស់អ្នកត្រូវបានបង្កើតហើយ! អ្នកអាចមើលជាមុន កែកូដដោយផ្ទាល់ ឬពិពណ៌នាការផ្លាស់ប្តូរដែលអ្នកចង់ឱ្យខ្ញុំធ្វើ។',
+  'Describe changes you\'d like to make': 'ពិពណ៌នាការផ្លាស់ប្តូរដែលអ្នកចង់ធ្វើ',
+  'Describe what you\'d like to change...': 'ពិពណ៌នាអ្វីដែលអ្នកចង់ផ្លាស់ប្តូរ...',
 } as const

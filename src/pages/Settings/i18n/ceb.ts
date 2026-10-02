@@ -222,4 +222,7 @@ export const ceb: I18n = {
   'Workspace border indicates privacy mode': 'Ang utlanan sa workspace nagpakita sa privacy mode',
   'Blocked': 'Gibabagan',
   'Trusted': 'Gisaligan',
+  'These instructions will be prepended to every agent\'s instructions': 'Idugang kining mga panudlo sa sinugdanan sa panudlo sa matag ahente',
+  'Sign in or create an account on the provider\'s website.': 'Pag-sign in o paghimo og account sa website sa provider.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'Idugang kining mga panudlo sa sinugdanan sa panudlo sa matag ahente niini nga luna',
 } as const

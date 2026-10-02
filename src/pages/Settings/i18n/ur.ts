@@ -222,4 +222,7 @@ export const ur: I18n = {
   'Workspace border indicates privacy mode': 'ورک اسپیس بارڈر پرائیویسی موڈ کی نشاندہی کرتا ہے۔',
   'Blocked': 'مسدود',
   'Trusted': 'قابل اعتماد',
+  'These instructions will be prepended to every agent\'s instructions': 'یہ ہدایات ہر ایجنٹ کی ہدایات سے پہلے شامل کی جائیں گی',
+  'Sign in or create an account on the provider\'s website.': 'فراہم کنندہ کی ویب سائٹ پر سائن اِن کریں یا اکاؤنٹ بنائیں۔',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'یہ ہدایات اس اسپیس میں ہر ایجنٹ کی ہدایات سے پہلے شامل کی جائیں گی',
 } as const

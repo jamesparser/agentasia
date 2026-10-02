@@ -170,4 +170,8 @@ export const th: I18n = {
   'Thoughts': 'ความคิด',
   'Delete conversation': 'ลบการสนทนา',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'คุณแน่ใจหรือไม่ว่าต้องการลบการสนทนานี้ การดำเนินการนี้ไม่สามารถยกเลิกได้',
+  'Define your agent\'s personality and capabilities': 'กำหนดบุคลิกและความสามารถของเอเจนต์ของคุณ',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'คำสั่งโดยละเอียดเกี่ยวกับบุคลิก ทักษะ ข้อจำกัด และเป้าหมายของเอเจนต์…',
+  'Detailed instructions for the agent\'s behavior': 'คำสั่งโดยละเอียดเกี่ยวกับพฤติกรรมของเอเจนต์',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'บอกเราว่าคุณต้องการเอเจนต์แบบไหน แล้วเราจะสร้างให้',
 } as const

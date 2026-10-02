@@ -222,4 +222,7 @@ export const yue: I18n = {
   'Workspace border indicates privacy mode': '工作區邊框表示私隱模式',
   'Blocked': '封鎖咗',
   'Trusted': '信任',
+  'These instructions will be prepended to every agent\'s instructions': '呢啲指示會加喺每個代理嘅指示前面',
+  'Sign in or create an account on the provider\'s website.': '請喺供應商嘅網站登入或者開立帳戶。',
+  'These instructions will be prepended to every agent\'s instructions in this space': '呢啲指示會加喺呢個空間入面每個代理嘅指示前面',
 } as const

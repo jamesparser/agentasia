@@ -207,4 +207,9 @@ export const ja: I18n = {
   'Duplicate & edit': '複製して編集する',
   'Run': '走る',
   'or create manually': 'または手動で作成する',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'まもなく、コミュニティが作成したアプリ、エージェント、コネクター、ツールを見つけてインストールできるようになります。',
+  'Want to be notified when it\'s ready?': '準備ができたら通知を受け取りますか？',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': '拡張機能が作成されました。プレビューしたり、コードを直接編集したり、変更したい内容を私に伝えたりできます。',
+  'Describe changes you\'d like to make': '変更したい内容を入力してください',
+  'Describe what you\'d like to change...': '変更したい内容を入力してください...',
 } as const

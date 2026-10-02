@@ -170,4 +170,8 @@ export const lo: I18n = {
   'Thoughts': 'ຄວາມຄິດ',
   'Delete conversation': 'ລຶບການສົນທະນາ',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບການສົນທະນານີ້? ຄຳສັ່ງນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.',
+  'Define your agent\'s personality and capabilities': 'ກຳນົດບຸກຄະລິກ ແລະ ຄວາມສາມາດຂອງເອເຈນຂອງທ່ານ',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'ຄຳແນະນຳລະອຽດກ່ຽວກັບບຸກຄະລິກ ທັກສະ ຂໍ້ຈຳກັດ ແລະ ເປົ້າໝາຍຂອງເອເຈນ…',
+  'Detailed instructions for the agent\'s behavior': 'ຄຳແນະນຳລະອຽດກ່ຽວກັບພຶດຕິກຳຂອງເອເຈນ',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'ບອກພວກເຮົາວ່າທ່ານຕ້ອງການເອເຈນແບບໃດ ແລ້ວພວກເຮົາຈະສ້າງໃຫ້.',
 } as const

@@ -222,4 +222,7 @@ export const jv: I18n = {
   'Workspace border indicates privacy mode': 'Wates ruang kerja nuduhake mode privasi',
   'Blocked': 'Diblokir',
   'Trusted': 'Dipercaya',
+  'These instructions will be prepended to every agent\'s instructions': 'Pandhuan iki bakal ditambahake ing ngarep pandhuan saben agen',
+  'Sign in or create an account on the provider\'s website.': 'Mlebu utawa gawe akun ing situs web panyedhia.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'Pandhuan iki bakal ditambahake ing ngarep pandhuan saben agen ing ruang iki',
 } as const

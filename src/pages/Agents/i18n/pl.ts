@@ -170,4 +170,8 @@ export const pl: I18n = {
   'Thoughts': 'Myśli',
   'Delete conversation': 'Usuń rozmowę',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Czy na pewno chcesz usunąć tę rozmowę? Tej akcji nie można cofnąć.',
+  'Define your agent\'s personality and capabilities': 'Zdefiniuj osobowość i możliwości swojego agenta',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Szczegółowe instrukcje dotyczące osobowości, umiejętności, ograniczeń i celów agenta…',
+  'Detailed instructions for the agent\'s behavior': 'Szczegółowe instrukcje dotyczące zachowania agenta',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Powiedz nam, jakiego agenta chcesz, a my go dla Ciebie utworzymy.',
 } as const

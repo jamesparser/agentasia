@@ -207,4 +207,9 @@ export const id: I18n = {
   'Duplicate & edit': 'Gandakan & edit',
   'Run': 'Jalankan',
   'or create manually': 'atau buat secara manual',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Segera Anda dapat menemukan dan memasang aplikasi, agen, konektor, dan alat buatan komunitas.',
+  'Want to be notified when it\'s ready?': 'Ingin diberi tahu saat sudah siap?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Ekstensi Anda telah dibuat! Anda dapat melihat pratinjau, mengedit kode secara langsung, atau menjelaskan perubahan yang Anda inginkan.',
+  'Describe changes you\'d like to make': 'Jelaskan perubahan yang ingin Anda buat',
+  'Describe what you\'d like to change...': 'Jelaskan apa yang ingin Anda ubah...',
 } as const

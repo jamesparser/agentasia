@@ -222,4 +222,7 @@ export const km: I18n = {
   'Workspace border indicates privacy mode': 'ព្រំដែនកន្លែងធ្វើការបង្ហាញពីរបៀបឯកជនភាព',
   'Blocked': 'រារាំង',
   'Trusted': 'ជឿជាក់',
+  'These instructions will be prepended to every agent\'s instructions': 'ការណែនាំទាំងនេះនឹងត្រូវបន្ថែមនៅខាងមុខការណែនាំរបស់ភ្នាក់ងារនីមួយៗ',
+  'Sign in or create an account on the provider\'s website.': 'ចូល ឬបង្កើតគណនីនៅលើគេហទំព័ររបស់អ្នកផ្តល់សេវា។',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'ការណែនាំទាំងនេះនឹងត្រូវបន្ថែមនៅខាងមុខការណែនាំរបស់ភ្នាក់ងារនីមួយៗក្នុងលំហនេះ',
 } as const

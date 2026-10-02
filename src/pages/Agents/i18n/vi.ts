@@ -170,4 +170,8 @@ export const vi: I18n = {
   'Thoughts': 'Suy nghĩ',
   'Delete conversation': 'Xóa cuộc trò chuyện',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Bạn có chắc chắn muốn xóa cuộc trò chuyện này không? Không thể hoàn tác hành động này.',
+  'Define your agent\'s personality and capabilities': 'Xác định cá tính và khả năng của tác tử',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Hướng dẫn chi tiết về cá tính, kỹ năng, ràng buộc và mục tiêu của tác tử…',
+  'Detailed instructions for the agent\'s behavior': 'Hướng dẫn chi tiết về hành vi của tác tử',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Hãy cho chúng tôi biết bạn muốn loại tác tử nào, chúng tôi sẽ tạo nó cho bạn.',
 } as const

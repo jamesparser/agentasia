@@ -170,4 +170,8 @@ export const my: I18n = {
   'Thoughts': 'အတွေးများ',
   'Delete conversation': 'စကားဝိုင်းကို ဖျက်ပါ။',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'ဤစကားဝိုင်းကို ဖျက်လိုသည်မှာ သေချာပါသလား။ ဤလုပ်ဆောင်ချက်ကို ပြန်ပြင်၍မရပါ။',
+  'Define your agent\'s personality and capabilities': 'သင့်အေးဂျင့်၏ ပင်ကိုယ်စရိုက်နှင့် စွမ်းရည်များကို သတ်မှတ်ပါ',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'အေးဂျင့်၏ ပင်ကိုယ်စရိုက်၊ ကျွမ်းကျင်မှု၊ ကန့်သတ်ချက်နှင့် ရည်မှန်းချက်များအကြောင်း အသေးစိတ်ညွှန်ကြားချက်…',
+  'Detailed instructions for the agent\'s behavior': 'အေးဂျင့်၏ အပြုအမူအကြောင်း အသေးစိတ်ညွှန်ကြားချက်',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'သင်လိုချင်သော အေးဂျင့်အမျိုးအစားကို ပြောပြပါ၊ ကျွန်ုပ်တို့ ဖန်တီးပေးပါမည်။',
 } as const

@@ -207,4 +207,9 @@ export const hi: I18n = {
   'Duplicate & edit': 'डुप्लिकेट और संपादित करें',
   'Run': 'भागो',
   'or create manually': 'या मैन्युअल रूप से बनाएं',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'जल्द ही आप समुदाय द्वारा बनाए गए ऐप्स, एजेंट, कनेक्टर और टूल खोज और इंस्टॉल कर सकेंगे।',
+  'Want to be notified when it\'s ready?': 'क्या तैयार होने पर सूचना पाना चाहेंगे?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'आपका एक्सटेंशन बन गया है! आप उसका पूर्वावलोकन कर सकते हैं, सीधे कोड संपादित कर सकते हैं, या जो बदलाव चाहते हैं उन्हें बता सकते हैं।',
+  'Describe changes you\'d like to make': 'बताएँ कि आप क्या बदलाव करना चाहते हैं',
+  'Describe what you\'d like to change...': 'बताएँ कि आप क्या बदलना चाहते हैं...',
 } as const

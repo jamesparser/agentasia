@@ -207,4 +207,9 @@ export const th: I18n = {
   'Duplicate & edit': 'ทำซ้ำและแก้ไข',
   'Run': 'วิ่ง',
   'or create manually': 'หรือสร้างด้วยตนเอง',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'เร็วๆ นี้คุณจะสามารถค้นหาและติดตั้งแอป เอเจนต์ ตัวเชื่อมต่อ และเครื่องมือที่ชุมชนสร้างขึ้นได้',
+  'Want to be notified when it\'s ready?': 'ต้องการให้แจ้งเตือนเมื่อพร้อมหรือไม่',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'สร้างส่วนขยายของคุณแล้ว! คุณสามารถดูตัวอย่าง แก้ไขโค้ดโดยตรง หรืออธิบายการเปลี่ยนแปลงที่ต้องการให้ฉันทำ',
+  'Describe changes you\'d like to make': 'อธิบายการเปลี่ยนแปลงที่คุณต้องการ',
+  'Describe what you\'d like to change...': 'อธิบายสิ่งที่คุณต้องการเปลี่ยน...',
 } as const

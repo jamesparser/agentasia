@@ -170,4 +170,8 @@ export const yue: I18n = {
   'Thoughts': '諗法',
   'Delete conversation': '刪除對話',
   'Are you sure you want to delete this conversation? This action cannot be undone.': '你肯定要刪除呢個對話？呢個動作係復原唔到嘅。',
+  'Define your agent\'s personality and capabilities': '定義你個代理嘅個性同能力',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': '有關代理個性、技能、限制同目標嘅詳細指示…',
+  'Detailed instructions for the agent\'s behavior': '有關代理行為嘅詳細指示',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': '話俾我哋知你想要乜嘢類型嘅代理，我哋幫你建立。',
 } as const

@@ -170,4 +170,8 @@ export const ms: I18n = {
   'Thoughts': 'Fikiran',
   'Delete conversation': 'Padamkan perbualan',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Adakah anda pasti mahu memadamkan perbualan ini? Tindakan ini tidak boleh dibuat asal.',
+  'Define your agent\'s personality and capabilities': 'Tentukan personaliti dan keupayaan ejen anda',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Arahan terperinci tentang personaliti, kemahiran, kekangan dan matlamat ejen…',
+  'Detailed instructions for the agent\'s behavior': 'Arahan terperinci tentang tingkah laku ejen',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Beritahu kami jenis ejen yang anda mahu, dan kami akan mencipta untuk anda.',
 } as const

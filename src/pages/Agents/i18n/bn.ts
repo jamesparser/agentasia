@@ -170,4 +170,8 @@ export const bn: I18n = {
   'Thoughts': 'চিন্তা',
   'Delete conversation': 'কথোপকথন মুছুন',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'আপনি কি এই কথোপকথন মুছে ফেলার বিষয়ে নিশ্চিত? এই ক্রিয়াটি পূর্বাবস্থায় ফেরানো যাবে না৷',
+  'Define your agent\'s personality and capabilities': 'আপনার এজেন্টের ব্যক্তিত্ব ও সক্ষমতা নির্ধারণ করুন',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'এজেন্টের ব্যক্তিত্ব, দক্ষতা, সীমাবদ্ধতা ও লক্ষ্য সম্পর্কে বিস্তারিত নির্দেশ…',
+  'Detailed instructions for the agent\'s behavior': 'এজেন্টের আচরণ সম্পর্কে বিস্তারিত নির্দেশ',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'আপনি কেমন এজেন্ট চান তা আমাদের বলুন, আমরা আপনার জন্য তৈরি করে দেব।',
 } as const

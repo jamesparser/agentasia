@@ -207,4 +207,9 @@ export const jv: I18n = {
   'Duplicate & edit': 'Duplikat & edit',
   'Run': 'Mlayu',
   'or create manually': 'utawa nggawe kanthi manual',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Ora suwe kowe bisa nemokake lan masang aplikasi, agen, konektor, lan piranti sing digawe komunitas.',
+  'Want to be notified when it\'s ready?': 'Apa kowe pengin diwenehi kabar yen wis siyap?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Ekstensimu wis digawe! Kowe bisa mirsani pratinjau, ngowahi kode langsung, utawa njlentrehake owah-owahan sing kokkarepake.',
+  'Describe changes you\'d like to make': 'Jlentrehna owah-owahan sing kokkarepake',
+  'Describe what you\'d like to change...': 'Jlentrehna apa sing arep kokowahi...',
 } as const

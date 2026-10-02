@@ -207,4 +207,9 @@ export const su: I18n = {
   'Duplicate & edit': 'Duplikat & édit',
   'Run': 'Lumpat',
   'or create manually': 'atawa jieun sacara manual',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Geura-giru anjeun tiasa mendakan jeung masang aplikasi, agén, panyambung, jeung alat anu dijieun ku komunitas.',
+  'Want to be notified when it\'s ready?': 'Hoyong dibéré émbaran nalika parantos siap?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Éksténsi anjeun parantos dijieun! Anjeun tiasa ningali pratinjau, ngédit kode langsung, atawa ngajelaskeun parobahan anu dipikahoyong.',
+  'Describe changes you\'d like to make': 'Jelaskeun parobahan anu hoyong dilakukeun',
+  'Describe what you\'d like to change...': 'Jelaskeun naon anu hoyong dirobah...',
 } as const

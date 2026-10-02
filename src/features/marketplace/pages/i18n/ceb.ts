@@ -207,4 +207,9 @@ export const ceb: I18n = {
   'Duplicate & edit': 'Duplicate & edit',
   'Run': 'Dagan',
   'or create manually': 'o paghimo sa mano-mano',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Dili madugay makakaplag ug makapa-install ka og mga app, ahente, connector, ug himan nga gihimo sa komunidad.',
+  'Want to be notified when it\'s ready?': 'Gusto ka ba nga pahibaw-on kung andam na kini?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Nahimo na ang imong extension! Mahimo nimo kining i-preview, direktang usbon ang code, o ihulagway ang mga kausaban nga gusto nimo nga buhaton nako.',
+  'Describe changes you\'d like to make': 'Ihulagway ang mga kausaban nga gusto nimong buhaton',
+  'Describe what you\'d like to change...': 'Ihulagway kung unsa ang gusto nimong usbon...',
 } as const

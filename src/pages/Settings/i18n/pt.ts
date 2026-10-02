@@ -222,4 +222,7 @@ export const pt: I18n = {
   'Workspace border indicates privacy mode': 'A borda do espaço de trabalho indica o modo de privacidade',
   'Blocked': 'Bloqueado',
   'Trusted': 'Confiável',
+  'These instructions will be prepended to every agent\'s instructions': 'Estas instruções serão adicionadas antes das instruções de cada agente',
+  'Sign in or create an account on the provider\'s website.': 'Entre ou crie uma conta no site do provedor.',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'Estas instruções serão adicionadas antes das instruções de cada agente neste espaço',
 } as const

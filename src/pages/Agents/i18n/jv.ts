@@ -170,4 +170,8 @@ export const jv: I18n = {
   'Thoughts': 'Pikiran',
   'Delete conversation': 'Mbusak obrolan',
   'Are you sure you want to delete this conversation? This action cannot be undone.': 'Apa sampeyan yakin arep mbusak obrolan iki? Tumindak iki ora bisa dibatalake.',
+  'Define your agent\'s personality and capabilities': 'Netepake kapribaden lan kemampuan agenmu',
+  'Detailed instructions for the agent\'s personality, skills, constraints, and goals…': 'Pandhuan rinci babagan kapribaden, katrampilan, watesan, lan tujuan agen…',
+  'Detailed instructions for the agent\'s behavior': 'Pandhuan rinci babagan prilaku agen',
+  'Tell us what kind of agent you want, and we\'ll create it for you.': 'Kandhani kita agen apa sing kokkarepake, lan kita bakal gawekake.',
 } as const

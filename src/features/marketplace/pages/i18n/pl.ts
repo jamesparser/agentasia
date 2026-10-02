@@ -207,4 +207,9 @@ export const pl: I18n = {
   'Duplicate & edit': 'Duplikuj i edytuj',
   'Run': 'Biegnij',
   'or create manually': 'lub utwórz ręcznie',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'Wkrótce będzie można odkrywać i instalować aplikacje, agenty, konektory i narzędzia tworzone przez społeczność.',
+  'Want to be notified when it\'s ready?': 'Chcesz otrzymać powiadomienie, gdy będzie gotowe?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'Twoje rozszerzenie zostało utworzone! Możesz je podejrzeć, edytować kod bezpośrednio lub opisać zmiany, które mam wprowadzić.',
+  'Describe changes you\'d like to make': 'Opisz zmiany, które chcesz wprowadzić',
+  'Describe what you\'d like to change...': 'Opisz, co chcesz zmienić...',
 } as const

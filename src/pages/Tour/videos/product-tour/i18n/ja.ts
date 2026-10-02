@@ -84,4 +84,5 @@ export const ja: I18n = {
   'Toggle full screen': '全画面表示を切り替える',
   'Show shortcuts': 'ショートカットを表示する',
   'Close this overlay': 'このオーバーレイを閉じます',
+  '## Climate adaptation briefing — 5 major cities\n\n**Cities surveyed:** Amsterdam · Singapore · Copenhagen · Medellín · Rotterdam\n\n### Comparative strategies\n\n1. **Amsterdam** — floating infrastructure, canal surge control\n2. **Singapore** — NEWater system, urban heat island mitigation\n3. **Copenhagen** — 100% renewable target, 20-min city model\n4. **Medellín** — green corridors, urban acupuncture model\n5. **Rotterdam** — water squares, rooftop gardens, floating pavilions\n\n> Strategy comparison and presentation deck attached.': '## 5大都市の気候適応ブリーフィング\n\n**調査対象の都市:** Amsterdam · Singapore · Copenhagen · Medellín · Rotterdam\n\n### 戦略の比較\n\n1. **Amsterdam**: 浮体式インフラ、運河の高潮対策\n2. **Singapore**: NEWater システム、都市ヒートアイランド対策\n3. **Copenhagen**: 再生可能エネルギー100%の目標、20分都市モデル\n4. **Medellín**: 緑の回廊、アーバン・アキュパンクチャー・モデル\n5. **Rotterdam**: ウォータースクエア、屋上庭園、浮体式パビリオン\n\n> 戦略の比較表とプレゼンテーション資料を添付しました。',
 } as const

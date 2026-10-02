@@ -207,4 +207,9 @@ export const bn: I18n = {
   'Duplicate & edit': 'সদৃশ এবং সম্পাদনা',
   'Run': 'চালান',
   'or create manually': 'অথবা ম্যানুয়ালি তৈরি করুন',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'শীঘ্রই আপনি কমিউনিটির তৈরি অ্যাপ, এজেন্ট, সংযোগকারী ও টুল খুঁজে নিয়ে ইনস্টল করতে পারবেন।',
+  'Want to be notified when it\'s ready?': 'প্রস্তুত হলে কি জানাতে চান?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'আপনার এক্সটেনশন তৈরি হয়েছে! আপনি এটি প্রিভিউ করতে পারেন, সরাসরি কোড সম্পাদনা করতে পারেন, অথবা আপনি যে পরিবর্তন চান তা বর্ণনা করতে পারেন।',
+  'Describe changes you\'d like to make': 'আপনি যে পরিবর্তন করতে চান তা বর্ণনা করুন',
+  'Describe what you\'d like to change...': 'আপনি কী পরিবর্তন করতে চান তা বর্ণনা করুন...',
 } as const

@@ -207,4 +207,9 @@ export const lo: I18n = {
   'Duplicate & edit': 'ຊໍ້າກັນ & ແກ້ໄຂ',
   'Run': 'ແລ່ນ',
   'or create manually': 'ຫຼືສ້າງດ້ວຍຕົນເອງ',
+  'Soon you\'ll be able to discover and install community-built apps, agents, connectors, and tools.': 'ບໍ່ດົນທ່ານຈະສາມາດຄົ້ນຫາ ແລະ ຕິດຕັ້ງແອັບ ເອເຈນ ຕົວເຊື່ອມຕໍ່ ແລະ ເຄື່ອງມືທີ່ຊຸມຊົນສ້າງຂຶ້ນ.',
+  'Want to be notified when it\'s ready?': 'ຕ້ອງການໃຫ້ແຈ້ງເຕືອນເມື່ອພ້ອມບໍ?',
+  'Your extension has been created! You can preview it, edit the code directly, or describe changes you\'d like me to make.': 'ສ້າງສ່ວນຂະຫຍາຍຂອງທ່ານແລ້ວ! ທ່ານສາມາດເບິ່ງຕົວຢ່າງ ແກ້ໄຂໂຄດໂດຍກົງ ຫຼື ອະທິບາຍການປ່ຽນແປງທີ່ຕ້ອງການໃຫ້ຂ້ອຍເຮັດ.',
+  'Describe changes you\'d like to make': 'ອະທິບາຍການປ່ຽນແປງທີ່ທ່ານຕ້ອງການ',
+  'Describe what you\'d like to change...': 'ອະທິບາຍສິ່ງທີ່ທ່ານຕ້ອງການປ່ຽນ...',
 } as const

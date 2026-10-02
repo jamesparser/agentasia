@@ -222,4 +222,7 @@ export const hi: I18n = {
   'Workspace border indicates privacy mode': 'कार्यस्थान सीमा गोपनीयता मोड को इंगित करती है',
   'Blocked': 'अवरुद्ध',
   'Trusted': 'विश्वसनीय',
+  'These instructions will be prepended to every agent\'s instructions': 'ये निर्देश हर एजेंट के निर्देशों से पहले जोड़े जाएँगे',
+  'Sign in or create an account on the provider\'s website.': 'प्रदाता की वेबसाइट पर साइन इन करें या खाता बनाएँ।',
+  'These instructions will be prepended to every agent\'s instructions in this space': 'ये निर्देश इस स्पेस में हर एजेंट के निर्देशों से पहले जोड़े जाएँगे',
 } as const
