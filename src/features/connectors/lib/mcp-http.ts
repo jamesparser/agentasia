@@ -10,9 +10,27 @@ export interface McpDiscoveryResult {
  * endpoint. The server must support CORS for the AgentAsia origin. Authenticated
  * and localhost-only MCP servers need a future trusted gateway instead.
  */
+/** Streamable HTTP servers may answer with a JSON body or a text/event-stream. */
+async function readRpcPayload(response: Response) {
+  const type = response.headers.get('content-type') || ''
+  if (!type.includes('text/event-stream')) return response.json()
+  const text = await response.text()
+  for (const line of text.split('\n')) {
+    if (!line.startsWith('data:')) continue
+    try {
+      const msg = JSON.parse(line.slice(5).trim())
+      if (msg && (msg.result !== undefined || msg.error)) return msg
+    } catch {
+      // keep scanning for the next data line
+    }
+  }
+  throw new Error('MCP server sent no readable response')
+}
+
 export async function discoverHttpMcp(
   serverUrl: string,
 ): Promise<McpDiscoveryResult> {
+  let sessionId: string | null = null
   const request = async (
     method: string,
     params: Record<string, unknown> = {},
@@ -22,6 +40,7 @@ export async function discoverHttpMcp(
       headers: {
         Accept: 'application/json, text/event-stream',
         'Content-Type': 'application/json',
+        ...(sessionId ? { 'Mcp-Session-Id': sessionId } : {}),
       },
       body: JSON.stringify({
         jsonrpc: '2.0',
@@ -35,7 +54,8 @@ export async function discoverHttpMcp(
       throw new Error(`Server returned ${response.status}`)
     }
 
-    const payload = await response.json()
+    sessionId = response.headers.get('Mcp-Session-Id') ?? sessionId
+    const payload = await readRpcPayload(response)
     if (payload.error)
       throw new Error(payload.error.message || 'MCP server error')
     return payload.result || {}
