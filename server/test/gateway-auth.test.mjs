@@ -69,6 +69,16 @@ const gated = (code) => code === 401 || code === 403 || code === 503
   const chatBody = await chat.json()
   assert.ok(!String(chatBody.error || '').startsWith('admin_'), `chat route was gated: ${chatBody.error}`)
 
+  // The browser client validates a provider with GET {base}/models, so gating this
+  // route makes the whole hosted lane unusable from the app while looking fine in
+  // curl. It is a static list of public model ids, no keys and no spend state.
+  const models = await fetch(`${s.base}/v1/models`)
+  assert.equal(models.status, 200, '/v1/models must stay public for provider validation')
+  const modelsBody = await models.json()
+  assert.equal(modelsBody.object, 'list')
+  assert.ok(Array.isArray(modelsBody.data) && modelsBody.data.length > 0, 'catalog must not be empty')
+  assert.equal(modelsBody.data[0].id, 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B')
+
   const memoryPolicy = await fetch(`${s.base}/v1/memory/policy`)
   assert.equal(memoryPolicy.status, 200, 'memory policy is a public promise, not an admin secret')
   assert.equal((await memoryPolicy.json()).hostedByAgentAsia, false)

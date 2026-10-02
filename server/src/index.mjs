@@ -15,6 +15,7 @@ import { webSearch, searchConfigured } from './tools/websearch.mjs'
 import { assertWithinBudget, recordSpend, spendSummary } from './spend-guard.mjs'
 import { runAgentTurn } from './agent-loop.mjs'
 import { resolveGatewayTarget, getAllProviders } from './model-router.mjs'
+import { canonicalizeModelId, publicModelIds } from './model-catalog.mjs'
 import { addMemory, searchMemory, deleteAllMemory, memoryPolicy } from './memory.mjs'
 import { createSchedule, listSchedules, updateSchedule, deleteSchedule, allSchedules } from './schedules.mjs'
 import { listScheduleRuns, startScheduleWorker, runTask } from './schedule-worker.mjs'
@@ -40,7 +41,7 @@ const host = process.env.BIND_HOST || '127.0.0.1'
  * working provider, and GET /v1/spend / /v1/providers/health leak budget state
  * and key health. /v1/search spends the shared Tavily quota outright.
  */
-const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search'])
+const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/models', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search'])
 // Scheduled tasks are per-user: public at the door, but every handler below
 // requires a verified token and only ever touches that caller's own tasks.
 const SCHEDULE_ROUTE = /^\/v1\/(schedules(\/[^/]+(\/run)?)?|schedule-runs)$/
@@ -247,12 +248,38 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ── OpenAI-compatible chat (browser clients point here; Nebius-first) ─
+    // ── OpenAI-compatible model catalog ────────────────────────
+    // The browser client validates a provider by calling exactly this endpoint
+    // (AI SDK openAiStyleValidate issues GET {base}/models), so the hosted lane is
+    // unusable without it. It is a static, secret-free list of the NVIDIA models
+    // this gateway can serve; spend, provider config and key health stay
+    // operator-only behind the admin token.
+    if (req.method === 'GET' && p === '/v1/models') {
+      return json(res, 200, {
+        object: 'list',
+        data: publicModelIds().map((id) => ({
+          id,
+          object: 'model',
+          owned_by: 'agentasia',
+          provider: process.env.GATEWAY_DEFAULT_PROVIDER || 'nebius',
+        })),
+        requestId,
+      })
+    }
+
     if (req.method === 'POST' && p === '/v1/chat/completions') {
       if (process.env.MODEL_GATEWAY_ENABLED !== 'true') {
         return json(res, 503, { error: 'model_gateway_disabled', requestId })
       }
       try {
         const body = await readJson(req)
+        // Repair display-name round-trips before anything routes on the id
+        // (provider lookup, budget ledger, response echo all read body.model).
+        // An authenticated caller's model is overwritten from the plan below, so
+        // this only decides routing for the anonymous path.
+        if (body && typeof body.model === 'string' && body.model) {
+          body.model = canonicalizeModelId(body.model)
+        }
 
         // Identity and entitlement. A bad token is a 401, never a silent downgrade.
         // With AUTH_REQUIRED=true an anonymous caller is refused. Once a caller is
