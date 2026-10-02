@@ -18,6 +18,8 @@ import { resolveGatewayTarget, getAllProviders } from './model-router.mjs'
 import { addMemory, searchMemory, deleteAllMemory, memoryPolicy } from './memory.mjs'
 import { createSchedule, listSchedules, queueScheduleRun, updateSchedule } from './schedules.mjs'
 import { listScheduleRuns, startScheduleWorker } from './schedule-worker.mjs'
+import { authenticate, mintDevToken } from './auth.mjs'
+import { resolvePlan, assertWithinAllowance, recordUsage, usageReport, setPlan } from './entitlements.mjs'
 
 const port = Number(process.env.PORT || 8787)
 // Bind localhost by default: this process is meant to sit behind a tunnel/proxy.
@@ -37,7 +39,7 @@ const host = process.env.BIND_HOST || '127.0.0.1'
  * working provider, and GET /v1/spend / /v1/providers/health leak budget state
  * and key health. /v1/search spends the shared Tavily quota outright.
  */
-const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy'])
+const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/usage', 'POST /v1/dev/session'])
 
 /** Fail closed: if no token is configured, privileged routes are unavailable. */
 function privilegedAllowed(req) {
@@ -196,6 +198,33 @@ const server = http.createServer(async (req, res) => {
       return json(res, result.healthy ? 200 : 503, { ...result, requestId })
     }
 
+    // ── Per-caller usage. Public route, token-authenticated: it answers for the
+    // caller who asks, so it never needs the operator token and never leaks anyone else.
+    if (req.method === 'GET' && p === '/v1/usage') {
+      try {
+        return json(res, 200, { ...(await usageReport(await authenticate(req))), requestId })
+      } catch (error) {
+        return json(res, error.statusCode || 500, { error: error.code || error.message, requestId })
+      }
+    }
+
+    // ── Dev-only principal. Exists only when GATEWAY_DEV_AUTH_SECRET is set.
+    if (req.method === 'POST' && p === '/v1/dev/session') {
+      const secret = (process.env.GATEWAY_DEV_AUTH_SECRET || '').trim()
+      if (!secret) return json(res, 404, { error: 'not_found', requestId })
+      const body = await readJson(req)
+      const email = String(body.email || 'dev@example.test').slice(0, 120)
+      const uid = String(body.uid || email).replace(/[^a-zA-Z0-9._@-]/g, '').slice(0, 100) || 'dev'
+      return json(res, 200, { token: mintDevToken({ uid, email }, secret), uid: `dev:${uid}`, email, requestId })
+    }
+
+    // ── Operator sets a plan (admin token; payment webhooks will call setPlan too).
+    const planMatch = p.match(/^\/v1\/admin\/plan\/([^/]+)$/)
+    if (req.method === 'PUT' && planMatch) {
+      const body = await readJson(req)
+      return json(res, 200, { entitlement: await setPlan(decodeURIComponent(planMatch[1]), body.plan, { until: body.until || null }), requestId })
+    }
+
     // ── OpenAI-compatible chat (browser clients point here; Nebius-first) ─
     if (req.method === 'POST' && p === '/v1/chat/completions') {
       if (process.env.MODEL_GATEWAY_ENABLED !== 'true') {
@@ -203,6 +232,24 @@ const server = http.createServer(async (req, res) => {
       }
       try {
         const body = await readJson(req)
+
+        // Identity and entitlement. A bad token is a 401, never a silent downgrade.
+        // With AUTH_REQUIRED=true an anonymous caller is refused. Once a caller is
+        // known, the model and token ceiling come from the plan on this server, not
+        // from the request body, so editing localStorage cannot buy a bigger model.
+        const principal = await authenticate(req)
+        if (!principal && process.env.AUTH_REQUIRED === 'true') {
+          return json(res, 401, { error: 'sign_in_required', hint: 'create a free account to use AgentAsia', requestId })
+        }
+        let entitlement = null
+        if (principal) {
+          entitlement = await resolvePlan(principal.uid)
+          await assertWithinAllowance(principal.uid, entitlement)
+          body.model = entitlement.model
+          const asked = Number(body.max_tokens || body.maxTokens || 0)
+          body.max_tokens = asked > 0 ? Math.min(asked, entitlement.maxTokens) : entitlement.maxTokens
+          delete body.maxTokens
+        }
 
         // Spend circuit-breaker: check BEFORE contacting Nebius, so an exhausted
         // budget never reaches the provider and never triggers card charging.
@@ -281,17 +328,20 @@ const server = http.createServer(async (req, res) => {
             completion_tokens: Number(body.max_tokens || body.maxTokens || 0),
           }
           await recordSpend(model || body.model || '', bounded)  // model is now always resolved upstream
+          if (principal) await recordUsage(principal.uid, bounded)
           return
         }
 
         res.setHeader('x-agentasia-provider', provider || result?._provider || '')
         if (model) res.setHeader('x-agentasia-model', model)
         await recordSpend(model || result?._model || body.model || '', result?.usage || {})
+        if (principal) await recordUsage(principal.uid, result?.usage || {})
         return json(res, 200, agentMeta ? { ...result, agentasia: agentMeta } : result)
       } catch (error) {
+        if (error.allowance) return json(res, 429, { error: { message: error.message, type: 'allowance', ...error.allowance }, requestId })
         const status = error.statusCode || (error.message === 'unsupported_provider' ? 400 : 502)
         return json(res, status, {
-          error: { message: error.message, type: 'agentasia_gateway_error', provider_errors: error.errors },
+          error: { message: error.code || error.message, type: 'agentasia_gateway_error', provider_errors: error.errors },
           requestId,
         })
       }
