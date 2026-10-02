@@ -26,10 +26,15 @@ interface FirebaseConfig {
 function readConfig(): FirebaseConfig | null {
   const env = (import.meta.env ?? {}) as Record<string, string | undefined>
   if (!env.VITE_FIREBASE_API_KEY) return null
+  const projectId = env.VITE_FIREBASE_PROJECT_ID ?? ''
   return {
     apiKey: env.VITE_FIREBASE_API_KEY,
-    authDomain: env.VITE_FIREBASE_AUTH_DOMAIN ?? env.VITE_FIREBASE_API_KEY,
-    projectId: env.VITE_FIREBASE_PROJECT_ID ?? '',
+    authDomain:
+      env.VITE_FIREBASE_AUTH_DOMAIN ??
+      // Standard Firebase domain for the project. Falling back to anything
+      // else (an earlier draft fell back to the API key) would break popups.
+      (projectId ? `${projectId}.firebaseapp.com` : ''),
+    projectId,
     appId: env.VITE_FIREBASE_APP_ID,
     storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
