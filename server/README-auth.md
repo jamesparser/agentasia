@@ -70,3 +70,20 @@ dialog then mints a signed local principal from the gateway. Tests:
 
 Stripe and NOWPayments checkout and webhooks. They must call `setPlan()` only after
 verifying the provider's signature, and stay behind `PAID_TIERS_ENABLED`.
+
+## Scheduled tasks (owner steps on the VPS)
+
+Scheduled tasks are per user and need sign-in, so turn them on only after auth works.
+
+Environment variables for the gateway:
+
+- `SCHEDULER_ENABLED=true` starts the worker and opens the routes. Without it every schedule route answers 503 `scheduler_disabled` and nothing runs.
+- `SCHEDULES_FILE`, `SCHEDULE_RUNS_FILE` set where tasks and run history are stored. Both default to `/data/`, so mount a persistent volume there.
+- `SCHEDULES_MAX_PER_USER` defaults to 5.
+- `SCHEDULE_WORKER_INTERVAL_MS` defaults to the worker's own interval; one minute is enough.
+
+Routes, all needing a bearer token: `GET/POST /v1/schedules`, `PATCH/DELETE /v1/schedules/:id`, `POST /v1/schedules/:id/run`, `GET /v1/schedule-runs`.
+
+What a task can do: it runs the saved prompt with web search on the owner's plan model. Each run counts against the owner's daily allowance, and a run is skipped when the allowance or the gateway budget is used up. It cannot read browser memory, skills or connectors, because those exist only in the browser. Frequencies are once, daily, weekly and monthly, with a fixed UTC offset taken from the browser at creation time, so a task keeps its clock hour across daylight saving changes only by being edited.
+
+Deploy order: restart the gateway with the new files, set `SCHEDULER_ENABLED=true`, then open Settings, Scheduled Tasks, create a task and press Run now to confirm a result appears.

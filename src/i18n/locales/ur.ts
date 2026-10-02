@@ -1137,7 +1137,7 @@ export const ur: Partial<I18n> = {
   'left of': 'کے بائیں',
   'requests / month': 'درخواستیں / مہینہ',
   'used': 'استعمال کیا جاتا ہے',
-  'Back to AgentAsia': 'ایجنٹ ایشیا پر واپس جائیں۔',
+  'Back to AgentAsia': 'AgentAsia پر واپس جائیں۔',
   'Loading the on-device voice model…': 'آن ڈیوائس صوتی ماڈل لوڈ ہو رہا ہے…',
   'Browser (fast)': 'براؤزر (تیز)',
   'On-device (works offline)': 'آن ڈیوائس (آف لائن کام کرتا ہے)',

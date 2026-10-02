@@ -1115,7 +1115,7 @@ export const bn: Partial<I18n> = {
   'Plans and limits are enforced by the gateway. Connect a payment provider to take upgrades.': 'পরিকল্পনা এবং সীমা গেটওয়ে দ্বারা প্রয়োগ করা হয়. আপগ্রেড নিতে একটি পেমেন্ট প্রদানকারীকে সংযুক্ত করুন।',
   'Read the answer aloud': 'উত্তরটি জোরে পড়ুন',
   'Recurring work that runs on our servers, not on this device.': 'পুনরাবৃত্ত কাজ যা আমাদের সার্ভারে চলে, এই ডিভাইসে নয়।',
-  'Requests made with AgentAsia this month.': 'এজেন্টএশিয়ার কাছে এই মাসে অনুরোধ করা হয়েছে।',
+  'Requests made with AgentAsia this month.': 'AgentAsia-এর কাছে এই মাসে অনুরোধ করা হয়েছে।',
   'Runs on our infrastructure, not your laptop': 'আমাদের অবকাঠামোতে চলে, আপনার ল্যাপটপে নয়',
   'Scheduled Tasks': 'নির্ধারিত কাজ',
   'Scheduled tasks need an account, so a task keeps running after you close the tab and never runs on anyone else’s behalf. Sign-in with Google and email is being added; until then tasks can only run while this window is open.': 'নির্ধারিত কাজগুলির জন্য একটি অ্যাকাউন্টের প্রয়োজন, তাই আপনি ট্যাবটি বন্ধ করার পরেও একটি টাস্ক চলতে থাকে এবং অন্য কারও পক্ষে কখনও চালানো হয় না। Google এর সাথে সাইন-ইন করুন এবং ইমেল যোগ করা হচ্ছে; যতক্ষণ না এই উইন্ডোটি খোলা থাকবে শুধুমাত্র কাজগুলি চালানো যাবে।',
