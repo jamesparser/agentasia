@@ -20,3 +20,6 @@ node_modules
 
 server/data/*.json
 data/spend.json
+
+__pycache__/
+*.pyc
