@@ -1273,4 +1273,7 @@ export const de: I18n = {
   'Requests today': 'Anfragen heute',
   'Tokens today': 'Tokens heute',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: Alle Tarife sind bis zum 25. Dezember kostenlos. Bezahlte Tarife starten danach.',
+  'Sync with my account': 'Mit meinem Konto synchronisieren',
+  'Same account and same password on every device.': 'Dasselbe Konto und dasselbe Passwort auf jedem Gerät.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Die Synchronisierung zwischen Geräten benötigt einen Relay-Server, der in dieser Bereitstellung noch nicht eingerichtet ist.',
 } as const

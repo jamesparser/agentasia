@@ -1184,4 +1184,7 @@ export const pt: Partial<I18n> = {
   'Requests today': 'Solicitações hoje',
   'Tokens today': 'Tokens hoje',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: todos os planos são gratuitos até 25 de dezembro. Os planos pagos abrem depois.',
+  'Sync with my account': 'Sincronizar com minha conta',
+  'Same account and same password on every device.': 'A mesma conta e a mesma senha em cada dispositivo.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'A sincronização entre dispositivos precisa de um servidor de retransmissão que ainda não foi configurado nesta implantação.',
 }

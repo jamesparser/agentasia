@@ -1249,4 +1249,7 @@ export const ko: I18n = {
   'Requests today': '오늘의 요청',
   'Tokens today': '오늘의 토큰',
   'Beta: every plan is free until December 25. Paid plans open afterward.': '베타: 모든 요금제가 12월 25일까지 무료입니다. 유료 요금제는 그 이후에 시작됩니다.',
+  'Sync with my account': '내 계정으로 동기화',
+  'Same account and same password on every device.': '모든 기기에서 같은 계정과 같은 비밀번호를 사용하세요.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': '기기 간 동기화에는 릴레이 서버가 필요하지만 이 배포에는 아직 설정되어 있지 않습니다.',
 } as const

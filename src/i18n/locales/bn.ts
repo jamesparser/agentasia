@@ -1158,4 +1158,7 @@ export const bn: Partial<I18n> = {
   'Requests today': 'আজকের অনুরোধ',
   'Tokens today': 'আজকের টোকেন',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'বিটা: সব প্ল্যান ২৫ ডিসেম্বর পর্যন্ত বিনামূল্যে। পেইড প্ল্যান এর পরে চালু হবে।',
+  'Sync with my account': 'আমার অ্যাকাউন্টের সাথে সিঙ্ক করুন',
+  'Same account and same password on every device.': 'প্রতিটি ডিভাইসে একই অ্যাকাউন্ট ও একই পাসওয়ার্ড।',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'ডিভাইসগুলোর মধ্যে সিঙ্কের জন্য একটি রিলে সার্ভার দরকার, যা এই ডিপ্লয়মেন্টে এখনও সেট করা হয়নি।',
 }

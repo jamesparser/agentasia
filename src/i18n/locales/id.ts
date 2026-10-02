@@ -1157,4 +1157,7 @@ export const id: Partial<I18n> = {
   'Requests today': 'Permintaan hari ini',
   'Tokens today': 'Token hari ini',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: semua paket gratis hingga 25 Desember. Paket berbayar dibuka setelahnya.',
+  'Sync with my account': 'Sinkronkan dengan akun saya',
+  'Same account and same password on every device.': 'Akun yang sama dan kata sandi yang sama di setiap perangkat.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Sinkronisasi antar perangkat memerlukan server relay yang belum disiapkan pada penerapan ini.',
 }

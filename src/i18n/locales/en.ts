@@ -1186,4 +1186,7 @@ export const en = [
   'Requests today',
   'Tokens today',
   'Beta: every plan is free until December 25. Paid plans open afterward.',
+  'Sync with my account',
+  'Same account and same password on every device.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.',
 ] as const

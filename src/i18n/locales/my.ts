@@ -1182,4 +1182,7 @@ export const my: Partial<I18n> = {
   'Requests today': 'ယနေ့ တောင်းဆိုမှုများ',
   'Tokens today': 'ယနေ့ တိုကင်များ',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'ဘီတာ: အစီအစဉ်အားလုံး ဒီဇင်ဘာ ၂၅ ရက်အထိ အခမဲ့ဖြစ်သည်။ ငွေပေးချေသော အစီအစဉ်များကို ထို့နောက် ဖွင့်လှစ်မည်။',
+  'Sync with my account': 'ကျွန်ုပ်၏အကောင့်ဖြင့် စင့်ခ်လုပ်ပါ',
+  'Same account and same password on every device.': 'စက်ပစ္စည်းတိုင်းတွင် အကောင့်တူနှင့် စကားဝှက်တူကို သုံးပါ။',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'စက်ပစ္စည်းများအကြား စင့်ခ်လုပ်ရန် ဤဖြန့်ချိမှုတွင် မတပ်ဆင်ရသေးသော ဆက်သွယ်ပေးသည့်ဆာဗာ လိုအပ်သည်။',
 }

@@ -1125,4 +1125,7 @@ export const zh_CN: Partial<I18n> = {
   'Requests today': '今日请求数',
   'Tokens today': '今日令牌数',
   'Beta: every plan is free until December 25. Paid plans open afterward.': '测试版：所有套餐在 12 月 25 日前免费，付费套餐随后开放。',
+  'Sync with my account': '使用我的账户同步',
+  'Same account and same password on every device.': '每台设备使用相同的账户和相同的密码。',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': '跨设备同步需要中继服务器，此部署尚未设置。',
 }

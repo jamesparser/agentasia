@@ -24,9 +24,13 @@ export interface SyncPanelProps {
   /** Callback to close the panel/popover */
   onClose?: () => void
 }
+import { useAuth } from '@/lib/auth'
+import { accountRoomId, isRelayConfigured } from '../lib/relay-config'
 
 export function SyncPanel(_props: SyncPanelProps) {
   const { t } = useI18n()
+  const { user, isSignedIn } = useAuth()
+  const relayReady = isRelayConfigured()
 
   const {
     enabled,
@@ -129,6 +133,17 @@ export function SyncPanel(_props: SyncPanelProps) {
       setIsEnabling(false)
     }
   }, [generateRoomId, enableSync, password])
+
+  // Same account + same password on every device lands in the same room.
+  const handleAccountSync = useCallback(async () => {
+    if (!password.trim() || !user) return
+    setIsEnabling(true)
+    try {
+      await enableSync(accountRoomId(user.uid), password.trim(), 'share')
+    } finally {
+      setIsEnabling(false)
+    }
+  }, [enableSync, password, user])
 
   // Handle joining a room with scanned/extracted code
   // All rooms are password-protected — always prompt for password
@@ -305,11 +320,43 @@ export function SyncPanel(_props: SyncPanelProps) {
           size="sm"
           onPress={handleStartSync}
           isLoading={isEnabling}
-          isDisabled={!password.trim() || !passwordStrength.meetsMinimum}
+          isDisabled={
+            !relayReady || !password.trim() || !passwordStrength.meetsMinimum
+          }
           startContent={<Icon name="Lock" />}
         >
           {t('Share')}
         </Button>
+
+        {isSignedIn && (
+          <Button
+            fullWidth
+            color="primary"
+            size="sm"
+            onPress={handleAccountSync}
+            isLoading={isEnabling}
+            isDisabled={
+              !relayReady || !password.trim() || !passwordStrength.meetsMinimum
+            }
+            startContent={<Icon name="User" />}
+          >
+            {t('Sync with my account')}
+          </Button>
+        )}
+
+        {isSignedIn && (
+          <p className="text-muted text-xs">
+            {t('Same account and same password on every device.')}
+          </p>
+        )}
+
+        {!relayReady && (
+          <p className="text-warning text-xs">
+            {t(
+              'Cross-device sync needs a relay server that is not set up on this deployment yet.',
+            )}
+          </p>
+        )}
       </div>
 
       {/* Join button - directly starts QR scanning */}

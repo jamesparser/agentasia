@@ -1179,4 +1179,7 @@ export const ceb: Partial<I18n> = {
   'Requests today': 'Mga hangyo karon',
   'Tokens today': 'Mga token karon',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: libre ang tanang plano hangtod Disyembre 25. Maabli ang bayad nga mga plano pagkahuman.',
+  'Sync with my account': 'I-sync gamit ang akong account',
+  'Same account and same password on every device.': 'Parehas nga account ug parehas nga password sa matag device.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Ang cross-device sync nanginahanglan og relay server nga wala pa gi-set up niini nga deployment.',
 }

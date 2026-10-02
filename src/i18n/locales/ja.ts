@@ -1157,4 +1157,7 @@ export const ja: Partial<I18n> = {
   'Requests today': '今日のリクエスト',
   'Tokens today': '今日のトークン',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'ベータ: すべてのプランは12月25日まで無料です。有料プランはその後に開始されます。',
+  'Sync with my account': 'アカウントで同期',
+  'Same account and same password on every device.': 'すべてのデバイスで同じアカウントと同じパスワードを使います。',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'デバイス間の同期にはリレーサーバーが必要ですが、このデプロイではまだ設定されていません。',
 }

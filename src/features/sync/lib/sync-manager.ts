@@ -11,14 +11,15 @@ import { deriveEncryptionKey } from '@/lib/yjs/crypto'
 import { createEncryptedWebSocketClass } from '@/lib/yjs/encrypted-ws'
 
 import { getYDoc } from './yjs-doc'
+import { relayUrl } from './relay-config'
 import { errorToast, successToast } from '@/lib/toast'
 
 // Default WebSocket server URL
 const getDefaultServerUrl = (): string => {
   // Was wss://signal.devs.new: the upstream project's relay.
-  // Sync stays off until the user supplies their own server,
+  // Sync stays off until a relay we run is configured (VITE_AGENTASIA_RELAY_URL),
   // rather than silently sending peers through someone else's.
-  return ''
+  return relayUrl()
 }
 
 let wsProvider: WebsocketProvider | null = null

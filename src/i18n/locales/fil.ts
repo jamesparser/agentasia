@@ -1175,4 +1175,7 @@ export const fil: Partial<I18n> = {
   'Requests today': 'Mga kahilingan ngayon',
   'Tokens today': 'Mga token ngayon',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: libre ang lahat ng plano hanggang Disyembre 25. Magbubukas ang mga bayad na plano pagkatapos.',
+  'Sync with my account': 'I-sync gamit ang aking account',
+  'Same account and same password on every device.': 'Parehong account at parehong password sa bawat device.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Kailangan ng relay server ang cross-device sync na hindi pa naka-set up sa deployment na ito.',
 }

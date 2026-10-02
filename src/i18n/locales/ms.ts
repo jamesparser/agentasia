@@ -1158,4 +1158,7 @@ export const ms: Partial<I18n> = {
   'Requests today': 'Permintaan hari ini',
   'Tokens today': 'Token hari ini',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: semua pelan percuma sehingga 25 Disember. Pelan berbayar dibuka selepas itu.',
+  'Sync with my account': 'Segerakkan dengan akaun saya',
+  'Same account and same password on every device.': 'Akaun yang sama dan kata laluan yang sama pada setiap peranti.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Penyegerakan merentas peranti memerlukan pelayan geganti yang belum disediakan pada penempatan ini.',
 }

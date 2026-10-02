@@ -1160,4 +1160,7 @@ export const km: Partial<I18n> = {
   'Requests today': 'សំណើថ្ងៃនេះ',
   'Tokens today': 'តូខឹនថ្ងៃនេះ',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'បេតា៖ គ្រប់គម្រោងទាំងអស់ឥតគិតថ្លៃរហូតដល់ថ្ងៃទី ២៥ ធ្នូ។ គម្រោងបង់ប្រាក់នឹងបើកក្រោយនោះ។',
+  'Sync with my account': 'ធ្វើសមកាលកម្មជាមួយគណនីរបស់ខ្ញុំ',
+  'Same account and same password on every device.': 'គណនីដូចគ្នា និងពាក្យសម្ងាត់ដូចគ្នានៅលើគ្រប់ឧបករណ៍។',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'សមកាលកម្មឆ្លងឧបករណ៍ត្រូវការម៉ាស៊ីនមេបញ្ជូនបន្ត ដែលមិនទាន់បានរៀបចំនៅលើការដាក់ឱ្យប្រើនេះនៅឡើយ។',
 }

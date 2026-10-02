@@ -1126,4 +1126,7 @@ export const yue: Partial<I18n> = {
   'Requests today': '今日請求數',
   'Tokens today': '今日權杖數',
   'Beta: every plan is free until December 25. Paid plans open afterward.': '測試版：所有方案喺 12 月 25 日前免費，收費方案之後開放。',
+  'Sync with my account': '用我嘅帳戶同步',
+  'Same account and same password on every device.': '每部裝置用同一個帳戶同同一個密碼。',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': '跨裝置同步需要中繼伺服器，呢個部署重未設定。',
 }

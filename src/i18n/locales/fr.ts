@@ -1287,4 +1287,7 @@ export const fr: I18n = {
   'Requests today': 'Requêtes aujourd\'hui',
   'Tokens today': 'Jetons aujourd\'hui',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Bêta : tous les forfaits sont gratuits jusqu\'au 25 décembre. Les forfaits payants ouvriront ensuite.',
+  'Sync with my account': 'Synchroniser avec mon compte',
+  'Same account and same password on every device.': 'Même compte et même mot de passe sur chaque appareil.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'La synchronisation entre appareils nécessite un serveur relais qui n\'est pas encore configuré sur ce déploiement.',
 } as const

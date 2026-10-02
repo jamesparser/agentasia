@@ -1158,4 +1158,7 @@ export const vi: Partial<I18n> = {
   'Requests today': 'Yêu cầu hôm nay',
   'Tokens today': 'Token hôm nay',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Bản thử nghiệm: mọi gói đều miễn phí đến 25 tháng 12. Các gói trả phí sẽ mở sau đó.',
+  'Sync with my account': 'Đồng bộ với tài khoản của tôi',
+  'Same account and same password on every device.': 'Cùng một tài khoản và cùng một mật khẩu trên mọi thiết bị.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Đồng bộ giữa các thiết bị cần một máy chủ chuyển tiếp mà bản triển khai này chưa thiết lập.',
 }

@@ -1148,4 +1148,7 @@ export const th: Partial<I18n> = {
   'Requests today': 'คำขอวันนี้',
   'Tokens today': 'โทเค็นวันนี้',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'เบต้า: ทุกแพ็กเกจใช้ฟรีถึง 25 ธันวาคม แพ็กเกจแบบชำระเงินจะเปิดหลังจากนั้น',
+  'Sync with my account': 'ซิงก์กับบัญชีของฉัน',
+  'Same account and same password on every device.': 'ใช้บัญชีเดียวกันและรหัสผ่านเดียวกันบนทุกอุปกรณ์',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'การซิงก์ข้ามอุปกรณ์ต้องใช้เซิร์ฟเวอร์รีเลย์ ซึ่งยังไม่ได้ตั้งค่าในการติดตั้งนี้',
 }

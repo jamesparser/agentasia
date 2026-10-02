@@ -1270,4 +1270,7 @@ export const es: I18n = {
   'Requests today': 'Solicitudes hoy',
   'Tokens today': 'Tokens hoy',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: todos los planes son gratuitos hasta el 25 de diciembre. Los planes de pago se abrirán después.',
+  'Sync with my account': 'Sincronizar con mi cuenta',
+  'Same account and same password on every device.': 'La misma cuenta y la misma contraseña en cada dispositivo.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'La sincronización entre dispositivos necesita un servidor de retransmisión que aún no está configurado en este despliegue.',
 } as const

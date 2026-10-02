@@ -1157,4 +1157,7 @@ export const jv: Partial<I18n> = {
   'Requests today': 'Panyuwunan dina iki',
   'Tokens today': 'Token dina iki',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Beta: kabeh paket gratis nganti 25 Desember. Paket mbayar dibukak sawise iku.',
+  'Sync with my account': 'Sinkronake karo akunku',
+  'Same account and same password on every device.': 'Akun sing padha lan sandhi sing padha ing saben piranti.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Sinkronisasi antar piranti butuh server relay sing durung disiapake ing penyebaran iki.',
 }

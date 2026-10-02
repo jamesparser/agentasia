@@ -1163,4 +1163,7 @@ export const ur: Partial<I18n> = {
   'Requests today': 'آج کی درخواستیں',
   'Tokens today': 'آج کے ٹوکن',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'بیٹا: تمام پلان 25 دسمبر تک مفت ہیں۔ ادائیگی والے پلان اس کے بعد کھلیں گے۔',
+  'Sync with my account': 'میرے اکاؤنٹ کے ساتھ سنک کریں',
+  'Same account and same password on every device.': 'ہر ڈیوائس پر وہی اکاؤنٹ اور وہی پاس ورڈ۔',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'ڈیوائسز کے درمیان سنک کے لیے ریلے سرور درکار ہے جو اس ڈیپلائمنٹ میں ابھی سیٹ نہیں ہے۔',
 }

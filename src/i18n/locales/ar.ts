@@ -1250,4 +1250,7 @@ export const ar: I18n = {
   'Requests today': 'الطلبات اليوم',
   'Tokens today': 'الرموز اليوم',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'النسخة التجريبية: جميع الخطط مجانية حتى 25 ديسمبر. ستُفتح الخطط المدفوعة بعد ذلك.',
+  'Sync with my account': 'المزامنة مع حسابي',
+  'Same account and same password on every device.': 'الحساب نفسه وكلمة المرور نفسها على كل جهاز.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'تتطلب المزامنة بين الأجهزة خادم ترحيل لم يُعدّ في هذا النشر بعد.',
 } as const

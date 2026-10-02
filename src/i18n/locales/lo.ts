@@ -1148,4 +1148,7 @@ export const lo: Partial<I18n> = {
   'Requests today': 'ຄຳຮ້ອງຂໍມື້ນີ້',
   'Tokens today': 'ໂທເຄັນມື້ນີ້',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'ເບຕ້າ: ທຸກແພັກເກັດໃຊ້ຟຣີຮອດ 25 ທັນວາ. ແພັກເກັດແບບຈ່າຍເງິນຈະເປີດຫຼັງຈາກນັ້ນ.',
+  'Sync with my account': 'ຊິງກ໌ກັບບັນຊີຂອງຂ້ອຍ',
+  'Same account and same password on every device.': 'ໃຊ້ບັນຊີດຽວກັນ ແລະ ລະຫັດຜ່ານດຽວກັນໃນທຸກອຸປະກອນ.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'ການຊິງກ໌ຂ້າມອຸປະກອນຕ້ອງໃຊ້ເຊີບເວີຣີເລ ເຊິ່ງຍັງບໍ່ໄດ້ຕັ້ງຄ່າໃນການນຳໃຊ້ນີ້.',
 }

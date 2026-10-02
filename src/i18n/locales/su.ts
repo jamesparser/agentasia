@@ -1153,4 +1153,7 @@ export const su: Partial<I18n> = {
   'Requests today': 'Paménta poé ieu',
   'Tokens today': 'Token poé ieu',
   'Beta: every plan is free until December 25. Paid plans open afterward.': 'Béta: kabéh paket gratis nepi ka 25 Désémber. Paket mayar dibuka sanggeus éta.',
+  'Sync with my account': 'Singkronkeun jeung akun kuring',
+  'Same account and same password on every device.': 'Akun anu sarua jeung kecap akses anu sarua dina unggal parangkat.',
+  'Cross-device sync needs a relay server that is not set up on this deployment yet.': 'Singkronisasi antar parangkat peryogi server relay anu acan disiapkeun dina panyebaran ieu.',
 }
