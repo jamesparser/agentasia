@@ -13,6 +13,7 @@
  */
 import type { STTProvider, STTResult, STTConfig } from '../types'
 import { gatewayBase } from '@/lib/llm/managed-lane'
+import { gatewayFetch } from '@/lib/auth/gatewayFetch'
 
 const SAMPLE_RATE = 16000
 
@@ -116,7 +117,7 @@ export class AssemblyAISttProvider implements STTProvider {
       const base = gatewayBase()
       if (!base) throw new Error('gateway_not_configured')
 
-      const res = await fetch(`${base}/v1/speech/transcribe`, {
+      const res = await gatewayFetch(`${base}/v1/speech/transcribe`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
