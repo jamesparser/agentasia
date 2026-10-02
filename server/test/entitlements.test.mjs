@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { mintDevToken, verifyDevToken, verifyFirebaseIdToken, authenticate, resetCertCache } from '../src/auth.mjs'
-import { resolvePlan, assertWithinAllowance, recordUsage, usageReport, setPlan, betaState } from '../src/entitlements.mjs'
+import { assertSearchAllowance, recordSearch, resolvePlan, assertWithinAllowance, recordUsage, usageReport, setPlan, betaState } from '../src/entitlements.mjs'
 
 const SECRET = 'test-secret-not-real'
 const b64u = (b) => Buffer.from(b).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
@@ -146,4 +146,16 @@ test('gateway: dev session route does not exist without the secret', async () =>
   const env = await tmpEnv({ MODEL_GATEWAY_ENABLED: 'true', GATEWAY_ADMIN_TOKEN: 'x' })
   const g = await boot(env)
   try { assert.equal((await fetch(`${g.base}/v1/dev/session`, { method: 'POST', body: '{}' })).status, 404) } finally { g.child.kill('SIGKILL') }
+})
+
+test('free plan gets web search, capped at 25 a day per user', async () => {
+  const env = await tmpEnv()
+  const ent = await resolvePlan('s1', env)
+  assert.equal(ent.dailySearches, 25)
+  for (let i = 0; i < 25; i += 1) {
+    await assertSearchAllowance('s1', ent, env)
+    await recordSearch('s1', env)
+  }
+  await assert.rejects(assertSearchAllowance('s1', ent, env), (e) => e.statusCode === 429 && e.message === 'daily_search_allowance_reached')
+  await assertSearchAllowance('s2', ent, env)
 })

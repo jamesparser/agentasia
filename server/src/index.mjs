@@ -20,7 +20,7 @@ import { createSchedule, listSchedules, updateSchedule, deleteSchedule, allSched
 import { listScheduleRuns, startScheduleWorker, runTask } from './schedule-worker.mjs'
 import { executeScheduledTask } from './schedule-runner.mjs'
 import { authenticate, mintDevToken } from './auth.mjs'
-import { resolvePlan, assertWithinAllowance, recordUsage, usageReport, setPlan } from './entitlements.mjs'
+import { resolvePlan, assertWithinAllowance, recordUsage, assertSearchAllowance, recordSearch, usageReport, setPlan } from './entitlements.mjs'
 
 const port = Number(process.env.PORT || 8787)
 // Bind localhost by default: this process is meant to sit behind a tunnel/proxy.
@@ -40,7 +40,7 @@ const host = process.env.BIND_HOST || '127.0.0.1'
  * working provider, and GET /v1/spend / /v1/providers/health leak budget state
  * and key health. /v1/search spends the shared Tavily quota outright.
  */
-const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/usage', 'POST /v1/dev/session'])
+const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search'])
 // Scheduled tasks are per-user: public at the door, but every handler below
 // requires a verified token and only ever touches that caller's own tasks.
 const SCHEDULE_ROUTE = /^\/v1\/(schedules(\/[^/]+(\/run)?)?|schedule-runs)$/
@@ -403,10 +403,23 @@ const server = http.createServer(async (req, res) => {
       if (!searchConfigured(process.env)) {
         return json(res, 503, { error: 'tavily_not_configured', requestId })
       }
+      // Open to every signed-in plan, free included, but metered per user so the
+      // shared Tavily quota cannot be drained by one account or by anonymous callers.
+      let principal
+      try { principal = await authenticate(req) } catch (error) {
+        return json(res, 401, { error: error.code || 'invalid_token', requestId })
+      }
+      if (!principal && process.env.AUTH_REQUIRED === 'true') {
+        return json(res, 401, { error: 'sign_in_required', requestId })
+      }
       try {
+        if (principal) await assertSearchAllowance(principal.uid, await resolvePlan(principal.uid))
         const body = await readJson(req)
-        return json(res, 200, await webSearch(body))
+        const out = await webSearch(body)
+        if (principal) await recordSearch(principal.uid)
+        return json(res, 200, out)
       } catch (error) {
+        if (error.allowance) return json(res, 429, { error: error.message, ...error.allowance, requestId })
         return json(res, error.statusCode || 502, { error: error.message, requestId })
       }
     }

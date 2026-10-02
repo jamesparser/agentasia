@@ -39,6 +39,9 @@ export {
   knowledgePlugins,
 } from './knowledge'
 
+// Web search (Tavily via the gateway)
+export { webSearchPlugin, WEB_SEARCH_TOOL_DEFINITION } from './web-search'
+
 // Wikipedia tools
 export {
   wikipediaSearchPlugin,
@@ -140,6 +143,7 @@ import {
   getDocumentSummaryPlugin,
 } from './knowledge'
 import { wikipediaSearchPlugin, wikipediaArticlePlugin } from './wikipedia'
+import { webSearchPlugin } from './web-search'
 import {
   wikidataSearchPlugin,
   wikidataEntityPlugin,
@@ -181,6 +185,7 @@ export const corePlugins: ToolPlugin<any, any>[] = [
   listDocumentsPlugin,
   getDocumentSummaryPlugin,
   // Research
+  webSearchPlugin,
   wikipediaSearchPlugin,
   wikipediaArticlePlugin,
   wikidataSearchPlugin,
@@ -230,6 +235,7 @@ export const pluginsByCategory = {
     getDocumentSummaryPlugin,
   ],
   research: [
+    webSearchPlugin,
     wikipediaSearchPlugin,
     wikipediaArticlePlugin,
     wikidataSearchPlugin,
