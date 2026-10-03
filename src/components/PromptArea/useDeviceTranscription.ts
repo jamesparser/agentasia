@@ -30,7 +30,7 @@ const WHISPER_LANG: Record<string, string> = {
   en: 'en', th: 'th', lo: 'lo', my: 'my', km: 'km', vi: 'vi', id: 'id',
   ms: 'ms', jv: 'jv', su: 'su', fil: 'fil', ceb: 'ceb', zh: 'zh',
   'zh-CN': 'zh', 'zh-TW': 'zh', yue: 'zh', hi: 'hi', bn: 'bn', ur: 'ur',
-  ja: 'ja', ko: 'ko', ar: 'ar', de: 'de', es: 'es', fr: 'fr', pt: 'pt', pl: 'pl',
+  ja: 'ja', ko: 'ko', ar: 'ar', de: 'de', es: 'es', fr: 'fr', pt: 'pt', pl: 'pl', ru: 'ru',
 }
 
 export function whisperLang(code: string | undefined): string {

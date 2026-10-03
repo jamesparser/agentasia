@@ -18,6 +18,7 @@ import { bn } from './locales/bn'
 import { ur } from './locales/ur'
 import { pt } from './locales/pt'
 import { pl } from './locales/pl'
+import { ru } from './locales/ru'
 
 export const agentAsiaDraftLocales = {
   ja,
@@ -40,4 +41,5 @@ export const agentAsiaDraftLocales = {
   ur,
   pt,
   pl,
+  ru,
 } as const
