@@ -58,6 +58,7 @@ export function useDeviceTranscription({
   const providerRef = useRef<STTProvider | null>(null)
   const unsubRef = useRef<(() => void) | null>(null)
   const textRef = useRef('')
+  const erroredRef = useRef(false)
 
   // Keep the latest callbacks without re-creating the provider.
   const cbRef = useRef({ onTranscript, onFinalTranscript, onError })
@@ -105,7 +106,12 @@ export function useDeviceTranscription({
         await provider.initialize()
         const offError = provider.onError((error) => {
           setState('error')
-          cbRef.current.onError?.(error.message)
+          erroredRef.current = true
+          cbRef.current.onError?.(
+            /daily_allowance|allowance/.test(error.message)
+              ? "You've used today's free requests. Sign in or come back tomorrow."
+              : error.message,
+          )
         })
         const offResult = provider.onResult((result) => {
           if (providerType === 'assemblyai') setState('ready')
@@ -126,6 +132,7 @@ export function useDeviceTranscription({
         providerRef.current = provider
       }
       textRef.current = ''
+      erroredRef.current = false
       await providerRef.current.start({ language: whisperLang(lang) })
       setState('listening')
     } catch (error) {
@@ -147,8 +154,14 @@ export function useDeviceTranscription({
     } catch {
       /* ignore */
     }
-    if (providerType !== 'assemblyai') setState('ready')
-    else if (!textRef.current) setTimeout(() => setState((s) => (s === 'loading' ? 'ready' : s)), 30_000)
+    // The cloud provider's stop() resolves only after transcription finished
+    // (result or error already delivered), so the mic is free again right now.
+    // The old 30 second wait left it greyed out after an empty recording,
+    // which looked like "worked once, then stopped".
+    setState((s) => (s === 'error' ? s : 'ready'))
+    if (providerType === 'assemblyai' && !textRef.current && !erroredRef.current) {
+      cbRef.current.onError?.('No speech was heard. Tap the microphone and try again.')
+    }
   }, [providerType])
 
   return {
