@@ -1099,4 +1099,5 @@ export const ru: Partial<I18n> = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'Идёт через релей AgentAsia, потому что этот сервер отклоняет веб-страницы. Ваш ключ проходит через него при каждом вызове и там не хранится. Нужен вход в аккаунт.',
   'Worker': 'Исполнитель',
   'Mode': 'Режим',
+  'Tap to send what you said': 'Нажмите, чтобы отправить сказанное',
 }

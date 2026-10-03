@@ -132,7 +132,7 @@ export const LivePage = () => {
     ttsProviderType,
     getTTSAnalyser,
   } = useVoice({
-    sttProvider: savedSTTProvider || 'web-speech', // Use saved or default to browser native
+    sttProvider: savedSTTProvider || 'assemblyai', // Cloud speech to text: browser dictation is unreliable on phones
     ttsProvider: savedTTSProvider || 'web-speech', // Use saved or default to browser native
     ttsVoiceId: selectedVoiceId, // Use selected Kokoro voice
     language: lang,

@@ -37,6 +37,7 @@ export class AssemblyAISttProvider implements STTProvider {
   readonly type = 'assemblyai' as const
 
   private stream: MediaStream | null = null
+  private captureRate = SAMPLE_RATE
   private audioContext: AudioContext | null = null
   private scriptProcessor: ScriptProcessorNode | null = null
   private chunks: Float32Array[] = []
@@ -76,7 +77,17 @@ export class AssemblyAISttProvider implements STTProvider {
         noiseSuppression: true,
       },
     })
-    this.audioContext = new AudioContext({ sampleRate: SAMPLE_RATE })
+    // Safari on iPhones may refuse a custom rate, so fall back and remember the
+    // rate that was really used: labelling 48 kHz audio as 16 kHz plays it slow
+    // and the transcript comes back empty or wrong.
+    try {
+      this.audioContext = new AudioContext({ sampleRate: SAMPLE_RATE })
+    } catch {
+      const Ctor = (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      this.audioContext = new (Ctor ?? AudioContext)()
+    }
+    this.captureRate = this.audioContext.sampleRate
+    if (this.audioContext.state === 'suspended') await this.audioContext.resume()
     const source = this.audioContext.createMediaStreamSource(this.stream)
     const processor = this.audioContext.createScriptProcessor(4096, 1, 1)
     processor.onaudioprocess = (event) => {
@@ -128,7 +139,7 @@ export class AssemblyAISttProvider implements STTProvider {
     }
     this.busy = true
     try {
-      const wav = encodeWav(audio, SAMPLE_RATE)
+      const wav = encodeWav(audio, this.captureRate)
       const base64 = bytesToBase64(wav)
       const base = gatewayBase()
       if (!base) throw new Error('gateway_not_configured')

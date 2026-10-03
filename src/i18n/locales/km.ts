@@ -1219,4 +1219,5 @@ export const km: Partial<I18n> = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'ឆ្លងកាត់ឧបករណ៍បញ្ជូនបន្ត AgentAsia ព្រោះម៉ាស៊ីនមេនេះបដិសេធទំព័រគេហទំព័រ។ សោរបស់អ្នកឆ្លងកាត់វាក្នុងការហៅនីមួយៗ ហើយមិនត្រូវបានរក្សាទុកនៅទីនោះទេ។ ត្រូវការគណនីដែលបានចូល។',
   'Worker': 'កម្មករ',
   'Mode': 'របៀប',
+  'Tap to send what you said': 'ចុចដើម្បីផ្ញើអ្វីដែលអ្នកបាននិយាយ',
 }

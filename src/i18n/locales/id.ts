@@ -1215,4 +1215,5 @@ export const id: Partial<I18n> = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'Melewati relay AgentAsia karena server ini menolak halaman web. Kunci Anda melewatinya di setiap panggilan dan tidak disimpan di sana. Perlu akun yang sudah masuk.',
   'Worker': 'Worker',
   'Mode': 'Mode',
+  'Tap to send what you said': 'Ketuk untuk mengirim ucapan Anda',
 }

@@ -1216,4 +1216,5 @@ export const ja: Partial<I18n> = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'このサーバーはウェブページを拒否するため、AgentAsia のリレーを経由します。キーは呼び出しのたびにリレーを通過しますが、そこには保存されません。ログイン済みのアカウントが必要です。',
   'Worker': 'ワーカー',
   'Mode': 'モード',
+  'Tap to send what you said': 'タップして話した内容を送信',
 }

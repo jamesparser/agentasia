@@ -1184,4 +1184,5 @@ export const zh_CN: Partial<I18n> = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': '由于此服务器拒绝网页请求，将通过 AgentAsia 中继。每次调用时你的密钥会经过中继，但不会存储在那里。需要已登录的账号。',
   'Worker': '工作者',
   'Mode': '模式',
+  'Tap to send what you said': '点按发送您说的话',
 }

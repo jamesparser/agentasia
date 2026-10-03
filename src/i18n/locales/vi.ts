@@ -1217,4 +1217,5 @@ export const vi: Partial<I18n> = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'Đi qua rơ-le của AgentAsia vì máy chủ này từ chối trang web. Khóa của bạn đi qua rơ-le trong mỗi lần gọi và không được lưu ở đó. Cần tài khoản đã đăng nhập.',
   'Worker': 'Worker',
   'Mode': 'Chế độ',
+  'Tap to send what you said': 'Chạm để gửi điều bạn vừa nói',
 }

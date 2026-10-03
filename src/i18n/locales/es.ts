@@ -1329,4 +1329,5 @@ export const es: I18n = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'Pasa por el relé de AgentAsia porque este servidor rechaza las páginas web. Tu clave lo atraviesa en cada llamada y no se guarda allí. Requiere una cuenta con sesión iniciada.',
   'Worker': 'Trabajador',
   'Mode': 'Modo',
+  'Tap to send what you said': 'Toca para enviar lo que dijiste',
 } as const

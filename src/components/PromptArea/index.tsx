@@ -169,7 +169,7 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
     const voice = useVoice(
       isLiveMode
         ? {
-            sttProvider: (savedSTTProvider as STTProviderType) || 'web-speech',
+            sttProvider: (savedSTTProvider as STTProviderType) || 'assemblyai',
             ttsProvider: (savedTTSProvider as TTSProviderType) || 'web-speech',
             ttsVoiceId: selectedVoiceId,
             language: lang,
@@ -1058,6 +1058,39 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
                     had any text in it - including the text dictation had just put
                     there - so a second utterance was impossible without clearing
                     the box by hand. */}
+                {/* Live mode: the microphone is the send button. With the cloud
+                    engine the recording is transcribed and sent when you tap it,
+                    so it has to be visible, and big enough to hit on a phone. */}
+                {isLiveMode && (
+                  <Tooltip
+                    content={
+                      voice.isRecording
+                        ? t('Tap to send what you said')
+                        : t('Speak to microphone')
+                    }
+                    placement="bottom"
+                  >
+                    <Button
+                      isIconOnly
+                      aria-label={
+                        voice.isRecording
+                          ? t('Tap to send what you said')
+                          : t('Speak to microphone')
+                      }
+                      color="primary"
+                      radius="full"
+                      variant={voice.isRecording ? 'solid' : 'flat'}
+                      className={cn('h-10 w-10 min-w-10', voice.isRecording && 'animate-pulse')}
+                      onPress={() => voice.toggleRecording()}
+                    >
+                      <Icon
+                        name={voice.isRecording ? 'MicrophoneSpeaking' : 'Microphone'}
+                        size="md"
+                      />
+                    </Button>
+                  </Tooltip>
+                )}
+
                 {!isLiveMode && speechToTextEnabled && (
                     <Tooltip
                       content={

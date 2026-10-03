@@ -1308,4 +1308,5 @@ export const ko: I18n = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': '이 서버가 웹 페이지를 거부하므로 AgentAsia 릴레이를 거칩니다. 키는 호출할 때마다 릴레이를 통과하며 그곳에 저장되지 않습니다. 로그인한 계정이 필요합니다.',
   'Worker': '워커',
   'Mode': '모드',
+  'Tap to send what you said': '말한 내용을 보내려면 누르세요',
 } as const

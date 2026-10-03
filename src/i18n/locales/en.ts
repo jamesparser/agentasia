@@ -1245,4 +1245,5 @@ export const en = [
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.',
   'Worker',
   'Mode',
+  'Tap to send what you said',
 ] as const

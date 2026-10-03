@@ -1207,4 +1207,5 @@ export const th: Partial<I18n> = {
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'ผ่านรีเลย์ของ AgentAsia เพราะเซิร์ฟเวอร์นี้ปฏิเสธหน้าเว็บ คีย์ของคุณจะผ่านรีเลย์ในแต่ละการเรียกและไม่ถูกเก็บไว้ที่นั่น ต้องใช้บัญชีที่เข้าสู่ระบบแล้ว',
   'Worker': 'เวิร์กเกอร์',
   'Mode': 'โหมด',
+  'Tap to send what you said': 'แตะเพื่อส่งสิ่งที่คุณพูด',
 }
