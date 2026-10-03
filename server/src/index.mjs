@@ -44,7 +44,7 @@ const host = process.env.BIND_HOST || '127.0.0.1'
  * working provider, and GET /v1/spend / /v1/providers/health leak budget state
  * and key health. /v1/search spends the shared Tavily quota outright.
  */
-const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/models', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search', 'POST /v1/speech/transcribe', 'POST /v1/speech/understand'])
+const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/models', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search', 'POST /v1/speech/transcribe', 'POST /v1/speech/understand', 'POST /v1/mcp/relay'])
 // Scheduled tasks are per-user: public at the door, but every handler below
 // requires a verified token and only ever touches that caller's own tasks.
 const SCHEDULE_ROUTE = /^\/v1\/(schedules(\/[^/]+(\/run)?)?|schedule-runs)$/
