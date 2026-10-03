@@ -667,3 +667,87 @@ body {
     min-height: 2.5rem;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Phones (installed to the home screen, S24 sized and smaller).
+   Everything here is scoped to a narrow touch screen, so desktop layout and
+   desktop browsers are untouched. Goals: nothing smaller than a fingertip,
+   readable text, and no iOS/Android zoom-on-focus.
+   ------------------------------------------------------------------------- */
+@media (max-width: 767px) and (pointer: coarse) {
+  html {
+    /* One notch up from 16px: every rem based size grows with it. */
+    font-size: 106.25%;
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation; /* no 300ms tap delay, no double tap zoom */
+  }
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* The smallest text utilities are unreadable on a 6 inch screen. */
+  .text-tiny,
+  .text-xs {
+    font-size: 0.8125rem !important;
+    line-height: 1.15rem !important;
+  }
+
+  /* 16px+ in fields stops the browser zooming the page on focus. */
+  input,
+  textarea,
+  select {
+    font-size: 1rem !important;
+  }
+
+  /* Buttons that render at 24-36px get a 44px target. */
+  button[class*='w-6'],
+  button[class*='w-7'],
+  button[class*='w-8'],
+  button[class*='w-9'],
+  button[class*='h-6'],
+  button[class*='h-7'],
+  button[class*='h-8'],
+  button[class*='h-9'],
+  button[class*='min-w-6'],
+  button[class*='min-w-8'],
+  button[class*='min-w-unit'] {
+    min-width: 2.75rem !important;
+    min-height: 2.75rem !important;
+  }
+  /* Rows people tap: menu items, list options, tabs, links in the sidebar. */
+  [role='menuitem'],
+  [role='option'],
+  [role='tab'],
+  [role='radio'],
+  [role='switch'],
+  nav a,
+  nav button {
+    min-height: 2.75rem;
+  }
+
+  /* Bigger icons on controls. */
+  button svg,
+  [role='menuitem'] svg,
+  [role='tab'] svg,
+  [role='radio'] svg {
+    width: 1.375rem !important;
+    height: 1.375rem !important;
+    flex-shrink: 0;
+  }
+  /* ...but not tiny status dots or the chevrons inside inline pills. */
+  button svg[class*='h-2'],
+  button svg[class*='w-2'] {
+    width: 0.75rem !important;
+    height: 0.75rem !important;
+  }
+}
+
+/* A short window (a home screen shortcut that is about as tall as it is wide):
+   give the content the room back. */
+@media (max-width: 767px) and (max-height: 560px) and (pointer: coarse) {
+  img[src*='naga-head'],
+  img[src*='naga-logo'] {
+    max-height: 4.5rem;
+    width: auto;
+  }
+}

@@ -91,7 +91,7 @@ export function ModeSwitch({
             title={o.label}
             onClick={() => choose(o.key)}
             className={cn(
-              'flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 transition-colors',
+              'flex min-h-11 items-center justify-center gap-1.5 rounded-full px-4 py-1.5 text-base transition-colors lg:min-h-0 lg:px-3 lg:text-sm',
               compact && 'px-0',
               active
                 ? 'bg-background text-foreground shadow-sm'
