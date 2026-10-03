@@ -6,7 +6,6 @@ import {
   Input,
   Tabs,
   Tab,
-  Tooltip,
   Breadcrumbs,
   BreadcrumbItem,
 } from '@heroui/react'
@@ -155,6 +154,7 @@ const SettingsContentInner = () => {
 
   // Active section in the sidebar
   const [activeKey, setActiveKey] = useState<SectionKey>('')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Sync active section with URL hash
   useEffect(() => {
@@ -358,42 +358,73 @@ const SettingsContentInner = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-full min-h-0">
-      {/* Horizontal scrollable tabs on narrow screens */}
-      <div className="md:hidden shrink-0 border-b border-default-200 overflow-hidden px-2 pt-1">
-        <Tabs
-          selectedKey={activeKey}
-          onSelectionChange={(key) => {
-            const section = sections.find((s) => s.key === key)
-            if (section) handleSectionClick(section)
-          }}
-          variant="underlined"
-          size="sm"
-          fullWidth
-          classNames={{
-            tabList: 'py-0 me-6',
-            tab: 'px-1',
-          }}
+      {/* Phones: one big tap target showing the current section; it opens a
+          grouped list of full-height rows (the old strip of tiny icon tabs was
+          too small to hit). */}
+      <div className="md:hidden shrink-0 border-b border-default-200">
+        <button
+          type="button"
+          aria-expanded={mobileMenuOpen}
+          onClick={() => setMobileMenuOpen((o) => !o)}
+          className="flex min-h-12 w-full items-center gap-3 px-4 py-3 text-start"
         >
-          {sections.map((section) => (
-            <Tab
-              key={section.key}
-              title={
-                <div className="flex items-center gap-1.5">
-                  <Tooltip
-                    content={section.label}
-                    placement="top"
-                    classNames={{ base: 'text-xs' }}
-                  >
-                    <Icon
-                      name={section.icon as any}
-                      className="h-3.5 w-3.5 shrink-0"
-                    />
-                  </Tooltip>
+          <Icon
+            name={(currentSection?.icon ?? 'Settings') as any}
+            className="h-5 w-5 shrink-0"
+          />
+          <span className="flex-1 truncate text-base font-medium">
+            {currentSection?.label ?? t('Settings')}
+          </span>
+          <Icon
+            name="NavArrowDown"
+            className={`h-5 w-5 shrink-0 text-default-500 transition-transform ${
+              mobileMenuOpen ? 'rotate-180' : ''
+            }`}
+          />
+        </button>
+        {mobileMenuOpen && (
+          <div className="max-h-[60vh] overflow-y-auto border-t border-default-200 pb-2">
+            {groups.map((group) => {
+              const groupSections = sections.filter((s) => s.group === group.key)
+              if (groupSections.length === 0) return null
+              return (
+                <div key={group.key}>
+                  <h3 className="px-4 pb-1 pt-3 text-xs font-semibold uppercase tracking-wider text-default-400">
+                    {group.label}
+                  </h3>
+                  {groupSections.map((section) => {
+                    const isActive = activeKey === section.key
+                    return (
+                      <button
+                        key={section.key}
+                        type="button"
+                        onClick={() => {
+                          setMobileMenuOpen(false)
+                          handleSectionClick(section)
+                        }}
+                        className={`flex min-h-12 w-full items-center gap-3 px-4 py-3 text-start text-base ${
+                          isActive ? 'bg-default-200 font-medium' : 'active:bg-default-100'
+                        }`}
+                      >
+                        <Icon
+                          name={section.icon as any}
+                          className="h-5 w-5 shrink-0"
+                        />
+                        <span className="flex-1 truncate">{section.label}</span>
+                        {!!section.navigateTo && (
+                          <Icon
+                            name="ArrowRight"
+                            className="h-4 w-4 shrink-0 text-default-400 rtl:rotate-180"
+                          />
+                        )}
+                      </button>
+                    )
+                  })}
                 </div>
-              }
-            />
-          ))}
-        </Tabs>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* Left sidebar menu (hidden on narrow screens) */}
