@@ -152,7 +152,7 @@ export const ThreadPreview = memo(function ThreadPreview({
         className={`bg-surface flex min-h-0 max-h-full flex-1 flex-col overflow-hidden rounded-2xl shadow-sm ${isPinned ? 'outline-2 outline-primary outline-offset-2' : ''}`}
       >
         {/* Toolbar */}
-        <div className="flex shrink-0 flex-col gap-4 p-4 pb-0">
+        <div className="flex shrink-0 flex-col gap-4 p-4 pb-0 pt-14 lg:pt-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ToolbarBtn

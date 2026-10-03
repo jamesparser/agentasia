@@ -926,15 +926,19 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
             classNames={{
               input: 'p-1',
               inputWrapper: cn(
-                'shadow-none -mb-20 pb-12 !ring-0 !ring-offset-0',
+                'shadow-none -mb-20 pb-14 !ring-0 !ring-offset-0',
                 selectedFiles.length ? 'pb-20' : '',
                 isLiveMode ? 'bg-transparent' : 'bg-default-200',
               ),
             }}
             maxRows={7}
+            // Never fewer than two rows: the action row (attach, model, mic, send)
+            // sits over the bottom of the box, and with a single row it covers
+            // the text and the placeholder.
             minRows={
-              minRows ||
-              (isMobileDevice() && isLandscape() && isSmallHeight() ? 1 : 3)
+              isMobileDevice() && isLandscape() && isSmallHeight()
+                ? (minRows || 1)
+                : Math.max(2, minRows || 3)
             }
             placeholder={
               isDragOver ? t('Drop files here…') : modePlaceholders[mode]
@@ -1032,7 +1036,7 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
                 )}
 
                 {/* Live mode toggle — next to submit */}
-                {onModeChange && (
+                {onModeChange && !AGENTASIA.ui.managedGatewayEnabled && (
                   <Tooltip
                     content={t('Live voice conversation')}
                     placement="bottom"
