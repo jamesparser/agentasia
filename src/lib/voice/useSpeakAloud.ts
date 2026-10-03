@@ -41,17 +41,37 @@ function useDeviceVoices(): SpeechSynthesisVoice[] {
   return voices
 }
 
+/**
+ * Score a device voice by how natural it usually sounds. Browsers expose the
+ * same language through very different engines: Edge "Online (Natural)" and
+ * Chrome "Google" voices are neural and sound human, macOS "Premium" and
+ * "Enhanced" voices are good, while "Compact" and plain eSpeak voices are the
+ * robotic ones. Picking the best one for the language is the cheapest quality
+ * win there is, because it needs no download and no server.
+ */
+export function voiceQuality(v: Pick<SpeechSynthesisVoice, 'name' | 'localService'>): number {
+  const n = v.name.toLowerCase()
+  let score = 0
+  if (/natural|neural|online/.test(n)) score += 100
+  if (/premium|enhanced|siri/.test(n)) score += 80
+  if (/^google /.test(n)) score += 60
+  if (/compact|espeak|\bfred\b|\bzarvox\b|\bbad news\b|\bwhisper\b/.test(n)) score -= 100
+  if (!v.localService) score += 10
+  return score
+}
+
 function pickVoice(
   voices: SpeechSynthesisVoice[],
   language: string,
 ): SpeechSynthesisVoice | null {
   const wanted = language.toLowerCase()
   const base = wanted.split('-')[0]
+  const norm = (v: SpeechSynthesisVoice) => v.lang.toLowerCase().replace('_', '-')
+  const best = (list: SpeechSynthesisVoice[]) =>
+    list.length ? [...list].sort((x, y) => voiceQuality(y) - voiceQuality(x))[0] : null
   return (
-    voices.find((v) => v.lang.toLowerCase() === wanted) ||
-    voices.find((v) => v.lang.toLowerCase().replace('_', '-') === wanted) ||
-    voices.find((v) => v.lang.toLowerCase().startsWith(`${base}-`)) ||
-    voices.find((v) => v.lang.toLowerCase() === base) ||
+    best(voices.filter((v) => norm(v) === wanted)) ||
+    best(voices.filter((v) => norm(v).startsWith(`${base}-`) || norm(v) === base)) ||
     null
   )
 }
