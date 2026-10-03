@@ -205,7 +205,7 @@ export function GeneralSection() {
         />
       </div>
 
-      <footer className="flex flex-row gap-3 items-baseline absolute end-0 bottom-0 p-4 text-xs opacity-50 justify-end">
+      <footer className="flex flex-row gap-3 items-baseline mt-8 p-4 text-xs opacity-50 justify-end md:absolute md:end-0 md:bottom-0 md:mt-0">
         <span>{PRODUCT.displayName}</span>
         <span>{__APP_VERSION__}</span>
         <time dateTime={new Date(__BUILD_TIME__).toISOString()}>

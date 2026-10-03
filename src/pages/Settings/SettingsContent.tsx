@@ -366,7 +366,7 @@ const SettingsContentInner = () => {
           type="button"
           aria-expanded={mobileMenuOpen}
           onClick={() => setMobileMenuOpen((o) => !o)}
-          className="flex min-h-12 w-full items-center gap-3 px-4 py-3 text-start"
+          className="flex min-h-12 w-full items-center gap-3 py-3 ps-4 pe-16 text-start"
         >
           <Icon
             name={(currentSection?.icon ?? 'Settings') as any}
