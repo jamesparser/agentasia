@@ -1,5 +1,5 @@
 import http from 'node:http'
-import { randomUUID, timingSafeEqual } from 'node:crypto'
+import { randomUUID, timingSafeEqual, createHash } from 'node:crypto'
 import {
   configuredProviders,
   providerCatalog,
@@ -100,6 +100,18 @@ function corsHeaders(res, origin) {
     'x-agentasia-provider, x-agentasia-model',
   )
 }
+// Anonymous (guest) callers are metered per network address so a guest cannot run
+// the shared Nebius, Tavily and AssemblyAI quotas down without limit. This is a
+// safety net for the hackathon, not an identity: an address change or a new
+// network resets it. The real control is AUTH_REQUIRED=true, which refuses
+// anonymous callers outright. Set ANON_METER=off to disable the net.
+function anonPrincipal(req) {
+  if (process.env.ANON_METER === 'off') return null
+  const ip = String(req.headers['cf-connecting-ip'] || (req.headers['x-forwarded-for'] || '').split(',')[0] || req.socket?.remoteAddress || '').trim()
+  if (!ip) return null
+  return { uid: `anon:${createHash('sha256').update(ip).digest('hex').slice(0, 16)}` }
+}
+
 async function readJson(req) {
   let raw = ''
   for await (const c of req) raw += c
@@ -290,6 +302,8 @@ const server = http.createServer(async (req, res) => {
         if (!principal && process.env.AUTH_REQUIRED === 'true') {
           return json(res, 401, { error: 'sign_in_required', hint: 'create a free account to use AgentAsia', requestId })
         }
+        const meter = principal || anonPrincipal(req)
+        if (!principal && meter) await assertWithinAllowance(meter.uid, await resolvePlan(meter.uid))
         let entitlement = null
         if (principal) {
           entitlement = await resolvePlan(principal.uid)
@@ -377,14 +391,14 @@ const server = http.createServer(async (req, res) => {
             completion_tokens: Number(body.max_tokens || body.maxTokens || 0),
           }
           await recordSpend(model || body.model || '', bounded)  // model is now always resolved upstream
-          if (principal) await recordUsage(principal.uid, bounded)
+          if (meter) await recordUsage(meter.uid, bounded)
           return
         }
 
         res.setHeader('x-agentasia-provider', provider || result?._provider || '')
         if (model) res.setHeader('x-agentasia-model', model)
         await recordSpend(model || result?._model || body.model || '', result?.usage || {})
-        if (principal) await recordUsage(principal.uid, result?.usage || {})
+        if (meter) await recordUsage(meter.uid, result?.usage || {})
         return json(res, 200, agentMeta ? { ...result, agentasia: agentMeta } : result)
       } catch (error) {
         if (error.allowance) return json(res, 429, { error: { message: error.message, type: 'allowance', ...error.allowance }, requestId })
@@ -441,10 +455,11 @@ const server = http.createServer(async (req, res) => {
         return json(res, 401, { error: 'sign_in_required', requestId })
       }
       try {
-        if (principal) await assertSearchAllowance(principal.uid, await resolvePlan(principal.uid))
+        const meter = principal || anonPrincipal(req)
+        if (meter) await assertSearchAllowance(meter.uid, await resolvePlan(meter.uid))
         const body = await readJson(req)
         const out = await webSearch(body)
-        if (principal) await recordSearch(principal.uid)
+        if (meter) await recordSearch(meter.uid)
         return json(res, 200, out)
       } catch (error) {
         if (error.allowance) return json(res, 429, { error: error.message, ...error.allowance, requestId })
@@ -470,12 +485,13 @@ const server = http.createServer(async (req, res) => {
         return json(res, 401, { error: 'sign_in_required', requestId })
       }
       try {
-        if (principal) await assertAudioAllowance(principal.uid, await resolvePlan(principal.uid))
+        const meter = principal || anonPrincipal(req)
+        if (meter) await assertAudioAllowance(meter.uid, await resolvePlan(meter.uid))
         const body = await readJson(req)
         const out = p === '/v1/speech/transcribe'
           ? await transcribeAudio(body)
           : await understandSpeech(body)
-        if (principal) await recordAudio(principal.uid)
+        if (meter) await recordAudio(meter.uid)
         return json(res, 200, out)
       } catch (error) {
         if (error.allowance) return json(res, 429, { error: error.message, ...error.allowance, requestId })

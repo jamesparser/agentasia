@@ -61,7 +61,7 @@ assert.equal(out.language, 'en')
 assert.equal(out.audioDuration, 1.5)
 assert.equal(calls[0].auth, 'aai-test', 'key sent in the authorization header, never logged')
 assert.equal(calls[1].path, '/v2/transcript')
-assert.equal(JSON.parse(calls[1].body).speech_model, 'universal')
+assert.deepEqual(JSON.parse(calls[1].body).speech_models, ['universal-3-5-pro', 'universal-2'])
 
 const answer = await understandSpeech({ transcriptId: 'tr_1', prompt: 'what was decided?', maxTokens: 99 }, env)
 assert.equal(answer.response, 'the meeting covered pricing')
