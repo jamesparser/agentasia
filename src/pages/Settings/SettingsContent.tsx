@@ -361,7 +361,7 @@ const SettingsContentInner = () => {
       {/* Phones: one big tap target showing the current section; it opens a
           grouped list of full-height rows (the old strip of tiny icon tabs was
           too small to hit). */}
-      <div className="md:hidden shrink-0 border-b border-default-200">
+      <div className="md:hidden sticky top-0 z-20 shrink-0 border-b border-default-200 bg-content1">
         <button
           type="button"
           aria-expanded={mobileMenuOpen}

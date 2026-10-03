@@ -23,7 +23,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       onClose={onClose}
       backdrop="blur"
       classNames={{
-        base: 'max-h-[90vh] overflow-hidden',
+        base: 'max-h-[90dvh] overflow-hidden',
         body: 'p-0',
       }}
     >
