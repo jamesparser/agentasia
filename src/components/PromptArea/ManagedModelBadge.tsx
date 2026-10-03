@@ -24,10 +24,10 @@ export function ManagedModelBadge() {
   const model = AGENTASIA.plans[plan]?.model ?? AGENTASIA.plans.free.model
   return (
     <div
-      className="text-default-500 flex items-center gap-1.5 px-2 text-xs"
+      className="text-default-500 flex min-w-0 items-center gap-1.5 px-1 text-xs sm:px-2"
       title={modelDisplayName(model)}
     >
-      <span className="max-w-[12rem] truncate">{modelDisplayName(model)}</span>
+      <span className="max-w-[7rem] truncate sm:max-w-[12rem]">{modelDisplayName(model)}</span>
     </div>
   )
 }

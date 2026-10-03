@@ -967,8 +967,8 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
           />
 
           <div className="prompt-actions absolute z-10 bottom-0 inset-x-px p-1 sm:p-2 rounded-b-lg">
-            <div className="flex flex-wrap justify-between items-end gap-1">
-              <div className="flex items-center gap-1">
+            <div className="flex flex-nowrap justify-between items-center gap-1">
+              <div className="flex shrink-0 items-center gap-1">
                 {!demo && withAttachmentSelector !== false && (
                   <AttachmentSelector
                     lang={lang}
@@ -997,7 +997,7 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
                   )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex min-w-0 items-center gap-1 sm:gap-2">
                 {!demo && withModelSelector !== false && !isLiveMode && (
                   AGENTASIA.ui.managedGatewayEnabled ? (
                     <ManagedModelBadge />
