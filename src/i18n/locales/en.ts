@@ -1242,4 +1242,5 @@ export const en = [
   'This server refuses connections from web pages, so it cannot be used from the browser yet',
   'Searches today',
   'Voice today',
+  'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.',
 ] as const

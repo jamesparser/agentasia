@@ -1305,4 +1305,5 @@ export const ko: I18n = {
   'Cloud (recommended)': '클라우드 (권장)',
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': '여기서 녹음하여 오디오를 AgentAsia 게이트웨이로 보내고, 게이트웨이는 이를 제3자인 AssemblyAI로 전달해 텍스트로 변환합니다. 다운로드가 없고 Google에 의존하지 않습니다. 하루 사용량 제한이 있습니다.',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': '이 서버는 웹 페이지의 연결을 거부하므로 아직 브라우저에서 사용할 수 없습니다',
+  'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': '이 서버가 웹 페이지를 거부하므로 AgentAsia 릴레이를 거칩니다. 키는 호출할 때마다 릴레이를 통과하며 그곳에 저장되지 않습니다. 로그인한 계정이 필요합니다.',
 } as const

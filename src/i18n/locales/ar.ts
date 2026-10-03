@@ -1306,4 +1306,5 @@ export const ar: I18n = {
   'Cloud (recommended)': 'السحابة (موصى بها)',
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'يسجّل هنا ويرسل الصوت إلى بوابة AgentAsia التي تمرّره إلى AssemblyAI، وهي جهة خارجية، لتحويله إلى نص. بدون تنزيل وبدون الاعتماد على Google. بحصة يومية.',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': 'يرفض هذا الخادم الاتصالات من صفحات الويب، لذلك لا يمكن استخدامه من المتصفح بعد',
+  'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'يمرّ عبر مرحّل AgentAsia لأن هذا الخادم يرفض صفحات الويب. يمرّ مفتاحك عبره مع كل استدعاء ولا يُخزَّن هناك. يتطلب حسابًا مسجّلًا.',
 } as const

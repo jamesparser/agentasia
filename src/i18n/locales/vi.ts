@@ -1214,4 +1214,5 @@ export const vi: Partial<I18n> = {
   'Cloud (recommended)': 'Đám mây (khuyên dùng)',
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'Ghi âm tại đây và gửi âm thanh đến cổng AgentAsia, cổng này chuyển tiếp đến AssemblyAI, một bên thứ ba, để chuyển thành văn bản. Không cần tải xuống và không phụ thuộc vào Google. Có giới hạn theo ngày.',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': 'Máy chủ này từ chối kết nối từ trang web nên chưa thể dùng từ trình duyệt',
+  'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'Đi qua rơ-le của AgentAsia vì máy chủ này từ chối trang web. Khóa của bạn đi qua rơ-le trong mỗi lần gọi và không được lưu ở đó. Cần tài khoản đã đăng nhập.',
 }

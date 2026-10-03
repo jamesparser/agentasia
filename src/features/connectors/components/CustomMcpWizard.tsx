@@ -81,6 +81,7 @@ export function CustomMcpWizard({
         needsToken && !inUrl
           ? { token: token.trim(), scheme: preset?.scheme }
           : {},
+        { viaRelay: preset?.noBrowser === true },
       )
       // Only the user's own key is secret. It is encrypted with this device's
       // key; the saved URL keeps the `{token}` placeholder, never the key.

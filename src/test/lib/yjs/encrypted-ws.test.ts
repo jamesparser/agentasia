@@ -10,6 +10,14 @@ import {
 // Mock WebSocket — simulates the browser WebSocket API in jsdom
 // ---------------------------------------------------------------------------
 
+/** Prefix the leading kind byte the real wrapper puts on every frame. */
+function withKind(encrypted: Uint8Array): ArrayBuffer {
+  const framed = new Uint8Array(1 + encrypted.length)
+  framed[0] = 0
+  framed.set(encrypted, 1)
+  return framed.buffer as ArrayBuffer
+}
+
 class MockWebSocket {
   static readonly CONNECTING = 0
   static readonly OPEN = 1
@@ -135,13 +143,14 @@ describe('EncryptedWebSocket', () => {
     expect(inner.sentMessages.length).toBe(1)
 
     const sent = inner.sentMessages[0]
-    // Must start with ENCRYPTION_VERSION
-    expect(sent[0]).toBe(ENCRYPTION_VERSION)
+    // Leading kind byte (ephemeral for this payload), then ENCRYPTION_VERSION
+    expect(sent[0]).toBe(0)
+    expect(sent[1]).toBe(ENCRYPTION_VERSION)
     // Must be longer than plaintext (version + IV + ciphertext + tag)
     expect(sent.length).toBeGreaterThan(plaintext.length)
 
     // Should round-trip through decryptUpdate
-    const decrypted = await decryptUpdate(sent, key)
+    const decrypted = await decryptUpdate(sent.slice(1), key)
     expect(decrypted).toEqual(plaintext)
   })
 
@@ -163,9 +172,9 @@ describe('EncryptedWebSocket', () => {
     expect(inner.sentMessages.length).toBe(3)
 
     // Verify order by decrypting
-    const d1 = await decryptUpdate(inner.sentMessages[0], key)
-    const d2 = await decryptUpdate(inner.sentMessages[1], key)
-    const d3 = await decryptUpdate(inner.sentMessages[2], key)
+    const d1 = await decryptUpdate(inner.sentMessages[0].slice(1), key)
+    const d2 = await decryptUpdate(inner.sentMessages[1].slice(1), key)
+    const d3 = await decryptUpdate(inner.sentMessages[2].slice(1), key)
 
     expect(d1).toEqual(msg1)
     expect(d2).toEqual(msg2)
@@ -184,7 +193,7 @@ describe('EncryptedWebSocket', () => {
     const inner = (ws as unknown as { ws: MockWebSocket }).ws
     expect(inner.sentMessages.length).toBe(1)
 
-    const decrypted = await decryptUpdate(inner.sentMessages[0], key)
+    const decrypted = await decryptUpdate(inner.sentMessages[0].slice(1), key)
     expect(decrypted).toEqual(new Uint8Array([5, 6, 7]))
   })
 
@@ -206,7 +215,7 @@ describe('EncryptedWebSocket', () => {
     }
 
     const inner = (ws as unknown as { ws: MockWebSocket }).ws
-    inner.simulateMessage(encrypted.buffer as ArrayBuffer)
+    inner.simulateMessage(withKind(encrypted))
 
     await tick()
 
@@ -256,7 +265,7 @@ describe('EncryptedWebSocket', () => {
     expect(inner.sentMessages.length).toBe(1)
     const encrypted = inner.sentMessages[0]
 
-    inner.simulateMessage(encrypted.buffer as ArrayBuffer)
+    inner.simulateMessage(encrypted.slice().buffer as ArrayBuffer)
     await tick()
 
     // Should decrypt back to original
@@ -311,7 +320,7 @@ describe('EncryptedWebSocket', () => {
     }
 
     const inner = (ws as unknown as { ws: MockWebSocket }).ws
-    inner.simulateMessage(encrypted.buffer as ArrayBuffer)
+    inner.simulateMessage(withKind(encrypted))
 
     await tick()
 

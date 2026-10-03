@@ -1,13 +1,19 @@
+import { gatewayBase } from '@/lib/llm/managed-lane'
+
 /**
  * Where encrypted sync traffic goes, and which room an account maps to.
  *
- * The relay is deliberately not hard-coded: upstream's public relay is not ours
- * to send users through, and the owner has not stood one up yet. Sync therefore
- * stays unavailable (and says so) until VITE_AGENTASIA_RELAY_URL is set.
+ * Upstream's public relay is not ours to send users through. AgentAsia runs its
+ * own: the gateway serves it at /v1/sync, so by default it is the gateway's
+ * address over wss. It only ever sees ciphertext (see server/src/sync-relay.mjs).
+ * VITE_AGENTASIA_RELAY_URL overrides it, for example to point at a self-hosted one.
  */
 export function relayUrl(): string {
   const env = (import.meta.env ?? {}) as Record<string, string | undefined>
-  return (env.VITE_AGENTASIA_RELAY_URL || '').trim()
+  const explicit = (env.VITE_AGENTASIA_RELAY_URL || '').trim()
+  if (explicit) return explicit
+  const base = gatewayBase()
+  return base ? `${base.replace(/\/+$/, '').replace(/^http/, 'ws')}/v1/sync` : ''
 }
 
 export function isRelayConfigured(): boolean {

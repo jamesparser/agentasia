@@ -12,6 +12,8 @@ import {
   listDynamicProviders,
 } from './model-router.mjs'
 import { webSearch, searchConfigured } from './tools/websearch.mjs'
+import { relayMcp, relayAllowed } from './mcp-relay.mjs'
+import { handleSyncUpgrade, pruneIdleRooms } from './sync-relay.mjs'
 import { transcribeAudio, understandSpeech, assemblyConfigured } from './tools/assemblyai.mjs'
 import { assertWithinBudget, recordSpend, spendSummary } from './spend-guard.mjs'
 import { runAgentTurn } from './agent-loop.mjs'
@@ -97,7 +99,7 @@ function corsHeaders(res, origin) {
   // to run looks like a failed claim. Verified both ways on 2026-10-01.
   res.setHeader(
     'access-control-expose-headers',
-    'x-agentasia-provider, x-agentasia-model',
+    'x-agentasia-provider, x-agentasia-model, x-mcp-session-id',
   )
 }
 // Anonymous (guest) callers are metered per network address so a guest cannot run
@@ -493,6 +495,28 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    // ── MCP relay: reaches MCP servers that refuse requests from web pages ──
+    // Signed in callers only, allow listed hosts only (see mcp-relay.mjs). The
+    // user's own key for that server passes through in memory for one request.
+    if (req.method === 'POST' && p === '/v1/mcp/relay') {
+      let principal
+      try { principal = await authenticate(req) } catch (error) {
+        return json(res, 401, { error: error.code || 'invalid_token', requestId })
+      }
+      if (!principal) return json(res, 401, { error: 'sign_in_required', requestId })
+      if (!relayAllowed(principal.uid)) return json(res, 429, { error: 'relay_rate_limited', requestId })
+      try {
+        const out = await relayMcp(await readJson(req), process.env)
+        res.writeHead(out.status, {
+          'content-type': out.contentType,
+          ...(out.sessionId ? { 'x-mcp-session-id': out.sessionId } : {}),
+        })
+        return res.end(out.body)
+      } catch (error) {
+        return json(res, error.statusCode || 502, { error: error.message, requestId })
+      }
+    }
+
     // ── AssemblyAI cloud speech (opt in, never a default) ─────────────
     // The browser cannot hold this key, so both capabilities are proxied here:
     // transcription through the Universal speech model and audio questions
@@ -590,6 +614,19 @@ const server = http.createServer(async (req, res) => {
     return json(res, 500, { error: 'internal_server_error', requestId })
   }
 })
+
+// ── Sync relay (WebSocket upgrade) ─────────────────────────────
+// End to end encrypted cross-device sync. The relay only forwards and stores
+// ciphertext; see sync-relay.mjs. Browsers connect to wss://<host>/v1/sync/<room>.
+server.on('upgrade', (req, socket) => {
+  socket.on('error', () => {})
+  const basePath = (process.env.GATEWAY_BASE_PATH || '').replace(/\/+$/, '')
+  if (basePath && (req.url || '').startsWith(basePath)) req.url = req.url.slice(basePath.length) || '/'
+  handleSyncUpgrade(req, socket, { env: process.env, originAllowed })
+    .then((handled) => { if (!handled) socket.destroy() })
+    .catch(() => socket.destroy())
+})
+void pruneIdleRooms()
 
 // ── Start ──────────────────────────────────────────────────────
 if (process.env.SCHEDULER_ENABLED === 'true') startScheduleWorker(runScheduled)

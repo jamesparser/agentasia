@@ -1216,4 +1216,5 @@ export const km: Partial<I18n> = {
   'Cloud (recommended)': 'ពពក (ណែនាំ)',
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'ថតនៅទីនេះ ហើយផ្ញើសំឡេងទៅកាន់ច្រកចេញចូល AgentAsia ដែលបញ្ជូនបន្តទៅ AssemblyAI ដែលជាភាគីទីបី ដើម្បីបំប្លែងជាអត្ថបទ។ មិនបាច់ទាញយក ហើយមិនពឹងលើ Google។ មានកំណត់ប្រចាំថ្ងៃ។',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': 'ម៉ាស៊ីនមេនេះបដិសេធការតភ្ជាប់ពីទំព័រគេហទំព័រ ដូច្នេះមិនទាន់អាចប្រើពីកម្មវិធីរុករកបានទេ',
+  'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'ឆ្លងកាត់ឧបករណ៍បញ្ជូនបន្ត AgentAsia ព្រោះម៉ាស៊ីនមេនេះបដិសេធទំព័រគេហទំព័រ។ សោរបស់អ្នកឆ្លងកាត់វាក្នុងការហៅនីមួយៗ ហើយមិនត្រូវបានរក្សាទុកនៅទីនោះទេ។ ត្រូវការគណនីដែលបានចូល។',
 }

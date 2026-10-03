@@ -18,6 +18,27 @@
 import { encryptUpdate, decryptUpdate } from './crypto'
 
 /**
+ * Every frame on the wire is `[kind][encrypted payload]`. The relay cannot read
+ * the payload, but it has to know which frames are worth keeping for a device
+ * that joins later. `kind` is the only thing it learns:
+ *
+ *   1 = durable: a Yjs sync step 2 or update (the document's actual content)
+ *   0 = ephemeral: awareness, awareness queries and sync step 1 requests
+ *
+ * Storing step 1 requests would make every replay trigger a storm of answers,
+ * and awareness is only meaningful live, so the relay keeps kind 1 only.
+ */
+export const FRAME_EPHEMERAL = 0
+export const FRAME_DURABLE = 1
+
+/** y-websocket message type 0 = sync; its sub type 1 = step 2, 2 = update. */
+export function frameKind(message: Uint8Array): number {
+  return message.length >= 2 && message[0] === 0 && (message[1] === 1 || message[1] === 2)
+    ? FRAME_DURABLE
+    : FRAME_EPHEMERAL
+}
+
+/**
  * Creates a WebSocket-compatible class with E2E encryption baked in.
  *
  * The returned class captures the encryption key via closure so that
@@ -79,7 +100,8 @@ export function createEncryptedWebSocketClass(encryptionKey: CryptoKey) {
           if (!this._onmessage) return
           try {
             const data = new Uint8Array(event.data as ArrayBuffer)
-            const decrypted = await decryptUpdate(data, encryptionKey)
+            // Drop the leading kind byte; the rest is the encrypted payload.
+            const decrypted = await decryptUpdate(data.subarray(1), encryptionKey)
             // Construct a synthetic MessageEvent with the decrypted payload.
             const syntheticEvent = new MessageEvent('message', {
               data: decrypted.buffer,
@@ -187,7 +209,10 @@ export function createEncryptedWebSocketClass(encryptionKey: CryptoKey) {
       this.sendQueue = this.sendQueue.then(async () => {
         try {
           const encrypted = await encryptUpdate(uint8, encryptionKey)
-          this.ws.send(encrypted)
+          const frame = new Uint8Array(1 + encrypted.length)
+          frame[0] = frameKind(uint8)
+          frame.set(encrypted, 1)
+          this.ws.send(frame)
         } catch (err) {
           console.error('[E2E] Encryption failed, message not sent:', err)
         }

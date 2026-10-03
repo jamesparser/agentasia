@@ -29,13 +29,28 @@ async function readRpcPayload(response: Response) {
   throw new Error('MCP server sent no readable response')
 }
 
+export interface McpSessionOptions {
+  /**
+   * Send each call through the AgentAsia gateway relay instead of straight from
+   * the browser. Needed for servers that refuse requests from web pages. The
+   * user's own key for the server then passes through the gateway in memory for
+   * the length of one request; it is never stored or logged there. Requires a
+   * signed in account.
+   */
+  viaRelay?: boolean
+}
+
 /**
- * A small browser-side MCP client over streamable HTTP. It talks straight from
- * the user's browser to the MCP server with the user's own token: AgentAsia
- * operates no relay in the middle. The server must therefore allow this site
- * through CORS; servers that do not cannot be reached from a browser.
+ * A small browser-side MCP client over streamable HTTP. By default it talks
+ * straight from the user's browser to the MCP server with the user's own token.
+ * Servers that do not allow this site through CORS can only be reached with
+ * `viaRelay`.
  */
-export function createMcpSession(serverUrl: string, auth: McpAuth = {}) {
+export function createMcpSession(
+  serverUrl: string,
+  auth: McpAuth = {},
+  options: McpSessionOptions = {},
+) {
   let sessionId: string | null = null
   let initialized = false
 
@@ -44,23 +59,25 @@ export function createMcpSession(serverUrl: string, auth: McpAuth = {}) {
     params: Record<string, unknown> = {},
     signal?: AbortSignal,
   ) => {
-    const response = await fetch(serverUrl, {
-      method: 'POST',
-      signal,
-      headers: {
-        Accept: 'application/json, text/event-stream',
-        'Content-Type': 'application/json',
-        ...(auth.token ? { Authorization: `${auth.scheme ?? 'Bearer'} ${auth.token}` } : {}),
-        ...(sessionId ? { 'Mcp-Session-Id': sessionId } : {}),
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: crypto.randomUUID(),
-        method,
-        params,
-      }),
+    const headers: Record<string, string> = {
+      Accept: 'application/json, text/event-stream',
+      'Content-Type': 'application/json',
+      ...(auth.token ? { Authorization: `${auth.scheme ?? 'Bearer'} ${auth.token}` } : {}),
+      ...(sessionId ? { 'Mcp-Session-Id': sessionId } : {}),
+    }
+    const rpc = JSON.stringify({
+      jsonrpc: '2.0',
+      id: crypto.randomUUID(),
+      method,
+      params,
     })
+    const response = options.viaRelay
+      ? await fetchViaRelay(serverUrl, headers, rpc, signal)
+      : await fetch(serverUrl, { method: 'POST', signal, headers, body: rpc })
 
+    if (options.viaRelay && response.status === 401) {
+      throw new Error('Sign in to use this connection. It goes through the AgentAsia relay.')
+    }
     if (response.status === 401 || response.status === 403) {
       throw new Error(
         `The server refused the credentials (${response.status}). Check the token.`,
@@ -70,7 +87,10 @@ export function createMcpSession(serverUrl: string, auth: McpAuth = {}) {
       throw new Error(`Server returned ${response.status}`)
     }
 
-    sessionId = response.headers.get('Mcp-Session-Id') ?? sessionId
+    sessionId =
+      response.headers.get('Mcp-Session-Id') ??
+      response.headers.get('X-Mcp-Session-Id') ??
+      sessionId
     const payload = await readRpcPayload(response)
     if (payload.error)
       throw new Error(payload.error.message || 'MCP server error')
@@ -143,9 +163,28 @@ export function createMcpSession(serverUrl: string, auth: McpAuth = {}) {
   }
 }
 
+async function fetchViaRelay(
+  serverUrl: string,
+  headers: Record<string, string>,
+  body: string,
+  signal?: AbortSignal,
+): Promise<Response> {
+  const { gatewayFetch } = await import('@/lib/auth/gatewayFetch')
+  const { gatewayBase } = await import('@/lib/llm/managed-lane')
+  const base = gatewayBase()
+  if (!base) throw new Error('The AgentAsia gateway is not configured.')
+  return gatewayFetch(`${base}/v1/mcp/relay`, {
+    method: 'POST',
+    signal,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ url: serverUrl, headers, body }),
+  })
+}
+
 export async function discoverHttpMcp(
   serverUrl: string,
   auth: McpAuth = {},
+  options: McpSessionOptions = {},
 ): Promise<McpDiscoveryResult> {
-  return createMcpSession(serverUrl, auth).discover()
+  return createMcpSession(serverUrl, auth, options).discover()
 }

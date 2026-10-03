@@ -1213,4 +1213,5 @@ export const ja: Partial<I18n> = {
   'Cloud (recommended)': 'クラウド（推奨）',
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'ここで録音し、音声を AgentAsia ゲートウェイに送ります。ゲートウェイは文字起こしのため第三者の AssemblyAI に転送します。ダウンロード不要で、Google にも依存しません。1日あたりの利用上限があります。',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': 'このサーバーはウェブページからの接続を拒否するため、まだブラウザからは使えません',
+  'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'このサーバーはウェブページを拒否するため、AgentAsia のリレーを経由します。キーは呼び出しのたびにリレーを通過しますが、そこには保存されません。ログイン済みのアカウントが必要です。',
 }

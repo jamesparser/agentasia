@@ -22,7 +22,9 @@ import {
 import { Icon } from '../Icon'
 import { useSpeechRecognition } from './useSpeechRecognition'
 import { useUrlFragment } from './useUrlFragment'
+import { AGENTASIA } from '@/config/agentasia'
 import { ModelSelector } from './ModelSelector'
+import { ManagedModelBadge } from './ManagedModelBadge'
 import { AgentSelector } from './AgentSelector'
 import { AttachmentSelector } from './AttachmentSelector'
 import { FileAttachment } from './FileAttachment'
@@ -993,7 +995,11 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
 
               <div className="flex items-center gap-2">
                 {!demo && withModelSelector !== false && !isLiveMode && (
-                  <ModelSelector lang={lang} />
+                  AGENTASIA.ui.managedGatewayEnabled ? (
+                    <ManagedModelBadge />
+                  ) : (
+                    <ModelSelector lang={lang} />
+                  )
                 )}
 
                 {/* Live mode voice settings popover */}

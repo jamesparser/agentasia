@@ -23,17 +23,16 @@ import type {
   SyncedPreferenceKey,
 } from './sync-worker-types'
 import { SYNCED_STORES, SYNCED_PREFERENCE_KEYS } from './sync-worker-types'
+import { relayUrl } from './relay-config'
 
 // ============================================================================
 // Constants
 // ============================================================================
 
 const YJS_DB_NAME = 'devs-yjs-sync'
-// Upstream's relay (wss://signal.devs.new) is not ours to send users to.
-const DEFAULT_SERVER_URL = (
-  ((import.meta.env ?? {}) as Record<string, string | undefined>)
-    .VITE_AGENTASIA_RELAY_URL || ''
-).trim()
+// Upstream's relay (wss://signal.devs.new) is not ours to send users to; the
+// default is AgentAsia's own, served by the gateway.
+const DEFAULT_SERVER_URL = relayUrl()
 const PERSISTENCE_TIMEOUT_MS = 10_000
 const IDB_CHECK_TIMEOUT_MS = 5_000
 

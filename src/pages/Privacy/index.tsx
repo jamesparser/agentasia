@@ -164,8 +164,11 @@ export const PrivacyPage = () => {
             once the reply is sent; scheduled tasks you create are stored so they
             can run. It also keeps a count of requests, searches and voice calls per account, or per
             network address for visitors who are not signed in, to enforce daily
-            limits. Each provider handles the data it receives under its own
-            privacy policy.
+            limits. Some MCP connectors (Cloudflare docs, Zapier, Mem0) refuse requests
+            from web pages, so those calls go through an AgentAsia relay: the key
+            you pasted for that service passes through the relay in memory for
+            each call and is not stored or logged there. Each provider handles the
+            data it receives under its own privacy policy.
           </p>
 
           <h3>{t('P2P Sync (Optional)')}</h3>

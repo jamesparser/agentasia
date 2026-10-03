@@ -12,7 +12,7 @@ import { connectors as connectorsMap } from '@/lib/yjs/maps'
 import { SecureStorage } from '@/lib/crypto'
 import type { Connector, McpTool } from '../types'
 import { createMcpSession } from './mcp-http'
-import { resolveMcpUrl } from './mcp-presets'
+import { MCP_PRESETS, resolveMcpUrl } from './mcp-presets'
 
 const sessions = new Map<string, ReturnType<typeof createMcpSession>>()
 let registered = new Set<string>()
@@ -54,9 +54,11 @@ async function sessionFor(connector: Connector) {
   const cfg = connector.mcpConfig!
   const token = await tokenFor(connector)
   const url = resolveMcpUrl(cfg.urlTemplate ?? cfg.serverUrl, token)
+  const viaRelay = MCP_PRESETS.find((p) => p.id === cfg.presetId)?.noBrowser === true
   const session = createMcpSession(
     url,
     cfg.urlTemplate ? {} : { token, scheme: cfg.authScheme },
+    { viaRelay },
   )
   sessions.set(connector.id, session)
   return session

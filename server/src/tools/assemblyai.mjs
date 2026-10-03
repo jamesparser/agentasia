@@ -78,7 +78,7 @@ export async function transcribeAudio(input, env = process.env) {
     body: JSON.stringify({
       audio_url: uploadUrl,
       speech_models: ['universal-3-5-pro', 'universal-2'],
-      ...(input.languageCode ? { language_code: String(input.languageCode) } : {}),
+      ...(input.languageCode ? { language_code: String(input.languageCode) } : { language_detection: true }),
     }),
   }, env)
   if (!created?.id) {
