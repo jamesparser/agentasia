@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react'
+import { langs } from '@/i18n'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { ThreadFilter } from '../types'
 import {
@@ -16,7 +17,7 @@ import {
 export type InspectSegment = { type: 'artifact' | 'widget'; id: string } | null
 
 const VALID_FILTERS: ThreadFilter[] = ['home', 'tasks', 'agents']
-const KNOWN_LANGS = ['en', 'fr', 'de', 'es', 'ar', 'ko']
+const KNOWN_LANGS: string[] = [...langs]
 
 /**
  * Derive the V2 filter from the URL pathname.
@@ -72,7 +73,7 @@ function buildPath(
     // New layout: root or /:lang
     // Find the lang prefix if present (second segment that is a known lang code)
     const langSegment = segments[1]
-    const knownLangs = ['en', 'fr', 'de', 'es', 'ar', 'ko']
+    const knownLangs: string[] = KNOWN_LANGS
     base = langSegment && knownLangs.includes(langSegment)
       ? `/${langSegment}`
       : ''

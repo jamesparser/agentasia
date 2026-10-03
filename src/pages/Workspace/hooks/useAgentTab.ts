@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { langs } from '@/i18n'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   DEFAULT_AGENT_TAB,
@@ -6,7 +7,7 @@ import {
   type AgentTab,
 } from '../components/agent-preview/tab-definitions'
 
-const KNOWN_LANGS = ['en', 'fr', 'de', 'es', 'ar', 'ko']
+const KNOWN_LANGS: string[] = [...langs]
 
 function deriveFilterFromPathname(pathname: string): string {
   const segments = pathname.split('/').filter(Boolean)
@@ -57,7 +58,7 @@ export function useAgentTab() {
         base = segments.slice(0, v2Idx + 1).join('/')
       } else {
         const langSegment = segments[1]
-        const knownLangs = ['en', 'fr', 'de', 'es', 'ar', 'ko']
+        const knownLangs: string[] = KNOWN_LANGS
         base = langSegment && knownLangs.includes(langSegment)
           ? `/${langSegment}`
           : ''

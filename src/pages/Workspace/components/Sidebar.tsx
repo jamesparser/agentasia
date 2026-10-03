@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import { langs } from '@/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Icon, Title } from '@/components'
 import { useI18n, useUrl } from '@/i18n'
@@ -39,7 +40,7 @@ import { NotificationButtonV3 } from '@/features/notifications'
 
 // --- Shared hooks ---
 
-const KNOWN_LANGS = ['en', 'fr', 'de', 'es', 'ar', 'ko']
+const KNOWN_LANGS: string[] = [...langs]
 
 /**
  * Derive which sidebar item is "active" from the current URL pathname.
