@@ -81,7 +81,7 @@ export interface LocalSettings {
    * 'device' runs a whisper model in the tab: works offline and without Google,
    * at the cost of a one-time model download.
    */
-  sttEngine: 'browser' | 'device'
+  sttEngine: 'cloud' | 'browser' | 'device'
   pwaInstallPromptDismissed: boolean
   /** Active space id (local per device) */
   activeSpaceId: string
@@ -110,7 +110,7 @@ const defaultLocalSettings: LocalSettings = {
   isV2SidebarCollapsed: false,
   isContextualPanelCollapsed: false,
   speechToTextEnabled: false,
-  sttEngine: 'browser',
+  sttEngine: 'cloud',
   pwaInstallPromptDismissed: false,
   activeSpaceId: 'default',
   languageOnboardingComplete: false,
@@ -174,7 +174,7 @@ interface UserSettingsStore extends UserSettings {
   toggleV2Sidebar: () => void
   toggleContextualPanel: () => void
   setSpeechToTextEnabled: (enabled: boolean) => void
-  setSttEngine: (engine: 'browser' | 'device') => void
+  setSttEngine: (engine: 'cloud' | 'browser' | 'device') => void
   setPwaInstallPromptDismissed: (dismissed: boolean) => void
   setActiveSpaceId: (id: string) => void
 
@@ -298,7 +298,7 @@ export const userSettings = create<UserSettingsStore>()(
         })),
       setSpeechToTextEnabled: (enabled: boolean) =>
         set({ speechToTextEnabled: enabled }),
-      setSttEngine: (engine: 'browser' | 'device') => set({ sttEngine: engine }),
+      setSttEngine: (engine: 'cloud' | 'browser' | 'device') => set({ sttEngine: engine }),
       setPwaInstallPromptDismissed: (dismissed: boolean) =>
         set({ pwaInstallPromptDismissed: dismissed }),
       setActiveSpaceId: (id: string) => set({ activeSpaceId: id }),
@@ -332,6 +332,13 @@ export const userSettings = create<UserSettingsStore>()(
     }),
     {
       name: 'devs-user-settings',
+      // v2: the default voice engine moved from the browser's Google service to
+      // the AgentAsia gateway. The old default was silently stored for every
+      // visitor, so it cannot be told apart from a deliberate choice; reset it
+      // once and let people pick again.
+      version: 2,
+      migrate: (persisted: any, version: number) =>
+        persisted && version < 2 ? { ...persisted, sttEngine: 'cloud' } : persisted,
       // Persist both local AND synced settings to localStorage.
       // Synced settings are cached here so the first render has the
       // last-known values (no flash to defaults while Yjs hydrates).

@@ -1199,4 +1199,9 @@ export const th: Partial<I18n> = {
   'Thousands of apps through one connection. Paste your Zapier key.': 'แอปนับพันผ่านการเชื่อมต่อเดียว วางคีย์ Zapier ของคุณ',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.': 'แอปนับร้อยผ่านการเชื่อมต่อเดียว วาง URL MCP ของ Composio ของคุณ',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.': 'Gmail, Drive, Calendar, Tasks และอื่นๆ ลงชื่อเข้าใช้ด้วย Google ในแท็บแอป',
+  'Searches today': 'การค้นหาวันนี้',
+  'Voice today': 'เสียงวันนี้',
+  'Cloud (recommended)': 'คลาวด์ (แนะนำ)',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'บันทึกที่นี่และส่งเสียงไปยังเกตเวย์ของ AgentAsia ซึ่งส่งต่อให้ AssemblyAI ซึ่งเป็นบุคคลที่สามเพื่อถอดเสียง ไม่ต้องดาวน์โหลดและไม่พึ่ง Google มีโควต้ารายวัน',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet': 'เซิร์ฟเวอร์นี้ปฏิเสธการเชื่อมต่อจากหน้าเว็บ จึงยังใช้จากเบราว์เซอร์ไม่ได้',
 }

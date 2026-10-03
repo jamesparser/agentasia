@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import {
   Button,
   Input,
-  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -164,9 +163,17 @@ export function CustomMcpWizard({
                 )}
               </p>
               {preset?.helpUrl && (
-                <Link href={preset.helpUrl} isExternal size="sm">
+                // A plain anchor: the app's router provider intercepts link
+                // components and sent this click to the chat box instead of
+                // the provider's site.
+                <a
+                  href={preset.helpUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary text-sm underline"
+                >
                   {tm('Get your key')}
-                </Link>
+                </a>
               )}
             </>
           )}

@@ -30,10 +30,13 @@ const KEY = 'agentasia:usage:v1'
  * hackathon lane is rate-limited server-side anyway.
  */
 export const PLAN_ALLOWANCE: Record<PlanId, number> = {
-  free: 300,
-  pro: 3000,
-  smallBusiness: 15000,
-  enterprise: 100000,
+  // Monthly figures that mirror the gateway's daily caps times 30
+  // (server/src/entitlements.mjs). Sized from cost per request, not guessed:
+  // see docs/PRICING.md.
+  free: 750,
+  pro: 5000,
+  smallBusiness: 20000,
+  enterprise: 35000,
 }
 
 export interface UsageRecord {

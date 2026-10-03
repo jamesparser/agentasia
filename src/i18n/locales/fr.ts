@@ -1338,4 +1338,9 @@ export const fr: I18n = {
   'Thousands of apps through one connection. Paste your Zapier key.': 'Des milliers d\'apps via une seule connexion. Collez votre clé Zapier.',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.': 'Des centaines d\'apps via une seule connexion. Collez votre URL MCP Composio.',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.': 'Gmail, Drive, Agenda, Tâches et plus. Connectez-vous avec Google dans l\'onglet Apps.',
+  'Searches today': 'Recherches aujourd\'hui',
+  'Voice today': 'Voix aujourd\'hui',
+  'Cloud (recommended)': 'Cloud (recommandé)',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'Enregistre ici et envoie l\'audio à la passerelle AgentAsia, qui le transmet à AssemblyAI, un tiers, pour la transcription. Aucun téléchargement et aucune dépendance à Google. Limité par jour.',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet': 'Ce serveur refuse les connexions depuis les pages web, il ne peut donc pas encore être utilisé depuis le navigateur',
 } as const

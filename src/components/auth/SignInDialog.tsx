@@ -14,7 +14,6 @@
 import { useState } from 'react'
 import {
   Button,
-  Divider,
   Input,
   Modal,
   ModalBody,
@@ -79,7 +78,11 @@ export function SignInDialog({ isOpen, onClose }: SignInDialogProps) {
             {t('Continue with Google')}
           </Button>
 
-          <Divider>{t('or')}</Divider>
+          <div className="text-muted flex items-center gap-3 text-xs">
+            <span className="bg-separator h-px flex-1" />
+            {t('or')}
+            <span className="bg-separator h-px flex-1" />
+          </div>
 
           <div className="flex flex-col gap-3">
             <label htmlFor="signin-email" className="text-sm text-default-700">

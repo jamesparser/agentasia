@@ -1300,4 +1300,9 @@ export const ko: I18n = {
   'Thousands of apps through one connection. Paste your Zapier key.': '하나의 연결로 수천 개의 앱을. Zapier 키를 붙여 넣으세요.',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.': '하나의 연결로 수백 개의 앱을. Composio MCP URL을 붙여 넣으세요.',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.': 'Gmail, 드라이브, 캘린더, 할 일 등. 앱 탭에서 Google로 로그인하세요.',
+  'Searches today': '오늘 검색',
+  'Voice today': '오늘 음성',
+  'Cloud (recommended)': '클라우드 (권장)',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': '여기서 녹음하여 오디오를 AgentAsia 게이트웨이로 보내고, 게이트웨이는 이를 제3자인 AssemblyAI로 전달해 텍스트로 변환합니다. 다운로드가 없고 Google에 의존하지 않습니다. 하루 사용량 제한이 있습니다.',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet': '이 서버는 웹 페이지의 연결을 거부하므로 아직 브라우저에서 사용할 수 없습니다',
 } as const

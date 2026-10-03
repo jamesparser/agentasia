@@ -1209,4 +1209,9 @@ export const vi: Partial<I18n> = {
   'Thousands of apps through one connection. Paste your Zapier key.': 'Hàng nghìn ứng dụng qua một kết nối. Dán khóa Zapier của bạn.',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.': 'Hàng trăm ứng dụng qua một kết nối. Dán URL MCP Composio của bạn.',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.': 'Gmail, Drive, Calendar, Tasks và nhiều hơn nữa. Đăng nhập bằng Google trong tab Ứng dụng.',
+  'Searches today': 'Lượt tìm kiếm hôm nay',
+  'Voice today': 'Giọng nói hôm nay',
+  'Cloud (recommended)': 'Đám mây (khuyên dùng)',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'Ghi âm tại đây và gửi âm thanh đến cổng AgentAsia, cổng này chuyển tiếp đến AssemblyAI, một bên thứ ba, để chuyển thành văn bản. Không cần tải xuống và không phụ thuộc vào Google. Có giới hạn theo ngày.',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet': 'Máy chủ này từ chối kết nối từ trang web nên chưa thể dùng từ trình duyệt',
 }

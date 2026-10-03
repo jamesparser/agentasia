@@ -11,10 +11,13 @@ export const PLAN_IDS = ['free', 'pro', 'smallBusiness', 'enterprise']
 
 // Model ids mirror src/config/agentasia.ts and the PRICES table in spend-guard.
 export const PLAN_ALLOWANCE = {
+  // Daily caps. Monthly equivalents (x30): free 750, pro 5,000, smallBusiness
+  // 20,000, enterprise 35,000 requests. Sized from the per request cost on
+  // Token Factory plus Tavily, see docs/PRICING.md.
   free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 25, dailySearches: 25, dailyAudio: 10, dailyTokens: 40_000, maxTokens: 1500 },
-  pro: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 500, dailySearches: 300, dailyAudio: 120, dailyTokens: 600_000, maxTokens: 4000 },
-  smallBusiness: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 2500, dailySearches: 1500, dailyAudio: 600, dailyTokens: 3_000_000, maxTokens: 6000 },
-  enterprise: { model: 'nvidia/Nemotron-3-Ultra-550b-a55b', dailyRequests: 10_000, dailySearches: 6000, dailyAudio: 2400, dailyTokens: 12_000_000, maxTokens: 8000 },
+  pro: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 170, dailySearches: 40, dailyAudio: 60, dailyTokens: 510_000, maxTokens: 4000 },
+  smallBusiness: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 670, dailySearches: 160, dailyAudio: 240, dailyTokens: 2_000_000, maxTokens: 6000 },
+  enterprise: { model: 'nvidia/Nemotron-3-Ultra-550b-a55b', dailyRequests: 1170, dailySearches: 300, dailyAudio: 600, dailyTokens: 3_500_000, maxTokens: 8000 },
 }
 
 const day = (now = Date.now()) => new Date(now).toISOString().slice(0, 10)
@@ -168,14 +171,14 @@ export async function usageReport(principal, env = process.env, now = Date.now()
   const ent = principal
     ? await resolvePlan(principal.uid, env, now)
     : { plan: 'free', ...PLAN_ALLOWANCE.free, beta: betaState(env, now) }
-  const used = principal ? await usageToday(principal.uid, env, now) : { day: day(now), requests: 0, tokens: 0 }
+  const used = principal ? await usageToday(principal.uid, env, now) : { day: day(now), requests: 0, tokens: 0, searches: 0, audio: 0 }
   return {
     signedIn: Boolean(principal),
     plan: ent.plan,
     model: ent.model,
     beta: ent.beta,
     day: used.day,
-    used: { requests: used.requests, tokens: used.tokens },
+    used: { requests: used.requests, tokens: used.tokens, searches: used.searches || 0, audio: used.audio || 0 },
     limits: { requests: ent.dailyRequests, tokens: ent.dailyTokens, searches: ent.dailySearches, audio: ent.dailyAudio, maxTokensPerReply: ent.maxTokens },
     remaining: {
       searches: Math.max(0, ent.dailySearches - (used.searches || 0)),
@@ -184,4 +187,23 @@ export async function usageReport(principal, env = process.env, now = Date.now()
       tokens: Math.max(0, ent.dailyTokens - used.tokens),
     },
   }
+}
+
+// The Tavily account is one shared pool (the free Researcher plan is 1,000
+// credits a month for everyone), so per user caps alone cannot protect it: forty
+// guests at 25 searches would empty it in a day. This is the pool's own daily
+// ceiling. TAVILY_GLOBAL_DAILY defaults to 30 (about 900 a month); raise it when
+// the account moves to a paid Tavily plan.
+const GLOBAL_UID = '_global'
+
+export async function assertGlobalSearchBudget(env = process.env, now = Date.now()) {
+  const cap = Number(env.TAVILY_GLOBAL_DAILY || 30)
+  const used = await usageToday(GLOBAL_UID, env, now)
+  if (used.searches >= cap) {
+    throw Object.assign(new Error('search_pool_exhausted_today'), { statusCode: 429 })
+  }
+}
+
+export function recordGlobalSearch(env = process.env, now = Date.now()) {
+  return recordSearch(GLOBAL_UID, env, now)
 }

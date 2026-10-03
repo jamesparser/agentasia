@@ -150,6 +150,24 @@ export const PrivacyPage = () => {
             )}
           </p>
 
+          {/* AgentAsia gateway notice. Plain English on purpose: it is a legal
+              statement of fact and must not drift through machine translation. */}
+          <h3>AgentAsia gateway</h3>
+          <p>
+            Chat messages you send with the built-in AgentAsia model pass through
+            the AgentAsia gateway to NVIDIA Nemotron models hosted on Nebius Token
+            Factory. When the model needs live facts, the search query goes to
+            Tavily. Voice input set to Cloud records audio in your browser and
+            sends it through the gateway to AssemblyAI, a third party, to be
+            transcribed; choose the on-device engine in Settings to keep audio on
+            your device. The gateway does not keep a copy of your chat messages or audio
+            once the reply is sent; scheduled tasks you create are stored so they
+            can run. It also keeps a count of requests, searches and voice calls per account, or per
+            network address for visitors who are not signed in, to enforce daily
+            limits. Each provider handles the data it receives under its own
+            privacy policy.
+          </p>
+
           <h3>{t('P2P Sync (Optional)')}</h3>
           <p>
             {t(

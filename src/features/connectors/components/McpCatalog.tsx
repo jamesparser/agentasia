@@ -21,7 +21,7 @@ export function McpCatalog({ onPick, onOpenApps }: McpCatalogProps) {
         {MCP_PRESETS.map((preset) => {
           const builtin = preset.auth === 'builtin'
           const apps = preset.auth === 'apps-tab'
-          const blocked = preset.oauthOnly === true
+          const blocked = preset.oauthOnly === true || preset.noBrowser === true
           return (
             <div
               key={preset.id}
@@ -34,7 +34,11 @@ export function McpCatalog({ onPick, onOpenApps }: McpCatalogProps) {
               <p className="text-default-500 text-xs">{t(preset.description)}</p>
               {blocked && (
                 <p className="text-warning text-xs">
-                  {t('Needs vendor sign-in, not available in the browser yet')}
+                  {preset.noBrowser
+                    ? t(
+                        'This server refuses connections from web pages, so it cannot be used from the browser yet',
+                      )
+                    : t('Needs vendor sign-in, not available in the browser yet')}
                 </p>
               )}
               {builtin ? (

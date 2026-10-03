@@ -1211,4 +1211,9 @@ export const km: Partial<I18n> = {
   'Thousands of apps through one connection. Paste your Zapier key.': 'កម្មវិធីរាប់ពាន់តាមរយៈការភ្ជាប់តែមួយ។ បិទភ្ជាប់កូដ Zapier របស់អ្នក។',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.': 'កម្មវិធីរាប់រយតាមរយៈការភ្ជាប់តែមួយ។ បិទភ្ជាប់ URL Composio MCP របស់អ្នក។',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.': 'Gmail, Drive, Calendar, Tasks និងផ្សេងទៀត។ ចូលគណនីជាមួយ Google នៅផ្ទាំងកម្មវិធី។',
+  'Searches today': 'ការស្វែងរកថ្ងៃនេះ',
+  'Voice today': 'សំឡេងថ្ងៃនេះ',
+  'Cloud (recommended)': 'ពពក (ណែនាំ)',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'ថតនៅទីនេះ ហើយផ្ញើសំឡេងទៅកាន់ច្រកចេញចូល AgentAsia ដែលបញ្ជូនបន្តទៅ AssemblyAI ដែលជាភាគីទីបី ដើម្បីបំប្លែងជាអត្ថបទ។ មិនបាច់ទាញយក ហើយមិនពឹងលើ Google។ មានកំណត់ប្រចាំថ្ងៃ។',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet': 'ម៉ាស៊ីនមេនេះបដិសេធការតភ្ជាប់ពីទំព័រគេហទំព័រ ដូច្នេះមិនទាន់អាចប្រើពីកម្មវិធីរុករកបានទេ',
 }

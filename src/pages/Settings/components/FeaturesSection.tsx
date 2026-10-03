@@ -273,13 +273,21 @@ export function FeaturesSection() {
             aria-label={t('Voice input engine')}
             size="sm"
             value={sttEngine}
-            onValueChange={(value) => setSttEngine(value as 'browser' | 'device')}
+            onValueChange={(value) => setSttEngine(value as 'cloud' | 'browser' | 'device')}
             className="mt-3"
             isDisabled={!speechToTextEnabled}
           >
             <p className="text-sm font-medium text-default-700">
               {t('Voice input engine')}
             </p>
+            <Radio value="cloud">
+              <span>{t('Cloud (recommended)')}</span>
+              <span className="block text-xs text-default-500">
+                {t(
+                  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.',
+                )}
+              </span>
+            </Radio>
             <Radio value="browser">
               <span>{t('Browser (fast)')}</span>
               <span className="block text-xs text-default-500">

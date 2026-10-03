@@ -1162,6 +1162,8 @@ export const en = [
   'Loading the on-device voice model\u2026',
   'Voice input engine',
   'Browser (fast)',
+  'Cloud (recommended)',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.',
   'On-device (works offline)',
   'Sends your speech to Google for transcription. No download. Fails on networks where that service is blocked, and the microphone then appears to do nothing.',
   'Runs Whisper inside this tab. Nothing leaves your device and it works with no internet, but the first use downloads a model of roughly 300 MB and is slower on older hardware.',
@@ -1237,4 +1239,7 @@ export const en = [
   'Thousands of apps through one connection. Paste your Zapier key.',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet',
+  'Searches today',
+  'Voice today',
 ] as const

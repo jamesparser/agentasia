@@ -4,6 +4,7 @@ import { Icon, Title } from '@/components'
 import { useI18n, useUrl } from '@/i18n'
 import { auth, useAuth } from '@/lib/auth'
 import { SignInDialog } from '@/components/auth/SignInDialog'
+import { openInfoDialog } from '@/components/InfoDialog'
 import {
   ALL_SPACES_ID,
   ALL_SPACES_URL_SEGMENT,
@@ -385,9 +386,7 @@ function SettingsButton({
 }
 
 function AboutButton({ showKbd }: { showKbd?: boolean }) {
-  const { lang, t } = useI18n()
-  const navigate = useNavigate()
-  const url = useUrl(lang)
+  const { t } = useI18n()
 
   return (
     <Tooltip delay={0}>
@@ -395,7 +394,7 @@ function AboutButton({ showKbd }: { showKbd?: boolean }) {
         isIconOnly
         variant="ghost"
         size="sm"
-        onPress={() => navigate(url('/info'))}
+        onPress={() => openInfoDialog()}
         aria-label={t('About')}
       >
         <Icon name="InfoCircle" className="text-muted" size="sm" />

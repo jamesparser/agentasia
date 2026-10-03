@@ -1207,4 +1207,9 @@ export const id: Partial<I18n> = {
   'Thousands of apps through one connection. Paste your Zapier key.': 'Ribuan aplikasi melalui satu koneksi. Tempel kunci Zapier Anda.',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.': 'Ratusan aplikasi melalui satu koneksi. Tempel URL MCP Composio Anda.',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.': 'Gmail, Drive, Calendar, Tasks, dan lainnya. Masuk dengan Google di tab Aplikasi.',
+  'Searches today': 'Pencarian hari ini',
+  'Voice today': 'Suara hari ini',
+  'Cloud (recommended)': 'Cloud (disarankan)',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'Merekam di sini dan mengirim audio ke gateway AgentAsia, yang meneruskannya ke AssemblyAI, pihak ketiga, untuk ditranskripsikan. Tanpa unduhan dan tanpa bergantung pada Google. Dibatasi per hari.',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet': 'Server ini menolak koneksi dari halaman web, jadi belum bisa dipakai dari browser',
 }

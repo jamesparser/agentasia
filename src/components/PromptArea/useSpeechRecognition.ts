@@ -3,6 +3,7 @@ import { warningToast } from '@/lib/toast'
 import { useDeviceTranscription } from './useDeviceTranscription'
 
 const CONSENT_KEY = 'agentasia:stt-device-consent'
+const CLOUD_CONSENT_KEY = 'agentasia:stt-cloud-consent'
 
 type SpeechRecognitionErrorCode =
   | 'no-speech'
@@ -18,10 +19,11 @@ interface UseSpeechRecognitionOptions {
   lang?: string
   /**
    * 'browser' uses webkitSpeechRecognition (streams to Google, fails offline and
-   * wherever that host is blocked). 'device' runs whisper in the tab. Defaults to
-   * 'browser'; the caller reads the user's preference.
+   * wherever that host is blocked). 'device' runs whisper in the tab. 'cloud'
+   * records here and transcribes through the AgentAsia gateway (AssemblyAI).
+   * Defaults to 'cloud'; the caller reads the user's preference.
    */
-  engine?: 'browser' | 'device'
+  engine?: 'cloud' | 'browser' | 'device'
   onTranscript?: (transcript: string) => void
   /**
    * Hands the finished text to the caller.
@@ -50,7 +52,7 @@ interface UseSpeechRecognitionReturn {
 
 export function useSpeechRecognition({
   lang,
-  engine = 'browser',
+  engine = 'cloud',
   onTranscript,
   onFinalTranscript,
   onError,
@@ -61,10 +63,15 @@ export function useSpeechRecognition({
      practice - no model is fetched until start() runs, so choosing the browser
      engine costs nothing. */
   const device = useDeviceTranscription({
+    provider: engine === 'cloud' ? 'assemblyai' : 'whisper',
     lang,
     onTranscript,
     onFinalTranscript,
-    onError: (message) => warningToast('On-device voice input failed', message),
+    onError: (message) =>
+      warningToast(
+        engine === 'cloud' ? 'Voice input failed' : 'On-device voice input failed',
+        message,
+      ),
   })
   const [isSupported, setIsSupported] = useState(false)
   const [supportChecked, setSupportChecked] = useState(false)
@@ -78,6 +85,8 @@ export function useSpeechRecognition({
   // onresult stops the session and onend fires too; without this the same
   // utterance would submit twice.
   const deliveredRef = useRef(false)
+  const erroredRef = useRef(false)
+  const startedAtRef = useRef(0)
 
   // Store callbacks in refs to avoid effect re-runs
   const onTranscriptRef = useRef(onTranscript)
@@ -125,6 +134,8 @@ export function useSpeechRecognition({
     recognition.onstart = () => {
       finalTranscriptRef.current = ''
       deliveredRef.current = false
+      erroredRef.current = false
+      startedAtRef.current = Date.now()
     }
 
     recognition.onresult = (event: any) => {
@@ -156,6 +167,7 @@ export function useSpeechRecognition({
     recognition.onerror = (event: any) => {
       const errorCode = event.error as SpeechRecognitionErrorCode
       console.error('Speech recognition error:', errorCode)
+      erroredRef.current = true
       setIsRecording(false)
 
       // Provide user-friendly error messages
@@ -212,6 +224,19 @@ export function useSpeechRecognition({
         deliveredRef.current = true
         onFinalTranscriptRef.current?.(text)
       }
+      // The session opened and closed on its own with no words and no error:
+      // the "microphone does nothing" case. Say so instead of staying silent.
+      if (
+        !text &&
+        !deliveredRef.current &&
+        !erroredRef.current &&
+        Date.now() - startedAtRef.current < 6000
+      ) {
+        warningToast(
+          'The browser voice engine heard nothing',
+          'It may be unable to reach its speech service. Open Settings, Features and choose the Cloud voice input engine.',
+        )
+      }
     }
 
     recognitionRef.current = recognition
@@ -241,7 +266,10 @@ export function useSpeechRecognition({
   // browsers whose speech service is unreachable both end up on the device engine,
   // so the mic works instead of silently doing nothing.
   const useDevice =
-    engine === 'device' || forceDevice || (supportChecked && !isSupported)
+    engine === 'device' ||
+    engine === 'cloud' ||
+    forceDevice ||
+    (supportChecked && !isSupported)
 
   fallbackRef.current = () => {
     if (typeof window === 'undefined') return false
@@ -268,9 +296,34 @@ export function useSpeechRecognition({
     return true
   }
 
+  const cloudConsented = () => {
+    // The cloud engine sends the recording to a third party. Say so once.
+    let agreed = false
+    try {
+      agreed = localStorage.getItem(CLOUD_CONSENT_KEY) === '1'
+    } catch {
+      /* private mode: ask every time */
+    }
+    if (agreed) return true
+    agreed = window.confirm(
+      'Voice input sends your recording to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. It is not kept by AgentAsia. Continue? You can choose the on-device engine in Settings to keep audio on your device.',
+    )
+    if (agreed) {
+      try {
+        localStorage.setItem(CLOUD_CONSENT_KEY, '1')
+      } catch {
+        /* ignore */
+      }
+    }
+    return agreed
+  }
+
   const toggleRecording = useCallback(() => {
     if (useDevice) {
       if (device.isListening) void device.stop()
+      else if (engine === 'cloud') {
+        if (cloudConsented()) void device.start()
+      }
       // Reaching the device engine by fallback (not by the user's own setting)
       // still needs the one-time download consent.
       else if (engine === 'device' || forceDevice) void device.start()
@@ -282,6 +335,7 @@ export function useSpeechRecognition({
     } else {
       startRecording()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useDevice, engine, forceDevice, device, isRecording, startRecording, stopRecording])
 
   if (useDevice) {

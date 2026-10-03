@@ -31,7 +31,8 @@ const PLAN_ORDER: PlanId[] = ['free', 'pro', 'smallBusiness', 'enterprise']
 
 function planPrice(plan: PlanId): string {
   const usd = AGENTASIA.plans[plan]?.priceUsdMonthly ?? 0
-  return usd === 0 ? 'Free' : `$${usd}/mo`
+  // The plan chip already says "Free"; repeating it read as a typo.
+  return usd === 0 ? '' : `$${usd}/mo`
 }
 
 function UpgradeNotice({ onDismiss }: { onDismiss: () => void }) {
@@ -59,7 +60,7 @@ export function UsageSection() {
 
   const server = useGatewayUsage()
   const usage = getUsage(plan)
-  const pct = server?.signedIn
+  const pct = server
     ? Math.round(
         Math.min(1, server.used.requests / Math.max(1, server.limits.requests)) * 100,
       )
@@ -78,7 +79,7 @@ export function UsageSection() {
       <div>
         <h3 className="text-foreground text-lg font-semibold">{t('Usage')}</h3>
         <p className="text-muted text-sm">
-          {server?.signedIn
+          {server
             ? t('Requests today')
             : t('Requests made with AgentAsia this month.')}
         </p>
@@ -106,20 +107,24 @@ export function UsageSection() {
 
           <div className="flex items-baseline justify-between">
             <span className="text-foreground text-2xl font-semibold tabular-nums">
-              {(server?.signedIn ? server.remaining.requests : usage.remaining).toLocaleString()}
+              {(server ? server.remaining.requests : usage.remaining).toLocaleString()}
             </span>
             <span className="text-muted text-sm">
               {t('left of')}{' '}
-              {(server?.signedIn ? server.limits.requests : usage.allowance).toLocaleString()} ·{' '}
-              {(server?.signedIn ? server.used.requests : usage.requests).toLocaleString()}{' '}
+              {(server ? server.limits.requests : usage.allowance).toLocaleString()} ·{' '}
+              {(server ? server.used.requests : usage.requests).toLocaleString()}{' '}
               {t('used')}
             </span>
           </div>
 
-          {server?.signedIn && (
+          {server && (
             <p className="text-muted text-xs tabular-nums">
               {t('Tokens today')}: {server.used.tokens.toLocaleString()} /{' '}
               {server.limits.tokens.toLocaleString()}
+              {server.limits.searches != null &&
+                ` · ${t('Searches today')}: ${(server.used.searches ?? 0).toLocaleString()} / ${server.limits.searches.toLocaleString()}`}
+              {server.limits.audio != null &&
+                ` · ${t('Voice today')}: ${(server.used.audio ?? 0).toLocaleString()} / ${server.limits.audio.toLocaleString()}`}
             </p>
           )}
 
@@ -135,7 +140,7 @@ export function UsageSection() {
             </p>
           )}
 
-          {!server?.signedIn && (
+          {!server && (
             <p className="text-muted text-xs">
               {t(
                 'Counted on this device. The gateway enforces the real limit and does not yet publish it to the browser.',

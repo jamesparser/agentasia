@@ -47,6 +47,12 @@ export interface McpPreset {
   helpUrl?: string
   /** True when the vendor only offers browser sign-in (OAuth) for this server. */
   oauthOnly?: boolean
+  /**
+   * True when the server rejects requests from web pages (no CORS for our
+   * origin, or an explicit origin check). Checked against the live servers on
+   * 3 Oct 2026. It cannot be used from the browser until a relay exists.
+   */
+  noBrowser?: boolean
 }
 
 export const MCP_PRESETS: McpPreset[] = [
@@ -71,6 +77,7 @@ export const MCP_PRESETS: McpPreset[] = [
     url: 'https://mcp.mem0.ai/mcp',
     scheme: 'Token',
     helpUrl: 'https://app.mem0.ai/dashboard/api-keys',
+    noBrowser: true,
   },
   {
     id: 'github',
@@ -103,6 +110,7 @@ export const MCP_PRESETS: McpPreset[] = [
     description: 'Search the Cloudflare documentation. No key needed.',
     auth: 'none',
     url: 'https://docs.mcp.cloudflare.com/mcp',
+    noBrowser: true,
   },
   {
     id: 'zapier',
@@ -112,6 +120,7 @@ export const MCP_PRESETS: McpPreset[] = [
     auth: 'token',
     url: 'https://mcp.zapier.com/api/mcp/mcp',
     helpUrl: 'https://mcp.zapier.com',
+    noBrowser: true,
   },
   {
     id: 'composio',

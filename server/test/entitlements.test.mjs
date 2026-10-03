@@ -86,7 +86,7 @@ test('allowance is per uid, per day, and survives concurrent writes', async () =
   const ent = await resolvePlan('dev:a', env)
   await Promise.all(Array.from({ length: 20 }, () => recordUsage('dev:a', { total_tokens: 10 }, env)))
   const rep = await usageReport({ uid: 'dev:a' }, env)
-  assert.deepEqual(rep.used, { requests: 20, tokens: 200 })
+  assert.deepEqual(rep.used, { requests: 20, tokens: 200, searches: 0, audio: 0 })
   assert.equal((await usageReport({ uid: 'dev:b' }, env)).used.requests, 0)
   for (let i = 0; i < ent.dailyRequests - 20; i += 1) await recordUsage('dev:a', {}, env)
   await assert.rejects(assertWithinAllowance('dev:a', ent, env), (e) => e.statusCode === 429 && e.allowance.plan === 'free')

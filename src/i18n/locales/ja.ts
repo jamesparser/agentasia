@@ -1208,4 +1208,9 @@ export const ja: Partial<I18n> = {
   'Thousands of apps through one connection. Paste your Zapier key.': '1つの接続で数千のアプリを利用できます。Zapierキーを貼り付けてください。',
   'Hundreds of apps through one connection. Paste your Composio MCP URL.': '1つの接続で数百のアプリを利用できます。Composio MCP URLを貼り付けてください。',
   'Gmail, Drive, Calendar, Tasks and more. Sign in with Google in the Apps tab.': 'Gmail、ドライブ、カレンダー、タスクなどを利用できます。アプリタブでGoogleにサインインしてください。',
+  'Searches today': '今日の検索',
+  'Voice today': '今日の音声',
+  'Cloud (recommended)': 'クラウド（推奨）',
+  'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'ここで録音し、音声を AgentAsia ゲートウェイに送ります。ゲートウェイは文字起こしのため第三者の AssemblyAI に転送します。ダウンロード不要で、Google にも依存しません。1日あたりの利用上限があります。',
+  'This server refuses connections from web pages, so it cannot be used from the browser yet': 'このサーバーはウェブページからの接続を拒否するため、まだブラウザからは使えません',
 }

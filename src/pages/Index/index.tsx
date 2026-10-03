@@ -4,6 +4,7 @@ import { Icon, PromptArea, Section, Title } from '@/components'
 import type { PromptMode } from '@/components/PromptArea'
 import { DevsIcon } from '@/components/DevsIcon'
 import { AGENTASIA } from '@/config/agentasia'
+import { openInfoDialog } from '@/components/InfoDialog'
 import { EasySetupModal } from '@/components/EasySetup/EasySetupModal'
 import DefaultLayout from '@/layouts/Default'
 import { useState } from 'react'
@@ -307,7 +308,15 @@ export const IndexPage = () => {
         </Section>
 
         <footer className="absolute bottom-12 md:bottom-0 left-0 right-0 mt-auto py-6 flex justify-center gap-4 scale-90 text-sm *:text-default-400 dark:*:text-default-500">
-          <Link href={url('/info')}>{t('About')}</Link>
+          <Link
+            href={url('/info')}
+            onClick={(e: { preventDefault: () => void }) => {
+              e.preventDefault()
+              openInfoDialog()
+            }}
+          >
+            {t('About')}
+          </Link>
           <Link href={url('/terms')}>{t('Terms')}</Link>
           <Link href={url('/privacy')}>{t('Privacy')}</Link>
           {/* Open Source */}

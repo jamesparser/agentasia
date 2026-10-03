@@ -15,9 +15,9 @@ export interface GatewayUsage {
   model: string
   beta: { active: boolean; endsAt: string | null; paidTiersEnabled: boolean }
   day: string
-  used: { requests: number; tokens: number }
-  limits: { requests: number; tokens: number; maxTokensPerReply: number }
-  remaining: { requests: number; tokens: number }
+  used: { requests: number; tokens: number; searches?: number; audio?: number }
+  limits: { requests: number; tokens: number; searches?: number; audio?: number; maxTokensPerReply: number }
+  remaining: { requests: number; tokens: number; searches?: number; audio?: number }
 }
 
 let snapshot: GatewayUsage | null = null

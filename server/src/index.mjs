@@ -22,7 +22,7 @@ import { createSchedule, listSchedules, updateSchedule, deleteSchedule, allSched
 import { listScheduleRuns, startScheduleWorker, runTask } from './schedule-worker.mjs'
 import { executeScheduledTask } from './schedule-runner.mjs'
 import { authenticate, mintDevToken } from './auth.mjs'
-import { resolvePlan, assertWithinAllowance, recordUsage, assertSearchAllowance, recordSearch, assertAudioAllowance, recordAudio, usageReport, setPlan } from './entitlements.mjs'
+import { resolvePlan, assertWithinAllowance, recordUsage, assertSearchAllowance, recordSearch, assertAudioAllowance, recordAudio, usageReport, setPlan, assertGlobalSearchBudget, recordGlobalSearch } from './entitlements.mjs'
 
 const port = Number(process.env.PORT || 8787)
 // Bind localhost by default: this process is meant to sit behind a tunnel/proxy.
@@ -131,6 +131,13 @@ const runScheduled = (task) =>
       runAgentTurn({
         messages,
         model,
+        // Scheduled runs draw on the same shared Tavily pool as live chat.
+        search: async (args, env) => {
+          await assertGlobalSearchBudget(env)
+          const found = await webSearch(args, env)
+          await recordGlobalSearch(env)
+          return found
+        },
         route: async (params) => (await routeGatewayChat({ model, max_tokens: maxTokens, ...params })).result,
       }),
   })
@@ -237,7 +244,11 @@ const server = http.createServer(async (req, res) => {
     // caller who asks, so it never needs the operator token and never leaks anyone else.
     if (req.method === 'GET' && p === '/v1/usage') {
       try {
-        return json(res, 200, { ...(await usageReport(await authenticate(req))), requestId })
+        // Guests are metered per network address (see anonPrincipal), so they get
+        // their own real numbers too. `signedIn` still says whether it is an account.
+        const who = await authenticate(req)
+        const report = await usageReport(who || anonPrincipal(req))
+        return json(res, 200, { ...report, signedIn: Boolean(who), requestId })
       } catch (error) {
         return json(res, error.statusCode || 500, { error: error.code || error.message, requestId })
       }
@@ -338,10 +349,23 @@ const server = http.createServer(async (req, res) => {
         const useAgent = searchConfigured(process.env) && body.agentic !== false && body.stream !== true
         let provider, model, result, agentMeta = null
         if (useAgent) {
+          // Every search the model asks for is metered like a direct /v1/search call:
+          // per caller, and against the shared Tavily pool. A refusal comes back to
+          // the model as a search error, so it answers without the web instead of
+          // failing the whole reply.
+          const guardedSearch = async (args, env) => {
+            await assertGlobalSearchBudget(env)
+            if (meter) await assertSearchAllowance(meter.uid, await resolvePlan(meter.uid))
+            const found = await webSearch(args, env)
+            if (meter) await recordSearch(meter.uid)
+            await recordGlobalSearch(env)
+            return found
+          }
           const turn = await runAgentTurn({
             messages: body.messages,
             model: body.model,
             useFallback: body.fallback === true,
+            search: guardedSearch,
             route: async (params) => (await routeGatewayChat({ ...body, ...params })).result,
           })
           result = turn.result
@@ -456,10 +480,12 @@ const server = http.createServer(async (req, res) => {
       }
       try {
         const meter = principal || anonPrincipal(req)
+        await assertGlobalSearchBudget()
         if (meter) await assertSearchAllowance(meter.uid, await resolvePlan(meter.uid))
         const body = await readJson(req)
         const out = await webSearch(body)
         if (meter) await recordSearch(meter.uid)
+        await recordGlobalSearch()
         return json(res, 200, out)
       } catch (error) {
         if (error.allowance) return json(res, 429, { error: error.message, ...error.allowance, requestId })

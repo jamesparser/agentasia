@@ -39,6 +39,8 @@ export function whisperLang(code: string | undefined): string {
 }
 
 interface Options {
+  /** 'whisper' runs a model in the tab; 'assemblyai' records and sends to the gateway. */
+  provider?: 'whisper' | 'assemblyai'
   lang?: string
   onTranscript?: (text: string) => void
   onFinalTranscript?: (text: string) => void
@@ -46,6 +48,7 @@ interface Options {
 }
 
 export function useDeviceTranscription({
+  provider: providerType = 'whisper',
   lang,
   onTranscript,
   onFinalTranscript,
@@ -88,14 +91,24 @@ export function useDeviceTranscription({
       if (!providerRef.current) {
         setState('loading')
         const { createSTTProvider } = await import('@/features/live/lib/stt')
-        const provider = await createSTTProvider('whisper', {
-          // whisper-small is ~500MB; base is the point where a first download is
-          // still survivable on a hotel connection, which is the actual audience
-          // here. Quality is lower - the Settings copy says so.
-          modelId: 'onnx-community/whisper-base-ONNX',
-        })
+        const provider = await createSTTProvider(
+          providerType,
+          providerType === 'whisper'
+            ? {
+                // whisper-small is ~500MB; base is the point where a first
+                // download is still survivable on a hotel connection, which is
+                // the actual audience here. Quality is lower - Settings says so.
+                modelId: 'onnx-community/whisper-base-ONNX',
+              }
+            : undefined,
+        )
         await provider.initialize()
-        unsubRef.current = provider.onResult((result) => {
+        const offError = provider.onError((error) => {
+          setState('error')
+          cbRef.current.onError?.(error.message)
+        })
+        const offResult = provider.onResult((result) => {
+          if (providerType === 'assemblyai') setState('ready')
           if (!result.text) return
           if (result.isFinal) {
             textRef.current = (textRef.current + ' ' + result.text).trim()
@@ -106,6 +119,10 @@ export function useDeviceTranscription({
             )
           }
         })
+        unsubRef.current = () => {
+          offResult()
+          offError()
+        }
         providerRef.current = provider
       }
       textRef.current = ''
@@ -117,18 +134,22 @@ export function useDeviceTranscription({
         error instanceof Error ? error.message : 'On-device voice input failed',
       )
     }
-  }, [lang, state])
+  }, [lang, state, providerType])
 
   const stop = useCallback(async () => {
     const provider = providerRef.current
     if (!provider) return
+    // The cloud provider transcribes after the recording ends, so show the
+    // spinner until its result (or error) arrives instead of looking idle.
+    if (providerType === 'assemblyai') setState('loading')
     try {
       await provider.stop()
     } catch {
       /* ignore */
     }
-    setState('ready')
-  }, [])
+    if (providerType !== 'assemblyai') setState('ready')
+    else if (!textRef.current) setTimeout(() => setState((s) => (s === 'loading' ? 'ready' : s)), 30_000)
+  }, [providerType])
 
   return {
     state,
