@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, type ComponentType } from 'react'
 import { Navigate, Outlet, Route, Routes, useParams } from 'react-router-dom'
 import { LanguageRedirect } from '@/components/LanguageRedirect'
+import { MobileModeSwitch } from '@/components/ModeSwitch'
 import { defaultLang, I18nProvider, Lang, langs } from '@/i18n'
 import { userSettings } from '@/stores/userStore'
 import { setActiveSpaceId } from '@/stores/spaceStore'
@@ -209,6 +210,7 @@ export default Router
 const RootLayout = () => (
   <>
     <LanguageRedirect />
+    <MobileModeSwitch />
     <Suspense fallback={null}>
       <Outlet />
     </Suspense>
