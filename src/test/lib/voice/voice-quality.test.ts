@@ -12,3 +12,15 @@ describe('voiceQuality', () => {
     expect(voiceQuality(v('Milena (Enhanced)'))).toBeGreaterThan(voiceQuality(v('Milena (Compact)')))
   })
 })
+
+import { voiceGenderBias } from '@/lib/voice/useSpeakAloud'
+
+describe('voiceGenderBias', () => {
+  it('prefers known male voice names and avoids known female ones', () => {
+    expect(voiceGenderBias('Microsoft Guy Online (Natural) - English (United States)')).toBeGreaterThan(0)
+    expect(voiceGenderBias('Microsoft Niwat Online (Natural) - Thai (Thailand)')).toBeGreaterThan(0)
+    expect(voiceGenderBias('Microsoft Zira - English (United States)')).toBeLessThan(0)
+    expect(voiceGenderBias('Microsoft Sreymom Online (Natural) - Khmer (Cambodia)')).toBeLessThan(0)
+    expect(voiceGenderBias('Google русский')).toBe(0)
+  })
+})

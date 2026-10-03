@@ -1243,4 +1243,6 @@ export const en = [
   'Searches today',
   'Voice today',
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.',
+  'Worker',
+  'Mode',
 ] as const

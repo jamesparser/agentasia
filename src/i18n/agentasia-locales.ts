@@ -8,7 +8,7 @@ export const AGENTASIA_LOCALE_STATUS: Record<LanguageCode, 'reviewed' | 'fallbac
   ja: 'fallback', 'zh-CN': 'fallback', 'zh-TW': 'fallback', yue: 'fallback', vi: 'fallback',
   th: 'fallback', id: 'fallback', ms: 'fallback', fil: 'fallback', ceb: 'fallback', my: 'fallback',
   km: 'fallback', lo: 'fallback', jv: 'fallback', su: 'fallback', hi: 'fallback', bn: 'fallback', ur: 'fallback',
-  pt: 'fallback', pl: 'fallback', ru: 'fallback', kk: 'fallback', mn: 'fallback', ky: 'fallback', uz: 'fallback', ne: 'fallback',
+  pt: 'fallback', pl: 'fallback', ru: 'fallback', kk: 'fallback', mn: 'fallback', ky: 'fallback', uz: 'fallback', ne: 'fallback', hmn: 'fallback', bo: 'fallback',
 }
 
 export function isReviewedLocale(locale: LanguageCode): boolean {

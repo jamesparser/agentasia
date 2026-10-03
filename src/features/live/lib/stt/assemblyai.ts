@@ -27,7 +27,7 @@ export function assemblyLanguage(language: string | undefined): string | undefin
   if (!language) return undefined
   const base = language.toLowerCase()
   const map: Record<string, string | undefined> = {
-    jv: 'jw', fil: 'tl', tl: 'tl', yue: 'zh', ceb: undefined, ky: undefined, tet: undefined,
+    jv: 'jw', fil: 'tl', tl: 'tl', yue: 'zh', ceb: undefined, ky: undefined, tet: undefined, hmn: undefined, bo: undefined,
   }
   const key = base === 'fil' || base === 'yue' ? base : base.split('-')[0]
   return key in map ? map[key] : key

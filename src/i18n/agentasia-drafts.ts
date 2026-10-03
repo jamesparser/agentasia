@@ -24,6 +24,8 @@ import { mn } from './locales/mn'
 import { ky } from './locales/ky'
 import { uz } from './locales/uz'
 import { ne } from './locales/ne'
+import { hmn } from './locales/hmn'
+import { bo } from './locales/bo'
 
 export const agentAsiaDraftLocales = {
   ja,
@@ -52,4 +54,6 @@ export const agentAsiaDraftLocales = {
   ky,
   uz,
   ne,
+  hmn,
+  bo,
 } as const

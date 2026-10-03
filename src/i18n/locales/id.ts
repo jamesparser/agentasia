@@ -1213,4 +1213,6 @@ export const id: Partial<I18n> = {
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'Merekam di sini dan mengirim audio ke gateway AgentAsia, yang meneruskannya ke AssemblyAI, pihak ketiga, untuk ditranskripsikan. Tanpa unduhan dan tanpa bergantung pada Google. Dibatasi per hari.',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': 'Server ini menolak koneksi dari halaman web, jadi belum bisa dipakai dari browser',
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'Melewati relay AgentAsia karena server ini menolak halaman web. Kunci Anda melewatinya di setiap panggilan dan tidak disimpan di sana. Perlu akun yang sudah masuk.',
+  'Worker': 'Worker',
+  'Mode': 'Mode',
 }

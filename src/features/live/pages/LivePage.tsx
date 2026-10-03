@@ -1,4 +1,5 @@
 import { Icon, PageMenuButton } from '@/components'
+import { ModeSwitch } from '@/components/ModeSwitch'
 import { AgentSelector } from '@/components/PromptArea/AgentSelector'
 import { useI18n } from '@/i18n'
 import localI18n from '../i18n'
@@ -371,6 +372,7 @@ export const LivePage = () => {
       title={t('Live')}
       pageMenuActions={
         <>
+          <ModeSwitch />
           {/* Agent Selector */}
           {selectedAgent && !isAgentLoading && (
             <AgentSelector

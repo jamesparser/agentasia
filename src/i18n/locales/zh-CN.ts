@@ -1182,4 +1182,6 @@ export const zh_CN: Partial<I18n> = {
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': '在此录音，并将音频发送到 AgentAsia 网关，由网关转发给第三方 AssemblyAI 进行转写。无需下载，也不依赖 Google。每日限量。',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': '此服务器拒绝来自网页的连接，因此暂时无法在浏览器中使用',
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': '由于此服务器拒绝网页请求，将通过 AgentAsia 中继。每次调用时你的密钥会经过中继，但不会存储在那里。需要已登录的账号。',
+  'Worker': '工作者',
+  'Mode': '模式',
 }

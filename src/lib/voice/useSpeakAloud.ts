@@ -50,9 +50,22 @@ function useDeviceVoices(): SpeechSynthesisVoice[] {
  * robotic ones. Picking the best one for the language is the cheapest quality
  * win there is, because it needs no download and no server.
  */
+const MALE_VOICES =
+  /\b(guy|ryan|davis|david|mark|james|eric|roger|steffan|brian|andrew|christopher|alex|daniel|thomas|diego|jorge|yuri|oliver|fred|rishi|aaron|arthur|gordon|reed|rocko|grandpa|alvaro|alfonso|antonio|donato|conrad|killian|henri|claude|jean|marek|dmitry|dmitri|pavel|maxim|madhur|prabhat|yunxi|yunjian|yunyang|yunze|keita|naoki|masaru|injoon|hyunsu|bongjin|gookmin|hamed|shakir|niwat|premwadee_m|piseth|chanthavong|thiha|namminh|ardi|osman|dimas|angelo|daulet|sardor|bataa|chinbat|minh|hoaimy_m)\b/
+const FEMALE_VOICES =
+  /\b(zira|hazel|susan|samantha|karen|victoria|moira|tessa|fiona|veena|allison|ava|joanna|aria|jenny|sonia|libby|emma|amy|kimberly|salli|ivy|kendra|nicole|olivia|paulina|monica|helena|laura|elsa|denise|katja|amala|seraphina|florian_f|premwadee|achara|narisa|kanya|sreymom|keomany|nilar|hoaimy|gadis|fatima|sarah|svetlana|dariya|milena|katya|yelda|ting-ting|meijia|sin-ji|kyoko|nanami|mizuki|sunhi|yuna|heami|zariyah|salma|leila|maria|sabina|isabella|elvira|dalia|camila|fernanda|catherine|female|woman)\b/
+
+/** Browsers expose no gender, so this is a name heuristic. Best effort, not a promise. */
+export function voiceGenderBias(name: string): number {
+  const n = name.toLowerCase()
+  if (FEMALE_VOICES.test(n)) return -120
+  if (MALE_VOICES.test(n) || /\bmale\b/.test(n)) return 120
+  return 0
+}
+
 export function voiceQuality(v: Pick<SpeechSynthesisVoice, 'name' | 'localService'>): number {
   const n = v.name.toLowerCase()
-  let score = 0
+  let score = voiceGenderBias(v.name)
   if (/natural|neural|online/.test(n)) score += 100
   if (/premium|enhanced|siri/.test(n)) score += 80
   if (/^google /.test(n)) score += 60

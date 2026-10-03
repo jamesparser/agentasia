@@ -5,6 +5,7 @@ import { useI18n, useUrl } from '@/i18n'
 import { auth, useAuth } from '@/lib/auth'
 import { SignInDialog } from '@/components/auth/SignInDialog'
 import { openInfoDialog } from '@/components/InfoDialog'
+import { ModeSwitch } from '@/components/ModeSwitch'
 import {
   ALL_SPACES_ID,
   ALL_SPACES_URL_SEGMENT,
@@ -610,6 +611,9 @@ export const Sidebar = memo(function Sidebar({
           </Tooltip.Content>
         </Tooltip>
       )}
+
+      {/* Chat or Worker */}
+      <ModeSwitch compact={isCollapsed} className={isCollapsed ? 'mx-auto' : 'mx-1'} />
 
       {/* Space switcher */}
       <SpaceSwitcher isCollapsed={isCollapsed} />

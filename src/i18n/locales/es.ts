@@ -1327,4 +1327,6 @@ export const es: I18n = {
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'Graba aquí y envía el audio a la pasarela de AgentAsia, que lo reenvía a AssemblyAI, un tercero, para transcribirlo. Sin descargas y sin depender de Google. Con límite diario.',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': 'Este servidor rechaza las conexiones desde páginas web, así que todavía no se puede usar desde el navegador',
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'Pasa por el relé de AgentAsia porque este servidor rechaza las páginas web. Tu clave lo atraviesa en cada llamada y no se guarda allí. Requiere una cuenta con sesión iniciada.',
+  'Worker': 'Trabajador',
+  'Mode': 'Modo',
 } as const

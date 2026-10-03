@@ -1205,4 +1205,6 @@ export const th: Partial<I18n> = {
   'Records here and sends the audio to the AgentAsia gateway, which forwards it to AssemblyAI, a third party, to be transcribed. No download and no dependence on Google. Metered per day.': 'บันทึกที่นี่และส่งเสียงไปยังเกตเวย์ของ AgentAsia ซึ่งส่งต่อให้ AssemblyAI ซึ่งเป็นบุคคลที่สามเพื่อถอดเสียง ไม่ต้องดาวน์โหลดและไม่พึ่ง Google มีโควต้ารายวัน',
   'This server refuses connections from web pages, so it cannot be used from the browser yet': 'เซิร์ฟเวอร์นี้ปฏิเสธการเชื่อมต่อจากหน้าเว็บ จึงยังใช้จากเบราว์เซอร์ไม่ได้',
   'Goes through the AgentAsia relay because this server refuses web pages. Your key passes through it for each call and is not stored there. Needs a signed in account.': 'ผ่านรีเลย์ของ AgentAsia เพราะเซิร์ฟเวอร์นี้ปฏิเสธหน้าเว็บ คีย์ของคุณจะผ่านรีเลย์ในแต่ละการเรียกและไม่ถูกเก็บไว้ที่นั่น ต้องใช้บัญชีที่เข้าสู่ระบบแล้ว',
+  'Worker': 'เวิร์กเกอร์',
+  'Mode': 'โหมด',
 }
