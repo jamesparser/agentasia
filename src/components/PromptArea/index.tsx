@@ -504,7 +504,12 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
           return
         }
 
-        if (event.key === 'Enter' && !event.shiftKey) {
+        // Enter that confirms an IME candidate (Japanese, Chinese, Korean) must
+        // not send the message: it is still composing, and keyCode 229 covers
+        // Safari and Android keyboards that report isComposing late.
+        const composing =
+          event.nativeEvent?.isComposing || (event as any).keyCode === 229
+        if (event.key === 'Enter' && !event.shiftKey && !composing) {
           event.preventDefault()
           handleSubmitWithMentions(primarySubmitAction, isPrimaryTaskMode)
         }
