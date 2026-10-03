@@ -107,26 +107,31 @@ export function ModeSwitch({
   )
 }
 
-/** Screens that belong to one of the two modes. */
-export function isModeRoute(pathname: string): boolean {
+/**
+ * Worker screens that show the floating phone switch: the home and the list
+ * pages only. A single task or conversation has its own prompt bar at the bottom,
+ * and the Chat screen already carries the switch in its header.
+ */
+export function isWorkerListRoute(pathname: string): boolean {
   const parts = pathname.split('/').filter(Boolean)
   if (parts.length && (langs as readonly string[]).includes(parts[0])) parts.shift()
-  return parts.length === 0 || ['live', 'tasks', 'inbox', 'agents'].includes(parts[0])
+  return parts.length === 0 || (parts.length === 1 && ['tasks', 'inbox', 'agents'].includes(parts[0]))
 }
 
 /**
- * The same switch for phones, where the sidebar is a hidden drawer: a small bar
- * pinned to the top centre of the screen, only below the desktop breakpoint.
+ * The same switch for phones, where the sidebar is a hidden drawer: a small pill
+ * pinned to the bottom centre, below the desktop breakpoint. The top of those
+ * screens is already taken by the menu button and the search box.
  */
 export function MobileModeSwitch() {
   const { pathname } = useLocation()
-  if (!isModeRoute(pathname)) return null
+  if (!isWorkerListRoute(pathname)) return null
   const first = pathname.split('/').filter(Boolean)[0]
   const lang = ((langs as readonly string[]).includes(first) ? first : defaultLang) as Lang
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-2 z-40 flex justify-center lg:hidden">
+    <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center pb-[env(safe-area-inset-bottom)] lg:hidden">
       <I18nProvider lang={lang}>
-        <ModeSwitch className="pointer-events-auto shadow-md" />
+        <ModeSwitch className="pointer-events-auto shadow-lg" />
       </I18nProvider>
     </div>
   )
