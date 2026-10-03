@@ -1047,6 +1047,7 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
                         !isLiveMode && 'text-default-400',
                         isLiveMode && voice.isRecording && 'animate-pulse',
                       )}
+                      aria-label={t('Live voice conversation')}
                       onPress={() => handleToggleMode('live')}
                     >
                       <Icon name="Voice" size="md" />

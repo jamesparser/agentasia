@@ -542,7 +542,7 @@ export const LivePage = () => {
                     className="animate-spin"
                   />
                 ) : (
-                  <Icon name="Voice" size="4xl" />
+                  <Icon name="Microphone" size="4xl" />
                 )}
               </Button>
             </Tooltip>

@@ -109,7 +109,7 @@ const defaultLocalSettings: LocalSettings = {
   isDrawerCollapsed: true,
   isV2SidebarCollapsed: false,
   isContextualPanelCollapsed: false,
-  speechToTextEnabled: false,
+  speechToTextEnabled: true,
   sttEngine: 'cloud',
   pwaInstallPromptDismissed: false,
   activeSpaceId: 'default',
@@ -336,9 +336,16 @@ export const userSettings = create<UserSettingsStore>()(
       // the AgentAsia gateway. The old default was silently stored for every
       // visitor, so it cannot be told apart from a deliberate choice; reset it
       // once and let people pick again.
-      version: 2,
-      migrate: (persisted: any, version: number) =>
-        persisted && version < 2 ? { ...persisted, sttEngine: 'cloud' } : persisted,
+      version: 3,
+      // v2: dictation uses the cloud engine. v3: the microphone is on by default,
+      // so people no longer have to find a setting before they can talk to it.
+      migrate: (persisted: any, version: number) => {
+        if (!persisted) return persisted
+        let next = persisted
+        if (version < 2) next = { ...next, sttEngine: 'cloud' }
+        if (version < 3) next = { ...next, speechToTextEnabled: true }
+        return next
+      },
       // Persist both local AND synced settings to localStorage.
       // Synced settings are cached here so the first render has the
       // last-known values (no flash to defaults while Yjs hydrates).
