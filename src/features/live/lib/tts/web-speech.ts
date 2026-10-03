@@ -7,6 +7,7 @@
  * Cons: Robotic quality, limited control, inconsistent across browsers
  */
 
+import { pickVoice } from '@/lib/voice/useSpeakAloud'
 import type { TTSProvider, TTSVoice, TTSConfig, TTSAudioResult, TTSProviderType } from '../types'
 
 export class WebSpeechTTSProvider implements TTSProvider {
@@ -134,6 +135,14 @@ export class WebSpeechTTSProvider implements TTSProvider {
         if (voice) {
           utterance.voice = voice
         }
+      }
+
+      // No explicit voice: take the most natural male voice the device has for the
+      // language instead of whatever the browser defaults to.
+      if (!utterance.voice) {
+        const wanted = config?.language || (typeof navigator !== 'undefined' ? navigator.language : 'en')
+        const best = pickVoice(this.voices, wanted)
+        if (best) utterance.voice = best
       }
 
       if (config?.language) {

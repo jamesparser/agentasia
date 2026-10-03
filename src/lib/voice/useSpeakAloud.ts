@@ -74,7 +74,7 @@ export function voiceQuality(v: Pick<SpeechSynthesisVoice, 'name' | 'localServic
   return score
 }
 
-function pickVoice(
+export function pickVoice(
   voices: SpeechSynthesisVoice[],
   language: string,
 ): SpeechSynthesisVoice | null {

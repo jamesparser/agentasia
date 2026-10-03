@@ -163,7 +163,7 @@ export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
     } = userSettings()
 
     const liveAutoSpeakValue = liveAutoSpeak ?? true
-    const selectedVoiceId = kokoroVoiceId || 'af_heart'
+    const selectedVoiceId = kokoroVoiceId || 'am_adam'
     const isLiveMode = mode === 'live'
 
     const voice = useVoice(

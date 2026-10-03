@@ -27,6 +27,7 @@ import {
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { VoiceWaveform } from '../components'
+import { NagaFace, useSpeechAmplitude, type NagaState } from '@/features/naga'
 
 export const LivePage = () => {
   const { lang, t } = useI18n(localI18n)
@@ -107,8 +108,8 @@ export const LivePage = () => {
   // Auto-speak setting (default to true)
   const autoSpeak = liveAutoSpeak ?? true
 
-  // Selected Kokoro voice (default to af_heart - the highest quality voice)
-  const selectedVoiceId = kokoroVoiceId || 'af_heart'
+  // Selected Kokoro voice (default to am_adam: a male voice)
+  const selectedVoiceId = kokoroVoiceId || 'am_adam'
 
   // Ref to store the pending transcript to submit
   const pendingTranscriptRef = useRef<string | null>(null)
@@ -151,6 +152,8 @@ export const LivePage = () => {
 
   // TTS Analyser ref for waveform visualization during AI speech
   const ttsAnalyserRef = useRef<AnalyserNode | null>(null)
+  const nagaAmplitude = useSpeechAmplitude(isSpeaking, ttsAnalyserRef)
+  const nagaState: NagaState = isSpeaking ? 'speaking' : isGenerating ? 'thinking' : isRecording ? 'listening' : 'idle'
 
   // Keep TTS analyser ref updated
   useEffect(() => {
@@ -416,6 +419,15 @@ export const LivePage = () => {
             lineWidth={2}
             className="w-full h-auto min-w-full"
             ttsAnalyserRef={ttsAnalyserRef}
+          />
+        </div>
+
+        {/* The talking naga */}
+        <div className="relative z-10 flex w-full justify-center">
+          <NagaFace
+            state={nagaState}
+            amplitude={nagaAmplitude}
+            className="h-40 w-40 sm:h-56 sm:w-56 drop-shadow-lg"
           />
         </div>
 
