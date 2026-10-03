@@ -44,6 +44,7 @@
     "@heroui/react_3": "npm:@heroui/react@^3.0.5",
     "@heroui/styles": "^3.0.1",
     "@huggingface/transformers": "^4.0.1",
+    "onnxruntime-web": "1.25.0-dev.20260327-722743c0e2",
     "@marp-team/marpit": "^3.2.0",
     "@mermaid-js/layout-elk": "^0.2.0",
     "@monaco-editor/react": "^4.7.0",

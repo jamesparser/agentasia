@@ -17,6 +17,22 @@ import { gatewayFetch } from '@/lib/auth/gatewayFetch'
 
 const SAMPLE_RATE = 16000
 
+/**
+ * AssemblyAI language codes differ from ours in three places (Javanese is jw,
+ * Tagalog is tl) and it has no model for Cantonese, Cebuano, Kyrgyz or Tetum.
+ * For those we send nothing so the gateway turns language detection on, rather
+ * than sending a code the service rejects.
+ */
+export function assemblyLanguage(language: string | undefined): string | undefined {
+  if (!language) return undefined
+  const base = language.toLowerCase()
+  const map: Record<string, string | undefined> = {
+    jv: 'jw', fil: 'tl', tl: 'tl', yue: 'zh', ceb: undefined, ky: undefined, tet: undefined,
+  }
+  const key = base === 'fil' || base === 'yue' ? base : base.split('-')[0]
+  return key in map ? map[key] : key
+}
+
 export class AssemblyAISttProvider implements STTProvider {
   readonly type = 'assemblyai' as const
 
@@ -122,7 +138,7 @@ export class AssemblyAISttProvider implements STTProvider {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           audioBase64: base64,
-          ...(this.language ? { languageCode: this.language.split('-')[0].toLowerCase() } : {}),
+          ...(assemblyLanguage(this.language) ? { languageCode: assemblyLanguage(this.language) } : {}),
         }),
       })
       const body = await res.json().catch(() => ({}))

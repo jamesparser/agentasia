@@ -20,7 +20,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { resolveVoicePlan } from './language-coverage'
-import { warningToast } from '@/lib/toast'
+import { infoToast, warningToast, errorToast } from '@/lib/toast'
+import { hasMmsVoice, preloadMms, synthesizeMms, MMS_SAMPLE_RATE } from './mms-tts'
 
 const synth = (): SpeechSynthesis | null =>
   typeof window !== 'undefined' && 'speechSynthesis' in window
@@ -120,7 +121,20 @@ export function useSpeakAloud(language: string): SpeakAloud {
     engines: ['device'],
   })
   const voice = pickVoice(voices, language)
-  const canSpeak = supported && plan.speakable && Boolean(voice)
+  const deviceOk = supported && plan.speakable && Boolean(voice)
+  // No voice on this device: fall back to the free in-browser model if one exists.
+  const mmsOk = !deviceOk && hasMmsVoice(language)
+  const canSpeak = deviceOk || mmsOk
+
+  // Playback state for the in-browser voice.
+  const runRef = useRef(0)
+  const ctxRef = useRef<AudioContext | null>(null)
+  const sourceRef = useRef<AudioBufferSourceNode | null>(null)
+  const stopMms = useCallback(() => {
+    runRef.current += 1
+    try { sourceRef.current?.stop() } catch { /* already ended */ }
+    sourceRef.current = null
+  }, [])
 
   // Utterances outlive the component; leaving one running after unmount would
   // keep talking over the next screen.
@@ -130,22 +144,71 @@ export function useSpeakAloud(language: string): SpeakAloud {
     return () => {
       utterRef.current = null
       synthInstance?.cancel()
+      stopMms()
     }
-  }, [])
+  }, [stopMms])
 
   const stop = useCallback(() => {
     s?.cancel()
+    stopMms()
     setIsSpeaking(false)
-  }, [s])
+  }, [s, stopMms])
+
+  const speakMms = useCallback(
+    async (clean: string) => {
+      if (isSpeaking) {
+        stopMms()
+        setIsSpeaking(false)
+        return
+      }
+      const run = ++runRef.current
+      setIsSpeaking(true)
+      try {
+        infoToast(
+          'Preparing the voice',
+          'The first time, a voice file of about 100 MB downloads and is kept on this device. After that it starts quickly.',
+        )
+        await preloadMms(language)
+        const ctx = (ctxRef.current ??= new AudioContext({ sampleRate: MMS_SAMPLE_RATE }))
+        if (ctx.state === 'suspended') await ctx.resume()
+        for (const piece of splitForSpeech(clean, 160)) {
+          if (runRef.current !== run) return
+          const samples = await synthesizeMms(language, piece)
+          if (runRef.current !== run) return
+          if (!samples.length) continue
+          const buffer = ctx.createBuffer(1, samples.length, MMS_SAMPLE_RATE)
+          buffer.copyToChannel(new Float32Array(samples), 0)
+          await new Promise<void>((resolve) => {
+            const src = ctx.createBufferSource()
+            src.buffer = buffer
+            src.connect(ctx.destination)
+            src.onended = () => resolve()
+            sourceRef.current = src
+            src.start()
+          })
+        }
+      } catch (error) {
+        console.error('[speak-aloud] in-browser voice failed', error)
+        errorToast('The voice could not start', 'This reply stays in text.')
+      } finally {
+        if (runRef.current === run) setIsSpeaking(false)
+      }
+    },
+    [language, isSpeaking, stopMms],
+  )
 
   const speak = useCallback(
     (text: string) => {
+      const clean = text.replace(/```[\s\S]*?```/g, ' ').trim()
+      if (!clean) return
+      if (mmsOk) {
+        void speakMms(clean)
+        return
+      }
       if (!s) {
         warningToast('Speech is not available in this browser')
         return
       }
-      const clean = text.replace(/```[\s\S]*?```/g, ' ').trim()
-      if (!clean) return
 
       if (!plan.speakable || !voice) {
         warningToast(
@@ -187,7 +250,7 @@ export function useSpeakAloud(language: string): SpeakAloud {
       // like the speaker button doing nothing. A short defer avoids it.
       window.setTimeout(() => utterances.forEach((u) => s.speak(u)), 60)
     },
-    [s, voice, plan.speakable, isSpeaking],
+    [s, voice, plan.speakable, isSpeaking, mmsOk, speakMms],
   )
 
   return { isSpeaking, supported, canSpeak, speak, stop }

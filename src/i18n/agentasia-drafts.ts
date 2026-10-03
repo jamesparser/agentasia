@@ -19,6 +19,11 @@ import { ur } from './locales/ur'
 import { pt } from './locales/pt'
 import { pl } from './locales/pl'
 import { ru } from './locales/ru'
+import { kk } from './locales/kk'
+import { mn } from './locales/mn'
+import { ky } from './locales/ky'
+import { uz } from './locales/uz'
+import { ne } from './locales/ne'
 
 export const agentAsiaDraftLocales = {
   ja,
@@ -42,4 +47,9 @@ export const agentAsiaDraftLocales = {
   pt,
   pl,
   ru,
+  kk,
+  mn,
+  ky,
+  uz,
+  ne,
 } as const
