@@ -1,6 +1,4 @@
 import { Icon } from '@/components'
-import { SignInDialog } from '@/components/auth/SignInDialog'
-import { auth, useAuth } from '@/lib/auth'
 import { AgentSelector } from '@/components/PromptArea/AgentSelector'
 import { useI18n } from '@/i18n'
 import localI18n from '../i18n'
@@ -27,41 +25,6 @@ import { useSpeakAloud } from '@/lib/voice/useSpeakAloud'
 import { useSearchStore } from '@/features/search/searchStore'
 import { VoiceWaveform } from '../components'
 import { NagaFace, useSpeechAmplitude, type NagaState } from '@/features/naga'
-
-/** Sign in / account control, first in the Chat top menu. Hidden until auth is configured. */
-function AccountMenuButton() {
-  const { lang, t } = useI18n(localI18n)
-  const { user, isSignedIn, isConfigured } = useAuth()
-  const [showSignIn, setShowSignIn] = useState(false)
-  if (!isConfigured) return null
-  const loginText = lang === 'en' ? 'Log in' : t('Sign in')
-  const logoutText = lang === 'en' ? 'Log out' : t('Sign out')
-  const text = isSignedIn ? logoutText : loginText
-  const hint = isSignedIn && user?.email ? `${text} (${user.email})` : text
-  return (
-    <>
-      <button
-        type="button"
-        aria-label={hint}
-        title={hint}
-        onClick={() => {
-          if (!isSignedIn) setShowSignIn(true)
-          else void auth.signOut()
-        }}
-        className={
-          'me-1 inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-base font-medium transition-opacity hover:opacity-90 ' +
-          (isSignedIn
-            ? 'border border-default-300 bg-default-100 text-foreground'
-            : 'bg-primary text-primary-foreground')
-        }
-      >
-        <Icon name="User" size="sm" />
-        <span>{text}</span>
-      </button>
-      <SignInDialog isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
-    </>
-  )
-}
 
 export const LivePage = () => {
   const { lang, t, url } = useI18n(localI18n)
@@ -423,7 +386,6 @@ export const LivePage = () => {
       title={t('Live')}
       pageMenuActions={
         <>
-          <AccountMenuButton />
           {/* Search, history and new chat live up here on Chat (no bottom bar). */}
           <Button
             isIconOnly

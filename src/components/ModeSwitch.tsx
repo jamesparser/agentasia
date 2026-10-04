@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { AccountButton } from '@/components/AccountButton'
 import { Icon } from '@/components/Icon'
 import { defaultLang, I18nProvider, langs, useI18n, useUrl, type Lang } from '@/i18n'
 import { cn } from '@/lib/utils'
@@ -140,7 +141,8 @@ export function MobileModeSwitch() {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 flex h-[var(--mobile-bar)] items-center justify-center border-t border-default-200 bg-background">
       <I18nProvider lang={lang}>
-        <ModeSwitch />
+        <ModeSwitch className="[&_button]:px-3 sm:[&_button]:px-4" />
+        <AccountButton className="absolute end-2 sm:end-4" />
       </I18nProvider>
     </div>
   )
