@@ -759,6 +759,4 @@ body {
 /* Height of the phone Chat / Worker bar. Zero unless the bar is showing, and
    zero on desktop, where the switch lives in the sidebar. */
 :root { --mobile-bar: 0rem; }
-@media (max-width: 1023px) {
   :root[data-mode-bar] { --mobile-bar: 3.75rem; }
-}

@@ -91,7 +91,7 @@ export function ModeSwitch({
             title={o.label}
             onClick={() => choose(o.key)}
             className={cn(
-              'flex min-h-11 items-center justify-center gap-1.5 rounded-full px-4 py-1.5 text-base transition-colors lg:min-h-0 lg:px-3 lg:text-sm',
+              'flex min-h-11 items-center justify-center gap-1.5 rounded-full px-4 py-1.5 text-base transition-colors ',
               compact && 'px-0',
               active
                 ? 'bg-background text-foreground shadow-sm'
@@ -138,7 +138,7 @@ export function MobileModeSwitch() {
   const first = pathname.split('/').filter(Boolean)[0]
   const lang = ((langs as readonly string[]).includes(first) ? first : defaultLang) as Lang
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 flex h-[var(--mobile-bar)] items-center justify-center border-t border-default-200 bg-background lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 flex h-[var(--mobile-bar)] items-center justify-center border-t border-default-200 bg-background">
       <I18nProvider lang={lang}>
         <ModeSwitch />
       </I18nProvider>
