@@ -292,10 +292,17 @@ export class KokoroTTSProvider implements TTSProvider {
       const { KokoroTTS } = await import('kokoro-js')
 
       // Check for WebGPU support - offloads computation to GPU for much better performance
-      const hasWebGPU = typeof navigator !== 'undefined' && 'gpu' in navigator
+      // Phones: the fp32 WebGPU model is a ~330 MB download, so they get the
+      // 8 bit model (~90 MB) on WASM, which is what kokoro-js documents for WASM.
+      const isPhone =
+        typeof navigator !== 'undefined' &&
+        (/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) ||
+          (typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches))
+      const hasWebGPU = typeof navigator !== 'undefined' && 'gpu' in navigator && !isPhone
       const device = hasWebGPU ? 'webgpu' : 'wasm'
       // For WebGPU, fp32 is recommended; for WASM, use quantized
-      const dtype = hasWebGPU ? 'fp32' : this.dtype
+      // q4f16 needs half precision, which the WASM runtime lacks: use q8 there.
+      const dtype = hasWebGPU ? 'fp32' : this.dtype === 'q4f16' ? 'q8' : this.dtype
 
       console.log(`[Kokoro TTS] Using device: ${device}, dtype: ${dtype}`)
 

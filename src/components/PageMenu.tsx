@@ -31,11 +31,11 @@ export function PageMenu({ supplementalActions }: PageMenuProps = {}) {
   useSettingsShortcut()
 
   return (
-    <div className="absolute top-0 end-0 z-20 flex items-center gap-1">
-      <ButtonGroup variant="light" isIconOnly>
+    <div className="absolute top-0 end-0 z-20 flex max-w-full flex-wrap items-center justify-end gap-0">
+      <ButtonGroup variant="light" isIconOnly className="flex-wrap justify-end">
         {supplementalActions}
       </ButtonGroup>
-      <ButtonGroup className="opacity-70 *:hover:opacity-100">
+      <ButtonGroup className="flex-wrap justify-end opacity-70 *:hover:opacity-100">
         <NotificationButton />
 
         {/* Show SyncButton by default when sync is enabled */}

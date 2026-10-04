@@ -42,6 +42,7 @@ import {
   TagsSection,
   TracesSection,
   UsageSection,
+  VoiceSection,
   SubscriptionSection,
   ScheduledTasksSection,
 } from './components'
@@ -54,6 +55,7 @@ type SectionKey =
   | 'providers'
   | 'connectors'
   | 'features'
+  | 'voice'
   | 'skills'
   | 'knowledge'
   | 'memories'
@@ -132,6 +134,7 @@ const SettingsContentInner = () => {
     'providers',
     'connectors',
     'features',
+    'voice',
     'skills',
     'knowledge',
     'memories',
@@ -196,6 +199,7 @@ const SettingsContentInner = () => {
     // would offer a setting the product deliberately does not have, and would
     // invite a judge to paste a key into a demo they should not configure.
     { key: 'features', label: t('Features'), icon: 'Cube', group: 'configure' },
+    { key: 'voice', label: t('Voice'), icon: 'Voice', group: 'configure' },
     {
       key: 'knowledge',
       label: t('Files'),
@@ -309,6 +313,8 @@ const SettingsContentInner = () => {
         return <ProvidersSection />
       case 'connectors':
         return <ConnectorsSection />
+      case 'voice':
+        return <VoiceSection />
       case 'features':
         return <FeaturesSection />
       case 'skills':

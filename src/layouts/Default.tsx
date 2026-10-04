@@ -28,6 +28,8 @@ export interface DefaultLayoutProps {
   darkMode?: boolean
   header?: HeaderProps
   showBackButton?: boolean
+  /** Phone bottom bar (settings, search, new, history). Chat shows these in its top menu instead. */
+  showTabbar?: boolean
   /**
    * Optional supplemental action items to be rendered in the PageMenu.
    * These will appear before the default menu items (Sync, Local Backup, etc.).
@@ -43,6 +45,7 @@ export default function DefaultLayout({
   // darkMode,
   header,
   showBackButton = true,
+  showTabbar = true,
   pageMenuActions,
   className,
   children,
@@ -85,7 +88,7 @@ export default function DefaultLayout({
       <title children={metaTitle} />
       <div className="flex relative min-h-[100dvh] pb-[var(--mobile-bar)]">
         <div className="bg-background dark:bg-transparent md:m-4 md:rounded-xl flex flex-col-reverse w-full relative">
-          <Tabbar className="md:hidden" />
+          {showTabbar && <Tabbar className="md:hidden" />}
 
           <main
             role="main"

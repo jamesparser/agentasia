@@ -1,12 +1,12 @@
-import { Icon, PageMenuButton } from '@/components'
+import { Icon } from '@/components'
+import { SignInDialog } from '@/components/auth/SignInDialog'
+import { auth, useAuth } from '@/lib/auth'
 import { ModeSwitch } from '@/components/ModeSwitch'
 import { AgentSelector } from '@/components/PromptArea/AgentSelector'
 import { useI18n } from '@/i18n'
 import localI18n from '../i18n'
 import { useVoice } from '../hooks/useVoice'
 import { getAvailableSTTProviders } from '../lib'
-import type { STTProviderType, TTSProviderType } from '../lib/types'
-import { VoiceSettingsPanel } from '../components/VoiceSettingsPanel'
 import DefaultLayout from '@/layouts/Default'
 import { userSettings } from '@/stores/userStore'
 import { getAgentBySlugAsync, getDefaultAgent } from '@/stores/agentStore'
@@ -19,30 +19,59 @@ import { languages } from '@/i18n'
 import type { Agent, Message } from '@/types'
 import {
   Button,
-  Popover,
-  PopoverContent,
   Progress,
   Tooltip,
 } from '@heroui/react'
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useSpeakAloud } from '@/lib/voice/useSpeakAloud'
+import { useSearchStore } from '@/features/search/searchStore'
 import { VoiceWaveform } from '../components'
 import { NagaFace, useSpeechAmplitude, type NagaState } from '@/features/naga'
 
+/** Sign in / account control, first in the Chat top menu. Hidden until auth is configured. */
+function AccountMenuButton() {
+  const { t } = useI18n(localI18n)
+  const { user, isSignedIn, isConfigured } = useAuth()
+  const [showSignIn, setShowSignIn] = useState(false)
+  if (!isConfigured) return null
+  const label = isSignedIn
+    ? `${t('Account')}${user?.email ? ` (${user.email})` : ''}`
+    : t('Sign in')
+  return (
+    <>
+      <Button
+        isIconOnly
+        variant="light"
+        radius="full"
+        aria-label={label}
+        title={label}
+        onPress={() => {
+          if (!isSignedIn) setShowSignIn(true)
+          else if (window.confirm(t('Sign out of AgentAsia?'))) void auth.signOut()
+        }}
+      >
+        {isSignedIn && user?.photoURL ? (
+          <img src={user.photoURL} alt="" className="h-6 w-6 rounded-full object-cover" />
+        ) : (
+          <Icon name="User" size="md" />
+        )}
+      </Button>
+      <SignInDialog isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
+    </>
+  )
+}
+
 export const LivePage = () => {
-  const { lang, t } = useI18n(localI18n)
+  const { lang, t, url } = useI18n(localI18n)
   const location = useLocation()
   const navigate = useNavigate()
 
   const {
     kokoroVoiceId,
-    setKokoroVoiceId,
     sttProvider: savedSTTProvider,
-    setSTTProvider: setSavedSTTProvider,
     ttsProvider: savedTTSProvider,
-    setTTSProvider: setSavedTTSProvider,
     liveAutoSpeak,
-    setLiveAutoSpeak,
   } = userSettings()
 
   const [loadingProgress, setLoadingProgress] = useState<{
@@ -124,8 +153,8 @@ export const LivePage = () => {
     transcript,
     error,
     toggleRecording,
-    speak,
-    stopSpeaking,
+    speak: speakModel,
+    stopSpeaking: stopModel,
     setSTTProvider,
     setTTSProvider,
     sttProviderType,
@@ -133,7 +162,9 @@ export const LivePage = () => {
     getTTSAnalyser,
   } = useVoice({
     sttProvider: savedSTTProvider || 'assemblyai', // Cloud speech to text: browser dictation is unreliable on phones
-    ttsProvider: savedTTSProvider || 'web-speech', // Use saved or default to browser native
+    // English: Kokoro's male voice (device voices expose no gender, so the browser
+    // voice can come out female). Other languages use the device voice.
+    ttsProvider: savedTTSProvider || (lang === 'en' ? 'kokoro' : 'web-speech'),
     ttsVoiceId: selectedVoiceId, // Use selected Kokoro voice
     language: lang,
     onLoadingProgress: (progress) => {
@@ -150,8 +181,26 @@ export const LivePage = () => {
     },
   })
 
+  // The male Kokoro model is a one-time download; until it is ready, read replies
+  // with the device voice so the page is never silent.
+  const device = useSpeakAloud(lang)
+  const speak = async (text: string) => {
+    if (isTTSReady) await speakModel(text)
+    else device.speak(text)
+  }
+  const stopSpeaking = () => {
+    stopModel()
+    device.stop()
+  }
+
   // TTS Analyser ref for waveform visualization during AI speech
   const ttsAnalyserRef = useRef<AnalyserNode | null>(null)
+
+  // If the in-browser voice cannot start (no memory, blocked download), fall back
+  // to the device voice instead of leaving the page silent.
+  useEffect(() => {
+    if (error && ttsProviderType === 'kokoro') void setTTSProvider('web-speech')
+  }, [error, ttsProviderType, setTTSProvider])
   const nagaAmplitude = useSpeechAmplitude(isSpeaking, ttsAnalyserRef)
   const nagaState: NagaState = isSpeaking ? 'speaking' : isGenerating ? 'thinking' : isRecording ? 'listening' : 'idle'
 
@@ -268,7 +317,7 @@ export const LivePage = () => {
         setConversationMessages((prev) => [...prev, assistantMsg])
 
         // Auto-speak the response if enabled
-        if (autoSpeak && isTTSReady && response) {
+        if (autoSpeak && response) {
           // Strip markdown for speech
           const textToSpeak = response
             .replace(/```[\s\S]*?```/g, '') // Remove code blocks
@@ -335,18 +384,15 @@ export const LivePage = () => {
   // Check if current provider is supported
   const isSupported = isSTTReady || !isLoading
 
-  // Handle provider change
-  const handleSTTProviderChange = async (type: string) => {
-    const providerType = type as STTProviderType
-    await setSTTProvider(providerType)
-    setSavedSTTProvider(providerType)
-  }
-
-  const handleTTSProviderChange = async (type: string) => {
-    const providerType = type as TTSProviderType
-    await setTTSProvider(providerType)
-    setSavedTTSProvider(providerType)
-  }
+  // Voice settings now live in the main Settings menu; apply changes made there.
+  useEffect(() => {
+    if (savedSTTProvider) void setSTTProvider(savedSTTProvider)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [savedSTTProvider])
+  useEffect(() => {
+    if (savedTTSProvider) void setTTSProvider(savedTTSProvider)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [savedTTSProvider])
 
   // Handle speak button - speaks the AI response
   const handleSpeak = async () => {
@@ -372,10 +418,43 @@ export const LivePage = () => {
   return (
     <DefaultLayout
       showBackButton={false}
+      showTabbar={false}
       title={t('Live')}
       pageMenuActions={
         <>
+          <AccountMenuButton />
           <ModeSwitch className="max-lg:hidden" />
+          {/* Search, history and new chat live up here on Chat (no bottom bar). */}
+          <Button
+            isIconOnly
+            variant="light"
+            radius="full"
+            aria-label={t('Search')}
+            title={t('Search')}
+            onPress={() => useSearchStore.getState().open()}
+          >
+            <Icon name="Search" size="md" />
+          </Button>
+          <Button
+            isIconOnly
+            variant="light"
+            radius="full"
+            aria-label={t('History')}
+            title={t('History')}
+            onPress={() => navigate(url('/tasks'))}
+          >
+            <Icon name="ClockRotateRight" size="md" />
+          </Button>
+          <Button
+            isIconOnly
+            variant="light"
+            radius="full"
+            aria-label={t('New Task')}
+            title={t('New Task')}
+            onPress={() => navigate(url('/'))}
+          >
+            <Icon name="PlusCircleSolid" size="md" />
+          </Button>
           {/* Agent Selector */}
           {selectedAgent && !isAgentLoading && (
             <AgentSelector
@@ -385,50 +464,44 @@ export const LivePage = () => {
             />
           )}
 
-          {/* Voice Settings */}
-          <Popover placement="bottom-end">
-            <PageMenuButton
-              icon="Settings"
-              tooltip={t('Voice Settings')}
-              ariaLabel={t('Voice Settings')}
-            />
-            <PopoverContent className="p-0">
-              <VoiceSettingsPanel
-                autoSpeak={autoSpeak}
-                onAutoSpeakChange={setLiveAutoSpeak}
-                sttProviderType={sttProviderType}
-                onSTTProviderChange={handleSTTProviderChange}
-                ttsProviderType={ttsProviderType}
-                onTTSProviderChange={handleTTSProviderChange}
-                selectedVoiceId={selectedVoiceId}
-                onVoiceChange={setKokoroVoiceId}
-              />
-            </PopoverContent>
-          </Popover>
+          {/* One settings menu: the main one (voice settings live inside it). */}
+          <Button
+            isIconOnly
+            variant="light"
+            radius="full"
+            aria-label={t('Settings')}
+            title={t('Settings')}
+            onPress={() => navigate(`${location.pathname}#settings`)}
+          >
+            <Icon name="Settings" size="md" />
+          </Button>
         </>
       }
     >
-      <div className="flex flex-col items-center justify-center sm:justify-end h-[calc(100dvh-4rem-var(--mobile-bar))] w-full gap-3 sm:gap-8 relative overflow-hidden pb-4 sm:pb-16 folded-portrait:h-dvh">
-        {/* Waveform panel - background by default, top half when folded */}
-        <div className="absolute inset-0 flex items-center pointer-events-none overflow-hidden folded-portrait:relative folded-portrait:inset-auto folded-portrait:w-full folded-portrait:h-[env(viewport-segment-height_0_0,50%)] folded-portrait:min-h-[env(viewport-segment-height_0_0,50%)] folded-portrait:max-h-[env(viewport-segment-height_0_0,50%)]">
-          <VoiceWaveform
-            isActive={isRecording || isSpeaking}
-            width={2000}
-            height={4000}
-            color="hsl(var(--heroui-primary))"
-            lineWidth={2}
-            className="w-full h-auto min-w-full"
-            ttsAnalyserRef={ttsAnalyserRef}
-          />
-        </div>
-
+      <div className="flex flex-col items-center justify-center sm:justify-end h-[calc(100dvh-var(--mobile-bar))] w-full gap-3 sm:gap-8 relative overflow-hidden pt-12 pb-4 sm:pt-0 sm:pb-16 folded-portrait:h-dvh">
         {/* The talking naga */}
         <div className="relative z-10 flex w-full justify-center">
           <NagaFace
             state={nagaState}
             amplitude={nagaAmplitude}
-            className="h-[min(10rem,22dvh)] w-[min(10rem,22dvh)] sm:h-56 sm:w-56 drop-shadow-lg"
+            className="h-[min(13.33rem,29dvh)] w-[min(13.33rem,29dvh)] sm:h-[18.67rem] sm:w-[18.67rem] drop-shadow-lg"
           />
+        </div>
+
+        {/* The speech line sits between the avatar and the buttons, with the same
+            gap above and below it. */}
+        <div className="relative z-0 h-10 w-full shrink-0 sm:h-14 pointer-events-none">
+          <div className="absolute inset-x-0 top-1/2 flex h-0 items-center">
+            <VoiceWaveform
+              isActive={isRecording || isSpeaking}
+              width={2000}
+              height={4000}
+              color="hsl(var(--heroui-primary))"
+              lineWidth={2}
+              className="w-full h-auto min-w-full"
+              ttsAnalyserRef={ttsAnalyserRef}
+            />
+          </div>
         </div>
 
         {/* Loading progress indicator */}
@@ -456,6 +529,71 @@ export const LivePage = () => {
 
         {/* Actions panel - overlaid by default, bottom half when folded */}
         <div className="contents folded-portrait:flex folded-portrait:flex-col folded-portrait:items-center folded-portrait:justify-center folded-portrait:h-[env(viewport-segment-height_0_1,50%)] folded-portrait:min-h-[env(viewport-segment-height_0_1,50%)] folded-portrait:gap-4">
+          {/* Main controls */}
+          <div className="flex justify-center items-center gap-4 w-full relative z-10">
+            {/* Stop generation button */}
+            {isGenerating && (
+              <Tooltip content={t('Stop')} placement="top">
+                <Button
+                  isIconOnly
+                  color="danger"
+                  radius="full"
+                  variant="ghost"
+                  size="lg"
+                  onPress={() => setIsGenerating(false)}
+                  className="h-16 w-16 min-h-16 min-w-16 p-0"
+                >
+                  <Icon name="Xmark" size="2xl" className="live-icon" />
+                </Button>
+              </Tooltip>
+            )}
+
+            {/* TTS Play button - for AI response */}
+            {aiResponse && (isTTSReady || device.canSpeak) && !isGenerating && (
+              <Tooltip
+                content={
+                  isSpeaking ? t('Stop speaking') : t('Speak transcript')
+                }
+                placement="top"
+              >
+                <Button
+                  isIconOnly
+                  color={isSpeaking ? 'warning' : 'secondary'}
+                  radius="full"
+                  variant="ghost"
+                  size="lg"
+                  onPress={handleSpeak}
+                  className="h-16 w-16 min-h-16 min-w-16 p-0"
+                >
+                  <Icon name={isSpeaking ? 'Pause' : 'Voice'} size="2xl" className="live-icon" />
+                </Button>
+              </Tooltip>
+            )}
+
+            {/* Main record button */}
+            <Tooltip content={t('Speak to microphone')} placement="bottom">
+              <Button
+                isIconOnly
+                color={isRecording ? 'primary' : 'default'}
+                isDisabled={!isSupported || isGenerating}
+                radius="full"
+                variant="ghost"
+                size="lg"
+                onPress={toggleRecording}
+                className="h-16 w-16 min-h-16 min-w-16 p-0"
+              >
+                {isLoading || isGenerating ? (
+                  <Icon name="RefreshDouble" size="2xl" className="live-icon animate-spin" />
+                ) : (
+                  <Icon
+                    name={isRecording ? 'MicrophoneSpeaking' : 'Microphone'}
+                    size="2xl"
+                    className="live-icon"
+                  />
+                )}
+              </Button>
+            </Tooltip>
+          </div>
           {/* AI Response display */}
           {aiResponse && (
             <div className="text-center text-base sm:text-xl font-medium px-4 max-w-4xl relative z-10 text-primary-600 dark:text-primary-400 line-clamp-4 sm:line-clamp-6">
@@ -480,71 +618,6 @@ export const LivePage = () => {
             )}
           </div>
 
-          {/* Main controls */}
-          <div className="flex justify-center items-center gap-4 w-full relative z-10">
-            {/* Stop generation button */}
-            {isGenerating && (
-              <Tooltip content={t('Stop')} placement="top">
-                <Button
-                  isIconOnly
-                  color="danger"
-                  radius="full"
-                  variant="ghost"
-                  size="lg"
-                  onPress={() => setIsGenerating(false)}
-                  className="min-w-16 min-h-16"
-                >
-                  <Icon name="Xmark" size="2xl" />
-                </Button>
-              </Tooltip>
-            )}
-
-            {/* TTS Play button - for AI response */}
-            {aiResponse && isTTSReady && !isGenerating && (
-              <Tooltip
-                content={
-                  isSpeaking ? t('Stop speaking') : t('Speak transcript')
-                }
-                placement="top"
-              >
-                <Button
-                  isIconOnly
-                  color={isSpeaking ? 'warning' : 'secondary'}
-                  radius="full"
-                  variant="ghost"
-                  size="lg"
-                  onPress={handleSpeak}
-                  className="min-w-16 min-h-16"
-                >
-                  <Icon name={isSpeaking ? 'Pause' : 'Voice'} size="2xl" />
-                </Button>
-              </Tooltip>
-            )}
-
-            {/* Main record button */}
-            <Tooltip content={t('Speak to microphone')} placement="bottom">
-              <Button
-                isIconOnly
-                color={isRecording ? 'primary' : 'default'}
-                isDisabled={!isSupported || isGenerating}
-                radius="full"
-                variant="ghost"
-                size="lg"
-                onPress={toggleRecording}
-                className="min-w-16 min-h-16"
-              >
-                {isLoading || isGenerating ? (
-                  <Icon name="RefreshDouble" size="2xl" className="live-icon animate-spin" />
-                ) : (
-                  <Icon
-                    name={isRecording ? 'MicrophoneSpeaking' : 'Microphone'}
-                    size="2xl"
-                    className="live-icon"
-                  />
-                )}
-              </Button>
-            </Tooltip>
-          </div>
         </div>
       </div>
     </DefaultLayout>
