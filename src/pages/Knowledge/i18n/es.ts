@@ -1,0 +1,173 @@
+import { en } from './en'
+
+type I18n = Record<(typeof en)[number], string>
+
+export const es: I18n = {
+  'Knowledge Base': 'Base de conocimientos',
+  'Manage your files and agents memories':
+    'Gestiona tus archivos y las memorias de los agentes',
+  'Manage your files, sync sources, and agent memories':
+    'Gestiona tus archivos, fuentes de sincronización y memorias de agentes',
+  'Upload files and synchronize local folders to build your knowledge base':
+    'Sube archivos y sincroniza carpetas locales para construir tu base de conocimientos',
+  'Uploading files…': 'Subiendo archivos…',
+  'Drag & drop files here, or click to select':
+    'Arrastra y suelta archivos aquí, o haz clic para seleccionar',
+  'Pick files': 'Seleccionar archivos',
+  'Sync a folder': 'Sincronizar una carpeta',
+  'Synced folders': 'Carpetas sincronizadas',
+  'Last sync: {time}': 'Última sincronización: {time}',
+  Disconnected: 'Desconectado',
+  'Stop syncing': 'Detener sincronización',
+  Reconnect: 'Reconectar',
+  'My Knowledge': 'Mis conocimientos',
+  'Knowledge Item': 'Elemento de conocimiento',
+  Preview: 'Vista previa',
+  Reprocess: 'Reprocesar',
+  Files: 'Archivos',
+  'My Files': 'Mis archivos',
+  'Agent Memory': 'Memoria de agentes',
+  // Sources tab
+  'Sync Sources': 'Fuentes de sincronización',
+  Saved: 'Guardado',
+  'Local Folders': 'Carpetas locales',
+  'Connected Apps': 'Aplicaciones conectadas',
+  'Add Folder': 'Añadir carpeta',
+  'Add App': 'Añadir aplicación',
+  'No local folders synced yet.': 'Aún no hay carpetas locales sincronizadas.',
+  'No apps connected yet.': 'Aún no hay aplicaciones conectadas.',
+  'Connect an app': 'Conectar una aplicación',
+  'No sync sources yet': 'Aún no hay fuentes de sincronización',
+  'Add local folders or connect apps like Google Drive and Notion to automatically sync content to your knowledge base.':
+    'Añade carpetas locales o conecta aplicaciones como Google Drive y Notion para sincronizar automáticamente el contenido con tu base de conocimientos.',
+  'Manage synced folders and connected apps that import content into your knowledge base.':
+    'Gestiona las carpetas sincronizadas y las aplicaciones conectadas que importan contenido a tu base de conocimientos.',
+  'Folder "{name}" is now being synced.':
+    'La carpeta "{name}" se está sincronizando.',
+  'Folder sync stopped': 'Sincronización de carpeta detenida',
+  'Failed to stop watching folder':
+    'Error al detener la vigilancia de la carpeta',
+  'Folder reconnected': 'Carpeta reconectada',
+  'Failed to reconnect folder': 'Error al reconectar la carpeta',
+  'Connector disconnected': 'Conector desconectado',
+  'Synced {n} files': '{n} archivos sincronizados',
+  'Sync error: {error}': 'Error de sincronización: {error}',
+  'Syncing…': 'Sincronizando…',
+  'Sync Error': 'Error de sincronización',
+  'Sync completed': 'Sincronización completada',
+  '{n} items synced': '{n} elementos sincronizados',
+  'Sync failed': 'Sincronización fallida',
+  'Unknown error': 'Error desconocido',
+  'Directory picker is not supported in this browser. Please use a modern browser like Chrome or Edge.':
+    'El selector de directorios no es compatible con este navegador. Por favor, utiliza un navegador moderno como Chrome o Edge.',
+  Cancel: 'Cancelar',
+  // Connector integration
+  'All Sources': 'Todas las fuentes',
+  'Local Files': 'Archivos locales',
+  'Filter by source': 'Filtrar por fuente',
+  'Open in {provider}': 'Abrir en {provider}',
+  'Synced from {provider}': 'Sincronizado desde {provider}',
+  'Synced {time}': 'Sincronizado {time}',
+  'View original': 'Ver original',
+  'Select Agent': 'Seleccionar agente',
+  'All agents': 'Todos los agentes',
+  'Generate Synthesis': 'Generar síntesis',
+  'Total Memories': 'Memorias totales',
+  'Pending Review': 'Pendiente',
+  'High Confidence': 'Alta confianza',
+  'Low Confidence': 'Baja confianza',
+  Facts: 'Hechos',
+  Preferences: 'Preferencias',
+  Behaviors: 'Comportamientos',
+  'Domain Knowledge': 'Conocimiento del dominio',
+  Relationships: 'Relaciones',
+  Procedures: 'Procedimientos',
+  Corrections: 'Correcciones',
+  'No memories pending review for this agent':
+    'No hay memorias pendientes de revisión para este agente',
+  'No memories pending review': 'No hay memorias pendientes de revisión',
+  Approved: 'Aprobadas',
+  'Filter by category': 'Filtrar por categoría',
+  'All Categories': 'Todas las categorías',
+  'No approved memories yet': 'Aún no hay memorias aprobadas',
+  Synthesis: 'Síntesis',
+  'Select an agent to view their memory synthesis':
+    'Selecciona un agente para ver su síntesis de memoria',
+  'Memory Synthesis for {agent}': 'Síntesis de memoria para {agent}',
+  'Last updated: {date}': 'Última actualización: {date}',
+  Export: 'Exportar',
+  'No synthesis generated yet': 'Aún no se ha generado síntesis',
+  'Delete Memory': 'Eliminar memoria',
+  'Are you sure you want to delete this memory? This action cannot be undone.':
+    '¿Estás seguro de que quieres eliminar esta memoria? Esta acción no se puede deshacer.',
+  'Edit Memory': 'Editar memoria',
+  Title: 'Título',
+  Content: 'Contenido',
+  Category: 'Categoría',
+  Confidence: 'Confianza',
+  Keywords: 'Palabras clave',
+  'Comma-separated list of keywords':
+    'Lista de palabras clave separadas por comas',
+  High: 'Alta',
+  Medium: 'Media',
+  Low: 'Baja',
+  Global: 'Global',
+  'Auto-approved': 'Auto-aprobado',
+  'Learned: {date}': 'Aprendido: {date}',
+  'Used {count} times': 'Usado {count} veces',
+  'Remove Global': 'Quitar global',
+  'Make Global': 'Hacer global',
+  'Stop Syncing Folder': 'Detener sincronización de carpeta',
+  'Do you want to keep the synced files in your knowledge base?':
+    '¿Quieres mantener los archivos sincronizados en tu base de conocimientos?',
+  'Keep Files': 'Conservar archivos',
+  'Delete Files': 'Eliminar archivos',
+  'Grant Access': 'Conceder acceso',
+  Remove: 'Eliminar',
+  'Pinned Messages': 'Mensajes fijados',
+  // Connectors tab
+  Connectors: 'Conectores',
+  'No connectors yet': 'Aún no hay conectores',
+  'Connect external services like Google Drive, Gmail, or Notion to import content into your knowledge base.':
+    'Conecta servicios externos como Google Drive, Gmail o Notion para importar contenido a tu base de conocimientos.',
+  'Connect external services to give your agents powerful tools for searching, reading, and interacting with your data.':
+    'Conecta servicios externos para proporcionar a tus agentes herramientas potentes para buscar, leer e interactuar con tus datos.',
+  'Add Connector': 'Añadir conector',
+  'Manage your connected external services':
+    'Gestiona tus servicios externos conectados',
+  'Connector removed': 'Conector eliminado',
+  'Failed to remove connector': 'Error al eliminar el conector',
+  'API Connectors': 'Conectores API',
+  'Connect to custom REST or GraphQL APIs':
+    'Conecta con APIs REST o GraphQL personalizadas',
+  'MCP Servers': 'Servidores MCP',
+  'Connect to Model Context Protocol servers':
+    'Conecta con servidores de Model Context Protocol',
+  'Coming soon': 'Próximamente',
+  // Filter options
+  'All Types': 'Todos los tipos',
+  Documents: 'Documentos',
+  Images: 'Imágenes',
+  'Text Files': 'Archivos de texto',
+  Other: 'Otro',
+  'Manual Upload': 'Subida manual',
+  'Synced Folders': 'Carpetas sincronizadas',
+  'File Type': 'Tipo de archivo',
+  Source: 'Fuente',
+  Filters: 'Filtros',
+  'No items match the selected filters':
+    'No hay elementos que coincidan con los filtros seleccionados',
+  // Bulk selection
+  '{count} item(s) deleted': '{count} elemento(s) eliminado(s)',
+  'Failed to delete some items': 'Error al eliminar algunos elementos',
+  '{count} item(s) queued for processing':
+    '{count} elemento(s) en cola para procesar',
+  'Failed to reprocess some items': 'Error al reprocesar algunos elementos',
+  'Select all': 'Seleccionar todo',
+  'Unselect all': 'Deseleccionar todo',
+  'Delete selected': 'Eliminar selección',
+  'Select {name}': 'Seleccionar {name}',
+  'Delete Selected Items': 'Eliminar elementos seleccionados',
+  'Are you sure you want to delete {count} item(s)? This action cannot be undone.':
+    '¿Está seguro de que desea eliminar {count} elemento(s)? Esta acción no se puede deshacer.',
+} as const

@@ -1,0 +1,209 @@
+// Plans, allowances and per-user usage, enforced on the gateway.
+//
+// The browser's idea of a plan (localStorage) is a preference, not an
+// entitlement. Everything that costs money is decided here, from the verified
+// uid: which plan the caller is on, which model that plan may use, and how much
+// of today's allowance is left.
+import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
+import { dirname } from 'node:path'
+
+export const PLAN_IDS = ['free', 'pro', 'smallBusiness', 'enterprise']
+
+// Model ids mirror src/config/agentasia.ts and the PRICES table in spend-guard.
+export const PLAN_ALLOWANCE = {
+  // Daily caps. Monthly equivalents (x30): free 750, pro 5,000, smallBusiness
+  // 20,000, enterprise 35,000 requests. Sized from the per request cost on
+  // Token Factory plus Tavily, see docs/PRICING.md.
+  free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 25, dailySearches: 25, dailyAudio: 10, dailyTokens: 40_000, maxTokens: 1500 },
+  pro: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 170, dailySearches: 40, dailyAudio: 60, dailyTokens: 510_000, maxTokens: 4000 },
+  smallBusiness: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 670, dailySearches: 160, dailyAudio: 240, dailyTokens: 2_000_000, maxTokens: 6000 },
+  enterprise: { model: 'nvidia/Nemotron-3-Ultra-550b-a55b', dailyRequests: 1170, dailySearches: 300, dailyAudio: 600, dailyTokens: 3_500_000, maxTokens: 8000 },
+}
+
+const day = (now = Date.now()) => new Date(now).toISOString().slice(0, 10)
+
+export function betaState(env = process.env, now = Date.now()) {
+  const endsAt = env.BETA_ENDS_AT || '2026-12-25T00:00:00+07:00'
+  const ends = Date.parse(endsAt)
+  return {
+    active: Number.isFinite(ends) ? now < ends : true,
+    endsAt: Number.isFinite(ends) ? new Date(ends).toISOString() : null,
+    // Paid tiers stay off until the owner turns them on. While off, every caller
+    // resolves to the free plan no matter what the store says.
+    paidTiersEnabled: env.PAID_TIERS_ENABLED === 'true',
+  }
+}
+
+const file = (env, name, fallback) => env[name] || fallback
+
+async function readJson(path, empty) {
+  try { return JSON.parse(await readFile(path, 'utf8')) } catch { return empty }
+}
+async function writeAtomic(path, data) {
+  await mkdir(dirname(path), { recursive: true })
+  const tmp = `${path}.tmp`
+  await writeFile(tmp, JSON.stringify(data, null, 2))
+  await rename(tmp, path)
+}
+
+// One serialized write queue per file: two overlapping requests must not lose an increment.
+const queues = new Map()
+function serial(path, task) {
+  const prev = queues.get(path) || Promise.resolve()
+  const next = prev.catch(() => {}).then(task)
+  queues.set(path, next)
+  return next
+}
+
+const plansPath = (env) => file(env, 'PLANS_FILE', new URL('../../data/plans.json', import.meta.url).pathname)
+const usagePath = (env) => file(env, 'USAGE_FILE', new URL('../../data/usage.json', import.meta.url).pathname)
+
+/** Plan for a verified uid. Never reads anything the client sent. */
+export async function resolvePlan(uid, env = process.env, now = Date.now()) {
+  const beta = betaState(env, now)
+  const plans = await readJson(plansPath(env), {})
+  const rec = plans[uid]
+  let plan = 'free'
+  if (beta.paidTiersEnabled && rec && PLAN_IDS.includes(rec.plan)) {
+    const live = !rec.until || Date.parse(rec.until) > now
+    if (live) plan = rec.plan
+  }
+  return { plan, ...PLAN_ALLOWANCE[plan], beta }
+}
+
+/** Operator-only (admin token route). Webhooks call this after verifying a payment. */
+export async function setPlan(uid, plan, { until = null, source = 'admin' } = {}, env = process.env) {
+  if (!PLAN_IDS.includes(plan)) throw Object.assign(new Error('unknown_plan'), { statusCode: 400 })
+  const path = plansPath(env)
+  return serial(path, async () => {
+    const plans = await readJson(path, {})
+    plans[uid] = { plan, until, source, updatedAt: new Date().toISOString() }
+    await writeAtomic(path, plans)
+    return plans[uid]
+  })
+}
+
+export async function usageToday(uid, env = process.env, now = Date.now()) {
+  const all = await readJson(usagePath(env), {})
+  const rec = all[uid]?.[day(now)] || { requests: 0, tokens: 0 }
+  return { day: day(now), requests: rec.requests || 0, tokens: rec.tokens || 0, searches: rec.searches || 0, audio: rec.audio || 0 }
+}
+
+/** Throws a 429 error when today's allowance is spent. */
+export async function assertWithinAllowance(uid, entitlement, env = process.env, now = Date.now()) {
+  const used = await usageToday(uid, env, now)
+  if (used.requests >= entitlement.dailyRequests || used.tokens >= entitlement.dailyTokens) {
+    throw Object.assign(new Error('daily_allowance_reached'), {
+      statusCode: 429,
+      allowance: { plan: entitlement.plan, used, dailyRequests: entitlement.dailyRequests, dailyTokens: entitlement.dailyTokens },
+    })
+  }
+  return used
+}
+
+/** Throws a 429 error when today's web searches (Tavily) are spent. */
+export async function assertSearchAllowance(uid, entitlement, env = process.env, now = Date.now()) {
+  const used = await usageToday(uid, env, now)
+  if (used.searches >= entitlement.dailySearches) {
+    throw Object.assign(new Error('daily_search_allowance_reached'), {
+      statusCode: 429,
+      allowance: { plan: entitlement.plan, used, dailySearches: entitlement.dailySearches },
+    })
+  }
+  return used
+}
+
+/** Throws a 429 error when today's cloud speech calls (AssemblyAI) are spent. */
+export async function assertAudioAllowance(uid, entitlement, env = process.env, now = Date.now()) {
+  const used = await usageToday(uid, env, now)
+  if (used.audio >= entitlement.dailyAudio) {
+    throw Object.assign(new Error('daily_audio_allowance_reached'), {
+      statusCode: 429,
+      allowance: { plan: entitlement.plan, used, dailyAudio: entitlement.dailyAudio },
+    })
+  }
+  return used
+}
+
+export function recordSearch(uid, env = process.env, now = Date.now()) {
+  const path = usagePath(env)
+  return serial(path, async () => {
+    const all = await readJson(path, {})
+    const d = day(now)
+    const slot = (all[uid] ||= {})
+    for (const k of Object.keys(slot).sort().slice(0, -6)) if (k !== d) delete slot[k]
+    const rec = (slot[d] ||= { requests: 0, tokens: 0 })
+    rec.searches = (rec.searches || 0) + 1
+    await writeAtomic(path, all)
+  })
+}
+
+export function recordAudio(uid, env = process.env, now = Date.now()) {
+  const path = usagePath(env)
+  return serial(path, async () => {
+    const all = await readJson(path, {})
+    const d = day(now)
+    const slot = (all[uid] ||= {})
+    for (const k of Object.keys(slot).sort().slice(0, -6)) if (k !== d) delete slot[k]
+    const rec = (slot[d] ||= { requests: 0, tokens: 0 })
+    rec.audio = (rec.audio || 0) + 1
+    await writeAtomic(path, all)
+  })
+}
+
+export function recordUsage(uid, usage = {}, env = process.env, now = Date.now()) {
+  const path = usagePath(env)
+  const tokens = usage.total_tokens || (usage.prompt_tokens || 0) + (usage.completion_tokens || 0)
+  return serial(path, async () => {
+    const all = await readJson(path, {})
+    const d = day(now)
+    const slot = (all[uid] ||= {})
+    // keep only the last 7 days per user so the file cannot grow without bound
+    for (const k of Object.keys(slot).sort().slice(0, -6)) if (k !== d) delete slot[k]
+    const rec = (slot[d] ||= { requests: 0, tokens: 0 })
+    rec.requests += 1
+    rec.tokens += tokens
+    await writeAtomic(path, all)
+  })
+}
+
+export async function usageReport(principal, env = process.env, now = Date.now()) {
+  const ent = principal
+    ? await resolvePlan(principal.uid, env, now)
+    : { plan: 'free', ...PLAN_ALLOWANCE.free, beta: betaState(env, now) }
+  const used = principal ? await usageToday(principal.uid, env, now) : { day: day(now), requests: 0, tokens: 0, searches: 0, audio: 0 }
+  return {
+    signedIn: Boolean(principal),
+    plan: ent.plan,
+    model: ent.model,
+    beta: ent.beta,
+    day: used.day,
+    used: { requests: used.requests, tokens: used.tokens, searches: used.searches || 0, audio: used.audio || 0 },
+    limits: { requests: ent.dailyRequests, tokens: ent.dailyTokens, searches: ent.dailySearches, audio: ent.dailyAudio, maxTokensPerReply: ent.maxTokens },
+    remaining: {
+      searches: Math.max(0, ent.dailySearches - (used.searches || 0)),
+      audio: Math.max(0, (ent.dailyAudio || 0) - (used.audio || 0)),
+      requests: Math.max(0, ent.dailyRequests - used.requests),
+      tokens: Math.max(0, ent.dailyTokens - used.tokens),
+    },
+  }
+}
+
+// The Tavily account is one shared pool (the free Researcher plan is 1,000
+// credits a month for everyone), so per user caps alone cannot protect it: forty
+// guests at 25 searches would empty it in a day. This is the pool's own daily
+// ceiling. TAVILY_GLOBAL_DAILY defaults to 30 (about 900 a month); raise it when
+// the account moves to a paid Tavily plan.
+const GLOBAL_UID = '_global'
+
+export async function assertGlobalSearchBudget(env = process.env, now = Date.now()) {
+  const cap = Number(env.TAVILY_GLOBAL_DAILY || 30)
+  const used = await usageToday(GLOBAL_UID, env, now)
+  if (used.searches >= cap) {
+    throw Object.assign(new Error('search_pool_exhausted_today'), { statusCode: 429 })
+  }
+}
+
+export function recordGlobalSearch(env = process.env, now = Date.now()) {
+  return recordSearch(GLOBAL_UID, env, now)
+}

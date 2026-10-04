@@ -1,0 +1,10 @@
+{
+  "name": "devs-bridge",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "./server.mjs"
+  }
+}

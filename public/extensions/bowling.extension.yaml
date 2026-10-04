@@ -1,0 +1,2164 @@
+id: bowling
+type: app
+name: Bowling
+version: 0.5.5
+license: MIT
+icon: BowlingBall
+color: orange
+description: A simple 3D bowling game to relax without AI distractions.
+author:
+  name: Arnaud Leymet
+  url: https://arnley.com
+privacyPolicy: https://agentasia.vercel.app/privacy
+source: https://github.com/codename-co/devs/blob/main/public/extensions/bowling.extension.yaml
+screenshots:
+  - data:image/webp;base64,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
+i18n:
+  ar:
+    name: بولينج
+    description: لعبة بولينج ثلاثية الأبعاد بسيطة للاسترخاء بدون تشتيت من الذكاء الاصطناعي.
+  de:
+    name: Bowling
+    description: Ein einfaches 3D-Bowling-Spiel zum Entspannen ohne KI-Ablenkungen.
+  en:
+    name: Bowling
+    description: A simple 3D bowling game to relax without AI distractions.
+  fr:
+    name: Bowling
+    description: Un simple jeu de bowling en 3D pour se détendre sans distractions d'IA.
+  es:
+    name: Bolos
+    description: Un simple juego de bolos en 3D para relajarse sin distracciones de IA.
+  it:
+    name: Bowling
+    description: Un semplice gioco di bowling 3D per rilassarsi senza distrazioni dall'IA.
+pages:
+  bowling: | # jsx
+    import { useState, useEffect, useRef, useCallback } from 'react'
+
+    const App = () => {
+      const canvasRef = useRef(null)
+      const sceneRef = useRef(null)
+      const ballRef = useRef(null)
+      const pinsRef = useRef([])
+      const cameraRef = useRef(null)
+      const cinematicModeRef = useRef(false)
+      const cinematicPhaseRef = useRef(0)
+      const impactOccurredRef = useRef(false)
+      const [aimAngle, setAimAngle] = useState(0)
+      const [aimDirection, setAimDirection] = useState(0) // Oscillating direction angle
+      const [isThrown, setIsThrown] = useState(false)
+      const [babylonLoaded, setBabylonLoaded] = useState(false)
+      const [BABYLON, setBABYLON] = useState(null)
+      const [score, setScore] = useState(0)
+      const [knockedPins, setKnockedPins] = useState(0)
+      const [cinematicMode, setCinematicMode] = useState(false)
+      const [showStrike, setShowStrike] = useState(false)
+      const [isAiming, setIsAiming] = useState(false) // True when actively dragging to aim
+      const gameEndTimeoutRef = useRef(null) // Timer for automatic game end
+      const gameEndReasonRef = useRef(null) // Track why game is ending
+
+      // Performance detection - detect low-end devices
+      const isLowEndDevice = useRef(
+        navigator.hardwareConcurrency <= 4 ||
+        navigator.deviceMemory <= 4 ||
+        /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+      ).current
+
+      // Touch/mouse drag state
+      const isDraggingRef = useRef(false)
+      const dragStartRef = useRef({ x: 0, y: 0, time: 0 })
+      const dragEndRef = useRef({ x: 0, y: 0, time: 0 })
+      const lastPositionsRef = useRef([])
+      const isThrownRef = useRef(false)
+      const aimDirectionRef = useRef(0) // Track current aim direction for throw
+      const resetGameRef = useRef(null) // Store resetGame callback for game end timer
+
+      // Keep ref in sync with state
+      useEffect(() => {
+        isThrownRef.current = isThrown
+      }, [isThrown])
+
+      // Keep aimDirection ref in sync
+      useEffect(() => {
+        aimDirectionRef.current = aimDirection
+      }, [aimDirection])
+
+      // Sinusoidal aim direction oscillation (1/16th of circle = π/8 radians ≈ 22.5°)
+      // Only runs when actively aiming (dragging) - throttled for performance
+      useEffect(() => {
+        if (isThrown || !isAiming) {
+          setAimDirection(0)
+          return
+        }
+
+        const amplitude = Math.PI / 16
+        const frequency = 0.8
+        let startTime = performance.now()
+        let animationId = null
+        let lastUpdate = 0
+        const updateInterval = 33 // ~30fps instead of 60fps for aim indicator
+
+        const animate = (now) => {
+          if (now - lastUpdate >= updateInterval) {
+            const elapsed = (now - startTime) / 1000
+            const angle = Math.sin(elapsed * frequency * Math.PI * 2) * amplitude
+            setAimDirection(angle)
+            lastUpdate = now
+          }
+          animationId = requestAnimationFrame(animate)
+        }
+
+        animationId = requestAnimationFrame(animate)
+
+        return () => {
+          if (animationId) cancelAnimationFrame(animationId)
+        }
+      }, [isThrown, isAiming])
+
+      useEffect(() => {
+        const script = document.createElement('script')
+        script.src = 'https://cdn.babylonjs.com/babylon.js'
+        script.async = true
+        script.onload = () => {
+          const cannonScript = document.createElement('script')
+          cannonScript.src = 'https://cdn.babylonjs.com/cannon.js'
+          cannonScript.async = true
+          cannonScript.onload = () => {
+            console.log('Babylon.js and Cannon.js loaded successfully')
+            setBABYLON(window.BABYLON)
+            setBabylonLoaded(true)
+          }
+          document.body.appendChild(cannonScript)
+        }
+        document.body.appendChild(script)
+        return () => {
+          if (script.parentNode) script.parentNode.removeChild(script)
+        }
+      }, [])
+
+      useEffect(() => {
+        if (!babylonLoaded || !canvasRef.current || !BABYLON) return
+
+        const canvas = canvasRef.current
+        // Reduce quality for low-end devices
+        const engineOptions = {
+          preserveDrawingBuffer: true,
+          stencil: !isLowEndDevice,
+          antialias: !isLowEndDevice,
+          powerPreference: isLowEndDevice ? 'low-power' : 'high-performance',
+        }
+        const engine = new BABYLON.Engine(canvas, !isLowEndDevice, engineOptions)
+        // Hardware scaling for low-end devices (renders at lower resolution)
+        if (isLowEndDevice) {
+          engine.setHardwareScalingLevel(1.5) // Render at 66% resolution
+        }
+        const scene = new BABYLON.Scene(engine)
+        // Disable auto-clear for performance on high-end devices only
+        // Low-end devices need autoClear to prevent visual trails/ghosting
+        if (!isLowEndDevice) {
+          scene.autoClear = false
+          scene.autoClearDepthAndStencil = false
+        }
+        sceneRef.current = scene
+        console.log('Babylon scene created, lowEndDevice:', isLowEndDevice)
+
+        // Enable physics with better settings
+        scene.enablePhysics(
+          new BABYLON.Vector3(0, -9.81, 0),
+          new BABYLON.CannonJSPlugin(),
+        )
+
+        // Camera setup - focused on the bowling ball area
+        const camera = new BABYLON.ArcRotateCamera(
+          'camera',
+          -Math.PI / 2,
+          Math.PI / 4,
+          18,
+          new BABYLON.Vector3(0, 0.5, -1),
+          scene,
+        )
+        // Camera control: right/middle click on desktop, 2-finger touch on mobile
+        camera.attachControl(canvas, true)
+        camera.inputs.attached.pointers.buttons = [1, 2] // Middle and right click only
+        // Enable multi-touch for mobile camera control (2 fingers to rotate/zoom)
+        camera.inputs.attached.pointers.multiTouchPanning = true
+        camera.inputs.attached.pointers.multiTouchPanAndZoom = true
+        camera.pinchDeltaPercentage = 0.01 // Smooth pinch zoom
+        camera.lowerRadiusLimit = 12
+        camera.upperRadiusLimit = 35
+        camera.lowerBetaLimit = 0.3
+        camera.upperBetaLimit = Math.PI / 2.5
+        // Limit horizontal rotation to +/- 30 degrees from center
+        camera.lowerAlphaLimit = -Math.PI / 2 - Math.PI / 6
+        camera.upperAlphaLimit = -Math.PI / 2 + Math.PI / 6
+        camera.panningSensibility = 0
+        cameraRef.current = camera
+
+        // Store original camera settings for reset
+        scene.metadata = scene.metadata || {}
+        scene.metadata.originalCameraSettings = {
+          alpha: camera.alpha,
+          beta: camera.beta,
+          radius: camera.radius,
+          target: camera.target.clone(),
+        }
+
+        // ============================================
+        // PROFESSIONAL LIGHTING SETUP
+        // ============================================
+
+        // Enable image processing for post-processing effects (simplified for performance)
+        if (!isLowEndDevice) {
+          scene.imageProcessingConfiguration.contrast = 1.2
+          scene.imageProcessingConfiguration.exposure = 1.1
+          scene.imageProcessingConfiguration.toneMappingEnabled = true
+          scene.imageProcessingConfiguration.toneMappingType =
+            BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES
+        }
+
+        // Ambient light - soft global illumination
+        const ambientLight = new BABYLON.HemisphericLight(
+          'ambientLight',
+          new BABYLON.Vector3(0, 1, 0),
+          scene,
+        )
+        ambientLight.intensity = 0.35
+        ambientLight.diffuse = new BABYLON.Color3(0.95, 0.92, 0.88) // Warm white
+        ambientLight.specular = new BABYLON.Color3(0.1, 0.1, 0.1)
+        ambientLight.groundColor = new BABYLON.Color3(0.15, 0.12, 0.1) // Warm floor bounce
+
+        // Main key light - primary spotlight on pins area
+        const keyLight = new BABYLON.SpotLight(
+          'keyLight',
+          new BABYLON.Vector3(0, 14, 6),
+          new BABYLON.Vector3(0, -0.9, 0.4),
+          Math.PI / 2.8,
+          1.5,
+          scene,
+        )
+        keyLight.intensity = 2.2
+        keyLight.diffuse = new BABYLON.Color3(1, 0.97, 0.92) // Slightly warm white
+        keyLight.specular = new BABYLON.Color3(1, 1, 1)
+        keyLight.shadowEnabled = true
+
+        // Fill light - softer light from the side to reduce harsh shadows
+        const fillLight = new BABYLON.DirectionalLight(
+          'fillLight',
+          new BABYLON.Vector3(-0.5, -0.8, 0.3),
+          scene,
+        )
+        fillLight.intensity = 0.6
+        fillLight.diffuse = new BABYLON.Color3(0.85, 0.9, 1) // Cool blue tint
+        fillLight.specular = new BABYLON.Color3(0.3, 0.35, 0.4)
+        fillLight.position = new BABYLON.Vector3(-8, 10, 0)
+        fillLight.shadowEnabled = true
+
+        // Back/rim light - creates edge definition and depth
+        const rimLight = new BABYLON.SpotLight(
+          'rimLight',
+          new BABYLON.Vector3(0, 8, 18),
+          new BABYLON.Vector3(0, -0.3, -1),
+          Math.PI / 3,
+          2,
+          scene,
+        )
+        rimLight.intensity = 1.0
+        rimLight.diffuse = new BABYLON.Color3(1, 0.95, 0.85)
+        rimLight.specular = new BABYLON.Color3(0.8, 0.75, 0.7)
+
+        // Side accent lights for dramatic bowling alley atmosphere
+        const accentLight1 = new BABYLON.PointLight(
+          'accentLight1',
+          new BABYLON.Vector3(-4, 5, 8),
+          scene,
+        )
+        accentLight1.intensity = 0.5
+        accentLight1.diffuse = new BABYLON.Color3(0.6, 0.8, 1) // Cool blue
+        accentLight1.specular = new BABYLON.Color3(0.4, 0.5, 0.7)
+        accentLight1.range = 15
+
+        const accentLight2 = new BABYLON.PointLight(
+          'accentLight2',
+          new BABYLON.Vector3(4, 5, 8),
+          scene,
+        )
+        accentLight2.intensity = 0.5
+        accentLight2.diffuse = new BABYLON.Color3(1, 0.85, 0.7) // Warm orange
+        accentLight2.specular = new BABYLON.Color3(0.7, 0.5, 0.4)
+        accentLight2.range = 15
+
+        // Front lane light - illuminates the ball area
+        const frontLight = new BABYLON.SpotLight(
+          'frontLight',
+          new BABYLON.Vector3(0, 8, -6),
+          new BABYLON.Vector3(0, -0.7, 0.7),
+          Math.PI / 3,
+          2,
+          scene,
+        )
+        frontLight.intensity = 0.8
+        frontLight.diffuse = new BABYLON.Color3(1, 0.98, 0.95)
+        frontLight.specular = new BABYLON.Color3(0.9, 0.9, 0.9)
+
+        // ============================================
+        // ADVANCED SHADOW CONFIGURATION
+        // ============================================
+
+        // Shadow generators - quality based on device capability
+        const shadowMapSize = isLowEndDevice ? 512 : 1024
+        const shadowGenerator = new BABYLON.ShadowGenerator(shadowMapSize, keyLight)
+        if (isLowEndDevice) {
+          // Use basic shadow map for low-end devices
+          shadowGenerator.usePoissonSampling = true
+        } else {
+          shadowGenerator.usePercentageCloserFiltering = true
+          shadowGenerator.filteringQuality = BABYLON.ShadowGenerator.QUALITY_MEDIUM
+        }
+        shadowGenerator.bias = 0.001
+        shadowGenerator.normalBias = 0.02
+        shadowGenerator.darkness = 0.35
+        shadowGenerator.frustumEdgeFalloff = 0.5
+
+        // Store shadow generators - only use one generator for performance
+        scene.metadata = scene.metadata || {}
+        scene.metadata.shadowGenerators = [shadowGenerator]
+
+        // Secondary shadow generator only for high-end devices
+        if (!isLowEndDevice) {
+          const fillShadowGenerator = new BABYLON.ShadowGenerator(512, fillLight)
+          fillShadowGenerator.useBlurExponentialShadowMap = true
+          fillShadowGenerator.blurKernel = 32
+          fillShadowGenerator.darkness = 0.5
+          scene.metadata.shadowGenerators.push(fillShadowGenerator)
+        }
+
+        // ============================================
+        // REFLECTION PROBE FOR ENVIRONMENT REFLECTIONS
+        // ============================================
+
+        // Create reflection probe only for high-end devices
+        if (!isLowEndDevice) {
+          const reflectionProbe = new BABYLON.ReflectionProbe(
+            'reflectionProbe',
+            128, // Reduced from 256
+            scene,
+          )
+          reflectionProbe.position = new BABYLON.Vector3(0, 2, 8)
+          reflectionProbe.refreshRate =
+            BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONCE
+          scene.metadata.reflectionProbe = reflectionProbe
+        }
+
+        // Create bowling lane with realistic wood texture
+        const lane = BABYLON.MeshBuilder.CreateBox(
+          'lane',
+          { width: 4.5, height: 0.3, depth: 22 },
+          scene,
+        )
+        lane.position.y = -0.15
+        lane.position.z = 6
+        const laneMat = new BABYLON.StandardMaterial('laneMat', scene)
+
+        // Create wood grain texture procedurally (reduced size for performance)
+        const laneTextureSize = isLowEndDevice ? { width: 256, height: 512 } : { width: 512, height: 1024 }
+        const laneTexture = new BABYLON.DynamicTexture(
+          'laneTexture',
+          laneTextureSize,
+          scene,
+        )
+        const ctx = laneTexture.getContext()
+        const texW = laneTextureSize.width
+        const texH = laneTextureSize.height
+        const gradient = ctx.createLinearGradient(0, 0, texW, 0)
+        gradient.addColorStop(0, '#d4a574')
+        gradient.addColorStop(0.2, '#c9956a')
+        gradient.addColorStop(0.4, '#d4a574')
+        gradient.addColorStop(0.6, '#c9956a')
+        gradient.addColorStop(0.8, '#d4a574')
+        gradient.addColorStop(1, '#c9956a')
+        ctx.fillStyle = gradient
+        ctx.fillRect(0, 0, texW, texH)
+
+        // Add wood grain lines (reduced count for low-end)
+        ctx.strokeStyle = '#b8845a'
+        ctx.lineWidth = 1
+        const lineCount = isLowEndDevice ? 10 : 20
+        const lineSpacing = texW / lineCount
+        for (let i = 0; i < lineCount; i++) {
+          ctx.beginPath()
+          ctx.moveTo(i * lineSpacing, 0)
+          ctx.lineTo(i * lineSpacing, texH)
+          ctx.stroke()
+        }
+
+        // Add lane markers (arrows) - skip on low-end for simpler texture
+        if (!isLowEndDevice) {
+          ctx.fillStyle = '#8b6914'
+          const arrowY = texH * 0.29
+          for (let i = 0; i < 7; i++) {
+            const x = texW * 0.14 + i * texW * 0.1
+            ctx.beginPath()
+            ctx.moveTo(x, arrowY)
+            ctx.lineTo(x - 8, arrowY + 30)
+            ctx.lineTo(x + 8, arrowY + 30)
+            ctx.closePath()
+            ctx.fill()
+          }
+        }
+
+        // Add foul line
+        ctx.fillStyle = '#1a1a1a'
+        ctx.fillRect(0, texH * 0.176, texW, 8)
+
+        laneTexture.update()
+        laneMat.diffuseTexture = laneTexture
+        laneMat.specularColor = new BABYLON.Color3(0.5, 0.45, 0.4)
+        laneMat.specularPower = 64
+        laneMat.useSpecularOverAlpha = true
+
+        // Add subtle reflection for polished wood look
+        if (scene.metadata && scene.metadata.reflectionProbe) {
+          laneMat.reflectionTexture = scene.metadata.reflectionProbe.cubeTexture
+          laneMat.reflectionTexture.level = 0.15
+        }
+
+        // Fresnel for edge reflections on glossy lane
+        laneMat.reflectionFresnelParameters = new BABYLON.FresnelParameters()
+        laneMat.reflectionFresnelParameters.bias = 0.1
+        laneMat.reflectionFresnelParameters.power = 3
+
+        lane.material = laneMat
+        lane.receiveShadows = true
+
+        // Add lane to reflection probe
+        if (scene.metadata && scene.metadata.reflectionProbe) {
+          scene.metadata.reflectionProbe.renderList.push(lane)
+        }
+        lane.physicsImpostor = new BABYLON.PhysicsImpostor(
+          lane,
+          BABYLON.PhysicsImpostor.BoxImpostor,
+          { mass: 0, restitution: 0.2, friction: 0.6 },
+          scene,
+        )
+
+        // Create gutters
+        const createGutter = (xPos) => {
+          const gutter = BABYLON.MeshBuilder.CreateBox(
+            'gutter',
+            { width: 0.5, height: 0.15, depth: 22 },
+            scene,
+          )
+          gutter.position = new BABYLON.Vector3(xPos, -0.22, 6)
+          const gutterMat = new BABYLON.StandardMaterial('gutterMat', scene)
+          gutterMat.diffuseColor = new BABYLON.Color3(0.15, 0.15, 0.15)
+          gutter.material = gutterMat
+          gutter.receiveShadows = true
+          return gutter
+        }
+        createGutter(-2.5)
+        createGutter(2.5)
+
+        // Create side walls/bumpers
+        const createSideWall = (xPos) => {
+          const wall = BABYLON.MeshBuilder.CreateBox(
+            'wall',
+            { width: 0.3, height: 0.8, depth: 22 },
+            scene,
+          )
+          wall.position = new BABYLON.Vector3(xPos, 0.2, 6)
+          const wallMat = new BABYLON.StandardMaterial('wallMat', scene)
+          wallMat.diffuseColor = new BABYLON.Color3(0.3, 0.25, 0.2)
+          wall.material = wallMat
+          wall.receiveShadows = true
+          wall.physicsImpostor = new BABYLON.PhysicsImpostor(
+            wall,
+            BABYLON.PhysicsImpostor.BoxImpostor,
+            { mass: 0, restitution: 0.5 },
+            scene,
+          )
+          return wall
+        }
+        createSideWall(-2.9)
+        createSideWall(2.9)
+
+        // Create back wall
+        const backWall = BABYLON.MeshBuilder.CreateBox(
+          'backWall',
+          { width: 6.2, height: 2, depth: 0.3 },
+          scene,
+        )
+        backWall.position = new BABYLON.Vector3(0, 0.8, 17.5)
+        const backWallMat = new BABYLON.StandardMaterial('backWallMat', scene)
+        backWallMat.diffuseColor = new BABYLON.Color3(0.25, 0.22, 0.18)
+        backWallMat.specularColor = new BABYLON.Color3(0.15, 0.12, 0.1)
+        backWallMat.specularPower = 8
+        backWallMat.ambientColor = new BABYLON.Color3(0.08, 0.07, 0.06)
+        backWall.material = backWallMat
+        backWall.receiveShadows = true
+
+        // Add to reflection probe
+        if (scene.metadata && scene.metadata.reflectionProbe) {
+          scene.metadata.reflectionProbe.renderList.push(backWall)
+        }
+        backWall.physicsImpostor = new BABYLON.PhysicsImpostor(
+          backWall,
+          BABYLON.PhysicsImpostor.BoxImpostor,
+          { mass: 0, restitution: 0.3 },
+          scene,
+        )
+
+        // Create floor around the lane
+        const floor = BABYLON.MeshBuilder.CreateGround(
+          'floor',
+          { width: 20, height: 30 },
+          scene,
+        )
+        floor.position.y = -0.31
+        floor.position.z = 5
+        const floorMat = new BABYLON.StandardMaterial('floorMat', scene)
+        floorMat.diffuseColor = new BABYLON.Color3(0.15, 0.12, 0.1)
+        floorMat.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1)
+        floorMat.specularPower = 16
+        floorMat.ambientColor = new BABYLON.Color3(0.05, 0.04, 0.03)
+        floor.material = floorMat
+        floor.receiveShadows = true
+
+        // Add floor to reflection probe
+        if (scene.metadata && scene.metadata.reflectionProbe) {
+          scene.metadata.reflectionProbe.renderList.push(floor)
+        }
+
+        // Create environment - ceiling with lights
+        const ceiling = BABYLON.MeshBuilder.CreateBox(
+          'ceiling',
+          { width: 20, height: 0.2, depth: 30 },
+          scene,
+        )
+        ceiling.position = new BABYLON.Vector3(0, 10, 5)
+        const ceilingMat = new BABYLON.StandardMaterial('ceilingMat', scene)
+        ceilingMat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.12)
+        ceilingMat.alpha = 1
+        ceiling.material = ceilingMat
+
+        // Make ceiling transparent when camera is above it (throttled for performance)
+        let lastCeilingCheck = 0
+        scene.registerBeforeRender(() => {
+          const now = performance.now()
+          if (now - lastCeilingCheck < 200) return // Check every 200ms
+          lastCeilingCheck = now
+          const cameraY = camera.position.y
+          const ceilingY = ceiling.position.y
+          const newAlpha = cameraY > ceilingY ? 0.15 : 1
+          if (ceilingMat.alpha !== newAlpha) {
+            ceilingMat.alpha = newAlpha
+          }
+        })
+
+        // Create hanging lights
+        const createHangingLight = (x, z) => {
+          const cord = BABYLON.MeshBuilder.CreateCylinder(
+            'cord',
+            { diameter: 0.05, height: 2 },
+            scene,
+          )
+          cord.position = new BABYLON.Vector3(x, 9, z)
+          const cordMat = new BABYLON.StandardMaterial('cordMat', scene)
+          cordMat.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2)
+          cord.material = cordMat
+
+          const lampShade = BABYLON.MeshBuilder.CreateCylinder(
+            'lampShade',
+            { diameterTop: 0.8, diameterBottom: 1.2, height: 0.5 },
+            scene,
+          )
+          lampShade.position = new BABYLON.Vector3(x, 7.8, z)
+          const shadeMat = new BABYLON.StandardMaterial('shadeMat', scene)
+          shadeMat.diffuseColor = new BABYLON.Color3(0.15, 0.4, 0.15)
+          shadeMat.emissiveColor = new BABYLON.Color3(0.02, 0.05, 0.02)
+          lampShade.material = shadeMat
+
+          const bulb = BABYLON.MeshBuilder.CreateSphere(
+            'bulb',
+            { diameter: 0.3 },
+            scene,
+          )
+          bulb.position = new BABYLON.Vector3(x, 7.5, z)
+          const bulbMat = new BABYLON.StandardMaterial('bulbMat', scene)
+          bulbMat.emissiveColor = new BABYLON.Color3(1, 0.9, 0.7)
+          bulbMat.diffuseColor = new BABYLON.Color3(1, 0.95, 0.8)
+          bulb.material = bulbMat
+        }
+        // Reduce hanging lights on low-end devices
+        createHangingLight(0, 3)
+        createHangingLight(0, 10)
+        if (!isLowEndDevice) {
+          createHangingLight(-3, 6)
+          createHangingLight(3, 6)
+        }
+
+        // Create bowling ball with realistic marble texture appearance
+        const ballSegments = isLowEndDevice ? 16 : 24 // Reduced from 32
+        const ball = BABYLON.MeshBuilder.CreateSphere(
+          'ball',
+          { diameter: 0.55, segments: ballSegments },
+          scene,
+        )
+        ball.position = new BABYLON.Vector3(0, 1.5, -3) // Start higher to drop
+        const ballMat = new BABYLON.StandardMaterial('ballMat', scene)
+
+        // Create marble texture procedurally (reduced size for performance)
+        const ballTextureSize = isLowEndDevice ? 256 : 512
+        const ballTexture = new BABYLON.DynamicTexture(
+          'ballTexture',
+          { width: ballTextureSize, height: ballTextureSize },
+          scene,
+        )
+        const ballCtx = ballTexture.getContext()
+
+        // Base light blue color
+        ballCtx.fillStyle = '#a8d4e6'
+        ballCtx.fillRect(0, 0, ballTextureSize, ballTextureSize)
+
+        // Create marble swirl effect - simplified for performance
+        const createMarbleSwirls = (ctx, width, height, simplified = false) => {
+          const colors = ['#c5e5f0', '#8fc5db', '#b8dce8', '#7bb8d0']
+          const layerCount = simplified ? 3 : 6
+          const swirlCount = simplified ? 10 : 20
+          const stepsPerSwirl = simplified ? 5 : 10
+
+          for (let layer = 0; layer < layerCount; layer++) {
+            ctx.globalAlpha = 0.4 + Math.random() * 0.3
+            for (let i = 0; i < swirlCount; i++) {
+              ctx.beginPath()
+              ctx.strokeStyle = colors[Math.floor(Math.random() * colors.length)]
+              ctx.lineWidth = 3 + Math.random() * 10
+              ctx.lineCap = 'round'
+              let x = Math.random() * width
+              let y = Math.random() * height
+              ctx.moveTo(x, y)
+              for (let j = 0; j < stepsPerSwirl; j++) {
+                const angle = Math.random() * Math.PI * 2
+                const distance = 25 + Math.random() * 50
+                x += Math.cos(angle) * distance
+                y += Math.sin(angle) * distance
+                ctx.lineTo(x, y)
+              }
+              ctx.stroke()
+            }
+          }
+
+          // Add highlights (reduced)
+          ctx.globalAlpha = 0.5
+          const highlightCount = simplified ? 12 : 25
+          for (let i = 0; i < highlightCount; i++) {
+            ctx.beginPath()
+            ctx.strokeStyle = '#e8f4f8'
+            ctx.lineWidth = 1 + Math.random() * 3
+            let x = Math.random() * width
+            let y = Math.random() * height
+            ctx.moveTo(x, y)
+            for (let j = 0; j < 4; j++) {
+              x += (Math.random() - 0.5) * 60
+              y += (Math.random() - 0.5) * 60
+              ctx.lineTo(x, y)
+            }
+            ctx.stroke()
+          }
+          ctx.globalAlpha = 1.0
+        }
+
+        createMarbleSwirls(ballCtx, ballTextureSize, ballTextureSize, isLowEndDevice)
+        ballTexture.update()
+
+        ballMat.diffuseTexture = ballTexture
+        ballMat.specularColor = new BABYLON.Color3(1, 1, 1)
+        ballMat.specularPower = 128
+        ballMat.useSpecularOverAlpha = true
+
+        // Add reflection from probe
+        if (scene.metadata.reflectionProbe) {
+          ballMat.reflectionTexture = scene.metadata.reflectionProbe.cubeTexture
+          ballMat.reflectionTexture.level = 0.3
+        }
+
+        // Enhanced Fresnel for realistic edge reflections
+        ballMat.reflectionFresnelParameters = new BABYLON.FresnelParameters()
+        ballMat.reflectionFresnelParameters.bias = 0.05
+        ballMat.reflectionFresnelParameters.power = 2
+        ballMat.reflectionFresnelParameters.leftColor = BABYLON.Color3.White()
+        ballMat.reflectionFresnelParameters.rightColor = BABYLON.Color3.Black()
+
+        ball.material = ballMat
+
+        // Add to all shadow generators
+        scene.metadata.shadowGenerators.forEach((sg) => sg.addShadowCaster(ball))
+
+        // Add ball to reflection probe render list
+        if (scene.metadata.reflectionProbe) {
+          scene.metadata.reflectionProbe.renderList.push(ball)
+        }
+        ball.physicsImpostor = new BABYLON.PhysicsImpostor(
+          ball,
+          BABYLON.PhysicsImpostor.SphereImpostor,
+          { mass: 6.8, restitution: 0.05, friction: 0.35 },
+          scene,
+        )
+        ballRef.current = ball
+        console.log('Ball created with physics impostor', {
+          position: ball.position.toString(),
+        })
+
+        // Add finger holes to the ball - using discs recessed into the ball surface
+        const createFingerHole = (offsetX, offsetZ, size) => {
+          // Ball radius is approximately 0.3
+          const ballRadius = 0.3
+
+          // Calculate the Y position on the sphere surface for given X,Z offset
+          const distFromCenter = Math.sqrt(offsetX * offsetX + offsetZ * offsetZ)
+          const yOnSurface = Math.sqrt(
+            ballRadius * ballRadius - distFromCenter * distFromCenter,
+          )
+
+          // Create a disc (flat circle) to represent the hole opening
+          const holeDisc = BABYLON.MeshBuilder.CreateDisc(
+            'holeDisc',
+            { radius: size / 2, tessellation: 24 },
+            scene,
+          )
+
+          // Position disc WELL BELOW the sphere surface so it doesn't stick out
+          // Recess it by 0.03 units into the ball
+          const recessDepth = 0.02
+          const recessedY = yOnSurface - recessDepth
+
+          // Scale position proportionally to keep disc centered on the hole
+          const scaleFactor = recessedY / yOnSurface
+          holeDisc.position = new BABYLON.Vector3(
+            offsetX * scaleFactor,
+            recessedY,
+            offsetZ * scaleFactor,
+          )
+
+          // Rotate disc to be horizontal (facing up)
+          holeDisc.rotation.x = Math.PI / 2
+
+          // Create very dark material
+          const holeMat = new BABYLON.StandardMaterial('holeMat', scene)
+          holeMat.diffuseColor = new BABYLON.Color3(0.01, 0.01, 0.01)
+          holeMat.specularColor = new BABYLON.Color3(0, 0, 0)
+          holeMat.emissiveColor = new BABYLON.Color3(0.003, 0.003, 0.003)
+          holeDisc.material = holeMat
+
+          // Parent to ball so it moves with it
+          holeDisc.parent = ball
+
+          return holeDisc
+        }
+
+        // Three finger holes in classic triangle arrangement
+        // Two smaller holes for middle and ring fingers (top)
+        createFingerHole(-0.06, 0.05, 0.05)
+        createFingerHole(0.06, 0.05, 0.05)
+        // One larger hole for thumb (bottom)
+        createFingerHole(0, -0.08, 0.065)
+
+        // Create realistic bowling pins
+        const createPin = (x, z) => {
+          const pinProfile = [
+            new BABYLON.Vector3(0.05, 0, 0),
+            new BABYLON.Vector3(0.055, 0.02, 0),
+            new BABYLON.Vector3(0.075, 0.08, 0),
+            new BABYLON.Vector3(0.085, 0.15, 0),
+            new BABYLON.Vector3(0.082, 0.22, 0),
+            new BABYLON.Vector3(0.065, 0.3, 0),
+            new BABYLON.Vector3(0.045, 0.38, 0),
+            new BABYLON.Vector3(0.038, 0.44, 0),
+            new BABYLON.Vector3(0.042, 0.5, 0),
+            new BABYLON.Vector3(0.048, 0.55, 0),
+            new BABYLON.Vector3(0.045, 0.6, 0),
+            new BABYLON.Vector3(0.035, 0.64, 0),
+            new BABYLON.Vector3(0.02, 0.67, 0),
+            new BABYLON.Vector3(0, 0.68, 0),
+          ]
+
+          const pinTessellation = isLowEndDevice ? 16 : 24 // Reduced from 32
+          const pin = BABYLON.MeshBuilder.CreateLathe(
+            'pin',
+            {
+              shape: pinProfile,
+              radius: 1,
+              tessellation: pinTessellation,
+              sideOrientation: BABYLON.Mesh.FRONTSIDE, // Single side for performance
+            },
+            scene,
+          )
+
+          pin.position = new BABYLON.Vector3(x, 0, z)
+
+          const pinMat = new BABYLON.StandardMaterial('pinMat', scene)
+          pinMat.diffuseColor = new BABYLON.Color3(0.98, 0.97, 0.94)
+          pinMat.specularColor = new BABYLON.Color3(0.9, 0.9, 0.9)
+          pinMat.specularPower = 96
+          pinMat.ambientColor = new BABYLON.Color3(0.9, 0.88, 0.85)
+          pinMat.useSpecularOverAlpha = true
+
+          // Add subtle reflection for glossy pin finish
+          if (scene.metadata && scene.metadata.reflectionProbe) {
+            pinMat.reflectionTexture = scene.metadata.reflectionProbe.cubeTexture
+            pinMat.reflectionTexture.level = 0.1
+          }
+
+          // Fresnel for realistic edge lighting
+          pinMat.reflectionFresnelParameters = new BABYLON.FresnelParameters()
+          pinMat.reflectionFresnelParameters.bias = 0.15
+          pinMat.reflectionFresnelParameters.power = 2
+
+          pin.material = pinMat
+          pin.receiveShadows = true
+
+          // Add to all shadow generators
+          scene.metadata.shadowGenerators.forEach((sg) => sg.addShadowCaster(pin))
+
+          // Add to reflection probe
+          if (scene.metadata && scene.metadata.reflectionProbe) {
+            scene.metadata.reflectionProbe.renderList.push(pin)
+          }
+
+          // Red stripes
+          const stripeTessellation = isLowEndDevice ? 12 : 20 // Reduced from 32
+          const stripe1 = BABYLON.MeshBuilder.CreateTorus(
+            'stripe1',
+            {
+              diameter: 0.085,
+              thickness: 0.008,
+              tessellation: stripeTessellation,
+            },
+            scene,
+          )
+          stripe1.rotation.x = Math.PI / 2
+          stripe1.parent = pin
+          stripe1.position = new BABYLON.Vector3(0, 0.42, 0)
+          const stripeMat = new BABYLON.StandardMaterial('stripeMat', scene)
+          stripeMat.diffuseColor = new BABYLON.Color3(0.9, 0.1, 0.1)
+          stripeMat.specularColor = new BABYLON.Color3(0.5, 0.2, 0.2)
+          stripe1.material = stripeMat
+
+          const stripe2 = stripe1.clone('stripe2')
+          stripe2.position = new BABYLON.Vector3(0, 0.45, 0)
+          stripe2.parent = pin
+
+          pin.physicsImpostor = new BABYLON.PhysicsImpostor(
+            pin,
+            BABYLON.PhysicsImpostor.CylinderImpostor,
+            { mass: 0, restitution: 0.03, friction: 0.4 },
+            scene,
+          )
+          // Store original mass to restore when ball collides (real pin ~1.5kg)
+          pin.originalMass = 1.6
+          pin.isActivated = false
+
+          return pin
+        }
+
+        const pins = []
+        const pinPositions = [
+          [0, 12],
+          [-0.25, 12.45],
+          [0.25, 12.45],
+          [-0.5, 12.9],
+          [0, 12.9],
+          [0.5, 12.9],
+          [-0.75, 13.35],
+          [-0.25, 13.35],
+          [0.25, 13.35],
+          [0.75, 13.35],
+        ]
+        pinPositions.forEach(([x, z]) => {
+          pins.push(createPin(x, z))
+        })
+        pinsRef.current = pins
+
+        // Create aim guide arrow - 2D flat visual guide (no physics, just visual)
+        // First pin is at z=12, ball starts at z=-3, so halfway is z=4.5
+        const arrowEndZ = 4.5
+        const arrowStartZ = -2.5 // Just in front of ball
+        const arrowLength = arrowEndZ - arrowStartZ
+        const arrowHeadLength = 1.0
+        const arrowBodyLength = arrowLength - arrowHeadLength
+        const arrowWidth = 0.25
+
+        // Create arrow texture procedurally
+        const arrowTextureSize = isLowEndDevice ? { width: 32, height: 128 } : { width: 64, height: 256 }
+        const arrowTexture = new BABYLON.DynamicTexture(
+          'arrowTexture',
+          arrowTextureSize,
+          scene,
+        )
+        const arrowCtx = arrowTexture.getContext()
+        const arrW = arrowTextureSize.width
+        const arrH = arrowTextureSize.height
+        // Transparent background
+        arrowCtx.clearRect(0, 0, arrW, arrH)
+        // Draw arrow body (rectangle) - proportional to texture size
+        arrowCtx.fillStyle = 'rgba(255, 80, 80, 0.7)'
+        arrowCtx.fillRect(arrW * 0.3125, 0, arrW * 0.375, arrH * 0.78)
+        // Draw arrow head (triangle)
+        arrowCtx.beginPath()
+        arrowCtx.moveTo(arrW * 0.5, arrH) // Tip
+        arrowCtx.lineTo(0, arrH * 0.78)  // Bottom left
+        arrowCtx.lineTo(arrW, arrH * 0.78) // Bottom right
+        arrowCtx.closePath()
+        arrowCtx.fill()
+        arrowTexture.update()
+        arrowTexture.hasAlpha = true
+
+        // Arrow body - flat plane at ball center height
+        // Ball is at z=-3, so positions are relative to that
+        const ballZ = -3
+        const ballCenterHeight = 0.35 + 0.275 // Ball position + half diameter
+        const arrowBody = BABYLON.MeshBuilder.CreatePlane(
+          'arrowBody',
+          {
+            width: arrowWidth,
+            height: arrowBodyLength,
+          },
+          scene,
+        )
+        // Rotate to lie flat pointing forward, at ball center height
+        // Position relative to ball (arrow starts just in front of ball)
+        arrowBody.rotation.x = Math.PI / 2
+        arrowBody.position = new BABYLON.Vector3(0, 0.3, (arrowStartZ - ballZ) + arrowBodyLength / 2)
+
+        // Arrow material - semi-transparent red, unlit (pure visual)
+        const arrowMat = new BABYLON.StandardMaterial('arrowMat', scene)
+        arrowMat.diffuseColor = new BABYLON.Color3(1, 0.3, 0.3)
+        arrowMat.emissiveColor = new BABYLON.Color3(1, 0.3, 0.3) // Self-illuminated
+        arrowMat.specularColor = new BABYLON.Color3(0, 0, 0) // No specular
+        arrowMat.alpha = 0.6
+        arrowMat.backFaceCulling = false
+        arrowMat.disableLighting = true // Pure visual, not affected by lights
+        arrowBody.material = arrowMat
+
+        // Arrow head - flat triangle plane pointing forward
+        const arrowHead = BABYLON.MeshBuilder.CreateDisc(
+          'arrowHead',
+          {
+            radius: 0.4,
+            tessellation: 3, // Triangle
+          },
+          scene,
+        )
+        arrowHead.rotation.x = Math.PI / 2
+        arrowHead.rotation.z = Math.PI / 2 // Rotate to point forward (along Z axis)
+        // Position relative to ball
+        arrowHead.position = new BABYLON.Vector3(0, 0.3, (arrowEndZ - ballZ) - 0.8)
+        arrowHead.material = arrowMat
+
+        // Create parent container for easy positioning - positioned at ball location
+        // This makes the arrow rotate around the ball as pivot point
+        const aimArrow = new BABYLON.TransformNode('aimArrow', scene)
+        arrowBody.parent = aimArrow
+        arrowHead.parent = aimArrow
+        aimArrow.position = new BABYLON.Vector3(0, 0, ballZ) // Position at ball Z
+
+        // Ensure arrow is purely visual - no shadows, no physics
+        arrowBody.receiveShadows = false
+        arrowHead.receiveShadows = false
+        arrowBody.isPickable = false
+        arrowHead.isPickable = false
+
+        // Store aim arrow components for updates
+        scene.aimArrow = aimArrow
+        scene.arrowBody = arrowBody
+        scene.arrowHead = arrowHead
+        scene.arrowEndZ = arrowEndZ
+        scene.arrowStartZ = arrowStartZ
+
+        // Start with arrow hidden (only shows during active aiming)
+        aimArrow.setEnabled(false)
+
+        // Add particle system for impact effect (reduced count for performance)
+        const particleCount = isLowEndDevice ? 30 : 60
+        const particleSystem = new BABYLON.ParticleSystem('particles', particleCount, scene)
+        particleSystem.particleTexture = new BABYLON.Texture(
+          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGklEQVQYV2NkYGD4z4AHMP7//x8fN+IGjFQHALfiBP9lq3bqAAAAAElFTkSuQmCC',
+          scene,
+        )
+        particleSystem.emitter = new BABYLON.Vector3(0, 0.5, 12)
+        particleSystem.minEmitBox = new BABYLON.Vector3(-0.5, 0, -0.5)
+        particleSystem.maxEmitBox = new BABYLON.Vector3(0.5, 0, 0.5)
+        particleSystem.color1 = new BABYLON.Color4(1, 0.9, 0.7, 1)
+        particleSystem.color2 = new BABYLON.Color4(1, 0.8, 0.5, 1)
+        particleSystem.minSize = 0.02
+        particleSystem.maxSize = 0.08
+        particleSystem.minLifeTime = 0.2
+        particleSystem.maxLifeTime = 0.5
+        particleSystem.emitRate = 0
+        particleSystem.gravity = new BABYLON.Vector3(0, -5, 0)
+        particleSystem.direction1 = new BABYLON.Vector3(-1, 2, -1)
+        particleSystem.direction2 = new BABYLON.Vector3(1, 4, 1)
+        particleSystem.minEmitPower = 1
+        particleSystem.maxEmitPower = 3
+        particleSystem.start()
+        scene.particleSystem = particleSystem
+
+        // Glow effect - disabled on low-end devices
+        if (!isLowEndDevice) {
+          const gl = new BABYLON.GlowLayer('glow', scene, { mainTextureSamples: 1 })
+          gl.intensity = 0.25
+          scene.metadata.glowLayer = gl
+        }
+
+        // ============================================
+        // CINEMATIC CAMERA SYSTEM
+        // ============================================
+
+        // Create cinematic post-process effects (disabled on low-end devices)
+        const createCinematicEffects = () => {
+          if (isLowEndDevice) {
+            scene.metadata.vignetteEffect = null
+            scene.metadata.motionBlurIntensity = 0
+            return
+          }
+          // Vignette effect for dramatic framing
+          const vignetteEffect = new BABYLON.ImageProcessingPostProcess(
+            'vignette',
+            1.0,
+            camera,
+          )
+          vignetteEffect.vignetteEnabled = true
+          vignetteEffect.vignetteWeight = 1.5
+          vignetteEffect.vignetteStretch = 0.5
+          vignetteEffect.vignetteColor = new BABYLON.Color4(0, 0, 0, 1)
+          vignetteEffect.vignetteCameraFov = camera.fov
+          scene.metadata.vignetteEffect = vignetteEffect
+          scene.metadata.motionBlurIntensity = 0
+        }
+        createCinematicEffects()
+
+        // Cinematic camera angles library - WIDER and SMOOTHER
+        // Each returns target position AND camera offset for real movement
+        scene.metadata.cinematicAngles = {
+          // Following shot from behind - camera physically moves with ball
+          followBehind: (ballPos, time) => {
+            const cameraOffset = new BABYLON.Vector3(
+              Math.sin(time * 0.4) * 1.5,
+              4 + Math.sin(time * 0.3) * 0.5,
+              -8 + Math.sin(time * 0.2) * 1,
+            )
+            return {
+              position: ballPos.add(cameraOffset),
+              target: new BABYLON.Vector3(
+                ballPos.x,
+                ballPos.y + 0.2,
+                ballPos.z + 4,
+              ),
+            }
+          },
+          // Low angle sweep - camera swoops around smoothly
+          lowAngleSweep: (ballPos, time) => {
+            const angle = time * 0.5
+            const cameraOffset = new BABYLON.Vector3(
+              Math.sin(angle) * 5,
+              1.5 + Math.abs(Math.sin(time * 0.4)) * 0.8,
+              Math.cos(angle) * 4 - 5,
+            )
+            return {
+              position: ballPos.add(cameraOffset),
+              target: new BABYLON.Vector3(ballPos.x, ballPos.y, ballPos.z + 2),
+            }
+          },
+          // Orbiting side shot - camera physically orbits smoothly
+          orbitingSide: (ballPos, time, side) => {
+            const orbitAngle = side * (Math.PI / 4 + time * 0.4)
+            const orbitRadius = 7 + Math.sin(time * 0.3) * 1
+            const cameraPos = new BABYLON.Vector3(
+              ballPos.x + Math.sin(orbitAngle) * orbitRadius,
+              3 + Math.cos(time * 0.35) * 0.5,
+              ballPos.z + Math.cos(orbitAngle) * orbitRadius * 0.5 - 2,
+            )
+            return {
+              position: cameraPos,
+              target: new BABYLON.Vector3(
+                ballPos.x,
+                ballPos.y + 0.1,
+                ballPos.z + 1,
+              ),
+            }
+          },
+          // Racing alongside - camera runs parallel to ball
+          racingAlongside: (ballPos, time, side) => {
+            const lateralOffset = side * (5 + Math.sin(time * 0.3) * 0.8)
+            const cameraPos = new BABYLON.Vector3(
+              ballPos.x + lateralOffset,
+              2.5 + Math.sin(time * 0.4) * 0.4,
+              ballPos.z - 3 + Math.sin(time * 0.25) * 1,
+            )
+            return {
+              position: cameraPos,
+              target: new BABYLON.Vector3(ballPos.x, ballPos.y, ballPos.z + 2),
+            }
+          },
+          // Crane shot - camera moves up and over smoothly
+          craneShot: (ballPos, time) => {
+            const height = 5 + time * 0.5 + Math.sin(time * 0.3) * 0.5
+            const forward = Math.min(time * 1.5, 6)
+            const cameraPos = new BABYLON.Vector3(
+              ballPos.x + Math.sin(time * 0.25) * 2,
+              height,
+              ballPos.z - 6 + forward,
+            )
+            return {
+              position: cameraPos,
+              target: new BABYLON.Vector3(ballPos.x, 0.3, ballPos.z + 3),
+            }
+          },
+          // Pin area - calm close-up following the ball toward the pins
+          pinsCircle: (ballPos, time) => {
+            // Stay slightly to the side of the ball, following it
+            const cameraPos = new BABYLON.Vector3(
+              ballPos.x + 2.5,
+              2.5,
+              ballPos.z - 4, // Stay behind the ball
+            )
+            return {
+              position: cameraPos,
+              target: new BABYLON.Vector3(ballPos.x, 0.3, 12.5), // Look at pin area
+            }
+          },
+          // Impact tracking - fixed view on pins area, no movement
+          impactChaos: (actionCenter, time, intensity) => {
+            // Fixed camera position looking at the original pins location
+            const cameraPos = new BABYLON.Vector3(
+              1.5, // Slightly to the right
+              2.5, // Low angle
+              7.5, // Fixed position in front of pins
+            )
+            return {
+              position: cameraPos,
+              target: new BABYLON.Vector3(0, 0.5, 12.5), // Always look at original pins center
+            }
+          },
+          // Sweeping aftermath - fixed view on pins area
+          sweepingAftermath: (center, time) => {
+            // Fixed camera position, same as impact
+            const cameraPos = new BABYLON.Vector3(
+              1.5,
+              2.5,
+              7.5,
+            )
+            return {
+              position: cameraPos,
+              target: new BABYLON.Vector3(0, 0.4, 12.5), // Always look at original pins center
+            }
+          },
+          // Reverse dolly - camera pulls back behind the ball, looking forward
+          reverseDolly: (ballPos, time) => {
+            const pullBack = time * 1.5
+            const cameraPos = new BABYLON.Vector3(
+              Math.sin(time * 0.3) * 1.5,
+              3.5 + Math.sin(time * 0.35) * 0.5,
+              ballPos.z - 6 - pullBack, // Camera stays BEHIND the ball
+            )
+            return {
+              position: cameraPos,
+              target: new BABYLON.Vector3(ballPos.x, ballPos.y, ballPos.z + 3), // Look ahead of ball
+            }
+          },
+        }
+
+        // Camera position tracking for smooth movement
+        let currentCameraPos = new BABYLON.Vector3(0, 5, -8)
+        let currentCameraTarget = new BABYLON.Vector3(0, 0, 0)
+
+        // Camera boundary constants - never go behind wall or pins
+        const CAMERA_MAX_Z = 16.5 // Back wall is at z=17.5, stay in front
+        const CAMERA_MIN_Z_NEAR_PINS = 11 // Don't go behind pins (at z≈12.5) when close to lane center
+
+        // Clamp camera position to valid bounds (never behind wall or pins)
+        const clampCameraPosition = (pos) => {
+          const clampedPos = pos.clone()
+          // Never go behind the back wall
+          clampedPos.z = Math.min(clampedPos.z, CAMERA_MAX_Z)
+          // When camera is near the lane center (x close to 0), don't go behind pins
+          const distFromCenter = Math.abs(clampedPos.x)
+          if (distFromCenter < 4) {
+            // Within lane width, be more restrictive
+            const maxZ = CAMERA_MIN_Z_NEAR_PINS + (distFromCenter / 4) * (CAMERA_MAX_Z - CAMERA_MIN_Z_NEAR_PINS)
+            clampedPos.z = Math.min(clampedPos.z, maxZ)
+          }
+          return clampedPos
+        }
+
+        // Smooth camera blend function - DIRECT POSITION CONTROL
+        scene.metadata.blendCameraTo = (targetSettings, blendSpeed = 0.04) => {
+          const camera = cameraRef.current
+          if (!camera) return
+
+          // Clamp target position to valid camera bounds
+          const clampedPosition = clampCameraPosition(targetSettings.position)
+
+          // Smooth interpolation for cinematic movement
+          const effectiveBlendSpeed = blendSpeed * 1.2
+
+          // Interpolate camera position for actual movement
+          currentCameraPos = BABYLON.Vector3.Lerp(
+            currentCameraPos,
+            clampedPosition,
+            effectiveBlendSpeed,
+          )
+          currentCameraTarget = BABYLON.Vector3.Lerp(
+            currentCameraTarget,
+            targetSettings.target,
+            effectiveBlendSpeed * 1.5,
+          )
+
+          // Calculate direction FROM camera TO target
+          const direction = currentCameraTarget.subtract(currentCameraPos)
+          const distance = direction.length()
+
+          if (distance < 0.1) return // Avoid division issues
+
+          // Normalize direction
+          const dirNorm = direction.normalize()
+
+          // Calculate spherical coordinates correctly for ArcRotateCamera
+          // Alpha: horizontal angle (around Y axis) - where camera is looking from
+          // Beta: vertical angle from top
+          const alpha = Math.atan2(-dirNorm.x, -dirNorm.z)
+          const beta = Math.acos(-dirNorm.y)
+
+          // Set camera parameters
+          camera.target.copyFrom(currentCameraTarget)
+          camera.alpha = alpha
+          camera.beta = Math.max(0.1, Math.min(Math.PI - 0.1, beta))
+          camera.radius = distance
+        }
+
+        // Cinematic sequence controller
+        let cinematicObserver = null
+        let cinematicStartTime = 0
+        let currentCameraStyle = 0
+        let styleStartTime = 0
+        let orbitDirection = 1
+
+        scene.metadata.startCinematicMode = () => {
+          cinematicModeRef.current = true
+          cinematicPhaseRef.current = 0
+          impactOccurredRef.current = false
+          cinematicStartTime = performance.now()
+          styleStartTime = performance.now()
+          currentCameraStyle = 0
+          orbitDirection = Math.random() > 0.5 ? 1 : -1
+
+          const camera = cameraRef.current
+          if (!camera) return
+
+          // Disable manual camera controls
+          camera.detachControl()
+
+          // Remove camera limits for cinematic freedom
+          camera.lowerAlphaLimit = null
+          camera.upperAlphaLimit = null
+          camera.lowerBetaLimit = 0.1
+          camera.upperBetaLimit = Math.PI - 0.1
+          camera.lowerRadiusLimit = 1
+          camera.upperRadiusLimit = 50
+
+          // Increase vignette for cinematic look
+          if (scene.metadata.vignetteEffect) {
+            scene.metadata.vignetteEffect.vignetteWeight = 3
+          }
+
+          // Increase glow for dramatic effect
+          if (scene.metadata.glowLayer) {
+            scene.metadata.glowLayer.intensity = 0.5
+          }
+
+          const angles = scene.metadata.cinematicAngles
+
+          // Camera style definitions - SMOOTHER and WIDER
+          const cameraStyles = [
+            { name: 'followBehind', duration: 1200, blendSpeed: 0.04 },
+            { name: 'lowAngleSweep', duration: 1500, blendSpeed: 0.035 },
+            { name: 'orbitingSide', duration: 1800, blendSpeed: 0.03 },
+            { name: 'racingAlongside', duration: 1400, blendSpeed: 0.04 },
+            { name: 'craneShot', duration: 1600, blendSpeed: 0.035 },
+            { name: 'reverseDolly', duration: 1000, blendSpeed: 0.04 },
+          ]
+
+          // Initialize camera position tracking
+          currentCameraPos = new BABYLON.Vector3(
+            ballRef.current.position.x,
+            3,
+            ballRef.current.position.z - 5,
+          )
+          currentCameraTarget = ballRef.current.position.clone()
+
+          // Main cinematic loop - CONTINUOUS PHYSICAL MOVEMENT
+          cinematicObserver = scene.onBeforeRenderObservable.add(() => {
+            if (!cinematicModeRef.current || !ballRef.current) return
+
+            const ball = ballRef.current
+            const ballPos = ball.position
+            const ballVelocity = ball.physicsImpostor
+              ? ball.physicsImpostor.getLinearVelocity()
+              : new BABYLON.Vector3(0, 0, 0)
+            const ballSpeed = ballVelocity.length()
+            const now = performance.now()
+            const totalTime = (now - cinematicStartTime) / 1000 // Time in seconds
+            const styleTime = (now - styleStartTime) / 1000
+
+            // Detect impact with pins
+            const nearPins = ballPos.z > 10.5 && ballPos.z < 15
+            const hasActivatedPins = pinsRef.current.some((p) => p.isActivated)
+
+            // Calculate action center for impact/aftermath phases
+            let actionCenter = new BABYLON.Vector3(0, 0.5, 12.5)
+            let activePinCount = 0
+            pinsRef.current.forEach((pin) => {
+              if (pin.isActivated) {
+                actionCenter.addInPlace(pin.position)
+                activePinCount++
+              }
+            })
+            if (activePinCount > 0) {
+              actionCenter.scaleInPlace(1 / activePinCount)
+              actionCenter.y = 0.5
+            }
+
+            // Impact detection and phase transition - smooth, no dramatic effects
+            if (nearPins && hasActivatedPins && !impactOccurredRef.current) {
+              impactOccurredRef.current = true
+              cinematicPhaseRef.current = 2 // Impact phase
+              styleStartTime = now
+            }
+
+            let targetSettings
+            let blendSpeed = 0.05
+
+            // Phase-based continuous camera movement
+            switch (cinematicPhaseRef.current) {
+              case 0: // Ball traveling - dynamic style switching
+                // Check if we should switch camera style
+                const currentStyle =
+                  cameraStyles[currentCameraStyle % cameraStyles.length]
+                if (styleTime > currentStyle.duration / 1000) {
+                  currentCameraStyle++
+                  styleStartTime = now
+                  orbitDirection = Math.random() > 0.5 ? 1 : -1
+                }
+
+                // Get target based on current style with continuous motion
+                const styleName = currentStyle.name
+                blendSpeed = currentStyle.blendSpeed
+
+                switch (styleName) {
+                  case 'followBehind':
+                    targetSettings = angles.followBehind(ballPos, totalTime)
+                    break
+                  case 'lowAngleSweep':
+                    targetSettings = angles.lowAngleSweep(ballPos, totalTime)
+                    break
+                  case 'orbitingSide':
+                    targetSettings = angles.orbitingSide(
+                      ballPos,
+                      totalTime,
+                      orbitDirection,
+                    )
+                    break
+                  case 'racingAlongside':
+                    targetSettings = angles.racingAlongside(
+                      ballPos,
+                      totalTime,
+                      orbitDirection,
+                    )
+                    break
+                  case 'craneShot':
+                    targetSettings = angles.craneShot(ballPos, styleTime)
+                    break
+                  case 'reverseDolly':
+                    targetSettings = angles.reverseDolly(ballPos, styleTime)
+                    break
+                  default:
+                    targetSettings = angles.followBehind(ballPos, totalTime)
+                }
+
+                // Transition to anticipation when getting close to pins
+                if (ballPos.z > 8) {
+                  cinematicPhaseRef.current = 1
+                  styleStartTime = now
+                }
+                break
+
+              case 1: // Anticipation - circling around pins area smoothly
+                targetSettings = angles.pinsCircle(ballPos, totalTime)
+                blendSpeed = 0.05
+                break
+
+              case 2: // Impact - calm close-up view, no shake
+                const impactTime = styleTime
+
+                targetSettings = angles.impactChaos(
+                  actionCenter,
+                  totalTime,
+                  1,
+                )
+                blendSpeed = 0.025 // Very slow blend for smooth transition
+
+                // Transition to aftermath after chaos settles
+                if (impactTime > 2) {
+                  cinematicPhaseRef.current = 3
+                  styleStartTime = now
+                }
+                break
+
+              case 3: // Aftermath - sweeping majestic orbit
+                targetSettings = angles.sweepingAftermath(actionCenter, totalTime)
+                blendSpeed = 0.04
+                break
+            }
+
+            // Apply continuous camera blend
+            if (targetSettings) {
+              scene.metadata.blendCameraTo(targetSettings, blendSpeed)
+            }
+
+            // End cinematic when action settles
+            if (ballSpeed < 0.3 && cinematicPhaseRef.current >= 2) {
+              // Check if pins have also settled
+              let pinsSettled = true
+              pinsRef.current.forEach((pin) => {
+                if (pin.physicsImpostor) {
+                  const pinVel = pin.physicsImpostor.getLinearVelocity()
+                  if (pinVel && pinVel.length() > 0.5) {
+                    pinsSettled = false
+                  }
+                }
+              })
+
+              if (pinsSettled && !scene.metadata.cinematicEndTimeout) {
+                scene.metadata.cinematicEndTimeout = setTimeout(() => {
+                  scene.metadata.stopCinematicMode()
+                  scene.metadata.cinematicEndTimeout = null
+                }, 2000)
+              }
+            }
+          })
+        }
+
+        scene.metadata.stopCinematicMode = () => {
+          cinematicModeRef.current = false
+
+          if (cinematicObserver) {
+            scene.onBeforeRenderObservable.remove(cinematicObserver)
+            cinematicObserver = null
+          }
+
+          const camera = cameraRef.current
+          if (!camera) return
+
+          // Restore camera settings
+          const original = scene.metadata.originalCameraSettings
+          if (original) {
+            // Smooth transition back to original view
+            const startAlpha = camera.alpha
+            const startBeta = camera.beta
+            const startRadius = camera.radius
+            const startTarget = camera.target.clone()
+
+            const duration = 1000
+            const startTime = performance.now()
+
+            const restore = () => {
+              const elapsed = performance.now() - startTime
+              const progress = Math.min(elapsed / duration, 1)
+              const eased =
+                progress < 0.5
+                  ? 2 * progress * progress
+                  : -1 + (4 - 2 * progress) * progress
+
+              camera.alpha = startAlpha + (original.alpha - startAlpha) * eased
+              camera.beta = startBeta + (original.beta - startBeta) * eased
+              camera.radius = startRadius + (original.radius - startRadius) * eased
+              camera.target = BABYLON.Vector3.Lerp(
+                startTarget,
+                original.target,
+                eased,
+              )
+
+              if (progress < 1) {
+                requestAnimationFrame(restore)
+              } else {
+                // Restore camera controls and limits
+                camera.attachControl(canvasRef.current, true)
+                camera.inputs.attached.pointers.buttons = [1, 2]
+                // Restore multi-touch for mobile
+                camera.inputs.attached.pointers.multiTouchPanning = true
+                camera.inputs.attached.pointers.multiTouchPanAndZoom = true
+                camera.pinchDeltaPercentage = 0.01
+                camera.lowerRadiusLimit = 12
+                camera.upperRadiusLimit = 35
+                camera.lowerBetaLimit = 0.3
+                camera.upperBetaLimit = Math.PI / 2.5
+                camera.lowerAlphaLimit = -Math.PI / 2 - Math.PI / 6
+                camera.upperAlphaLimit = -Math.PI / 2 + Math.PI / 6
+              }
+            }
+            restore()
+          }
+
+          // Reset visual effects
+          if (scene.metadata.vignetteEffect) {
+            scene.metadata.vignetteEffect.vignetteWeight = 1.5
+          }
+          if (scene.metadata.glowLayer) {
+            scene.metadata.glowLayer.intensity = 0.3
+          }
+        }
+
+        // Collision detection: activate pins only when ball touches them
+        ball.physicsImpostor.registerOnPhysicsCollide(
+          pins.map((p) => p.physicsImpostor),
+          (collider, collidedWith) => {
+            const pin = pins.find((p) => p.physicsImpostor === collidedWith)
+            if (pin && !pin.isActivated && pin.originalMass) {
+              // Store ball velocity before collision to restore most of it
+              const ballVelocity = ball.physicsImpostor.getLinearVelocity().clone()
+              const ballSpeed = ballVelocity.length()
+              const ballDirection = ballVelocity.normalize()
+
+              pin.isActivated = true
+              pin.physicsImpostor.setMass(pin.originalMass)
+
+              // Calculate collision direction and apply realistic impulse to pin
+              const collisionDir = pin.position.subtract(ball.position).normalize()
+
+              // Transfer momentum based on ball velocity and direction
+              const impactForce = collisionDir.scale(ballSpeed * 1.2)
+              impactForce.y = Math.max(0.05, impactForce.y * 0.3) // Minimal upward component
+
+              // Apply impulse at pin center
+              pin.physicsImpostor.applyImpulse(
+                impactForce,
+                pin.getAbsolutePosition(),
+              )
+
+              // Add angular velocity for realistic tumbling
+              const angularImpulse = new BABYLON.Vector3(
+                (Math.random() - 0.5) * 3,
+                (Math.random() - 0.5) * 0.5,
+                (Math.random() - 0.5) * 3,
+              )
+              pin.physicsImpostor.setAngularVelocity(angularImpulse)
+
+              // Restore most of the ball's original velocity (ball should barely be affected)
+              // Real physics: 6.8kg ball vs 1.6kg pin = ball keeps ~80% of velocity in direction
+              setTimeout(() => {
+                const currentVel = ball.physicsImpostor.getLinearVelocity()
+                const preservedVelocity = ballDirection.scale(ballSpeed * 0.92)
+                // Blend: keep most of original direction but allow slight deviation
+                const newVelocity = new BABYLON.Vector3(
+                  preservedVelocity.x * 0.85 + currentVel.x * 0.15,
+                  currentVel.y, // Keep vertical as-is
+                  preservedVelocity.z * 0.85 + currentVel.z * 0.15,
+                )
+                ball.physicsImpostor.setLinearVelocity(newVelocity)
+              }, 10)
+
+              console.log(
+                'Pin activated on collision with impulse:',
+                impactForce.toString(),
+              )
+            }
+          },
+        )
+
+        // Also handle pin-to-pin collisions to activate adjacent pins
+        pins.forEach((pin) => {
+          pin.physicsImpostor.registerOnPhysicsCollide(
+            pins.filter((p) => p !== pin).map((p) => p.physicsImpostor),
+            (collider, collidedWith) => {
+              const hitPin = pins.find((p) => p.physicsImpostor === collidedWith)
+              const hittingPin = pins.find((p) => p.physicsImpostor === collider)
+
+              if (
+                hitPin &&
+                !hitPin.isActivated &&
+                hitPin.originalMass &&
+                hittingPin &&
+                hittingPin.isActivated
+              ) {
+                hitPin.isActivated = true
+                hitPin.physicsImpostor.setMass(hitPin.originalMass)
+
+                // Transfer momentum from hitting pin
+                const hittingVelocity =
+                  hittingPin.physicsImpostor.getLinearVelocity()
+                const hitSpeed = hittingVelocity.length()
+                const collisionDir = hitPin.position
+                  .subtract(hittingPin.position)
+                  .normalize()
+
+                // Apply reduced impulse (pin-to-pin has less energy than ball-to-pin)
+                const impactForce = collisionDir.scale(hitSpeed * 0.6)
+                hitPin.physicsImpostor.applyImpulse(
+                  impactForce,
+                  hitPin.getAbsolutePosition(),
+                )
+
+                // Add some angular velocity
+                const angularImpulse = new BABYLON.Vector3(
+                  (Math.random() - 0.5) * 1.5,
+                  (Math.random() - 0.5) * 0.3,
+                  (Math.random() - 0.5) * 1.5,
+                )
+                hitPin.physicsImpostor.setAngularVelocity(angularImpulse)
+
+                console.log('Pin activated by another pin')
+              }
+            },
+          )
+        })
+
+        // Performance optimizations before starting render loop
+        scene.freezeMaterials() // Materials won't change
+        if (isLowEndDevice) {
+          scene.skipPointerMovePicking = true // Reduce picking overhead
+          scene.blockMaterialDirtyMechanism = true
+        }
+
+        engine.runRenderLoop(() => {
+          scene.render()
+        })
+
+        const handleResize = () => engine.resize()
+        window.addEventListener('resize', handleResize)
+
+        return () => {
+          window.removeEventListener('resize', handleResize)
+          engine.dispose()
+        }
+      }, [babylonLoaded, BABYLON])
+
+      // Update aim arrow position and rotation to follow ball with oscillating direction
+      // Only show arrow when actively aiming
+      useEffect(() => {
+        if (!sceneRef.current || !BABYLON) return
+        const scene = sceneRef.current
+        if (scene.aimArrow) {
+          // Only show arrow when actively aiming (not thrown and dragging)
+          const shouldShow = isAiming && !isThrown
+          scene.aimArrow.setEnabled(shouldShow)
+
+          if (shouldShow && ballRef.current) {
+            // Arrow pivots around ball position - set both X and Z to ball position
+            scene.aimArrow.position.x = ballRef.current.position.x
+            scene.aimArrow.position.z = ballRef.current.position.z
+            // Rotate around the ball (Y-axis rotation)
+            scene.aimArrow.rotation.y = aimDirection
+          }
+        }
+      }, [aimAngle, aimDirection, isThrown, isAiming, BABYLON])
+
+      useEffect(() => {
+        if (ballRef.current && !isThrown && ballRef.current.physicsImpostor) {
+          // Direct mapping: aimAngle controls X position on the lane
+          // Max angle of 30 degrees maps to lane width of ~2 units
+          const newX = (aimAngle / 30) * 2
+          console.log('Updating ball position for aim:', { aimAngle, newX })
+          // Use physicsImpostor to move the ball properly
+          ballRef.current.physicsImpostor.setLinearVelocity(
+            new BABYLON.Vector3(0, 0, 0),
+          )
+          ballRef.current.physicsImpostor.setAngularVelocity(
+            new BABYLON.Vector3(0, 0, 0),
+          )
+          ballRef.current.position.x = newX
+          ballRef.current.position.y = 0.35
+          ballRef.current.position.z = -3
+          // Sync physics impostor with mesh position
+          ballRef.current.physicsImpostor.forceUpdate()
+        }
+      }, [aimAngle, isThrown, BABYLON])
+
+      // Check for knocked pins (optimized interval)
+      useEffect(() => {
+        if (!isThrown || !pinsRef.current.length) return
+
+        const checkInterval = setInterval(() => {
+          let knocked = 0
+          const pins = pinsRef.current
+          for (let i = 0; i < pins.length; i++) {
+            const pin = pins[i]
+            if (pin.rotationQuaternion) {
+              const euler = pin.rotationQuaternion.toEulerAngles()
+              if (Math.abs(euler.x) > 0.5 || Math.abs(euler.z) > 0.5) {
+                knocked++
+              }
+            }
+          }
+          setKnockedPins(knocked)
+        }, 800) // Increased from 500ms for performance
+
+        return () => clearInterval(checkInterval)
+      }, [isThrown])
+
+      // Detect strike (all 10 pins knocked)
+      useEffect(() => {
+        if (knockedPins === 10 && !showStrike) {
+          setShowStrike(true)
+          // Hide after 2 seconds
+          const timeout = setTimeout(() => {
+            setShowStrike(false)
+          }, 2000)
+          return () => clearTimeout(timeout)
+        }
+      }, [knockedPins, showStrike])
+
+      // Game end detection: pin fall (5s), gutter (3s), back wall (3s)
+      useEffect(() => {
+        if (!isThrown || !ballRef.current || !BABYLON) return
+
+        const scheduleGameEnd = (reason, delayMs) => {
+          // Only schedule if no end is already scheduled
+          if (gameEndTimeoutRef.current) return
+          gameEndReasonRef.current = reason
+          console.log(`Game will end in ${delayMs}ms - Reason: ${reason}`)
+          gameEndTimeoutRef.current = setTimeout(() => {
+            console.log(`Game ended: ${reason}`)
+            // Trigger reset
+            if (sceneRef.current?.metadata?.stopCinematicMode) {
+              sceneRef.current.metadata.stopCinematicMode()
+            }
+            // The resetGame will be called, but we need to trigger it
+            // Set a flag or directly reset
+            gameEndTimeoutRef.current = null
+            gameEndReasonRef.current = null
+            // Manually trigger reset by calling the callback
+            resetGameRef.current?.()
+          }, delayMs)
+        }
+
+        const checkInterval = setInterval(() => {
+          const ball = ballRef.current
+          if (!ball || gameEndTimeoutRef.current) return
+
+          const ballX = ball.position.x
+          const ballZ = ball.position.z
+
+          // Check for gutter: ball X position beyond lane edges (lane is 4.5 wide, so |x| > 2.25)
+          // Gutters are at x = ±2.5, ball radius is ~0.275
+          if (Math.abs(ballX) > 2.3 && ballZ > -2) {
+            scheduleGameEnd('gutter', 3000)
+            return
+          }
+
+          // Check for back wall hit: ball Z > 17 (back wall is at z=17.5)
+          if (ballZ > 16.5) {
+            scheduleGameEnd('back_wall', 3000)
+            return
+          }
+
+          // Check for first pin fall (any pin activated and tilted)
+          const hasKnockedPin = pinsRef.current.some((pin) => {
+            if (!pin.isActivated) return false
+            if (pin.rotationQuaternion) {
+              const euler = pin.rotationQuaternion.toEulerAngles()
+              return Math.abs(euler.x) > 0.5 || Math.abs(euler.z) > 0.5
+            }
+            return false
+          })
+          if (hasKnockedPin) {
+            scheduleGameEnd('pin_fall', 5000)
+            return
+          }
+        }, 200) // Increased from 100ms for performance
+
+        return () => {
+          clearInterval(checkInterval)
+          if (gameEndTimeoutRef.current) {
+            clearTimeout(gameEndTimeoutRef.current)
+            gameEndTimeoutRef.current = null
+          }
+        }
+      }, [isThrown, BABYLON])
+
+      const throwBall = useCallback(
+        (velocityX = 0, velocityY = 0) => {
+          console.log('throwBall called', {
+            ball: !!ballRef.current,
+            thrown: isThrownRef.current,
+            babylon: !!BABYLON,
+          })
+          if (
+            !ballRef.current ||
+            isThrownRef.current ||
+            !BABYLON ||
+            !sceneRef.current
+          ) {
+            console.log('throwBall early return')
+            return
+          }
+
+          console.log('Setting isThrown to true')
+          setIsThrown(true)
+          isThrownRef.current = true // Update ref immediately
+          setIsAiming(false) // Stop aiming mode
+
+          // Reset pin activation state (mass will be activated on collision)
+          pinsRef.current.forEach((pin) => {
+            pin.isActivated = false
+          })
+
+          // Calculate power from swipe velocity (magnitude)
+          const swipeSpeed = Math.sqrt(
+            velocityX * velocityX + velocityY * velocityY,
+          )
+          const power = Math.min(Math.max(swipeSpeed / 15, 0.4), 1.2) // Clamp between 0.4 and 1.2
+
+          // Ball direction follows the oscillating aim arrow at moment of throw
+          // Use aimDirectionRef to get the current aim direction
+          const throwAngle = aimDirectionRef.current
+          // Realistic bowling ball speed: ~6-8 m/s (3x boost for fun gameplay)
+          const force = new BABYLON.Vector3(
+            Math.sin(throwAngle) * 36 * power, // Lateral force based on aim direction
+            0.05,
+            Math.cos(throwAngle) * 36 * power, // Forward force
+          )
+          console.log('Applying force', force.toString(), 'angle:', throwAngle)
+
+          // Make sure the ball is at ground level before throwing
+          ballRef.current.position.y = 0.35
+          ballRef.current.physicsImpostor.forceUpdate()
+
+          ballRef.current.physicsImpostor.applyImpulse(
+            force,
+            ballRef.current.getAbsolutePosition(),
+          )
+
+          // Start cinematic camera mode
+          if (
+            sceneRef.current &&
+            sceneRef.current.metadata &&
+            sceneRef.current.metadata.startCinematicMode
+          ) {
+            sceneRef.current.metadata.startCinematicMode()
+            setCinematicMode(true)
+          }
+
+          // Trigger particle effect after a delay
+          setTimeout(() => {
+            if (sceneRef.current && sceneRef.current.particleSystem) {
+              sceneRef.current.particleSystem.emitRate = 200
+              setTimeout(() => {
+                if (sceneRef.current && sceneRef.current.particleSystem) {
+                  sceneRef.current.particleSystem.emitRate = 0
+                }
+              }, 300)
+            }
+          }, 800)
+        },
+        [aimAngle, BABYLON],
+      )
+
+      const resetGame = useCallback(() => {
+        if (!sceneRef.current || !BABYLON) return
+
+        // Clear any pending game end timeout
+        if (gameEndTimeoutRef.current) {
+          clearTimeout(gameEndTimeoutRef.current)
+          gameEndTimeoutRef.current = null
+        }
+        gameEndReasonRef.current = null
+
+        // Stop cinematic mode if active
+        if (
+          sceneRef.current.metadata &&
+          sceneRef.current.metadata.stopCinematicMode
+        ) {
+          sceneRef.current.metadata.stopCinematicMode()
+        }
+        if (
+          sceneRef.current.metadata &&
+          sceneRef.current.metadata.cinematicEndTimeout
+        ) {
+          clearTimeout(sceneRef.current.metadata.cinematicEndTimeout)
+          sceneRef.current.metadata.cinematicEndTimeout = null
+        }
+        setCinematicMode(false)
+
+        // Update score
+        setScore((prev) => prev + knockedPins)
+        setKnockedPins(0)
+        setIsThrown(false)
+        setAimAngle(0)
+        setShowStrike(false)
+        setIsAiming(false)
+
+        if (ballRef.current) {
+          ballRef.current.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero())
+          ballRef.current.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero())
+          ballRef.current.position = new BABYLON.Vector3(0, 0.35, -3)
+          ballRef.current.rotationQuaternion = BABYLON.Quaternion.Identity()
+        }
+
+        const pinPositions = [
+          [0, 12],
+          [-0.25, 12.45],
+          [0.25, 12.45],
+          [-0.5, 12.9],
+          [0, 12.9],
+          [0.5, 12.9],
+          [-0.75, 13.35],
+          [-0.25, 13.35],
+          [0.25, 13.35],
+          [0.75, 13.35],
+        ]
+        pinsRef.current.forEach((pin, i) => {
+          // Reset to mass 0 so pins stay still until collision
+          pin.physicsImpostor.setMass(0)
+          pin.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero())
+          pin.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero())
+          pin.position = new BABYLON.Vector3(
+            pinPositions[i][0],
+            0,
+            pinPositions[i][1],
+          )
+          pin.rotationQuaternion = BABYLON.Quaternion.Identity()
+          pin.isActivated = false
+          pin.physicsImpostor.forceUpdate()
+        })
+      }, [BABYLON, knockedPins])
+
+      // Keep resetGameRef in sync with resetGame callback
+      useEffect(() => {
+        resetGameRef.current = resetGame
+      }, [resetGame])
+
+      // Keyboard handler for R to reset
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (e.key === 'r' || e.key === 'R') {
+            resetGame()
+          }
+        }
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+      }, [resetGame])
+
+      // Touch/Mouse handlers for aiming and throwing
+      useEffect(() => {
+        const canvas = canvasRef.current
+        if (!canvas || !babylonLoaded) return
+
+        const getEventPosition = (e) => {
+          if (e.touches && e.touches.length > 0) {
+            return { x: e.touches[0].clientX, y: e.touches[0].clientY }
+          }
+          return { x: e.clientX, y: e.clientY }
+        }
+
+        const handleStart = (e) => {
+          console.log('handleStart called', {
+            eventType: e.type,
+            button: e.button,
+            pointerType: e.pointerType,
+            isThrown: isThrownRef.current,
+            target: e.target?.tagName,
+          })
+          // Only handle left mouse button (button 0) or touch
+          if (e.button !== undefined && e.button !== 0) {
+            console.log('handleStart: wrong button, ignoring')
+            return
+          }
+          // Check if click is on canvas
+          if (e.target !== canvas) {
+            console.log('handleStart: not on canvas, ignoring')
+            return
+          }
+          if (isThrownRef.current) {
+            console.log('handleStart: ball already thrown, ignoring')
+            return
+          }
+          e.preventDefault()
+          e.stopPropagation()
+          const pos = getEventPosition(e)
+          isDraggingRef.current = true
+          setIsAiming(true)
+          dragStartRef.current = { x: pos.x, y: pos.y, time: Date.now() }
+          lastPositionsRef.current = [{ x: pos.x, y: pos.y, time: Date.now() }]
+          console.log('handleStart: drag started at', pos)
+        }
+
+        const handleMove = (e) => {
+          if (!isDraggingRef.current || isThrownRef.current) return
+          const pos = getEventPosition(e)
+
+          // Track last positions for velocity calculation
+          lastPositionsRef.current.push({ x: pos.x, y: pos.y, time: Date.now() })
+          if (lastPositionsRef.current.length > 5) {
+            lastPositionsRef.current.shift()
+          }
+
+          // Update aim angle based on horizontal movement (direct: drag left = aim left)
+          const deltaX = pos.x - dragStartRef.current.x
+          const newAngle = Math.max(-30, Math.min(30, deltaX * 0.3))
+          console.log('Mouse/Touch move:', {
+            pos,
+            deltaX,
+            newAngle,
+            positionsCount: lastPositionsRef.current.length,
+          })
+          setAimAngle(newAngle)
+        }
+
+        const handleEnd = (e) => {
+          console.log('handleEnd called', {
+            eventType: e.type,
+            button: e.button,
+            isDragging: isDraggingRef.current,
+            isThrown: isThrownRef.current,
+            positionsCount: lastPositionsRef.current.length,
+          })
+          // Only handle left mouse button (button 0) or touch
+          if (e.button !== undefined && e.button !== 0) {
+            console.log('handleEnd: wrong button, ignoring')
+            return
+          }
+          if (!isDraggingRef.current) {
+            console.log('handleEnd: not dragging, ignoring')
+            return
+          }
+          if (isThrownRef.current) {
+            console.log('handleEnd: already thrown, resetting drag')
+            isDraggingRef.current = false
+            setIsAiming(false)
+            return
+          }
+          isDraggingRef.current = false
+          setIsAiming(false)
+
+          // Calculate velocity from last positions
+          const positions = lastPositionsRef.current
+          console.log('handleEnd: positions for velocity calc:', positions)
+          let velocityX = 0
+          let velocityY = 500 // Default upward velocity for simple clicks
+
+          if (positions.length >= 2) {
+            const first = positions[0]
+            const last = positions[positions.length - 1]
+            const dt = (last.time - first.time) / 1000 // seconds
+            console.log('handleEnd: velocity calc', { first, last, dt })
+
+            if (dt > 0) {
+              velocityX = (last.x - first.x) / dt
+              const calculatedVelocityY = (first.y - last.y) / dt // Inverted Y (up is positive)
+              console.log('handleEnd: calculated velocities', {
+                velocityX,
+                calculatedVelocityY,
+              })
+              // Use calculated velocity if upward, otherwise use default
+              if (calculatedVelocityY > 0) {
+                velocityY = Math.max(calculatedVelocityY, 300)
+              }
+            }
+          }
+
+          console.log('handleEnd: calling throwBall with', { velocityX, velocityY })
+          // Always throw on mouse release
+          throwBall(velocityX, velocityY)
+          lastPositionsRef.current = []
+        }
+
+        // Use pointer events at document level to bypass Babylon's event capture
+        console.log('Setting up pointer event listeners on document')
+        document.addEventListener('pointerdown', handleStart)
+        document.addEventListener('pointermove', handleMove)
+        document.addEventListener('pointerup', handleEnd)
+        document.addEventListener('pointercancel', handleEnd)
+
+        // Touch events as fallback
+        document.addEventListener('touchstart', handleStart, { passive: false })
+        document.addEventListener('touchmove', handleMove, { passive: true })
+        document.addEventListener('touchend', handleEnd)
+        document.addEventListener('touchcancel', handleEnd)
+
+        return () => {
+          document.removeEventListener('pointerdown', handleStart)
+          document.removeEventListener('pointermove', handleMove)
+          document.removeEventListener('pointerup', handleEnd)
+          document.removeEventListener('pointercancel', handleEnd)
+          document.removeEventListener('touchstart', handleStart)
+          document.removeEventListener('touchmove', handleMove)
+          document.removeEventListener('touchend', handleEnd)
+          document.removeEventListener('touchcancel', handleEnd)
+        }
+      }, [babylonLoaded, throwBall])
+
+      return (
+        <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-black">
+          {/* Fullscreen 3D Canvas */}
+          <canvas ref={canvasRef} className="w-full h-full block" />
+
+          {/* HUD Overlay - Score display */}
+          <div className="absolute top-4 left-4 right-4 flex justify-between items-center pointer-events-none z-10">
+            <div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-sm rounded-lg">
+              <span className="text-2xl font-bold text-white">{score}</span>
+            </div>
+            {isThrown && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-sm rounded-lg animate-pulse">
+                <span className="text-2xl font-bold text-green-400">
+                  {knockedPins}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Cinematic mode indicator */}
+          {cinematicMode && (
+            <div className="absolute top-1/2 left-4 transform -translate-y-1/2 pointer-events-none z-10">
+              <div className="flex items-center gap-2 px-3 py-1 bg-red-600/80 backdrop-blur-sm rounded-full animate-pulse">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <span className="text-white text-sm font-bold uppercase tracking-wider">
+                  LIVE
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Cinematic letterbox bars for dramatic effect */}
+          {cinematicMode && (
+            <>
+              <div className="absolute top-0 left-0 right-0 h-[8%] bg-black pointer-events-none z-20 transition-all duration-500"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-[8%] bg-black pointer-events-none z-20 transition-all duration-500"></div>
+            </>
+          )}
+
+          {/* STRIKE celebration overlay */}
+          {showStrike && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+              <div className="animate-bounce">
+                <h1
+                  className="text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 drop-shadow-2xl"
+                  style={{
+                    textShadow: '0 0 40px rgba(255, 165, 0, 0.8), 0 0 80px rgba(255, 100, 0, 0.6), 0 0 120px rgba(255, 50, 0, 0.4)',
+                    animation: 'pulse 0.3s ease-in-out infinite alternate, scale-in 0.5s ease-out'
+                  }}
+                >
+                  🎳 STRIKE 🎳
+                </h1>
+              </div>
+              <style>{/* css */`
+                @keyframes scale-in {
+                  0% { transform: scale(0.3); opacity: 0; }
+                  50% { transform: scale(1.2); }
+                  100% { transform: scale(1); opacity: 1; }
+                }
+              `}</style>
+            </div>
+          )}
+        </div>
+      )
+    }

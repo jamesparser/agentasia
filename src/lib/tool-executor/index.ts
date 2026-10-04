@@ -1,0 +1,53 @@
+/**
+ * Tool Executor Module
+ *
+ * Provides types and utilities for executing LLM tool calls.
+ * The tool executor manages:
+ * - Tool registration and lookup
+ * - Argument validation and parsing
+ * - Handler execution with error handling
+ * - Result formatting for LLM consumption
+ *
+ * @module lib/tool-executor
+ */
+
+export * from './types'
+export {
+  KnowledgeToolRegistry,
+  KnowledgeToolExecutor,
+  defaultRegistry,
+  defaultExecutor,
+  registerKnowledgeTools,
+  areKnowledgeToolsRegistered,
+  unregisterKnowledgeTools,
+  registerMathTools,
+  areMathToolsRegistered,
+  unregisterMathTools,
+  registerCodeTools,
+  areCodeToolsRegistered,
+  unregisterCodeTools,
+  registerConnectorTools,
+  areConnectorToolsRegistered,
+  unregisterConnectorTools,
+  registerPresentationTools,
+  arePresentationToolsRegistered,
+  unregisterPresentationTools,
+  registerResearchTools,
+  areResearchToolsRegistered,
+  unregisterResearchTools,
+  registerUtilityTools,
+  areUtilityToolsRegistered,
+  unregisterUtilityTools,
+  registerSkillTools,
+  areSkillToolsRegistered,
+  unregisterSkillTools,
+  registerArtifactTools,
+  areArtifactToolsRegistered,
+  unregisterArtifactTools,
+  registerOrchestrationTools,
+  areOrchestrationToolsRegistered,
+  unregisterOrchestrationTools,
+  registerMemoryTools,
+  areMemoryToolsRegistered,
+  unregisterMemoryTools,
+} from './executor'

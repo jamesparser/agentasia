@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="<%= lang %>" translate="no">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <!-- Pinch-zoom is deliberately NOT disabled here. The old
+         `maximum-scale=1.0, user-scalable=0` suppressed accessibility zoom
+         (WCAG 1.4.4) and Apple rejects apps for it, which matters because the
+         phone and the TV kiosk are first-class demo surfaces for this product.
+         viewport-fit=cover is kept for the notch. -->
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0"
+    />
+    <title><%= title %></title>
+    <meta name="description" content="<%= description %>" />
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="AgentAsia" />
+    <meta name="language" content="<%= language %>" />
+    <meta name="theme-color" content="#000000" />
+    <!-- Canonical. It inherited the upstream product's domain from the fork,
+         which told search engines our pages were a duplicate of that site and
+         would have suppressed our own indexing. Ours is agentasia.vercel.app
+         until a custom domain is bought. -->
+    <link rel="canonical" href="https://agentasia.vercel.app" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AgentAsia" />
+    <meta property="og:title" content="<%= title %>" />
+    <meta property="og:description" content="<%= description %>" />
+    <meta property="og:url" content="https://agentasia.vercel.app" />
+    <!-- Our own share card. This used to point at the upstream product's
+         screenshot (/screenshots/devs-desktop-home.webp), so every X/LinkedIn
+         share advertised their domain and their mark instead of ours. -->
+    <meta property="og:image" content="https://agentasia.vercel.app/og-cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="<%= lang %>" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="<%= title %>" />
+    <meta name="twitter:description" content="<%= description %>" />
+    <meta
+      name="twitter:image"
+      content="https://agentasia.vercel.app/og-cover.png"
+    />
+
+    <!-- Prevent FOUC: Apply theme before render -->
+    <script>
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('devs-user-settings')
+          var theme = stored ? JSON.parse(stored).state?.theme : 'system'
+          var isDark =
+            theme === 'dark' ||
+            (theme !== 'light' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.add(isDark ? 'dark' : 'light')
+        } catch (e) {
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark')
+          }
+        }
+      })()
+    </script>
+
+    <!-- Structured Data for Rich Results -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "DEVS",
+        "description": "<%= description %>",
+        "url": "https://agentasia.vercel.app",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "DEVS"
+        }
+      }
+    </script>
+  </head>
+  <body class="text-foreground rtl:*">
+    <div id="root"></div>
+    <script type="module" src="/src/app/App.tsx"></script>
+  </body>
+</html>

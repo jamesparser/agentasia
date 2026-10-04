@@ -1,0 +1,446 @@
+id: drawing-critique
+name: Drawing Critique
+version: 0.2.0
+type: app
+license: MIT
+icon: DesignPencil
+color: secondary
+description: Your artworks real-time AI critique.
+author:
+  name: Arnaud Leymet
+  url: https://arnley.com
+privacyPolicy: https://agentasia.vercel.app/privacy
+source: https://github.com/codename-co/devs/blob/main/public/extensions/drawing-critic.extension.yaml
+i18n:
+  en:
+    name: Drawing Critique
+    # Vos œuvres commentées en temps réel par IA.
+    description: Your artworks real-time AI critique.
+    messages:
+      startDrawing: Start drawing and I'll provide live feedback on your artwork…
+      canvasCleared: Canvas cleared! Start fresh and I'll provide new feedback…
+      analyzing: analyzing…
+      artCritic: Art Critic
+      clear: Clear
+      style: Style
+      styleEncouraging: Encouraging
+      styleTechnical: Technical
+      stylePoetic: Poetic
+      styleRoasting: Roasting
+      styleMinimalist: Minimalist
+  fr:
+    name: Critique de Dessin
+    description: Vos œuvres commentées en temps réel par IA.
+    messages:
+      startDrawing: Commencez à dessiner et je vous donnerai un retour en direct sur votre œuvre…
+      canvasCleared: Toile effacée ! Recommencez et je vous donnerai de nouveaux commentaires…
+      analyzing: analyse en cours…
+      artCritic: Critique d'Art
+      clear: Effacer
+      style: Style
+      styleEncouraging: Encourageant
+      styleTechnical: Technique
+      stylePoetic: Poétique
+      styleRoasting: Moqueur
+      styleMinimalist: Minimaliste
+  de:
+    name: Zeichnungskritik
+    description: Echtzeit-KI-Kritik Ihrer Kunstwerke.
+    messages:
+      startDrawing: Beginnen Sie zu zeichnen und ich gebe Ihnen Live-Feedback zu Ihrem Kunstwerk…
+      canvasCleared: Leinwand gelöscht! Beginnen Sie neu und ich gebe Ihnen neues Feedback…
+      analyzing: analysiere…
+      artCritic: Kunstkritiker
+      clear: Löschen
+      style: Stil
+      styleEncouraging: Ermutigend
+      styleTechnical: Technisch
+      stylePoetic: Poetisch
+      styleRoasting: Spöttisch
+      styleMinimalist: Minimalistisch
+  es:
+    name: Crítica de Dibujo
+    description: Crítica de IA en tiempo real de tus obras.
+    messages:
+      startDrawing: Empieza a dibujar y te daré comentarios en vivo sobre tu obra…
+      canvasCleared: ¡Lienzo borrado! Empieza de nuevo y te daré nuevos comentarios…
+      analyzing: analizando…
+      artCritic: Crítico de Arte
+      clear: Borrar
+      style: Estilo
+      styleEncouraging: Alentador
+      styleTechnical: Técnico
+      stylePoetic: Poético
+      styleRoasting: Burlón
+      styleMinimalist: Minimalista
+  it:
+    name: Critica del Disegno
+    description: Critica IA in tempo reale delle tue opere.
+    messages:
+      startDrawing: Inizia a disegnare e ti darò feedback dal vivo sulla tua opera…
+      canvasCleared: Tela cancellata! Ricomincia e ti darò nuovi commenti…
+      analyzing: analizzando…
+      artCritic: Critico d'Arte
+      clear: Cancella
+      style: Stile
+      styleEncouraging: Incoraggiante
+      styleTechnical: Tecnico
+      stylePoetic: Poetico
+      styleRoasting: Beffardo
+      styleMinimalist: Minimalista
+  pt:
+    name: Crítica de Desenho
+    description: Crítica de IA em tempo real das suas obras.
+    messages:
+      startDrawing: Comece a desenhar e darei feedback ao vivo sobre sua obra…
+      canvasCleared: Tela limpa! Recomece e darei novos comentários…
+      analyzing: analisando…
+      artCritic: Crítico de Arte
+      clear: Limpar
+      style: Estilo
+      styleEncouraging: Encorajador
+      styleTechnical: Técnico
+      stylePoetic: Poético
+      styleRoasting: Zombeteiro
+      styleMinimalist: Minimalista
+pages:
+  'drawing-critique': | # jsx
+    import { useState, useRef, useEffect, useCallback } from 'react'
+    import { Button, ButtonGroup, Card, CardBody, Tooltip, Divider, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Slider, Popover, PopoverTrigger, PopoverContent } from '@heroui/react'
+    import { Icon } from '@devs/components'
+
+    const { t } = DEVS
+
+    const CRITIQUE_STYLES = {
+      encouraging: {
+        label: 'styleEncouraging',
+        prompt: 'You are an encouraging and supportive art critic. Be warm, positive, and constructive. Celebrate small wins and gently suggest improvements.'
+      },
+      technical: {
+        label: 'styleTechnical',
+        prompt: 'You are a technical art instructor. Focus purely on technique: line weight, perspective, proportions, shading, composition. Be precise and educational.'
+      },
+      poetic: {
+        label: 'stylePoetic',
+        prompt: 'You are a poetic art critic who speaks in metaphors and flowery language. Find deep meaning in every stroke. Be dramatic and philosophical.'
+      },
+      roasting: {
+        label: 'styleRoasting',
+        prompt: 'You are a cruel, condescending art critic who ONLY makes disparaging, uncomfortable remarks. Never say anything positive or constructive. Be passive-aggressive, create awkward tension, and make the artist question their life choices. Use backhanded compliments, disappointed sighs, and uncomfortable silences implied through "…". Be cringe-inducing and make the artist feel judged. Examples: "Oh… you\'re still going with that, huh?", "I mean… it\'s certainly… something.", "My condolences to the paper.", "This is what happens when confidence exceeds ability.", "Were you perhaps blindfolded?", "Interesting how you\'ve managed to make every line worse than the last."'
+      },
+      minimalist: {
+        label: 'styleMinimalist',
+        prompt: 'You are a minimalist critic. Give extremely brief feedback—just 3-5 words maximum. Be cryptic and zen-like. Examples: "More contrast needed.", "The void speaks.", "Almost there."'
+      }
+    }
+
+    const App = () => {
+      const canvasRef = useRef(null)
+      const [isDrawing, setIsDrawing] = useState(false)
+      const [critique, setCritique] = useState(t('startDrawing'))
+      const [isAnalyzing, setIsAnalyzing] = useState(false)
+      const [brushSize, setBrushSize] = useState(5)
+      const [brushColor, setBrushColor] = useState('#000000')
+      const [critiqueStyle, setCritiqueStyle] = useState('encouraging')
+      const lastAnalysisRef = useRef('')
+      const strokeBufferRef = useRef([])
+      const analysisTimeoutRef = useRef(null)
+      const lastPointRef = useRef(null)
+      const userLanguage = window.DEVS.language || 'en'
+
+      useEffect(() => {
+        const canvas = canvasRef.current
+        if (!canvas) return
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
+
+        const handleResize = () => {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          canvas.width = window.innerWidth
+          canvas.height = window.innerHeight
+          ctx.fillStyle = '#ffffff'
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+          ctx.putImageData(imageData, 0, 0)
+          ctx.lineCap = 'round'
+          ctx.lineJoin = 'round'
+        }
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+      }, [])
+
+      const getCanvasSnapshot = useCallback(() => {
+        const canvas = canvasRef.current
+        if (!canvas) return null
+        return canvas.toDataURL('image/jpeg', 0.6)
+      }, [])
+
+      const analyzeDrawing = useCallback(async (recentStrokes) => {
+        if (isAnalyzing) return
+        setIsAnalyzing(true)
+
+        try {
+          const currentSnapshot = getCanvasSnapshot()
+          const strokeDescription = recentStrokes.length > 0
+            ? `Recent strokes: ${recentStrokes.map(s => `${s.length} points from (${Math.round(s[0]?.x)},${Math.round(s[0]?.y)}) to (${Math.round(s[s.length-1]?.x)},${Math.round(s[s.length-1]?.y)})`).join('; ')}`
+            : 'No new strokes'
+
+          const hasChanged = currentSnapshot !== lastAnalysisRef.current
+          if (!hasChanged && recentStrokes.length === 0) {
+            setIsAnalyzing(false)
+            return
+          }
+
+          lastAnalysisRef.current = currentSnapshot
+
+          // Use the vision API to analyze the drawing instead of multipart chat messages
+          const styleConfig = CRITIQUE_STYLES[critiqueStyle]
+          const analysis = await window.DEVS.vision.analyze(
+            currentSnapshot,
+            `${styleConfig.prompt}
+
+    You are providing live feedback on a drawing in progress. Keep responses brief (2-3 sentences max, or less for minimalist style). Focus on:
+    - What the artist seems to be drawing right now
+    - Technique observations (line quality, composition, proportions)
+    - Feedback matching your personality style
+
+    Be specific about what you see. ${strokeDescription}. Vary your feedback style.
+
+    IMPORTANT: Respond in the following language: ${userLanguage}. Use natural, native expressions for that language.
+
+    What do you observe and what feedback do you have?`
+          )
+
+          setCritique(analysis.description)
+        } catch (error) {
+          console.error('Analysis error:', error)
+        } finally {
+          setIsAnalyzing(false)
+        }
+      }, [isAnalyzing, getCanvasSnapshot, userLanguage, critiqueStyle])
+
+      const scheduleAnalysis = useCallback(() => {
+        if (analysisTimeoutRef.current) {
+          clearTimeout(analysisTimeoutRef.current)
+        }
+        analysisTimeoutRef.current = setTimeout(() => {
+          const recentStrokes = [...strokeBufferRef.current]
+          strokeBufferRef.current = []
+          analyzeDrawing(recentStrokes)
+        }, 1500)
+      }, [analyzeDrawing])
+
+      const startDrawing = useCallback((e) => {
+        const canvas = canvasRef.current
+        const ctx = canvas.getContext('2d')
+        const rect = canvas.getBoundingClientRect()
+        const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left
+        const y = (e.clientY || e.touches?.[0]?.clientY) - rect.top
+
+        setIsDrawing(true)
+        ctx.beginPath()
+        ctx.moveTo(x, y)
+        ctx.strokeStyle = brushColor
+        ctx.lineWidth = brushSize
+        lastPointRef.current = { x, y }
+        strokeBufferRef.current.push([{ x, y }])
+      }, [brushColor, brushSize])
+
+      const draw = useCallback((e) => {
+        if (!isDrawing) return
+        const canvas = canvasRef.current
+        const ctx = canvas.getContext('2d')
+        const rect = canvas.getBoundingClientRect()
+        const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left
+        const y = (e.clientY || e.touches?.[0]?.clientY) - rect.top
+
+        ctx.lineTo(x, y)
+        ctx.stroke()
+
+        if (strokeBufferRef.current.length > 0) {
+          strokeBufferRef.current[strokeBufferRef.current.length - 1].push({ x, y })
+        }
+        lastPointRef.current = { x, y }
+      }, [isDrawing])
+
+      const stopDrawing = useCallback(() => {
+        if (!isDrawing) return
+        setIsDrawing(false)
+        const canvas = canvasRef.current
+        const ctx = canvas.getContext('2d')
+        ctx.closePath()
+        scheduleAnalysis()
+      }, [isDrawing, scheduleAnalysis])
+
+      const clearCanvas = useCallback(() => {
+        const canvas = canvasRef.current
+        const ctx = canvas.getContext('2d')
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        setCritique(t('canvasCleared'))
+        lastAnalysisRef.current = ''
+        strokeBufferRef.current = []
+      }, [])
+
+      const colors = ['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899']
+
+      return (
+        <div style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}>
+          <canvas
+            ref={canvasRef}
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseLeave={stopDrawing}
+            onTouchStart={startDrawing}
+            onTouchMove={draw}
+            onTouchEnd={stopDrawing}
+            style={{ position: 'absolute', inset: 0, cursor: 'crosshair', touchAction: 'none' }}
+          />
+
+          {/* Floating Toolbar */}
+          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+            <Card className="shadow-lg backdrop-blur-lg bg-background/90">
+              <CardBody className="p-2">
+                <div className="flex gap-2 items-center">
+                  {/* Color Picker */}
+                  <Popover placement="bottom">
+                    <PopoverTrigger>
+                      <Button isIconOnly variant="light" size="sm">
+                        <div
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: '50%',
+                            background: brushColor,
+                            border: '2px solid #e5e7eb'
+                          }}
+                        />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-3">
+                      <div className="grid grid-cols-5 gap-2">
+                        {colors.map(color => (
+                          <button
+                            key={color}
+                            onClick={() => setBrushColor(color)}
+                            style={{
+                              width: 28,
+                              height: 28,
+                              borderRadius: '50%',
+                              background: color,
+                              border: brushColor === color ? '3px solid #8b5cf6' : '2px solid #e5e7eb',
+                              cursor: 'pointer',
+                              transition: 'transform 0.1s',
+                              transform: brushColor === color ? 'scale(1.15)' : 'scale(1)'
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+
+                  {/* Brush Size */}
+                  <Popover placement="bottom">
+                    <PopoverTrigger>
+                      <Button isIconOnly variant="light" size="sm">
+                        <Icon name="DesignPencil" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-3 w-48">
+                      <div className="flex flex-col gap-2">
+                        <span className="text-xs text-default-500">{brushSize}px</span>
+                        <Slider
+                          size="sm"
+                          step={1}
+                          minValue={1}
+                          maxValue={30}
+                          value={brushSize}
+                          onChange={setBrushSize}
+                          className="w-full"
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+
+                  <Divider orientation="vertical" className="h-6" />
+
+                  {/* Style Selector */}
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button variant="light" size="sm" className="gap-1">
+                        <Icon name="Palette" />
+                        <span className="text-xs hidden sm:inline">{t('style')}</span>
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      aria-label="Critique style"
+                      selectionMode="single"
+                      selectedKeys={[critiqueStyle]}
+                      onSelectionChange={(keys) => setCritiqueStyle(Array.from(keys)[0])}
+                    >
+                      {Object.entries(CRITIQUE_STYLES).map(([key, config]) => (
+                        <DropdownItem key={key}>{t(config.label)}</DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
+
+                  <Divider orientation="vertical" className="h-6" />
+
+                  {/* Clear Button */}
+                  <Tooltip content={t('clear')}>
+                    <Button isIconOnly variant="light" size="sm" color="danger" onPress={clearCanvas}>
+                      <Icon name="Trash" />
+                    </Button>
+                  </Tooltip>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+
+          <div style={{
+            position: 'absolute',
+            bottom: 16,
+            left: 16,
+            right: 16,
+            maxWidth: 500,
+            padding: 16,
+            background: 'rgba(139, 92, 246, 0.95)',
+            borderRadius: 16,
+            boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)',
+            color: 'white'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <span style={{ fontSize: 18 }}>🎨</span>
+              <span style={{ fontWeight: 600, fontSize: 14 }}>{t('artCritic')}</span>
+              {isAnalyzing && (
+                <span style={{
+                  fontSize: 12,
+                  background: 'rgba(255,255,255,0.2)',
+                  padding: '2px 8px',
+                  borderRadius: 12
+                }}>{t('analyzing')}</span>
+              )}
+            </div>
+            <p style={{ margin: 0, fontSize: 14, lineHeight: 1.5, opacity: 0.95 }}>{critique}</p>
+          </div>
+        </div>
+      )
+    }
+configuration:
+  schema:
+    type: object
+    properties:
+      autoSave:
+        type: boolean
+        default: true
+        description: Automatically save canvas state
+      aiModel:
+        type: string
+        description: Preferred AI model for canvas assistance
+  defaults:
+    autoSave: true

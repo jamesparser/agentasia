@@ -1,0 +1,1237 @@
+import {
+  Button,
+  ButtonGroup,
+  Chip,
+  Popover,
+  PopoverContent,
+  Spinner,
+  PopoverTrigger,
+  Textarea,
+  type TextAreaProps,
+  Tooltip,
+} from '@heroui/react'
+import {
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react'
+
+import { Icon } from '../Icon'
+import { useSpeechRecognition } from './useSpeechRecognition'
+import { useUrlFragment } from './useUrlFragment'
+import { AGENTASIA } from '@/config/agentasia'
+import { ModelSelector } from './ModelSelector'
+import { ManagedModelBadge } from './ManagedModelBadge'
+import { AgentSelector } from './AgentSelector'
+import { AttachmentSelector } from './AttachmentSelector'
+import { FileAttachment } from './FileAttachment'
+import { AgentMentionPopover } from './AgentMentionPopover'
+import { useAgentMention } from './useAgentMention'
+import { MethodologyMentionPopover } from './MethodologyMentionPopover'
+import { useMethodologyMention } from './useMethodologyMention'
+import { SkillMentionPopover } from './SkillMentionPopover'
+import { useSkillMention } from './useSkillMention'
+
+import { useI18n } from '@/i18n'
+import { type LanguageCode } from '@/i18n/locales'
+import { cn } from '@/lib/utils'
+import { type Agent, type KnowledgeItem, type InstalledSkill } from '@/types'
+import type { Methodology } from '@/types/methodology.types'
+import type { Connector } from '@/features/connectors/types'
+import { getDefaultAgent } from '@/stores/agentStore'
+import { getKnowledgeItemDecrypted } from '@/stores/knowledgeStore'
+import {
+  isLandscape,
+  isMobileDevice,
+  isSmallHeight,
+  isSmallWidth,
+} from '@/lib/device'
+import { userSettings } from '@/stores/userStore'
+import { VoiceWaveform, useVoice } from '@/features/live'
+import { VoiceSettingsPanel } from '@/features/live/components/VoiceSettingsPanel'
+import type {
+  STTProviderType,
+  TTSProviderType,
+} from '@/features/live/lib/types'
+
+export type PromptMode = 'chat' | 'live' | 'studio' | 'app' | 'agent'
+
+export interface PromptAreaProps
+  extends Omit<TextAreaProps, 'onFocus' | 'onBlur' | 'onKeyDown'> {
+  lang: LanguageCode
+  mode?: PromptMode
+  onModeChange?: (mode: PromptMode) => void
+  onSubmitToAgent?: (
+    cleanedPrompt?: string,
+    mentionedAgent?: Agent,
+    mentionedMethodology?: Methodology,
+    mentionedSkills?: InstalledSkill[],
+    mentionedConnectors?: Connector[],
+  ) => void
+  onSubmitTask?: (
+    cleanedPrompt?: string,
+    mentionedAgent?: Agent,
+    mentionedMethodology?: Methodology,
+    mentionedSkills?: InstalledSkill[],
+    mentionedConnectors?: Connector[],
+  ) => void
+  isSending?: boolean
+  onStop?: () => void
+  onFilesChange?: (files: File[]) => void
+  defaultPrompt?: string
+  onAgentChange?: (agent: Agent | null) => void
+  onMethodologyChange?: (methodology: Methodology | null) => void
+  disabledAgentPicker?: boolean
+  disabledMention?: boolean
+  selectedAgent?: Agent | null
+  selectedMethodology?: Methodology | null
+  onFocus?: React.FocusEventHandler<HTMLTextAreaElement>
+  onBlur?: React.FocusEventHandler<HTMLTextAreaElement>
+  onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement>
+  minRows?: number
+  withModelSelector?: boolean
+  withAttachmentSelector?: boolean
+  withAgentSelector?: boolean
+  /** When true, skips all data loading (agents, methodologies, skills, providers). For tours/demos. */
+  demo?: boolean
+}
+
+export const PromptArea = forwardRef<HTMLTextAreaElement, PromptAreaProps>(
+  function PromptArea(
+    {
+      className,
+      lang,
+      onSubmitToAgent,
+      onSubmitTask,
+      onSubmit,
+      onValueChange,
+      onFilesChange,
+      defaultPrompt = '',
+      onAgentChange,
+      onMethodologyChange,
+      disabledAgentPicker,
+      disabledMention,
+      selectedAgent,
+      selectedMethodology,
+      onFocus,
+      onBlur,
+      onKeyDown,
+      minRows,
+      mode = 'chat',
+      onModeChange,
+      withModelSelector,
+      withAttachmentSelector,
+      withAgentSelector,
+      demo = false,
+      ...props
+    },
+    ref,
+  ) {
+    const { t } = useI18n(lang as any)
+
+    const handleToggleMode = useCallback(
+      (newMode: PromptMode) => {
+        onModeChange?.(mode === newMode ? 'chat' : newMode)
+      },
+      [mode, onModeChange],
+    )
+
+    const modePlaceholders: Record<PromptMode, string> = useMemo(
+      () => ({
+        chat: t('What are we working on?'),
+        live: t('Listening…'),
+        studio: t('Describe the image or video you want to create…'),
+        app: t('Describe the web app you want to build…'),
+        agent: t('Describe the AI agent you want to create…'),
+      }),
+      [t],
+    )
+
+    // ---------- Live mode voice integration ----------
+    const {
+      kokoroVoiceId,
+      setKokoroVoiceId,
+      sttProvider: savedSTTProvider,
+      setSTTProvider: setSavedSTTProvider,
+      ttsProvider: savedTTSProvider,
+      setTTSProvider: setSavedTTSProvider,
+      liveAutoSpeak,
+      setLiveAutoSpeak,
+    } = userSettings()
+
+    const liveAutoSpeakValue = liveAutoSpeak ?? true
+    const selectedVoiceId = kokoroVoiceId || 'am_adam'
+    const isLiveMode = mode === 'live'
+
+    const voice = useVoice(
+      isLiveMode
+        ? {
+            sttProvider: (savedSTTProvider as STTProviderType) || 'assemblyai',
+            ttsProvider: (savedTTSProvider as TTSProviderType) || 'web-speech',
+            ttsVoiceId: selectedVoiceId,
+            language: lang,
+            onFinalTranscript: (text) => {
+              if (text.trim()) {
+                // Auto-submit the transcript
+                handlePromptChange(text)
+                // Defer submission to next tick so prompt state updates first
+                setTimeout(() => {
+                  if (onSubmitToAgent) onSubmitToAgent(text)
+                  else if (onSubmitTask) onSubmitTask(text)
+                }, 0)
+              }
+            },
+            onError: (err) => {
+              console.error('[Live Voice] Error:', err)
+            },
+          }
+        : { sttProvider: 'web-speech', ttsProvider: 'web-speech' },
+    )
+
+    const ttsAnalyserRef = useRef<AnalyserNode | null>(null)
+
+    useEffect(() => {
+      if (isLiveMode) {
+        ttsAnalyserRef.current = voice.getTTSAnalyser()
+      }
+    }, [isLiveMode, voice.getTTSAnalyser, voice.isSpeaking, voice.isTTSReady])
+
+    // When entering live mode, start recording; when leaving, stop
+    useEffect(() => {
+      if (isLiveMode && voice.isSTTReady && !voice.isRecording) {
+        voice.startRecording()
+      }
+      if (!isLiveMode && voice.isRecording) {
+        voice.stopRecording()
+      }
+    }, [isLiveMode, voice.isSTTReady])
+
+    // Update prompt with live transcript
+    useEffect(() => {
+      if (isLiveMode && voice.transcript) {
+        handlePromptChange(voice.transcript)
+      }
+    }, [isLiveMode, voice.transcript])
+
+    const handleSTTProviderChange = useCallback(
+      async (type: string) => {
+        await voice.setSTTProvider(type as STTProviderType)
+        setSavedSTTProvider(type as STTProviderType)
+      },
+      [voice.setSTTProvider, setSavedSTTProvider],
+    )
+
+    const handleTTSProviderChange = useCallback(
+      async (type: string) => {
+        await voice.setTTSProvider(type as TTSProviderType)
+        setSavedTTSProvider(type as TTSProviderType)
+      },
+      [voice.setTTSProvider, setSavedTTSProvider],
+    )
+    // ---------- End Live mode voice integration ----------
+
+    const [prompt, setPrompt] = useState(defaultPrompt)
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+    const [isDragOver, setIsDragOver] = useState(false)
+    const [isFocused, setIsFocused] = useState(false)
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const internalInputRef = useRef<HTMLTextAreaElement>(null)
+    const mergedRef = useCallback(
+      (node: HTMLTextAreaElement | null) => {
+        internalInputRef.current = node
+        if (typeof ref === 'function') ref(node)
+        else if (ref)
+          (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current =
+            node
+      },
+      [ref],
+    )
+    const speechToTextEnabled = userSettings(
+      (state) => state.speechToTextEnabled,
+    )
+    const sttEngine = userSettings((state) => state.sttEngine)
+
+    // Parse URL fragment for prompt parameter
+    const { prompt: urlPrompt } = useUrlFragment()
+
+    // Set default agent if none selected
+    const currentAgent = selectedAgent || getDefaultAgent()
+
+    // Define handlePromptChange before useAgentMention to avoid circular dependency
+    const handlePromptChange = useCallback(
+      (value: string) => {
+        setPrompt(value)
+        if (onValueChange) {
+          onValueChange(value)
+        }
+      },
+      [onValueChange],
+    )
+
+    // Agent mention hook for @ autocomplete
+    const {
+      showMentionPopover: showAgentMentionPopover,
+      filteredAgents,
+      selectedIndex: agentSelectedIndex,
+      handleMentionSelect: handleAgentMentionSelect,
+      handleKeyNavigation: handleAgentKeyNavigation,
+      closeMentionPopover: closeAgentMentionPopover,
+      extractMentionedAgents,
+      removeMentionsFromPrompt: removeAgentMentionsFromPrompt,
+    } = useAgentMention({
+      lang,
+      prompt,
+      onPromptChange: handlePromptChange,
+      inputRef: internalInputRef,
+      disabled: demo,
+    })
+
+    // Methodology mention hook for # autocomplete
+    const {
+      showMentionPopover: showMethodologyMentionPopover,
+      filteredMethodologies,
+      selectedIndex: methodologySelectedIndex,
+      handleMentionSelect: handleMethodologyMentionSelect,
+      handleKeyNavigation: handleMethodologyKeyNavigation,
+      closeMentionPopover: closeMethodologyMentionPopover,
+      extractMentionedMethodologies,
+      removeMentionsFromPrompt: removeMethodologyMentionsFromPrompt,
+    } = useMethodologyMention({
+      lang,
+      prompt,
+      onPromptChange: handlePromptChange,
+      inputRef: internalInputRef,
+      disabled: demo,
+    })
+
+    // Skill & connector mention hook for / autocomplete
+    const {
+      showMentionPopover: showSkillMentionPopover,
+      filteredItems: slashCommandItems,
+      selectedIndex: skillSelectedIndex,
+      handleMentionSelect: handleSkillMentionSelect,
+      handleKeyNavigation: handleSkillKeyNavigation,
+      closeMentionPopover: closeSkillMentionPopover,
+      extractMentionedSkills,
+      extractMentionedConnectors,
+      removeMentionsFromPrompt: removeSkillMentionsFromPrompt,
+    } = useSkillMention({
+      lang,
+      prompt,
+      onPromptChange: handlePromptChange,
+      inputRef: internalInputRef,
+      disabled: demo,
+    })
+
+    useEffect(() => {
+      setPrompt(defaultPrompt)
+      onValueChange?.(defaultPrompt)
+    }, [defaultPrompt, onValueChange])
+
+    // Sync internal state with controlled value prop
+    useEffect(() => {
+      if (props.value !== undefined && props.value !== prompt) {
+        setPrompt(props.value as string)
+      }
+    }, [props.value])
+
+    // Set default agent in useEffect to avoid setState during render
+    useEffect(() => {
+      if (demo || !(!selectedAgent && onAgentChange)) return
+      onAgentChange(getDefaultAgent())
+    }, [demo, selectedAgent, onAgentChange])
+
+    // Populate prompt from URL fragment
+    useEffect(() => {
+      if (urlPrompt && !prompt) {
+        setPrompt(urlPrompt)
+        onValueChange?.(urlPrompt)
+
+        // Clear the URL fragment after loading
+        if (window.location.hash) {
+          window.history.replaceState(
+            null,
+            '',
+            window.location.pathname + window.location.search,
+          )
+        }
+      }
+    }, [urlPrompt, prompt, onValueChange])
+
+    // Speech recognition hook
+    const {
+      isRecording,
+      isSupported: isSpeechRecognitionSupported,
+      isWarming: isSpeechWarming,
+      toggleRecording,
+    } = useSpeechRecognition({
+      lang,
+      engine: sttEngine,
+      onTranscript: (transcript) => {
+        setPrompt(transcript)
+        onValueChange?.(transcript)
+      },
+      onFinalTranscript: (transcript) => {
+        // Submit the spoken text itself rather than signalling "there is text
+        // now": setPrompt above has not flushed, so a parent that falls back to
+        // its own prompt state would see the previous, empty value.
+        //
+        // The box is deliberately left holding the transcript. The parent clears
+        // it on a successful send; if the send fails (no agent selected, offline)
+        // the words are still there instead of gone.
+        onSubmitToAgent?.(transcript)
+      },
+    })
+
+    // Handle submission with @mention, #mention, and /mention processing
+    const handleSubmitWithMentions = useCallback(
+      (
+        submitFn?: (
+          cleanedPrompt?: string,
+          mentionedAgent?: Agent,
+          mentionedMethodology?: Methodology,
+          mentionedSkills?: InstalledSkill[],
+          mentionedConnectors?: Connector[],
+        ) => void,
+        keepMentions?: boolean,
+      ) => {
+        if (!submitFn) return
+
+        // Extract mentioned agents
+        const mentionedAgents = extractMentionedAgents()
+
+        // If exactly one agent is mentioned, auto-select it
+        const mentionedAgent =
+          mentionedAgents.length === 1 ? mentionedAgents[0] : undefined
+        if (mentionedAgent) {
+          onAgentChange?.(mentionedAgent)
+        }
+
+        // Extract mentioned methodologies
+        const mentionedMethodologies = extractMentionedMethodologies()
+
+        // If exactly one methodology is mentioned, auto-select it
+        const mentionedMethodology =
+          mentionedMethodologies.length === 1
+            ? mentionedMethodologies[0]
+            : undefined
+        if (mentionedMethodology) {
+          onMethodologyChange?.(mentionedMethodology)
+        }
+
+        // Extract mentioned skills for activation in the conversation
+        const mentionedSkills = extractMentionedSkills()
+
+        // Extract mentioned connectors for context injection
+        const mentionedConnectors = extractMentionedConnectors()
+
+        // In task mode, keep mentions in the prompt so the task description preserves them
+        const promptToSubmit = keepMentions
+          ? prompt
+          : (() => {
+              let cleaned = removeAgentMentionsFromPrompt(prompt)
+              cleaned = removeMethodologyMentionsFromPrompt(cleaned)
+              cleaned = removeSkillMentionsFromPrompt(cleaned)
+              return cleaned
+            })()
+
+        // Update local state (for UI consistency)
+        if (promptToSubmit !== prompt) {
+          setPrompt(promptToSubmit)
+          onValueChange?.(promptToSubmit)
+        }
+
+        // Close mention popovers if open
+        closeAgentMentionPopover()
+        closeMethodologyMentionPopover()
+        closeSkillMentionPopover()
+
+        // Pass the prompt, mentioned agent/methodology, activated skills, and connectors to the submit function
+        submitFn(
+          promptToSubmit,
+          mentionedAgent,
+          mentionedMethodology,
+          mentionedSkills.length > 0 ? mentionedSkills : undefined,
+          mentionedConnectors.length > 0 ? mentionedConnectors : undefined,
+        )
+      },
+      [
+        prompt,
+        extractMentionedAgents,
+        extractMentionedMethodologies,
+        extractMentionedSkills,
+        extractMentionedConnectors,
+        removeAgentMentionsFromPrompt,
+        removeMethodologyMentionsFromPrompt,
+        removeSkillMentionsFromPrompt,
+        onAgentChange,
+        onMethodologyChange,
+        onValueChange,
+        closeAgentMentionPopover,
+        closeMethodologyMentionPopover,
+        closeSkillMentionPopover,
+      ],
+    )
+
+    // Determine the primary submit action based on the selected agent
+    // This must match the first visible button in the ButtonGroup
+    const primarySubmitAction = useMemo(() => {
+      if (currentAgent?.id === 'devs' && onSubmitTask) return onSubmitTask
+      if (onSubmit) return onSubmit as unknown as typeof onSubmitTask
+      return onSubmitToAgent
+    }, [currentAgent?.id, onSubmitTask, onSubmit, onSubmitToAgent])
+
+    // Whether the primary submit action is task mode (mentions should be kept)
+    const isPrimaryTaskMode = primarySubmitAction === onSubmitTask
+
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        // Handle agent mention popover keyboard navigation first
+        if (handleAgentKeyNavigation(event)) {
+          return
+        }
+
+        // Handle methodology mention popover keyboard navigation
+        if (handleMethodologyKeyNavigation(event)) {
+          return
+        }
+
+        // Handle skill mention popover keyboard navigation
+        if (handleSkillKeyNavigation(event)) {
+          return
+        }
+
+        // Enter that confirms an IME candidate (Japanese, Chinese, Korean) must
+        // not send the message: it is still composing, and keyCode 229 covers
+        // Safari and Android keyboards that report isComposing late.
+        const composing =
+          event.nativeEvent?.isComposing || (event as any).keyCode === 229
+        if (event.key === 'Enter' && !event.shiftKey && !composing) {
+          event.preventDefault()
+          handleSubmitWithMentions(primarySubmitAction, isPrimaryTaskMode)
+        }
+        onKeyDown?.(event)
+      },
+      [
+        handleAgentKeyNavigation,
+        handleMethodologyKeyNavigation,
+        handleSkillKeyNavigation,
+        handleSubmitWithMentions,
+        primarySubmitAction,
+        isPrimaryTaskMode,
+        onKeyDown,
+      ],
+    )
+
+    const handleFileSelection = useCallback(
+      (files: FileList | null) => {
+        if (!files) return
+
+        const fileArray = Array.from(files)
+        const newFiles = [...selectedFiles, ...fileArray]
+
+        setSelectedFiles(newFiles)
+        onFilesChange?.(newFiles)
+      },
+      [selectedFiles, onFilesChange],
+    )
+
+    const handleFileInputChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        handleFileSelection(event.target.files)
+        event.target.value = ''
+      },
+      [handleFileSelection],
+    )
+
+    const handlePaperclipClick = useCallback(() => {
+      fileInputRef.current?.click()
+    }, [])
+
+    const handleRemoveFile = useCallback(
+      (index: number) => {
+        const newFiles = selectedFiles.filter((_, i) => i !== index)
+
+        setSelectedFiles(newFiles)
+        onFilesChange?.(newFiles)
+      },
+      [selectedFiles, onFilesChange],
+    )
+
+    const handleKnowledgeFileSelect = useCallback(
+      async (item: KnowledgeItem) => {
+        // Convert KnowledgeItem to File for consistency
+        try {
+          // Always fetch the decrypted version — the item passed from AttachmentSelector
+          // may have encrypted content fields (EncryptedField objects, not strings)
+          const decryptedItem = await getKnowledgeItemDecrypted(item.id)
+          const resolved = decryptedItem ?? item
+
+          let fileData: BlobPart
+          let mimeType = resolved.mimeType || 'application/octet-stream'
+          // content is typed as string but binary connector files may store ArrayBuffer at runtime
+          const rawContent = resolved.content as unknown
+
+          if (rawContent instanceof ArrayBuffer) {
+            // Handle raw binary content stored by connectors (e.g., Google Drive, Dropbox)
+            fileData = new Blob([rawContent], { type: mimeType })
+          } else if (
+            typeof rawContent === 'string' &&
+            rawContent.startsWith('data:')
+          ) {
+            // Handle data URLs (for images and binary files)
+            const response = await fetch(rawContent)
+            fileData = await response.blob()
+            // Extract mime type from data URL if available
+            const dataUrlMatch = rawContent.match(/^data:([^;]+)/)
+            if (dataUrlMatch) {
+              mimeType = dataUrlMatch[1]
+            }
+          } else if (typeof rawContent === 'string') {
+            // Plain text content
+            fileData = new Blob([rawContent], { type: mimeType })
+          } else {
+            console.warn(
+              '[PromptArea] Unknown content type for knowledge item:',
+              typeof rawContent,
+              item.name,
+            )
+            return
+          }
+
+          const file = new File([fileData], resolved.name, {
+            type: mimeType,
+            lastModified: new Date(resolved.lastModified).getTime(),
+          })
+
+          const newFiles = [...selectedFiles, file]
+          setSelectedFiles(newFiles)
+          onFilesChange?.(newFiles)
+        } catch (error) {
+          console.error('Error converting knowledge item to file:', error)
+        }
+      },
+      [selectedFiles, onFilesChange],
+    )
+
+    const handleSkillSelect = useCallback(
+      (skill: InstalledSkill) => {
+        // Insert /<skill-name> mention into the prompt (same as useSkillMention)
+        const skillName = skill.name.replace(/\s+/g, '-')
+        const separator = prompt.length > 0 && !prompt.endsWith(' ') ? ' ' : ''
+        const newPrompt = `${prompt}${separator}/${skillName} `
+        handlePromptChange(newPrompt)
+      },
+      [prompt, handlePromptChange],
+    )
+
+    const handleDragEnter = useCallback((event: React.DragEvent) => {
+      event.preventDefault()
+      event.stopPropagation() // Prevent background drag handlers from interfering
+      setIsDragOver(true)
+    }, [])
+
+    const handleDragOver = useCallback((event: React.DragEvent) => {
+      event.preventDefault()
+      event.stopPropagation() // Prevent background drag handlers from interfering
+    }, [])
+
+    const handleDragLeave = useCallback((event: React.DragEvent) => {
+      event.preventDefault()
+      event.stopPropagation() // Prevent background drag handlers from interfering
+      setIsDragOver(false)
+    }, [])
+
+    const handleDrop = useCallback(
+      (event: React.DragEvent) => {
+        event.preventDefault()
+        event.stopPropagation() // Prevent background drag handlers from interfering
+        setIsDragOver(false)
+        handleFileSelection(event.dataTransfer.files)
+      },
+      [handleFileSelection],
+    )
+
+    const handleFocus = useCallback(
+      (e: React.FocusEvent<HTMLTextAreaElement>) => {
+        setIsFocused(true)
+        onFocus?.(e)
+      },
+      [onFocus],
+    )
+
+    const handleBlur = useCallback(
+      (e: React.FocusEvent<HTMLTextAreaElement>) => {
+        setIsFocused(false)
+        onBlur?.(e)
+      },
+      [onBlur],
+    )
+
+    // Resolve active mentions for visual chip rendering
+    const resolvedAgentMentions = useMemo(
+      () => extractMentionedAgents(),
+      [prompt, extractMentionedAgents],
+    )
+    const resolvedMethodologyMentions = useMemo(
+      () => extractMentionedMethodologies(),
+      [prompt, extractMentionedMethodologies],
+    )
+    const resolvedSkillMentions = useMemo(
+      () => extractMentionedSkills(),
+      [prompt, extractMentionedSkills],
+    )
+    const resolvedConnectorMentions = useMemo(
+      () => extractMentionedConnectors(),
+      [prompt, extractMentionedConnectors],
+    )
+    const hasMentionChips =
+      resolvedAgentMentions.length > 0 ||
+      resolvedMethodologyMentions.length > 0 ||
+      resolvedSkillMentions.length > 0 ||
+      resolvedConnectorMentions.length > 0
+
+    // Remove a single @agent mention from the prompt
+    const handleRemoveAgentMention = useCallback(
+      (agent: Agent) => {
+        const name = agent.i18n?.[lang]?.name ?? agent.name
+        const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const hyphenatedName = name
+          .replace(/\s+/g, '-')
+          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const noSpaceName = name.replace(/\s+/g, '')
+        const newPrompt = prompt
+          .replace(new RegExp(`(^|\\s)@\\[${escaped}\\]\\s?`, 'iu'), '$1')
+          .replace(
+            new RegExp(`(^|\\s)@${hyphenatedName}(?=[\\s]|$)\\s?`, 'iu'),
+            '$1',
+          )
+          .replace(
+            new RegExp(`(^|\\s)@${noSpaceName}(?=[\\s]|$)\\s?`, 'iu'),
+            '$1',
+          )
+          .replace(new RegExp(`(^|\\s)@${agent.id}(?=[\\s]|$)\\s?`, 'iu'), '$1')
+          .replace(/\s+/g, ' ')
+          .trim()
+        handlePromptChange(newPrompt)
+      },
+      [prompt, handlePromptChange, lang],
+    )
+
+    // Remove a single #methodology mention from the prompt
+    const handleRemoveMethodologyMention = useCallback(
+      (methodology: Methodology) => {
+        const name = (
+          methodology.metadata.i18n?.[lang]?.name ?? methodology.metadata.name
+        )
+          .replace(/\s+/g, '-')
+          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const id = methodology.metadata.id.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          '\\$&',
+        )
+        const newPrompt = prompt
+          .replace(new RegExp(`#${name}(?=[\\s]|$)\\s?`, 'iu'), '')
+          .replace(new RegExp(`#${id}(?=[\\s]|$)\\s?`, 'iu'), '')
+          .replace(/\s+/g, ' ')
+          .trim()
+        handlePromptChange(newPrompt)
+      },
+      [prompt, handlePromptChange, lang],
+    )
+
+    // Remove a single /skill mention from the prompt
+    const handleRemoveSkillMention = useCallback(
+      (skill: InstalledSkill) => {
+        const name = skill.name
+          .replace(/\s+/g, '-')
+          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const id = skill.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const newPrompt = prompt
+          .replace(new RegExp(`(^|\\s)\\/${name}(?=[\\s]|$)\\s?`, 'iu'), '$1')
+          .replace(new RegExp(`(^|\\s)\\/${id}(?=[\\s]|$)\\s?`, 'iu'), '$1')
+          .replace(/\s+/g, ' ')
+          .trim()
+        handlePromptChange(newPrompt)
+      },
+      [prompt, handlePromptChange],
+    )
+
+    // Remove a single /connector mention from the prompt
+    const handleRemoveConnectorMention = useCallback(
+      (connector: Connector) => {
+        const name = (connector.name || connector.provider)
+          .replace(/\s+/g, '-')
+          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const provider = connector.provider.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          '\\$&',
+        )
+        const newPrompt = prompt
+          .replace(new RegExp(`(^|\\s)\\/${name}(?=[\\s]|$)\\s?`, 'iu'), '$1')
+          .replace(
+            new RegExp(`(^|\\s)\\/${provider}(?=[\\s]|$)\\s?`, 'iu'),
+            '$1',
+          )
+          .replace(/\s+/g, ' ')
+          .trim()
+        handlePromptChange(newPrompt)
+      },
+      [prompt, handlePromptChange],
+    )
+
+    const canSubmit = useMemo(
+      () => prompt.trim().length > 0 && !isRecording,
+      [prompt, isRecording],
+    )
+
+    return (
+      <div
+        id="prompt-area"
+        data-testid="prompt-area"
+        className={cn(
+          'w-full max-w-4xl mx-auto relative p-[3px] prompt-area z-10',
+          isDragOver && 'ring-2 ring-primary ring-offset-2 rounded-lg',
+          isFocused && 'animate-gradient-border',
+          className,
+        )}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
+        {/* Mention chips — absolute-positioned above the prompt area */}
+        {hasMentionChips && (
+          <div className="absolute z-0 -top-8 bottom-0 left-0 right-0 rounded-2xl flex gap-1 flex-wrap px-1 border-2 border-primary-200 !bg-primary-50 p-1 shadow-lg shadow-primary-200/50 max-h-24 overflow-y-auto">
+            {resolvedAgentMentions.map((agent) => (
+              <Chip
+                key={`agent-${agent.id}`}
+                color="primary"
+                variant="flat"
+                size="sm"
+                onClose={() => handleRemoveAgentMention(agent)}
+                startContent={
+                  <span className="pl-1 text-xs opacity-60">@</span>
+                }
+              >
+                {agent.i18n?.[lang]?.name ?? agent.name}
+              </Chip>
+            ))}
+            {resolvedMethodologyMentions.map((methodology) => (
+              <Chip
+                key={`methodology-${methodology.metadata.id}`}
+                color="success"
+                variant="flat"
+                size="sm"
+                onClose={() => handleRemoveMethodologyMention(methodology)}
+                startContent={
+                  <span className="pl-1 text-xs opacity-60">#</span>
+                }
+              >
+                {methodology.metadata.i18n?.[lang]?.name ??
+                  methodology.metadata.name}
+              </Chip>
+            ))}
+            {resolvedSkillMentions.map((skill) => (
+              <Chip
+                key={`skill-${skill.id}`}
+                color="primary"
+                variant="flat"
+                size="sm"
+                onClose={() => handleRemoveSkillMention(skill)}
+                startContent={<Icon name="Puzzle" size="sm" />}
+              >
+                {skill.name}
+              </Chip>
+            ))}
+            {resolvedConnectorMentions.map((connector) => (
+              <Chip
+                key={`connector-${connector.id}`}
+                color="primary"
+                variant="flat"
+                size="sm"
+                onClose={() => handleRemoveConnectorMention(connector)}
+                startContent={<Icon name="EvPlug" size="sm" />}
+              >
+                {connector.name || connector.provider}
+              </Chip>
+            ))}
+          </div>
+        )}
+
+        <div className="relative rounded-lg">
+          {/* Live mode waveform background */}
+          {isLiveMode && (
+            <div className="absolute inset-0 z-0 pointer-events-none flex items-center overflow-hidden rounded-lg opacity-60">
+              <VoiceWaveform
+                isActive={voice.isRecording || voice.isSpeaking}
+                width={1200}
+                height={400}
+                color="hsl(var(--heroui-primary))"
+                lineWidth={1.5}
+                className="w-full h-full"
+                ttsAnalyserRef={ttsAnalyserRef}
+              />
+            </div>
+          )}
+
+          {/* Agent mention autocomplete popover */}
+          {!disabledMention && showAgentMentionPopover && (
+            <AgentMentionPopover
+              lang={lang}
+              agents={filteredAgents}
+              selectedIndex={agentSelectedIndex}
+              onSelect={handleAgentMentionSelect}
+              onClose={closeAgentMentionPopover}
+            />
+          )}
+
+          {/* Methodology mention autocomplete popover */}
+          {!disabledMention && showMethodologyMentionPopover && (
+            <MethodologyMentionPopover
+              lang={lang}
+              methodologies={filteredMethodologies}
+              selectedIndex={methodologySelectedIndex}
+              onSelect={handleMethodologyMentionSelect}
+              onClose={closeMethodologyMentionPopover}
+            />
+          )}
+
+          {/* Skill & connector mention autocomplete popover */}
+          {showSkillMentionPopover && (
+            <SkillMentionPopover
+              lang={lang}
+              items={slashCommandItems}
+              selectedIndex={skillSelectedIndex}
+              onSelect={handleSkillMentionSelect}
+              onClose={closeSkillMentionPopover}
+            />
+          )}
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            multiple
+            accept="*/*"
+            className="hidden"
+            type="file"
+            onChange={handleFileInputChange}
+          />
+
+          <Textarea
+            ref={mergedRef}
+            data-testid="prompt-input"
+            className={cn(
+              'pb-20 bg-content2 rounded-lg relative z-[1]',
+              isLiveMode && 'bg-transparent',
+            )}
+            classNames={{
+              input: 'p-1',
+              inputWrapper: cn(
+                'shadow-none -mb-20 pb-14 !ring-0 !ring-offset-0',
+                selectedFiles.length ? 'pb-20' : '',
+                isLiveMode ? 'bg-transparent' : 'bg-default-200',
+              ),
+            }}
+            maxRows={7}
+            // Never fewer than two rows: the action row (attach, model, mic, send)
+            // sits over the bottom of the box, and with a single row it covers
+            // the text and the placeholder.
+            minRows={
+              isMobileDevice() && isLandscape() && isSmallHeight()
+                ? (minRows || 1)
+                : Math.max(2, minRows || 3)
+            }
+            placeholder={
+              isDragOver ? t('Drop files here…') : modePlaceholders[mode]
+            }
+            size="lg"
+            value={prompt}
+            onBlur={handleBlur as any}
+            onFocus={handleFocus as any}
+            onKeyDown={handleKeyDown as any}
+            onValueChange={handlePromptChange}
+            endContent={
+              // Selected files display
+              selectedFiles.length > 0 && (
+                <div className="mb-2 flex flex-wrap gap-2 p-2 absolute start-0 bottom-8 end-0 max-h-24 overflow-y-auto">
+                  {selectedFiles.map((file, index) => (
+                    <FileAttachment
+                      key={index}
+                      file={file}
+                      onRemove={() => handleRemoveFile(index)}
+                    />
+                  ))}
+                </div>
+              )
+            }
+            {...props}
+          />
+
+          <div className="prompt-actions absolute z-10 bottom-0 inset-x-px p-1 sm:p-2 rounded-b-lg">
+            <div className="flex flex-nowrap justify-between items-center gap-1">
+              <div className="flex shrink-0 items-center gap-1">
+                {!demo && withAttachmentSelector !== false && (
+                  <AttachmentSelector
+                    lang={lang}
+                    mode={mode}
+                    onModeChange={onModeChange}
+                    onFileUpload={handlePaperclipClick}
+                    onKnowledgeFileSelect={handleKnowledgeFileSelect}
+                    onSkillSelect={handleSkillSelect}
+                    onScreenCapture={(file) => {
+                      const newFiles = [...selectedFiles, file]
+                      setSelectedFiles(newFiles)
+                      onFilesChange?.(newFiles)
+                    }}
+                  />
+                )}
+
+                {!demo &&
+                  withAgentSelector !== false &&
+                  !disabledAgentPicker && (
+                    <AgentSelector
+                      lang={lang}
+                      disabled={disabledAgentPicker}
+                      selectedAgent={currentAgent}
+                      onAgentChange={onAgentChange}
+                    />
+                  )}
+              </div>
+
+              <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+                {!demo && withModelSelector !== false && !isLiveMode && (
+                  AGENTASIA.ui.managedGatewayEnabled ? (
+                    <ManagedModelBadge />
+                  ) : (
+                    <ModelSelector lang={lang} />
+                  )
+                )}
+
+                {/* Live mode voice settings popover */}
+                {isLiveMode && (
+                  <Popover placement="top-end">
+                    <PopoverTrigger>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        radius="full"
+                        variant="light"
+                        className="text-default-400"
+                      >
+                        <Icon name="Settings" size="sm" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0">
+                      <VoiceSettingsPanel
+                        autoSpeak={liveAutoSpeakValue}
+                        onAutoSpeakChange={setLiveAutoSpeak}
+                        sttProviderType={voice.sttProviderType}
+                        onSTTProviderChange={handleSTTProviderChange}
+                        ttsProviderType={voice.ttsProviderType}
+                        onTTSProviderChange={handleTTSProviderChange}
+                        selectedVoiceId={selectedVoiceId}
+                        onVoiceChange={setKokoroVoiceId}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Live mode toggle — next to submit */}
+                {onModeChange && !AGENTASIA.ui.managedGatewayEnabled && (
+                  <Tooltip
+                    content={t('Live voice conversation')}
+                    placement="bottom"
+                  >
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      radius="full"
+                      variant={isLiveMode ? 'solid' : 'light'}
+                      color={isLiveMode ? 'primary' : 'default'}
+                      className={cn(
+                        !isLiveMode && 'text-default-400',
+                        isLiveMode && voice.isRecording && 'animate-pulse',
+                      )}
+                      aria-label={t('Live voice conversation')}
+                      onPress={() => handleToggleMode('live')}
+                    >
+                      <Icon name="Voice" size="md" />
+                    </Button>
+                  </Tooltip>
+                )}
+
+                {/* The old `!prompt.trim()` guard hid the mic the moment the box
+                    had any text in it - including the text dictation had just put
+                    there - so a second utterance was impossible without clearing
+                    the box by hand. */}
+                {/* Live mode: the microphone is the send button. With the cloud
+                    engine the recording is transcribed and sent when you tap it,
+                    so it has to be visible, and big enough to hit on a phone. */}
+                {isLiveMode && (
+                  <Tooltip
+                    content={
+                      voice.isRecording
+                        ? t('Tap to send what you said')
+                        : t('Speak to microphone')
+                    }
+                    placement="bottom"
+                  >
+                    <Button
+                      isIconOnly
+                      aria-label={
+                        voice.isRecording
+                          ? t('Tap to send what you said')
+                          : t('Speak to microphone')
+                      }
+                      color="primary"
+                      radius="full"
+                      variant={voice.isRecording ? 'solid' : 'flat'}
+                      className={cn('h-10 w-10 min-w-10', voice.isRecording && 'animate-pulse')}
+                      onPress={() => voice.toggleRecording()}
+                    >
+                      <Icon
+                        name={voice.isRecording ? 'MicrophoneSpeaking' : 'Microphone'}
+                        size="md"
+                      />
+                    </Button>
+                  </Tooltip>
+                )}
+
+                {!isLiveMode && speechToTextEnabled && (
+                    <Tooltip
+                      content={
+                        isSpeechWarming
+                          ? t('Loading the on-device voice model…')
+                          : t('Speak to microphone')
+                      }
+                      placement="bottom"
+                    >
+                      <Button
+                        isIconOnly
+                        color={isRecording ? 'primary' : 'default'}
+                        isDisabled={!isSpeechRecognitionSupported || isSpeechWarming}
+                        radius="full"
+                        variant={isRecording ? 'solid' : 'light'}
+                        size="sm"
+                        onPress={toggleRecording}
+                      >
+                        {isSpeechWarming ? (
+                          <Spinner size="sm" />
+                        ) : isRecording ? (
+                          <Icon name="MicrophoneSpeaking" size="sm" />
+                        ) : (
+                          <Icon name="Microphone" size="sm" />
+                        )}
+                      </Button>
+                    </Tooltip>
+                  )}
+
+                <ButtonGroup variant="flat">
+                  {selectedAgent?.id === 'devs' && onSubmitTask && (
+                    <Tooltip content={t('Send prompt')} placement="bottom">
+                      <Button
+                        data-testid="submit-button"
+                        isIconOnly={isSmallWidth()}
+                        disabled={props.isSending}
+                        color={!prompt.trim() ? 'default' : 'primary'}
+                        className={cn(
+                          'rtl:rotate-180',
+                          canSubmit && 'dark:bg-white dark:text-black',
+                        )}
+                        radius="md"
+                        variant="solid"
+                        size="sm"
+                        isDisabled={!canSubmit}
+                        isLoading={props.isSending}
+                        onPress={() =>
+                          handleSubmitWithMentions(onSubmitTask, true)
+                        }
+                      >
+                        <Icon name="ArrowRight" size="sm" />
+                      </Button>
+                    </Tooltip>
+                  )}
+
+                  {onSubmit && (
+                    <Tooltip content={t('Send prompt')} placement="bottom">
+                      <Button
+                        type="submit"
+                        data-testid="submit-button"
+                        isIconOnly={isSmallWidth()}
+                        disabled={props.isSending}
+                        color={!prompt.trim() ? 'default' : 'primary'}
+                        className={cn(
+                          'rtl:rotate-180',
+                          canSubmit && 'dark:bg-white dark:text-black',
+                        )}
+                        radius="md"
+                        variant="solid"
+                        size="sm"
+                        isDisabled={!canSubmit}
+                        isLoading={props.isSending}
+                        onPress={() =>
+                          handleSubmitWithMentions(onSubmit as any)
+                        }
+                      >
+                        <Icon name="ArrowRight" size="sm" />
+                      </Button>
+                    </Tooltip>
+                  )}
+
+                  {(selectedAgent?.id !== 'devs' || !onSubmitTask) &&
+                    onSubmitToAgent &&
+                    (props.isSending && props.onStop ? (
+                      <Tooltip
+                        content={t('Stop generating')}
+                        placement="bottom"
+                      >
+                        <Button
+                          data-testid="stop-button"
+                          isIconOnly={isSmallWidth()}
+                          color="danger"
+                          radius="md"
+                          // variant="solid"
+                          size="sm"
+                          onPress={props.onStop}
+                        >
+                          <Icon name="Square" size="sm" />
+                        </Button>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip content={t('Send prompt')} placement="bottom">
+                        <Button
+                          type="submit"
+                          data-testid="submit-agent-button"
+                          isIconOnly={isSmallWidth()}
+                          disabled={props.isSending}
+                          color={!prompt.trim() ? 'default' : 'primary'}
+                          className={cn(
+                            'rtl:rotate-180',
+                            canSubmit && 'dark:bg-white dark:text-black',
+                          )}
+                          radius="md"
+                          variant="solid"
+                          size="sm"
+                          isDisabled={!canSubmit}
+                          isLoading={props.isSending}
+                          onPress={() =>
+                            handleSubmitWithMentions(onSubmitToAgent)
+                          }
+                        >
+                          <Icon name="ArrowRight" size="sm" />
+                        </Button>
+                      </Tooltip>
+                    ))}
+                </ButtonGroup>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+)

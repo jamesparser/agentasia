@@ -1,0 +1,1270 @@
+import { LLMService, LLMMessage, ToolDefinition, ToolCall } from '@/lib/llm'
+import type { GroundingMetadata } from '@/lib/llm/types'
+import { CredentialService } from '@/lib/credential-service'
+import { useConversationStore } from '@/stores/conversationStore'
+import { getDefaultAgent } from '@/stores/agentStore'
+import { buildPinnedContextForChat } from '@/stores/pinnedMessageStore'
+import { TraceService } from '@/features/traces/trace-service'
+import { ModelInfo } from '@/features/traces/types'
+import { Agent, Message, MessageStep } from '@/types'
+import { notifyError } from '@/features/notifications'
+import type { IconName } from '@/lib/types'
+
+// ============================================================================
+// Response Update Types
+// ============================================================================
+
+/** A structured status update with icon and i18n key */
+export interface ResponseStatus {
+  /** Icon name from iconoir-react */
+  icon: IconName
+  /** i18n translation key */
+  i18nKey: string
+  /** Optional variables for i18n interpolation */
+  vars?: Record<string, string | number>
+  /** Tool calls being executed (name + parsed input), for live progress display */
+  pendingToolCalls?: PendingToolCall[]
+}
+
+/** Tool call result data for step tracking */
+export interface ToolCallResult {
+  name: string
+  input: Record<string, unknown>
+  output?: string
+}
+
+/** Basic tool call info sent before execution starts (no output yet) */
+export interface PendingToolCall {
+  name: string
+  input: Record<string, unknown>
+}
+
+/** Response update can be content, a status update, or tool results */
+export type ResponseUpdate =
+  | { type: 'content'; content: string }
+  | { type: 'thinking'; thinkingContent: string }
+  | { type: 'status'; status: ResponseStatus }
+  | { type: 'tool_results'; toolCalls: ToolCallResult[] }
+import {
+  getKnowledgeAttachments,
+  buildAgentInstructions,
+  CITATION_INSTRUCTIONS,
+} from '@/lib/agent-knowledge'
+import {
+  buildMemoryContextForChat,
+  autoCaptureToMemory,
+} from '@/lib/memory-learning-service'
+import { getEffectiveSettings } from '@/stores/userStore'
+import { Lang, languages } from '@/i18n'
+import {
+  defaultExecutor,
+  registerKnowledgeTools,
+  areKnowledgeToolsRegistered,
+  registerMathTools,
+  areMathToolsRegistered,
+  registerCodeTools,
+  areCodeToolsRegistered,
+  registerConnectorTools,
+  areConnectorToolsRegistered,
+  registerPresentationTools,
+  arePresentationToolsRegistered,
+  registerResearchTools,
+  areResearchToolsRegistered,
+  registerSkillTools,
+  areSkillToolsRegistered,
+  registerOrchestrationTools,
+  areOrchestrationToolsRegistered,
+  registerMemoryTools,
+  areMemoryToolsRegistered,
+} from '@/lib/tool-executor'
+import { KNOWLEDGE_TOOL_DEFINITIONS } from '@/lib/knowledge-tools/types'
+import { MATH_TOOL_DEFINITIONS } from '@/lib/math-tools/types'
+import { CODE_TOOL_DEFINITIONS } from '@/lib/code-tools/types'
+// import { PRESENTATION_TOOL_DEFINITIONS } from '@/lib/presentation-tools'
+import { PPTX_TOOL_DEFINITIONS } from '@/lib/pptx-tools/types'
+// Import tool DEFINITIONS from their source modules (not the `@/tools/plugins`
+// barrel) so the heavy plugin handlers (WASM sandbox, pptx, connectors) stay
+// out of the boot graph (REPORT §4 Phase 1).
+import { getMcpToolDefinitions, registerMcpTools } from '@/features/connectors/lib/mcp-tools'
+import { WEB_SEARCH_TOOL_DEFINITION } from '@/tools/plugins/web-search'
+import {
+  WIKIPEDIA_SEARCH_TOOL_DEFINITION,
+  WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
+} from '@/tools/plugins/wikipedia'
+import {
+  WIKIDATA_SEARCH_TOOL_DEFINITION,
+  WIKIDATA_ENTITY_TOOL_DEFINITION,
+  WIKIDATA_SPARQL_TOOL_DEFINITION,
+} from '@/tools/plugins/wikidata'
+import {
+  ARXIV_SEARCH_TOOL_DEFINITION,
+  ARXIV_PAPER_TOOL_DEFINITION,
+} from '@/tools/plugins/arxiv'
+import { SKILL_TOOL_DEFINITIONS } from '@/tools/plugins/skill-tools'
+import { DELEGATE_TOOL_DEFINITION } from '@/tools/plugins/delegate'
+import { listDelegatableAgents } from '@/lib/subagent'
+// Connector tool definitions live in the large `@/features/connectors/tools`
+// module; import lazily so it stays out of the boot graph (REPORT §4 Phase 1).
+import { connectors as connectorsMap } from '@/lib/yjs/maps'
+import type { Connector } from '@/features/connectors/types'
+import { getEnabledSkills } from '@/stores/skillStore'
+
+// ============================================================================
+// Orchestration Helpers
+// ============================================================================
+
+/**
+ * Build a context-enriched prompt for the orchestrator when the user is
+ * continuing an existing DEVS conversation.  Previous conversation messages are
+ * prepended so the task-analyzer / decomposer can understand what was already
+ * discussed.  Returns the raw prompt unchanged when there is no history.
+ */
+export function buildOrchestrationPrompt(
+  prompt: string,
+  conversationMessages: Pick<Message, 'role' | 'content'>[],
+  includeHistory: boolean,
+): string {
+  if (!includeHistory) return prompt
+
+  const historyForContext = conversationMessages.filter(
+    (m) => m.role !== 'system',
+  )
+  if (historyForContext.length === 0) return prompt
+
+  const recent = historyForContext.slice(-20)
+  const historyBlock = recent
+    .map((m) => `[${m.role}]: ${m.content}`)
+    .join('\n\n')
+
+  return [
+    '## Previous Conversation Context',
+    'This is a follow-up request in an ongoing conversation. Here is the recent history:',
+    '',
+    historyBlock,
+    '',
+    '## Current Request',
+    prompt,
+  ].join('\n')
+}
+
+// ============================================================================
+// Tool Helpers
+// ============================================================================
+
+/** Maximum iterations for tool calling loop to prevent infinite loops */
+const MAX_TOOL_ITERATIONS = 10
+
+/** Map tool names to i18n keys for status messages */
+const TOOL_STATUS_I18N_KEYS: Record<string, string> = {
+  // Knowledge tools
+  search_knowledge: 'Searching knowledge base',
+  read_document: 'Reading document',
+  list_documents: 'Browsing documents',
+  get_document_summary: 'Summarizing document',
+  // Math & code tools
+  calculate: 'Calculating',
+  execute: 'Running code',
+  // Gmail tools
+  gmail_search: 'Searching Gmail',
+  gmail_read: 'Reading email',
+  gmail_list_labels: 'Listing Gmail labels',
+  // Google Drive tools
+  drive_search: 'Searching Google Drive',
+  drive_read: 'Reading file from Drive',
+  drive_list: 'Listing Drive files',
+  // Google Calendar tools
+  calendar_list_events: 'Listing calendar events',
+  calendar_get_event: 'Getting calendar event',
+  calendar_search: 'Searching calendar',
+  // Google Tasks tools
+  tasks_list: 'Listing tasks',
+  tasks_get: 'Getting task details',
+  tasks_list_tasklists: 'Listing task lists',
+  // Notion tools
+  notion_search: 'Searching Notion',
+  notion_read_page: 'Reading Notion page',
+  notion_query_database: 'Querying Notion database',
+  // Skill tools
+  activate_skill: 'Activating skill',
+  read_skill_file: 'Reading skill file',
+  run_skill_script: 'Running skill script',
+}
+
+/**
+ * Get i18n key (and optional vars) for tool status message.
+ * Returns specific tool i18n key when a single tool type is used,
+ * or generic 'Using tools…' for multiple different tools.
+ * All returned i18nKeys are proper i18n keys that exist in translation files.
+ * @param toolCalls - The tool calls being executed
+ */
+function getToolStatusI18nKey(toolCalls: ToolCall[]): {
+  i18nKey: string
+  vars?: Record<string, string | number>
+} {
+  if (toolCalls.length === 1) {
+    const toolName = toolCalls[0].function.name
+    const i18nKey = TOOL_STATUS_I18N_KEYS[toolName]
+    return i18nKey
+      ? { i18nKey: `${i18nKey}…` }
+      : {
+          i18nKey: 'Using tool: {tool}…',
+          vars: { tool: toolName.replace(/_/g, ' ') },
+        }
+  }
+
+  // Multiple tools - show unique tool types
+  const uniqueToolNames = [...new Set(toolCalls.map((tc) => tc.function.name))]
+  if (uniqueToolNames.length === 1) {
+    const toolName = uniqueToolNames[0]
+    const i18nKey = TOOL_STATUS_I18N_KEYS[toolName]
+    return i18nKey
+      ? { i18nKey: `${i18nKey}…` }
+      : {
+          i18nKey: 'Using tool: {tool}…',
+          vars: { tool: toolName.replace(/_/g, ' ') },
+        }
+  }
+
+  // Multiple different tools - give a summary
+  return { i18nKey: 'Using tools…' }
+}
+
+/**
+ * Get all knowledge tool definitions.
+ * Tools are universal: all agents have access to all knowledge tools by default.
+ * This ensures pre-existing agents and new agents alike can use tools.
+ */
+function getAgentToolDefinitions(_agent: Agent): ToolDefinition[] {
+  // Return all knowledge, math, code, presentation, research, and skill tools - they are universally available to all agents
+  const tools: ToolDefinition[] = [
+    ...Object.values(KNOWLEDGE_TOOL_DEFINITIONS),
+    ...Object.values(MATH_TOOL_DEFINITIONS),
+    ...Object.values(CODE_TOOL_DEFINITIONS),
+    // ...Object.values(PRESENTATION_TOOL_DEFINITIONS),
+    ...Object.values(PPTX_TOOL_DEFINITIONS),
+    // Research tools
+    WEB_SEARCH_TOOL_DEFINITION,
+    WIKIPEDIA_SEARCH_TOOL_DEFINITION,
+    WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
+    WIKIDATA_SEARCH_TOOL_DEFINITION,
+    WIKIDATA_ENTITY_TOOL_DEFINITION,
+    WIKIDATA_SPARQL_TOOL_DEFINITION,
+    ARXIV_SEARCH_TOOL_DEFINITION,
+    ARXIV_PAPER_TOOL_DEFINITION,
+  ]
+
+  // Add skill tools only if there are enabled skills
+  const enabledSkills = getEnabledSkills()
+  if (enabledSkills.length > 0) {
+    tools.push(...Object.values(SKILL_TOOL_DEFINITIONS))
+  }
+
+  // The DEVS meta agent gets the `delegate` tool so it can orchestrate
+  // specialist sub-agents (REPORT §2.3 "sub-agents via the simple
+  // orchestrator"). Only the meta agent gets it: specialist sub-agents run
+  // through `runAgent`, whose tool set excludes `delegate`, so delegation
+  // never recurses. Enrich the description with the specialists on hand.
+  if (_agent.id === 'devs') {
+    tools.push(withDelegatableAgents(DELEGATE_TOOL_DEFINITION))
+  }
+
+  return tools
+}
+
+/**
+ * Clone the `delegate` tool definition and append the list of currently
+ * available specialist agents to its `agent` parameter description, so the meta
+ * agent knows who it can delegate to by slug.
+ */
+function withDelegatableAgents(def: ToolDefinition): ToolDefinition {
+  const roster = listDelegatableAgents()
+  if (roster.length === 0) return def
+
+  const cloned: ToolDefinition = JSON.parse(JSON.stringify(def))
+  const agentParam = cloned.function.parameters?.properties?.agent
+  if (agentParam) {
+    const list = roster
+      .map((a) => `"${a.slug}" (${a.role})`)
+      .join(', ')
+    agentParam.description = `${agentParam.description} Available specialist agents: ${list}.`
+  }
+  return cloned
+}
+
+/**
+ * Get connector tool definitions based on active connectors.
+ * Only includes tools for connectors that are connected and active.
+ * Enhances tool descriptions with available connector IDs so the LLM knows which to use.
+ */
+async function getConnectorToolDefinitions(): Promise<ToolDefinition[]> {
+  try {
+    const connectors = Array.from(connectorsMap.values())
+    console.log(
+      '▶ connectors from Yjs:',
+      connectors.map((c) => ({
+        id: c.id,
+        provider: c.provider,
+        status: c.status,
+      })),
+    )
+    const activeConnectors = connectors.filter((c) =>
+      ['connected', 'syncing'].includes(c.status),
+    )
+    console.log('▶ active connectors:', activeConnectors.length)
+
+    if (activeConnectors.length === 0) {
+      return []
+    }
+
+    // Group active connectors by provider
+    const connectorsByProvider = new Map<string, Connector[]>()
+    for (const connector of activeConnectors) {
+      const existing = connectorsByProvider.get(connector.provider) || []
+      existing.push(connector)
+      connectorsByProvider.set(connector.provider, existing)
+    }
+
+    // Get unique providers from active connectors
+    const activeProviders = [...connectorsByProvider.keys()]
+    console.log('▶ active providers:', activeProviders)
+
+    // Get tools for each active provider, enhancing with connector IDs
+    const { getToolDefinitionsForProvider } = await import(
+      '@/features/connectors/tools'
+    )
+    const tools: ToolDefinition[] = []
+    for (const provider of activeProviders) {
+      const providerConnectors = connectorsByProvider.get(provider) || []
+      const providerTools = getToolDefinitionsForProvider(provider)
+      console.log(`▶ tools for ${provider}:`, providerTools.length)
+
+      // Enhance each tool with available connector IDs for this provider
+      const enhancedTools = providerTools.map((tool) => {
+        const connectorInfo = providerConnectors
+          .map(
+            (c) =>
+              `"${c.id}"${c.accountEmail ? ` (${c.accountEmail})` : c.name ? ` (${c.name})` : ''}`,
+          )
+          .join(', ')
+
+        // Deep clone the tool definition to avoid mutating the original
+        const enhancedTool: ToolDefinition = JSON.parse(JSON.stringify(tool))
+
+        // Enhance the connector_id parameter description with available IDs
+        if (enhancedTool.function.parameters?.properties?.connector_id) {
+          const originalDesc =
+            enhancedTool.function.parameters.properties.connector_id
+              .description || ''
+          enhancedTool.function.parameters.properties.connector_id.description = `${originalDesc}. Available connector IDs: ${connectorInfo}`
+        }
+
+        return enhancedTool
+      })
+
+      tools.push(...enhancedTools)
+    }
+
+    return tools
+  } catch (error) {
+    console.error('Failed to get connector tool definitions:', error)
+    return []
+  }
+}
+
+/**
+ * Parse tool calls and grounding metadata from streaming response.
+ * Tool calls are emitted as __TOOL_CALLS__[...json...] at the end of stream.
+ * Grounding metadata is emitted as __GROUNDING_METADATA__{...json...} at the end of stream.
+ */
+export function parseToolCallsFromStream(response: string): {
+  content: string
+  toolCalls: ToolCall[]
+  groundingMetadata?: GroundingMetadata
+  thinkingContent?: string
+} {
+  let content = response
+  let toolCalls: ToolCall[] = []
+  let groundingMetadata: GroundingMetadata | undefined
+
+  // Extract grounding metadata FIRST (appears at end of stream from Google provider)
+  const groundingMarker = '__GROUNDING_METADATA__'
+  const groundingIndex = content.indexOf(groundingMarker)
+  if (groundingIndex !== -1) {
+    const groundingJson = content.substring(
+      groundingIndex + groundingMarker.length,
+    )
+    content = content.substring(0, groundingIndex)
+    try {
+      groundingMetadata = JSON.parse(groundingJson) as GroundingMetadata
+    } catch (error) {
+      console.error('Failed to parse grounding metadata from stream:', error)
+    }
+  }
+
+  // Extract tool calls SECOND (appears at end of stream)
+  const toolCallMarker = '__TOOL_CALLS__'
+  const markerIndex = content.indexOf(toolCallMarker)
+  if (markerIndex !== -1) {
+    const toolCallsJson = content.substring(markerIndex + toolCallMarker.length)
+    content = content.substring(0, markerIndex)
+    try {
+      toolCalls = JSON.parse(toolCallsJson) as ToolCall[]
+    } catch (error) {
+      console.error('Failed to parse tool calls from stream:', error)
+    }
+  }
+
+  // Extract thinking deltas LAST (emitted by providers during extended thinking)
+  // Done after tool/grounding extraction so thinking blocks don't accidentally
+  // consume those end-of-stream markers.
+  const thinkingMarker = '__THINKING_DELTA__'
+  let thinkingContent = ''
+  let thinkingIndex: number
+  while ((thinkingIndex = content.indexOf(thinkingMarker)) !== -1) {
+    // Find the end of this thinking block (next marker or end of content)
+    const afterMarker = thinkingIndex + thinkingMarker.length
+    const nextMarkerIndex = content.indexOf('\n__', afterMarker)
+    const blockEnd = nextMarkerIndex !== -1 ? nextMarkerIndex : undefined
+    const thinkingBlock = blockEnd
+      ? content.substring(afterMarker, blockEnd)
+      : content.substring(afterMarker)
+    thinkingContent += thinkingBlock
+    // Remove the marker and its content from the main content
+    content =
+      content.substring(0, thinkingIndex) +
+      (blockEnd !== undefined ? content.substring(blockEnd) : '')
+  }
+
+  return {
+    content: content.trim(),
+    toolCalls,
+    groundingMetadata,
+    thinkingContent: thinkingContent || undefined,
+  }
+}
+
+/**
+ * Format grounding metadata web results as a markdown sources section.
+ * Appends a formatted list of source links to the content.
+ */
+function formatGroundingSources(
+  content: string,
+  metadata: GroundingMetadata,
+): string {
+  if (
+    !metadata.isGrounded ||
+    !metadata.webResults ||
+    metadata.webResults.length === 0
+  ) {
+    return content
+  }
+
+  // Deduplicate by URL
+  const seen = new Set<string>()
+  const uniqueResults = metadata.webResults.filter((r) => {
+    if (seen.has(r.url)) return false
+    seen.add(r.url)
+    return true
+  })
+
+  if (uniqueResults.length === 0) return content
+
+  const sourcesSection = uniqueResults
+    .map((r, i) => `${i + 1}. [${r.title || r.url}](${r.url})`)
+    .join('\n')
+
+  return `${content.trimEnd()}\n\n---\n**Sources:**\n${sourcesSection}`
+}
+
+/**
+ * Execute tool calls and return formatted results.
+ * Creates a trace for observability with individual spans per tool.
+ * Returns both results and the trace ID for tracking.
+ */
+async function executeToolCalls(
+  toolCalls: ToolCall[],
+  context: {
+    agentId?: string
+    conversationId?: string
+    taskId?: string
+    primaryModel?: ModelInfo
+  },
+): Promise<{
+  results: Array<{ toolCallId: string; result: string }>
+  traceId: string
+}> {
+  // Ensure knowledge tools are registered
+  if (!areKnowledgeToolsRegistered()) {
+    registerKnowledgeTools()
+  }
+
+  // Ensure math tools are registered
+  if (!areMathToolsRegistered()) {
+    registerMathTools()
+  }
+
+  // Ensure code tools are registered
+  if (!areCodeToolsRegistered()) {
+    registerCodeTools()
+  }
+
+  // Ensure connector tools are registered
+  if (!areConnectorToolsRegistered()) {
+    registerConnectorTools()
+  }
+
+  // Ensure presentation tools are registered
+  if (!arePresentationToolsRegistered()) {
+    registerPresentationTools()
+  }
+
+  // Ensure research tools are registered
+  if (!areResearchToolsRegistered()) {
+    registerResearchTools()
+  }
+
+  // Ensure skill tools are registered
+  if (!areSkillToolsRegistered()) {
+    registerSkillTools()
+  }
+
+  // Ensure orchestration tools (the `delegate` sub-agent tool) are registered
+  if (!areOrchestrationToolsRegistered()) {
+    registerOrchestrationTools()
+  }
+
+  // MCP servers the user connected: register their tools for this run
+  await registerMcpTools()
+
+  // Ensure memory tools (the `remember` tool) are registered
+  if (!areMemoryToolsRegistered()) {
+    registerMemoryTools()
+  }
+
+  // Create a trace for the tool execution batch
+  const trace = TraceService.startTrace({
+    name: `Tools: ${toolCalls.map((tc) => tc.function.name).join(', ')}`,
+    agentId: context.agentId,
+    conversationId: context.conversationId,
+    taskId: context.taskId,
+    primaryModel: context.primaryModel,
+    input: toolCalls.map((tc) => tc.function.arguments).join('\n'),
+  })
+
+  const results: Array<{ toolCallId: string; result: string }> = []
+
+  try {
+    for (const toolCall of toolCalls) {
+      const result = await defaultExecutor.execute(toolCall, {
+        context: {
+          agentId: context.agentId,
+          conversationId: context.conversationId,
+          taskId: context.taskId,
+        },
+        traceId: trace.id,
+      })
+
+      results.push({
+        toolCallId: toolCall.id,
+        result: defaultExecutor.formatResultForLLM(result),
+      })
+    }
+
+    // End trace with success
+    await TraceService.endTrace(trace.id, {
+      status: 'completed',
+      output: results.map((r) => r.result).join('\n'),
+    })
+  } catch (error) {
+    // End trace with error
+    await TraceService.endTrace(trace.id, {
+      status: 'error',
+      statusMessage: error instanceof Error ? error.message : String(error),
+    })
+    throw error
+  }
+
+  return { results, traceId: trace.id }
+}
+
+// ============================================================================
+// Chat Submit Options
+// ============================================================================
+
+export interface ChatSubmitOptions {
+  prompt: string
+  agent?: Agent | null
+  conversationMessages?: Message[]
+  includeHistory?: boolean
+  clearResponseAfterSubmit?: boolean
+  attachments?: Array<{
+    name: string
+    type: string
+    size: number
+    data: string // base64 encoded
+  }>
+  /** Skills explicitly activated by the user via /mention in the prompt */
+  activatedSkills?: Array<{
+    name: string
+    skillMdContent: string
+    scripts?: Array<{
+      path: string
+      language: string
+      requiredPackages?: string[]
+    }>
+    references?: Array<{ path: string }>
+    assets?: Array<{ path: string }>
+  }>
+  /** Connectors explicitly activated by the user via /mention in the prompt */
+  activatedConnectors?: Array<{
+    name: string
+    provider: string
+    accountEmail?: string
+  }>
+  lang: Lang
+  t: any
+  /** Callback for response updates - receives either content or status updates */
+  onResponseUpdate: (update: ResponseUpdate) => void
+  onPromptClear: () => void
+  onResponseClear?: () => void
+  /** AbortSignal for cancelling in-flight LLM requests */
+  signal?: AbortSignal
+  /** Called as soon as the conversation is created (before LLM streaming starts) */
+  onConversationCreated?: (conversationId: string) => void
+}
+
+export interface ChatSubmitResult {
+  success: boolean
+  error?: string
+}
+
+export const submitChat = async (
+  options: ChatSubmitOptions,
+): Promise<ChatSubmitResult> => {
+  const {
+    prompt,
+    agent: selectedAgent,
+    conversationMessages = [],
+    includeHistory = false,
+    clearResponseAfterSubmit = false,
+    attachments = [],
+    activatedSkills = [],
+    activatedConnectors = [],
+    lang,
+    t,
+    onResponseUpdate,
+    onPromptClear,
+    onResponseClear,
+    signal,
+    onConversationCreated,
+  } = options
+
+  if (!prompt.trim()) {
+    return { success: false, error: 'Empty prompt' }
+  }
+
+  try {
+    // Get the active LLM configuration
+    const config = await CredentialService.getActiveConfig()
+    if (!config) {
+      // Only show "not configured" if there's genuinely no credential
+      // (decryption failures already show their own notification in CredentialService)
+      const hasCredential = await CredentialService.getActiveCredential()
+      if (!hasCredential) {
+        notifyError({
+          title: 'LLM Configuration Required',
+          description: t(
+            'No AI provider configured. Please configure one in Settings.',
+          ),
+          actionUrl: `${location.pathname}#settings/providers`,
+          actionLabel: 'Open Settings',
+        })
+      }
+      return { success: false, error: 'No AI provider configured' }
+    }
+
+    const agent = selectedAgent || getDefaultAgent()
+
+    // Validate agent for agent-specific pages
+    if (selectedAgent === null) {
+      return { success: false, error: 'No agent selected' }
+    }
+
+    // NOTE: The DEVS agent used to fork here into the heavy
+    // `WorkflowOrchestrator.orchestrateTask` pipeline (task-analyzer →
+    // decomposer → team-coordinator → synthesis). Per REPORT §1.3 / Phase 2
+    // ("collapse the orchestrator to KISS"), the default DEVS agent now runs
+    // the same lean single-agent ReAct tool loop as every other agent (below).
+    // No special-casing: one code path, tools available, streaming preserved.
+
+    const { currentConversation, createConversation, addMessage } =
+      useConversationStore.getState()
+
+    // Create or continue conversation
+    let conversation = currentConversation
+    let isNewConversation = false
+    if (
+      !conversation ||
+      (selectedAgent && conversation.agentId !== selectedAgent.id)
+    ) {
+      conversation = await createConversation(agent.id, 'default')
+      isNewConversation = true
+      onConversationCreated?.(conversation.id)
+    }
+
+    // Get knowledge attachments for the agent
+    const knowledgeAttachments = await getKnowledgeAttachments(
+      agent.knowledgeItemIds,
+    )
+
+    // Build instructions with knowledge context reference
+    const baseInstructions =
+      agent.instructions || 'You are a helpful assistant.'
+    const enhancedInstructions = await buildAgentInstructions(
+      baseInstructions,
+      agent.knowledgeItemIds,
+      agent.id,
+    )
+
+    // Get relevant memories for this agent and prompt
+    const memoryContext = await buildMemoryContextForChat(agent.id, prompt)
+
+    // Get relevant pinned messages from previous conversations
+    const pinnedContext = await buildPinnedContextForChat(
+      agent.id,
+      conversation.id,
+      prompt,
+    )
+
+    // Build instructions array
+    // Citation instructions are always included since tools are always available
+    const hasKnowledgeItems =
+      agent.knowledgeItemIds && agent.knowledgeItemIds.length > 0
+
+    // Build active skill instructions from user-mentioned /skills
+    let activeSkillInstructions = ''
+    if (activatedSkills.length > 0) {
+      const skillBlocks = activatedSkills
+        .map((skill) => {
+          const parts: string[] = [skill.skillMdContent]
+
+          // Append script/reference/asset listings (same as activate_skill tool handler)
+          if (skill.scripts && skill.scripts.length > 0) {
+            parts.push('\n## Available Scripts\n')
+            for (const script of skill.scripts) {
+              const pkgs = script.requiredPackages?.length
+                ? ` (requires: ${script.requiredPackages.join(', ')})`
+                : ''
+              parts.push(`- \`${script.path}\` [${script.language}]${pkgs}`)
+            }
+            parts.push(
+              '\nUse `run_skill_script` to execute Python or JavaScript scripts.',
+              'Bash scripts cannot be executed directly but you can read and follow their logic.',
+            )
+          }
+
+          if (skill.references && skill.references.length > 0) {
+            parts.push('\n## Reference Files\n')
+            for (const ref of skill.references) {
+              parts.push(`- \`${ref.path}\``)
+            }
+            parts.push('\nUse `read_skill_file` to read reference documents.')
+          }
+
+          if (skill.assets && skill.assets.length > 0) {
+            parts.push('\n## Assets\n')
+            for (const asset of skill.assets) {
+              parts.push(`- \`${asset.path}\``)
+            }
+            parts.push('\nUse `read_skill_file` to access asset files.')
+          }
+
+          return `[ACTIVE_SKILL: ${skill.name}]\n${parts.join('\n')}\n[/ACTIVE_SKILL]`
+        })
+        .join('\n\n')
+
+      const hasScripts = activatedSkills.some(
+        (s) => s.scripts && s.scripts.length > 0,
+      )
+      activeSkillInstructions = `## User-Activated Skills
+
+The user has explicitly requested the following skill(s). Follow their instructions carefully to complete the task.${hasScripts ? '\nWhen the skill includes scripts, you MUST execute them using `run_skill_script` rather than describing or simulating the execution in text.' : ''}
+
+${skillBlocks}`
+    }
+
+    // Build active connector context from user-mentioned /connectors
+    let activeConnectorInstructions = ''
+    if (activatedConnectors.length > 0) {
+      const connectorBlocks = activatedConnectors
+        .map((c) => {
+          const parts = [`[ACTIVE_CONNECTOR: ${c.name}]`]
+          parts.push(`Provider: ${c.provider}`)
+          if (c.accountEmail) {
+            parts.push(`Account: ${c.accountEmail}`)
+          }
+          parts.push(
+            `The user has connected their ${c.name} account. Knowledge items synced from this connector are available in the knowledge base. Reference and use this connector's data when relevant to the user's query.`,
+          )
+          parts.push(`[/ACTIVE_CONNECTOR]`)
+          return parts.join('\n')
+        })
+        .join('\n\n')
+      activeConnectorInstructions = `## User-Activated Connectors
+
+The user has explicitly referenced the following connected service(s). Use data from these connectors when relevant.
+
+${connectorBlocks}`
+    }
+
+    const instructionParts = [
+      enhancedInstructions,
+      // Inject user-activated skill instructions
+      activeSkillInstructions,
+      // Inject user-activated connector context
+      activeConnectorInstructions,
+      // Inject memory context if available
+      memoryContext,
+      // Inject pinned messages context if available
+      pinnedContext,
+      // Add citation instructions if not already included via buildAgentInstructions
+      !hasKnowledgeItems ? CITATION_INSTRUCTIONS : '',
+      `ALWAYS respond in ${languages[lang]} as this is the user's language.`,
+    ]
+
+    const instructions = instructionParts.filter(Boolean).join('\n\n')
+
+    // Save the system prompt ONLY for new conversations (for transparency)
+    if (isNewConversation) {
+      await addMessage(conversation.id, {
+        role: 'system',
+        content: instructions,
+      })
+    }
+
+    // Convert user-provided attachments to MessageAttachment format
+    const userMessageAttachments = attachments.map((file) => {
+      let type: 'image' | 'document' | 'text' = 'document'
+      if (file.type.startsWith('image/')) {
+        type = 'image'
+      } else if (file.type.startsWith('text/')) {
+        type = 'text'
+      }
+
+      return {
+        type,
+        name: file.name,
+        data: file.data,
+        mimeType: file.type,
+        size: file.size,
+      }
+    })
+
+    // Save user message to conversation (with attachments for persistence)
+    await addMessage(conversation.id, {
+      role: 'user',
+      content: prompt,
+      attachments:
+        userMessageAttachments.length > 0 ? userMessageAttachments : undefined,
+    })
+
+    // Prepare messages for the LLM
+    const messages: LLMMessage[] = [
+      {
+        role: 'system',
+        content: instructions,
+      },
+    ]
+
+    // Include conversation history if requested
+    if (includeHistory && conversationMessages.length > 0) {
+      messages.push(
+        ...conversationMessages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+          // Include attachments from previous messages so LLM maintains context
+          attachments: msg.attachments?.map((att) => ({
+            type: att.type,
+            name: att.name,
+            data: att.data,
+            mimeType: att.mimeType,
+          })),
+        })),
+      )
+    }
+
+    // Convert attachments to LLMMessageAttachment format (without size field)
+    const userAttachments = userMessageAttachments.map(
+      ({ size: _, ...rest }) => rest,
+    )
+
+    // Merge knowledge attachments with user-provided attachments
+    const allAttachments = [...knowledgeAttachments, ...userAttachments]
+
+    messages.push({
+      role: 'user',
+      content: prompt,
+      attachments: allAttachments.length > 0 ? allAttachments : undefined,
+    })
+    console.log('▶', 'messages:', messages)
+    console.log('▶', 'prompt:', prompt)
+    const timestart = Date.now()
+
+    // Get tool definitions from agent's configured tools
+    const toolDefinitions = getAgentToolDefinitions(agent)
+    // Add connector tools if any connectors are active
+    const connectorTools = [
+      ...(await getConnectorToolDefinitions()),
+      ...getMcpToolDefinitions(),
+    ]
+    console.log(
+      '▶ connector tools:',
+      connectorTools.length,
+      connectorTools.map((t) => t.function.name),
+    )
+    const allToolDefinitions = [...toolDefinitions, ...connectorTools]
+    console.log(
+      '▶ all tools:',
+      allToolDefinitions.length,
+      allToolDefinitions.map((t) => t.function.name),
+    )
+    const hasTools = allToolDefinitions.length > 0
+
+    // Check if web search grounding is enabled in user settings (space-aware)
+    const { enableWebSearchGrounding } = (
+      await import('@/stores/userStore')
+    ).getEffectiveSettings()
+
+    // Build config with tools if the agent has any enabled
+    const llmConfig = {
+      ...config,
+      ...(hasTools
+        ? { tools: allToolDefinitions, tool_choice: 'auto' as const }
+        : {}),
+      ...(enableWebSearchGrounding ? { enableWebSearch: true } : {}),
+      ...(signal ? { signal } : {}),
+    }
+
+    // Call the LLM service with streaming and handle tool calls
+    let response = ''
+    let finalContent = ''
+    let toolIterations = 0
+    let chatStepCounter = 0
+    const messageSteps: MessageStep[] = []
+    const workingMessages = [...messages]
+
+    // Record user-activated skill steps for message persistence
+    if (activatedSkills.length > 0) {
+      for (const skill of activatedSkills) {
+        chatStepCounter++
+        messageSteps.push({
+          id: `step-${Date.now()}-${chatStepCounter}`,
+          icon: 'OpenBook',
+          i18nKey: 'Activating skill…',
+          status: 'completed',
+          startedAt: Date.now(),
+          completedAt: Date.now(),
+          toolCalls: [
+            {
+              name: 'activate_skill',
+              input: { skill_name: skill.name },
+              output: `Skill "${skill.name}" activated. Instructions loaded.`,
+            },
+          ],
+        })
+      }
+    }
+
+    // Create initial "Thinking…" step for persistence
+    chatStepCounter++
+    messageSteps.push({
+      id: `step-${Date.now()}-${chatStepCounter}`,
+      icon: 'Sparks',
+      i18nKey: 'Thinking…',
+      status: 'running',
+      startedAt: Date.now(),
+    })
+
+    // Tool execution loop - continues until we get a response without tool calls
+    while (toolIterations < MAX_TOOL_ITERATIONS) {
+      toolIterations++
+      response = ''
+
+      for await (const chunk of LLMService.streamChat(
+        workingMessages,
+        llmConfig,
+        {
+          agentId: agent.id,
+          conversationId: conversation.id,
+        },
+      )) {
+        console.debug('◁')
+        // console.debug('◁', chunk)
+        response += chunk
+
+        // Only show content to user, not the tool call markers
+        const { content, thinkingContent } = parseToolCallsFromStream(response)
+
+        // Only emit content update when there's actual content.
+        // During extended thinking, content is empty (thinking markers stripped)
+        // and we must NOT trigger completeLastStep in the UI yet.
+        if (content) {
+          onResponseUpdate({ type: 'content', content })
+        }
+
+        // Emit thinking content so the UI can show progress during extended thinking
+        if (thinkingContent) {
+          onResponseUpdate({ type: 'thinking', thinkingContent })
+        }
+      }
+
+      // Parse the final response for tool calls and grounding metadata
+      const { content, toolCalls, groundingMetadata } =
+        parseToolCallsFromStream(response)
+      finalContent = content
+
+      // If grounding metadata has web results, append formatted sources
+      if (groundingMetadata) {
+        finalContent = formatGroundingSources(finalContent, groundingMetadata)
+        // Update the UI with the final content including sources
+        onResponseUpdate({ type: 'content', content: finalContent })
+      }
+
+      // If no tool calls, we're done
+      if (toolCalls.length === 0) {
+        console.log('✓ No tool calls, conversation complete')
+        break
+      }
+
+      console.log(
+        `🔧 Executing ${toolCalls.length} tool call(s):`,
+        toolCalls.map((tc) => tc.function.name),
+      )
+
+      // Show user that tools are being executed with appropriate message
+      const toolStatus = getToolStatusI18nKey(toolCalls)
+      // Parse tool call arguments for live progress display
+      const pendingToolCalls: PendingToolCall[] = toolCalls.map((tc) => {
+        let parsedInput: Record<string, unknown> = {}
+        try {
+          parsedInput = JSON.parse(tc.function.arguments || '{}')
+        } catch {
+          parsedInput = {}
+        }
+        return { name: tc.function.name, input: parsedInput }
+      })
+      // First send the content so far
+      onResponseUpdate({ type: 'content', content: finalContent })
+      // Then send the tool status with pending tool info
+      onResponseUpdate({
+        type: 'status',
+        status: {
+          icon: 'Tools',
+          i18nKey: toolStatus.i18nKey,
+          vars: toolStatus.vars,
+          pendingToolCalls,
+        },
+      })
+
+      // Track step for persistence
+      const prevToolStep = messageSteps.find((s) => s.status === 'running')
+      if (prevToolStep) {
+        prevToolStep.status = 'completed'
+        prevToolStep.completedAt = Date.now()
+      }
+      chatStepCounter++
+      messageSteps.push({
+        id: `step-${Date.now()}-${chatStepCounter}`,
+        icon: 'Tools',
+        i18nKey: toolStatus.i18nKey,
+        vars: toolStatus.vars,
+        status: 'running',
+        startedAt: Date.now(),
+      })
+
+      // Execute the tool calls
+      const { results: toolResults } = await executeToolCalls(toolCalls, {
+        agentId: agent.id,
+        conversationId: conversation.id,
+        primaryModel: {
+          provider: config.provider,
+          model: config.model,
+          temperature: config.temperature,
+          maxTokens: config.maxTokens,
+        },
+      })
+
+      console.log('🔧 Tool results:', toolResults)
+
+      // Build per-tool-call I/O data for step tracking
+      const stepToolCalls: ToolCallResult[] = toolCalls.map((tc, idx) => {
+        let parsedInput: Record<string, unknown> = {}
+        try {
+          parsedInput = JSON.parse(tc.function.arguments || '{}')
+        } catch {
+          parsedInput = { raw: tc.function.arguments }
+        }
+        return {
+          name: tc.function.name,
+          input: parsedInput,
+          output: toolResults[idx]?.result,
+        }
+      })
+
+      // Attach tool data to the current running step (for persistence)
+      const currentStep = messageSteps.find((s) => s.status === 'running')
+      if (currentStep) {
+        currentStep.toolCalls = stepToolCalls
+      }
+
+      // Emit tool results so the streaming UI can display them
+      onResponseUpdate({ type: 'tool_results', toolCalls: stepToolCalls })
+
+      // Add assistant message with tool calls to the conversation.
+      // Note: We flatten tool calls into a follow-up user message below. The
+      // assistant text must be non-empty — some providers (e.g. Anthropic)
+      // reject empty text content blocks — so when the model returned only a
+      // tool call with no preamble, substitute a short description.
+      workingMessages.push({
+        role: 'assistant',
+        content:
+          finalContent ||
+          `(Calling ${toolCalls.map((tc) => tc.function.name).join(', ')}…)`,
+      })
+
+      // Add tool results as user message (this is a simplification -
+      // proper tool result format would require extending LLMMessage)
+      const toolResultsText = toolResults
+        .map((r) => `[Tool Result for ${r.toolCallId}]:\n${r.result}`)
+        .join('\n\n')
+
+      workingMessages.push({
+        role: 'user',
+        content: `Here are the results from the tools you requested:\n\n${toolResultsText}\n\nPlease use this information to answer my original question.`,
+      })
+
+      // Update display to show we're continuing
+      onResponseUpdate({ type: 'content', content: finalContent })
+      // onResponseUpdate({
+      //   type: 'status',
+      //   status: {
+      //     icon: 'Book',
+      //     i18nKey: 'Found relevant information, processing…',
+      //   },
+      // })
+
+      // Track step for persistence
+      const prevInfoStep = messageSteps.find((s) => s.status === 'running')
+      if (prevInfoStep) {
+        prevInfoStep.status = 'completed'
+        prevInfoStep.completedAt = Date.now()
+      }
+      chatStepCounter++
+      // messageSteps.push({
+      //   id: `step-${Date.now()}-${chatStepCounter}`,
+      //   icon: 'Book',
+      //   i18nKey: 'Found relevant information, processing…',
+      //   status: 'running',
+      //   startedAt: Date.now(),
+      // })
+    }
+
+    if (toolIterations >= MAX_TOOL_ITERATIONS) {
+      console.warn('⚠️ Max tool iterations reached')
+    }
+
+    // Finalize any remaining running steps
+    const lastRunningStep = messageSteps.find((s) => s.status === 'running')
+    if (lastRunningStep) {
+      lastRunningStep.status = 'completed'
+      lastRunningStep.completedAt = Date.now()
+    }
+
+    // Extract <think> content and persist on the Thinking step
+    // Combine both <think> blocks and __THINKING_DELTA__ content from streaming
+    let allThinkingContent = ''
+    const thinkMatch = finalContent.match(/<think>([\s\S]*?)(?:<\/think>|$)/)
+    if (thinkMatch) {
+      allThinkingContent = thinkMatch[1].trim()
+    }
+    // Also include thinking from streaming deltas (e.g. Google Gemini reasoning_content)
+    const { thinkingContent: streamThinking } = parseToolCallsFromStream(response)
+    if (streamThinking) {
+      allThinkingContent = allThinkingContent
+        ? `${allThinkingContent}\n${streamThinking}`
+        : streamThinking
+    }
+    if (allThinkingContent) {
+      const thinkingStep = messageSteps.find((s) => s.i18nKey === 'Thinking…')
+      if (thinkingStep) {
+        thinkingStep.thinkingContent = allThinkingContent
+      }
+    }
+
+    const timeend = Date.now()
+    console.log('◀', { finalContent })
+    console.log(`LLM response time: ${(timeend - timestart) / 1000}s`)
+
+    // Query all traces created during this message generation
+    // This captures both LLM traces and tool traces
+    const allTracesForMessage = await TraceService.getTraces({
+      conversationId: conversation.id,
+      startDate: new Date(timestart),
+      endDate: new Date(timeend + 1000), // Add 1s buffer for async completion
+    })
+    const allTraceIds = allTracesForMessage.map((t) => t.id)
+
+    // Save assistant response to conversation (with all trace IDs from this generation)
+    await addMessage(conversation.id, {
+      role: 'assistant',
+      content: finalContent,
+      agentId: agent.id,
+      ...(allTraceIds.length > 0 && { traceIds: allTraceIds }),
+      ...(messageSteps.length > 0 && { steps: messageSteps }),
+    })
+
+    // Clear the prompt after successful submission
+    onPromptClear()
+
+    // Clear response if requested (for agent pages)
+    if (clearResponseAfterSubmit && onResponseClear) {
+      onResponseClear()
+    }
+
+    // Opt-in auto-capture: after each turn, make ONE background LLM call to
+    // append any new durable facts to the agent's memory document. Cheap,
+    // document-based replacement for the legacy extraction/review pipeline
+    // (see docs/more/MEMORY.md). Runs async and never blocks the chat.
+    const autoMemoryLearning = getEffectiveSettings().autoMemoryLearning
+    // Default ON: memory learning happens transparently in the background.
+    // Only skip when the user has explicitly turned it off.
+    if (autoMemoryLearning !== false && finalContent) {
+      autoCaptureToMemory(prompt, finalContent, agent.id, lang)
+        .then((notes) => {
+          if (notes.length > 0) {
+            console.log(
+              `📚 Auto-captured ${notes.length} note(s) into memory`,
+            )
+          }
+        })
+        .catch((err) => {
+          console.warn('Memory auto-capture failed (non-critical):', err)
+        })
+    }
+
+    return { success: true }
+  } catch (err) {
+    // Handle user-initiated abort gracefully
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      console.log('🛑 Chat request aborted by user')
+      return { success: false, error: 'aborted' }
+    }
+    console.error('Error calling LLM:', err)
+    const errorMessage = err instanceof Error ? err.message : String(err)
+    notifyError({
+      title: 'LLM Request Failed',
+      description: errorMessage,
+    })
+    return { success: false, error: errorMessage }
+  }
+}

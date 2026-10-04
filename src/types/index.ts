@@ -1,0 +1,1263 @@
+import { LanguageCode } from '@/i18n'
+import { IconName } from '@/lib/types'
+
+/**
+ * Available colors for agents
+ * Uses HeroUI semantic color names for consistent theming
+ */
+export type AgentColor =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'danger'
+
+export interface Agent {
+  id: string
+  slug: string // URL-friendly identifier, auto-generated from name, unique across all agents
+  name: string
+  icon?: IconName
+  color?: AgentColor // Color theme for the agent's icon/card
+  portrait?: string // Base64-encoded AI-generated portrait image
+  desc?: string
+  role: string
+  instructions: string
+  temperature?: number
+  tags?: string[]
+  tools?: Tool[]
+  knowledgeItemIds?: string[] // Associated knowledge items for context
+  createdAt: Date
+  updatedAt?: Date
+  version?: string
+  examples?: Example[]
+  deletedAt?: Date // When the agent was soft deleted (presence indicates deleted)
+  spaceId?: string // Space this agent belongs to (undefined = default)
+  i18n?: {
+    [K in LanguageCode]?: {
+      name?: string
+      desc?: string
+      role?: string
+      examples?: Example[]
+    }
+  }
+}
+
+export interface Example {
+  id: string
+  title?: string
+  prompt: string
+}
+
+/**
+ * Attachment metadata for messages
+ * Used for persisting file references in conversation history
+ */
+export interface MessageAttachment {
+  /** Type classification for LLM processing */
+  type: 'image' | 'document' | 'text'
+  /** Original filename */
+  name: string
+  /** Base64-encoded file content */
+  data: string
+  /** MIME type of the file */
+  mimeType: string
+  /** File size in bytes (for display purposes) */
+  size?: number
+}
+
+/** A serializable processing step recorded during message generation */
+export interface MessageStep {
+  /** Unique step id */
+  id: string
+  /** Icon name (from iconoir-react) */
+  icon: string
+  /** i18n translation key */
+  i18nKey: string
+  /** Optional i18n interpolation variables */
+  vars?: Record<string, string | number>
+  /** Step status */
+  status: 'running' | 'completed' | 'failed'
+  /** Timestamp (ms) when the step started */
+  startedAt: number
+  /** Timestamp (ms) when the step completed */
+  completedAt?: number
+  /** Optional LLM-generated title */
+  title?: string
+  /** Thinking/reasoning content extracted from <think> blocks */
+  thinkingContent?: string
+  /** Tool calls executed during this step (name, parsed input, raw output) */
+  toolCalls?: Array<{
+    name: string
+    input: Record<string, unknown>
+    output?: string
+  }>
+}
+
+export interface Message {
+  id: string
+  role: 'user' | 'assistant' | 'system'
+  agentId?: string // Which agent sent this message (for assistant messages)
+  content: string
+  timestamp: Date | string
+  isPinned?: boolean // Whether this message is pinned
+  pinnedDescription?: string // Short AI-generated description when pinned
+  pinnedAt?: Date | string // When the message was pinned
+  attachments?: MessageAttachment[] // File attachments for this message
+  traceIds?: string[] // Trace IDs for operations performed to generate this message
+  steps?: MessageStep[] // Processing steps recorded during message generation
+}
+
+export interface Conversation {
+  id: string
+  agentId: string // Primary agent ID (for backward compatibility)
+  agent?: Agent // Populated when loading conversations for display
+  agentSlug?: string // Primary agent slug (for URL generation)
+  participatingAgents: string[] // All agents that have participated in this conversation
+  workflowId: string
+  timestamp: Date | string // Creation timestamp (createdAt)
+  updatedAt: Date | string // Last modification timestamp, used for sorting
+  messages: Message[]
+  title?: string // Auto-generated title from LLM summarization
+  isPinned?: boolean // Whether this conversation is starred/pinned
+  starColor?: string // Hex color for color-coded star (e.g. "#F43F5E")
+  summary?: string // AI-generated conversation summary
+  spaceId?: string // Space this conversation belongs to (undefined = default)
+  pinnedMessageIds?: string[] // Array of pinned message IDs for quick lookup
+  quickReplies?: string[] // Persisted quick reply suggestions for the last assistant message
+  tags?: string[] // User-defined tag IDs for categorization
+}
+
+export interface KnowledgeItem {
+  id: string
+  name: string
+  type: 'file' | 'folder'
+  fileType?: 'document' | 'image' | 'text' // Type of file based on content/extension
+  content?: string // File content or base64 for binary files
+  contentHash?: string // SHA-256 hash for deduplication
+  mimeType?: string
+  size?: number
+  path: string // Full path for organization
+  parentId?: string // For nested folders
+  lastModified: Date
+  createdAt: Date
+  tags?: string[]
+  description?: string
+  // Sync-related fields
+  syncSource?: 'manual' | 'filesystem_api' | 'connector' // How this item was added
+  fileSystemHandle?: string // Serialized handle for File System API items
+  watchId?: string // ID for file watcher
+  lastSyncCheck?: Date // When we last checked for updates
+  // Connector-related fields (when syncSource is 'connector')
+  connectorId?: string // ID of the connector that synced this item
+  externalId?: string // ID in the external system (e.g., Google Drive file ID)
+  externalUrl?: string // URL to view the item in the external system
+  syncedAt?: Date // When this item was last synced from the connector
+  // Document processing fields
+  transcript?: string // Extracted text content from document processing
+  processingStatus?: 'pending' | 'processing' | 'completed' | 'failed' // Current processing state
+  processingError?: string // Error message if processing failed
+  processedAt?: Date // When the document was last processed
+  spaceId?: string // Space this knowledge item belongs to (undefined = default)
+}
+
+export interface PersistedFolderWatcher {
+  id: string
+  basePath: string
+  lastSync: Date
+  isActive: boolean
+  createdAt: Date
+  // Handle is stored separately in fileHandles store (IndexedDB supports FileSystemHandle)
+  hasStoredHandle?: boolean
+}
+
+// FileSystemDirectoryHandle can be stored directly in IndexedDB
+export interface FileHandleEntry {
+  id: string // Same as the watcher ID
+  handle: FileSystemDirectoryHandle
+  createdAt: Date
+}
+
+export interface Knowledge {
+  id: string
+  domain: string
+  agentId: string
+  confidence: number
+}
+
+export interface Credential {
+  id: string
+  provider: LLMProvider
+  encryptedApiKey: string
+  /**
+   * IV (Initialization Vector) for encryption.
+   * When stored in the object, enables cross-device sync of encrypted credentials.
+   * When undefined, IV is stored in localStorage (local-only mode).
+   */
+  iv?: string
+  /**
+   * Encryption mode used to encrypt this credential.
+   * - 'local': Encrypted with device-specific non-extractable key (NOT syncable)
+   * - 'sync': Encrypted with password-derived key (syncable across devices with same password)
+   */
+  encryptionMode?: 'local' | 'sync'
+  /** @deprecated - model selection is now stored separately in selectedModels */
+  model?: string
+  baseUrl?: string
+  timestamp: Date
+  order?: number
+}
+
+/**
+ * Stores the selected model for each provider
+ * Key is the provider name, value is the selected model ID
+ */
+export type SelectedModels = Partial<Record<LLMProvider, string>>
+
+/**
+ * Capability flags for LLM models
+ * Used to select appropriate models for different tasks
+ */
+export interface ModelCapabilities {
+  /** Budget-friendly model suitable for high-volume, simple tasks */
+  lowCost?: boolean
+  /** Premium model with higher pricing (flagship/pro tiers) */
+  highCost?: boolean
+  /** Model with extended reasoning/thinking capabilities (e.g., o1, DeepSeek R1) */
+  thinking?: boolean
+  /** Optimized for low latency responses */
+  fast?: boolean
+  /** Can process and understand images */
+  vision?: boolean
+  /** Supports function/tool calling */
+  tools?: boolean
+  /** Can generate images from text prompts (e.g., FLUX, Stable Diffusion, z-image) */
+  imageGeneration?: boolean
+  /** Can generate videos from text/image prompts (e.g., CogVideoX, Wan, HunyuanVideo) */
+  videoGeneration?: boolean
+}
+
+/**
+ * LLM Model definition with capabilities
+ */
+export interface LLMModel {
+  /** Model identifier (e.g., "gpt-4o", "claude-sonnet-4-5-20250929") */
+  id: string
+  /** Optional display name (defaults to id if not provided) */
+  name?: string
+  /** Model capability flags */
+  capabilities?: ModelCapabilities
+}
+
+export type LLMProvider =
+  | 'local'
+  | 'ollama'
+  | 'openai'
+  | 'anthropic'
+  | 'google'
+  | 'vertex-ai'
+  | 'mistral'
+  | 'openrouter'
+  | 'deepseek'
+  | 'venice'
+  | 'huggingface'
+  | 'openai-compatible'
+  | 'lm-studio'
+  | 'claude-code'
+  | 'chatjimmy'
+  | 'github-copilot'
+  | 'custom'
+  // Image generation providers
+  | 'stability'
+  | 'replicate'
+  | 'together'
+  | 'fal'
+
+export interface LLMConfig {
+  provider: LLMProvider
+  model: string
+  apiKey?: string
+  baseUrl?: string
+  temperature?: number
+  maxTokens?: number
+  /** Abort signal for cancelling in-flight requests */
+  signal?: AbortSignal
+}
+
+export interface Tool {
+  id: string
+  name: string
+  description: string
+  type: 'file' | 'web' | 'api' | 'shell' | 'custom'
+  config: Record<string, any>
+}
+
+export interface Checkpoint {
+  id: string
+  name: string
+  status: 'pending' | 'completed'
+  timestamp: Date
+}
+
+export interface TaskStep {
+  id: string
+  name: string
+  description: string
+  status: 'pending' | 'in_progress' | 'completed' | 'failed'
+  startedAt?: Date | string
+  completedAt?: Date | string
+  duration?: number // in milliseconds
+  agentId?: string
+  order: number
+}
+
+export interface TaskAttachment {
+  name: string
+  type: string
+  size: number
+  data: string // base64 encoded file data
+}
+
+// ============================================================================
+// Agent Scope — Per-agent capability boundaries for orchestration
+// ============================================================================
+
+/**
+ * Scoping constraints for an agent during orchestrated execution.
+ * Inspired by Claude Code subagent scoping: each agent gets explicit
+ * boundaries on tools, model, iteration budget, and permissions.
+ */
+export interface AgentScope {
+  /** Tool allowlist — only these tools are available (empty/undefined = all) */
+  allowedTools?: string[]
+  /** Tool denylist — these tools are blocked (applied after allowlist) */
+  deniedTools?: string[]
+  /** Maximum agentic loop iterations before forced termination */
+  maxTurns?: number
+  /** Model override — use a specific model for this agent (e.g. cheaper for exploration) */
+  model?: string
+  /** Provider override — use a specific provider */
+  provider?: LLMProvider
+  /** Permission level for the agent */
+  permissions?: 'read-only' | 'read-write' | 'full'
+  /** Temperature override for this agent */
+  temperature?: number
+  /** Maximum tokens for each LLM call */
+  maxTokens?: number
+}
+
+// ============================================================================
+// Task Execution — Enhanced execution context
+// ============================================================================
+
+/**
+ * Execution mode for a task
+ * - 'single-shot': One LLM call (legacy behavior)
+ * - 'iterative': Agentic loop with tool use
+ * - 'parallel-isolated': Spawn N fresh-context agents
+ */
+export type TaskExecutionMode =
+  | 'single-shot'
+  | 'iterative'
+  | 'parallel-isolated'
+
+/**
+ * Priority levels for task queue scheduling
+ */
+export type TaskPriority = 'critical' | 'high' | 'normal' | 'low' | 'background'
+
+/**
+ * Background execution state for async tasks
+ */
+export type TaskRunState =
+  | 'queued'
+  | 'scheduled'
+  | 'running'
+  | 'paused'
+  | 'cancelling'
+  | 'cancelled'
+
+/**
+ * Input/output contract between dependent tasks.
+ * Each task declares what it produces and what it consumes,
+ * enabling intelligent context passing between agents.
+ */
+export interface TaskIOContract {
+  /** What this task receives from dependencies */
+  inputs?: { taskId: string; description: string }[]
+  /** What this task produces for downstream tasks */
+  outputs?: { key: string; description: string }[]
+}
+
+export interface Task {
+  id: string
+  workflowId: string
+  title: string
+  description: string
+  attachments?: TaskAttachment[] // File attachments from user
+  complexity: 'simple' | 'complex'
+  status: 'pending' | 'claimed' | 'in_progress' | 'completed' | 'failed'
+  assignedAgentId?: string
+  agent?: Agent
+  assignedAt?: Date | string // When the agent was assigned
+  assignedRoleId?: string // Methodology role ID for this assignment
+  parentTaskId?: string
+  dependencies: string[]
+  requirements: Requirement[]
+  artifacts: string[] // artifact IDs
+  steps: TaskStep[]
+  estimatedPasses: number
+  actualPasses: number
+  createdAt: Date | string
+  updatedAt: Date | string
+  completedAt?: Date | string // When the task was completed
+  dueDate?: Date | string
+  // Methodology-specific fields
+  methodologyId?: string // Which methodology is guiding this task
+  phaseId?: string // Which phase of the methodology this task belongs to
+  taskTemplateId?: string // Reference to the methodology's task template
+  // === New orchestration fields (v2) ===
+  /** How this task should be executed */
+  executionMode?: TaskExecutionMode
+  /** Agent scope overrides for this task */
+  agentScope?: AgentScope
+  /** Input/output contracts for dependency chaining */
+  ioContract?: TaskIOContract
+  /** Priority for queue scheduling */
+  priority?: TaskPriority
+  /** Background execution state (undefined = foreground) */
+  runState?: TaskRunState
+  /** Number of agentic loop turns actually consumed */
+  turnsUsed?: number
+  /** Whether this task can run in parallel with siblings */
+  parallelizable?: boolean
+  /** Synthesis flag — is this a synthesis/merge task? */
+  isSynthesis?: boolean
+  /** Tags for the agent model recommendation */
+  modelHint?: 'fast' | 'balanced' | 'powerful'
+  /** Scheduled execution time (for recurring/deferred tasks) */
+  scheduledAt?: Date
+  /** Recurrence rule (cron-like string, e.g. "0 9 * * 1" for every Monday 9am) */
+  recurrence?: string
+  /** Abort controller key for cancellation */
+  abortKey?: string
+  /** ID of the conversation associated with this task */
+  conversationId?: string
+  /** User-defined tag IDs for categorization */
+  tags?: string[]
+  /** Whether this task is starred/pinned */
+  isPinned?: boolean
+  /** Hex color for color-coded star (e.g. "#F43F5E") */
+  starColor?: string
+  /** Space this task belongs to (undefined = default) */
+  spaceId?: string
+}
+
+export interface Requirement {
+  id: string
+  type: 'functional' | 'non_functional' | 'constraint'
+  description: string
+  priority: 'must' | 'should' | 'could' | 'wont'
+  source: 'explicit' | 'implicit' | 'inferred'
+  status: 'pending' | 'in_progress' | 'satisfied' | 'failed'
+  validationCriteria: string[]
+  taskId: string
+  detectedAt?: Date | string
+  validatedAt?: Date | string
+  satisfiedAt?: Date | string
+  validationResult?: string
+}
+
+export interface SharedContext {
+  id: string
+  taskId: string
+  agentId: string
+  contextType: 'decision' | 'finding' | 'resource' | 'constraint'
+  title: string
+  content: string
+  relevantAgents: string[]
+  expiryDate?: Date
+  createdAt: Date
+}
+
+export interface TaskPlan {
+  id: string
+  workflowId: string
+  strategy:
+    | 'single_agent'
+    | 'sequential_agents'
+    | 'parallel_agents'
+    | 'hierarchical'
+    | 'parallel_isolated' // Manus Wide Research pattern
+    | 'iterative_deep' // Perplexity Research Mode pattern
+    | 'agent_team' // Agent Teams: shared task list + inter-agent messaging
+  estimatedDuration: number
+  requiredSkills: string[]
+  agentAssignments: AgentAssignment[]
+  /** Dependency graph edges: [fromTaskId, toTaskId] */
+  dependencyGraph?: [string, string][]
+  /** Whether a synthesis step is needed after parallel execution */
+  requiresSynthesis?: boolean
+}
+
+export interface AgentAssignment {
+  agentId: string
+  role: 'leader' | 'contributor' | 'reviewer' | 'synthesizer'
+  tasks: string[]
+  contextAccess: string[]
+  /** Per-agent scope for this assignment */
+  scope?: AgentScope
+}
+
+export interface AgentSpec {
+  name: string
+  role: string
+  requiredSkills: string[]
+  estimatedExperience: string
+  specialization: string
+  /** Recommended scope for this agent */
+  scope?: AgentScope
+  /** Model hint for cost optimization */
+  modelHint?: 'fast' | 'balanced' | 'powerful'
+}
+
+export interface ExecutionResult {
+  success: boolean
+  artifacts: Artifact[]
+  context: SharedContext[]
+  errors?: string[]
+  nextTasks?: Task[]
+  /** Number of agentic loop turns consumed */
+  turnsUsed?: number
+  /** Tool calls executed during iterative execution */
+  toolCallsLog?: Array<{
+    tool: string
+    input: Record<string, unknown>
+    output?: string
+  }>
+  /** The final agent response content */
+  finalResponse?: string
+}
+
+/**
+ * Result of a single turn in the agentic execution loop.
+ */
+export interface AgentTurnResult {
+  /** The LLM's text response for this turn */
+  content: string
+  /** Tool calls requested by the LLM */
+  toolCalls?: Array<{ name: string; input: Record<string, unknown> }>
+  /** Tool call results fed back to the LLM */
+  toolResults?: Array<{ name: string; output: string }>
+  /** Whether the agent considers the task complete */
+  isComplete: boolean
+  /** Thinking/reasoning content if available */
+  thinking?: string
+}
+
+/**
+ * Configuration for spawning an isolated agent execution.
+ * Each spawned agent gets a completely fresh context window.
+ */
+export interface IsolatedExecutionConfig {
+  /** The task to execute */
+  task: Task
+  /** The agent to use */
+  agent: Agent
+  /** The prompt/instructions for this specific execution */
+  prompt: string
+  /** Scoping constraints */
+  scope?: AgentScope
+  /** Dependency outputs from upstream tasks (injected into context) */
+  dependencyOutputs?: Array<{ taskTitle: string; content: string }>
+  /** Relevant knowledge items filtered for this sub-task */
+  knowledgeItemIds?: string[]
+  /** Abort signal for cancellation */
+  signal?: AbortSignal
+  /** Callback for streaming progress */
+  onProgress?: (update: {
+    turn: number
+    content: string
+    toolCall?: string
+  }) => void
+  /** Callback for streaming content chunks (called with accumulated content). */
+  onContent?: (content: string) => void
+}
+
+export interface Artifact {
+  id: string
+  taskId: string
+  agentId: string
+  title: string
+  description: string
+  type: 'document' | 'code' | 'design' | 'analysis' | 'plan' | 'report'
+  format: 'markdown' | 'json' | 'code' | 'html' | 'binary'
+  content: string
+  version: number
+  status: 'draft' | 'review' | 'approved' | 'rejected' | 'final'
+  dependencies: string[]
+  validates: string[]
+  createdAt: Date | string
+  updatedAt: Date | string
+  reviewedBy?: string[]
+  spaceId?: string // Space this artifact belongs to (undefined = default)
+}
+
+export interface LangfuseConfig {
+  id: string
+  host: string
+  publicKey: string
+  encryptedSecretKey: string
+  enabled: boolean
+  timestamp: Date
+}
+
+// ============================================================================
+// Agent Memory System - Learning from Conversations
+// ============================================================================
+
+/**
+ * Confidence level for a memory entry
+ * - high: Human validated or derived from explicit user statements
+ * - medium: Inferred with high certainty from conversation patterns
+ * - low: Tentatively inferred, needs validation
+ */
+export type MemoryConfidence = 'high' | 'medium' | 'low'
+
+/**
+ * Validation status for human review workflow
+ * - pending: Awaiting human review
+ * - approved: Human validated as correct
+ * - rejected: Human marked as incorrect/irrelevant
+ * - auto_approved: Auto-approved based on high confidence + time threshold
+ */
+export type MemoryValidationStatus =
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'auto_approved'
+
+/**
+ * Category of memory for organization and retrieval
+ */
+export type MemoryCategory =
+  | 'fact' // Factual information about user/domain
+  | 'preference' // User preferences and choices
+  | 'behavior' // Learned behavioral patterns
+  | 'domain_knowledge' // Domain-specific knowledge
+  | 'relationship' // Relationships between entities
+  | 'procedure' // How to do specific tasks
+  | 'correction' // Corrections to previous assumptions
+
+/**
+ * A single memory entry learned from conversations
+ */
+export interface AgentMemoryEntry {
+  id: string
+  agentId: string
+  category: MemoryCategory
+  title: string // Short descriptive title
+  content: string // The actual learned information
+  confidence: MemoryConfidence
+  validationStatus: MemoryValidationStatus
+
+  // Provenance tracking
+  sourceConversationIds: string[] // Conversations this was learned from
+  sourceMessageIds: string[] // Specific messages that contributed
+  learnedAt: Date
+
+  // Human review
+  reviewedAt?: Date
+  reviewedBy?: string // 'human' or agent ID
+  reviewNotes?: string
+
+  // Versioning for progressive updates
+  version: number
+  previousVersionId?: string
+  supersededBy?: string // If this memory was replaced
+
+  // Usage tracking
+  lastUsedAt?: Date
+  usageCount: number
+
+  // Expiration (optional, for time-sensitive info)
+  expiresAt?: Date
+
+  // Tags for retrieval
+  tags: string[]
+  keywords: string[] // Auto-extracted for semantic matching
+
+  // Global memory (shared across all agents)
+  isGlobal?: boolean // If true, this memory applies to all agents
+
+  createdAt: Date
+  updatedAt: Date
+}
+
+/**
+ * A learning event captured from a conversation
+ * These are processed into AgentMemoryEntry after synthesis
+ */
+export interface MemoryLearningEvent {
+  id: string
+  agentId: string
+  conversationId: string
+  messageId?: string
+
+  // What was learned
+  rawExtraction: string // Direct extraction from conversation
+  suggestedCategory: MemoryCategory
+  suggestedConfidence: MemoryConfidence
+
+  // Processing status
+  processed: boolean
+  resultingMemoryId?: string // The AgentMemoryEntry created
+  discardedReason?: string // If not turned into memory
+
+  extractedAt: Date
+  processedAt?: Date
+}
+
+/**
+ * Agent memory document - the persistent "working document" for an agent
+ * Contains aggregated memories and synthesis
+ */
+export interface AgentMemoryDocument {
+  id: string
+  agentId: string
+
+  // Summary synthesis (regenerated periodically)
+  synthesis: string // Markdown summary of all memories
+  lastSynthesisAt: Date
+
+  // Statistics
+  totalMemories: number
+  memoriesByCategory: Record<MemoryCategory, number>
+  memoriesByConfidence: Record<MemoryConfidence, number>
+  pendingReviewCount: number
+
+  // Auto-learning settings per agent
+  autoLearnEnabled: boolean
+  autoApproveHighConfidence: boolean // Auto-approve high confidence after delay
+  autoApproveDelayHours: number // Hours before auto-approval (default: 24)
+
+  createdAt: Date
+  updatedAt: Date
+}
+
+/**
+ * Settings for memory learning behavior
+ */
+export interface AgentMemorySettings {
+  // Global toggle
+  enabled: boolean
+
+  // Learning triggers
+  learnAfterConversation: boolean // Learn when conversation ends
+  learnOnExplicitRequest: boolean // Learn when user says "remember this"
+
+  // Review settings
+  requireHumanReview: boolean // Require human approval for all memories
+  autoApproveThreshold: MemoryConfidence // Auto-approve at this confidence level
+
+  // Synthesis settings
+  dailySynthesis: boolean // Generate daily synthesis
+  synthesisTime: string // Time for daily synthesis (e.g., "23:00")
+
+  // Retention settings
+  maxMemoriesPerAgent: number // Limit memories per agent
+  retentionDays: number // Days to keep unused memories
+}
+
+// ============================================================================
+// Pinned Messages System - Important conversation moments
+// ============================================================================
+
+/**
+ * A pinned message from a conversation
+ * Represents an important moment that should be available to the agent in future conversations
+ */
+export interface PinnedMessage {
+  id: string
+  conversationId: string
+  messageId: string // Reference to the original message
+  agentId: string // The agent who generated this message
+  content: string // The message content
+  description: string // Short AI-generated description (5-10 words)
+  keywords: string[] // Keywords for relevance matching
+  pinnedAt: Date
+  createdAt: Date
+  updatedAt: Date
+}
+
+/**
+ * Non-extractable CryptoKey entry stored in IndexedDB
+ * The key itself cannot be read by JavaScript, only used for crypto operations
+ */
+export interface CryptoKeyEntry {
+  id: string // 'master' for the main encryption key
+  key: CryptoKey // Non-extractable CryptoKey object
+  createdAt: Date
+  migratedFromLocalStorage?: boolean // True if migrated from legacy localStorage master key
+}
+
+// ============================================================================
+// Agent Skills
+// ============================================================================
+
+/**
+ * A script file bundled with an Agent Skill.
+ * Contains the source code and detected metadata.
+ */
+export interface SkillScript {
+  /** Relative path within the skill directory, e.g. "scripts/analyze.py" */
+  path: string
+  /** Script source code */
+  content: string
+  /** Detected programming language */
+  language: 'python' | 'bash' | 'javascript' | 'other'
+  /** Packages required by the script (auto-extracted from imports) */
+  requiredPackages?: string[]
+}
+
+/**
+ * A reference or asset file bundled with an Agent Skill.
+ */
+export interface SkillFile {
+  /** Relative path within the skill directory, e.g. "references/REFERENCE.md" */
+  path: string
+  /** File content (text or base64 for binary) */
+  content: string
+  /** MIME type of the file */
+  mimeType?: string
+}
+
+/**
+ * An installed Agent Skill stored in Yjs.
+ *
+ * Represents a skill that has been fetched from GitHub and installed
+ * locally for use by agents.
+ */
+export interface InstalledSkill {
+  /** Unique skill identifier (SkillsMP ID or custom slug) */
+  id: string
+  /** Skill name from SKILL.md frontmatter */
+  name: string
+  /** Description from SKILL.md frontmatter */
+  description: string
+  /** GitHub author / owner */
+  author: string
+  /** License from frontmatter */
+  license?: string
+  /** Additional metadata from frontmatter */
+  metadata?: Record<string, string>
+
+  /** Full SKILL.md body content (markdown instructions) */
+  skillMdContent: string
+  /** Fetched Python/Bash/JS scripts */
+  scripts: SkillScript[]
+  /** Reference documents */
+  references: SkillFile[]
+  /** Static resources (templates, images, data files) */
+  assets: SkillFile[]
+
+  /** Source GitHub repository URL */
+  githubUrl: string
+  /** Popularity indicator from SkillsMP */
+  stars: number
+  /** When the skill was installed */
+  installedAt: Date
+  /** When the skill was last updated */
+  updatedAt: Date
+  /** When we last checked for updates */
+  lastCheckedAt?: Date
+  /** Whether the skill is currently enabled */
+  enabled: boolean
+
+  /** Which agents have this skill (empty array = all agents) */
+  assignedAgentIds: string[]
+  /** Whether to always inject instructions vs. match-based activation */
+  autoActivate: boolean
+  /** Space this skill belongs to (undefined / 'default' = Default Space) */
+  spaceId?: string
+  /**
+   * Result of the skill scanner at install time. Optional because skills
+   * installed before the scanner existed have none, and those are treated as
+   * UNREVIEWED (see `ensureScanned` in the store) rather than as safe.
+   */
+  security?: {
+    verdict: 'safe' | 'caution' | 'blocked'
+    findings: Array<{
+      rule: string
+      severity: 'blocked' | 'warning' | 'info'
+      file: string
+      line: number
+      excerpt: string
+      message: string
+    }>
+    scannedAt: string
+    fingerprint: string
+  }
+}
+
+// ============================================================================
+// Orchestration Workflow Entity
+// ============================================================================
+
+/**
+ * Represents a full orchestration run from user prompt to final deliverable.
+ * Created by the engine router, updated by strategy modules, persisted in Yjs.
+ */
+export interface OrchestrationWorkflow {
+  id: string
+  /** The original user prompt that triggered this workflow */
+  prompt: string
+  /** Which strategy was selected */
+  strategy: 'direct' | 'flat-team' | 'nested-team'
+  /** Complexity tier: 0=single agent, 1=flat team, 2=nested teams */
+  tier: 0 | 1 | 2
+  /** Lead agent responsible for orchestration */
+  leadAgentId: string
+  /** All agents participating in this workflow */
+  participatingAgentIds: string[]
+  /** Root task created for this workflow */
+  rootTaskId: string
+  /** Current workflow status */
+  status:
+    | 'analyzing'
+    | 'decomposing'
+    | 'recruiting'
+    | 'executing'
+    | 'validating'
+    | 'synthesizing'
+    | 'completed'
+    | 'failed'
+    | 'interrupted'
+  /** Human-readable phase description */
+  phase: string
+  /** Progress percentage (0-100) */
+  progress: number
+  /** Total LLM turns consumed */
+  totalTurnsUsed: number
+  /** Error message if failed */
+  error?: string
+  /** Parent workflow ID for nested teams (Tier 2) */
+  parentWorkflowId?: string
+  createdAt: Date
+  completedAt?: Date
+  updatedAt: Date
+}
+
+export type OrchestrationWorkflowStatus = OrchestrationWorkflow['status']
+
+// ============================================================================
+// Inter-Agent Messaging
+// ============================================================================
+
+/**
+ * Typed message for inter-agent communication within a workflow.
+ * Stored in Yjs for persistence and P2P sync.
+ *
+ * MVP supports only 'finding' and 'status' types.
+ * Future: 'question', 'decision', 'handoff', 'review'.
+ */
+export interface AgentMessage {
+  id: string
+  /** The workflow this message belongs to */
+  workflowId: string
+  /** Sending agent ID */
+  from: string
+  /** Target agent ID or 'broadcast' for all teammates */
+  to: string
+  /** Message type - MVP: finding (shared discoveries) and status (progress/blockers) */
+  type: 'finding' | 'status'
+  /** Message content */
+  content: string
+  /** Referenced task IDs for context */
+  referencedTaskIds?: string[]
+  /** Referenced artifact IDs for context */
+  referencedArtifactIds?: string[]
+  timestamp: Date
+  /** Whether the recipient has read this message */
+  read: boolean
+}
+
+// ============================================================================
+// Background Task Queue
+// ============================================================================
+
+/**
+ * Recurrence configuration for scheduled tasks.
+ * Supports cron-like expressions and simple interval patterns.
+ */
+export interface ScheduleConfig {
+  /** Cron expression (e.g. "0 9 * * 1" = every Monday at 9am) */
+  cron?: string
+  /** Simple interval in milliseconds (alternative to cron) */
+  intervalMs?: number
+  /** Maximum number of recurring executions (undefined = unlimited) */
+  maxExecutions?: number
+  /** Number of executions completed so far */
+  executionsCompleted?: number
+  /** When to stop recurring (undefined = never) */
+  endsAt?: Date | string
+}
+
+/**
+ * Approval gate configuration for human-in-the-loop workflows.
+ */
+export interface ApprovalGate {
+  /** Unique identifier for this gate */
+  id: string
+  /** When the gate should trigger */
+  trigger:
+    | 'before-execution'
+    | 'after-decomposition'
+    | 'before-synthesis'
+    | 'on-budget-exceed'
+  /** Current approval status */
+  status: 'pending' | 'approved' | 'rejected' | 'auto-approved'
+  /** Who approved/rejected */
+  reviewedBy?: string
+  /** When the decision was made */
+  reviewedAt?: Date | string
+  /** Optional note from reviewer */
+  note?: string
+  /** Budget threshold that triggers auto-gate (in estimated tokens) */
+  budgetThreshold?: number
+  /** Auto-approve policy for background tasks */
+  autoApprovePolicy?: 'always' | 'under-budget' | 'never'
+}
+
+/**
+ * Persistent queue entry for background/scheduled orchestration tasks.
+ * Stored in Yjs for cross-tab awareness and persistence across page reloads.
+ */
+export interface QueuedTaskEntry {
+  id: string
+  /** The original user prompt */
+  prompt: string
+  /** Associated workflow ID (created when execution starts) */
+  workflowId?: string
+  /** Root task ID (if reusing an existing task) */
+  existingTaskId?: string
+  /** Queue priority */
+  priority: TaskPriority
+  /** Current run state */
+  runState: TaskRunState
+  /** Skills activated via /mention */
+  activatedSkills?: Array<{ name: string; skillMdContent: string }>
+  /** Progress percentage (0-100) */
+  progress: number
+  /** Human-readable status message */
+  statusMessage?: string
+  /** Sub-tasks completed */
+  subTasksCompleted?: number
+  /** Total sub-tasks */
+  subTasksTotal?: number
+  /** Error message if failed */
+  error?: string
+  /** Schedule configuration for deferred/recurring tasks */
+  schedule?: ScheduleConfig
+  /** Approval gates for human-in-the-loop */
+  approvalGates?: ApprovalGate[]
+  /** Whether this entry is being processed by a Web Worker */
+  workerOwned?: boolean
+  /** Tab/client ID that owns execution (for leader election) */
+  ownerClientId?: string
+  /** When the entry was created */
+  createdAt: Date | string
+  /** When execution started */
+  startedAt?: Date | string
+  /** When execution completed */
+  completedAt?: Date | string
+  /** When next recurring execution should fire */
+  nextRunAt?: Date | string
+}
+
+// ============================================================================
+// Human-In-The-Loop (HITL)
+// ============================================================================
+
+/** Type of human intervention requested */
+export type HitlRequestType =
+  | 'approval'
+  | 'clarification'
+  | 'choice'
+  | 'confirmation'
+  | 'feedback'
+
+/** Status of a HITL request */
+export type HitlStatus = 'pending' | 'answered' | 'dismissed' | 'auto-resolved'
+
+/** A pre-filled quick reply option for HITL requests */
+export interface HitlQuickReply {
+  /** Button label shown to the user */
+  label: string
+  /** Value sent as the response when clicked */
+  value: string
+  /** HeroUI color for the button */
+  color?: 'primary' | 'success' | 'danger' | 'warning' | 'default'
+}
+
+/** A human-in-the-loop request created by an agent or the orchestrator */
+export interface HitlRequest {
+  /** Unique identifier */
+  id: string
+  /** Conversation where the request appears */
+  conversationId: string
+  /** Agent that created the request */
+  agentId: string
+  /** Category of intervention */
+  type: HitlRequestType
+  /** The question or prompt shown to the user */
+  question: string
+  /** Pre-filled quick reply options */
+  quickReplies?: HitlQuickReply[]
+  /** Current status */
+  status: HitlStatus
+  /** User's response (text or quick reply value) */
+  response?: string
+  /** When the request was created */
+  createdAt: Date | string
+  /** When the request was resolved */
+  resolvedAt?: Date | string
+}
+
+/** Options for creating a HITL request */
+export interface HitlRequestOptions {
+  conversationId: string
+  agentId: string
+  type: HitlRequestType
+  question: string
+  quickReplies?: HitlQuickReply[]
+}
+
+/** Result returned when a HITL request is resolved */
+export interface HitlResponse {
+  status: 'answered' | 'dismissed' | 'auto-resolved'
+  value: string
+}
+
+// ============================================================================
+// Sessions — Unified Prompt Experience
+// ============================================================================
+
+/** The resolved intent for a session or turn */
+export type SessionIntent =
+  | 'chat'
+  | 'conversation'
+  | 'task'
+  | 'media'
+  | 'app'
+  | 'agent'
+
+/** A single turn within a session (user prompt → agent work → artifacts) */
+export interface SessionTurn {
+  id: string
+  prompt: string
+  intent: SessionIntent
+  agentId: string
+  artifactIds: string[]
+  status: 'pending' | 'running' | 'completed' | 'failed'
+  taskId?: string
+  createdAt: Date | string
+  completedAt?: Date | string
+}
+
+/** An artifact produced during a session */
+export interface SessionArtifact {
+  id: string
+  type:
+    | 'image'
+    | 'video'
+    | 'document'
+    | 'code'
+    | 'app'
+    | 'agent'
+    | 'website'
+    | 'presentation'
+  title: string
+  content: string
+  mimeType?: string
+  preview?: string
+  metadata?: Record<string, unknown>
+  createdAt: Date | string
+}
+
+/** A file attachment provided by the user at session creation */
+export interface SessionAttachment {
+  name: string
+  type: string
+  size: number
+  data: string
+}
+
+/** The universal container for any user request */
+export interface Session {
+  id: string
+  title: string
+  prompt: string
+  status: 'starting' | 'running' | 'completed' | 'failed'
+  intent: SessionIntent
+  turns: SessionTurn[]
+  primaryAgentId: string
+  participatingAgents: string[]
+  conversationId?: string
+  taskId?: string
+  artifacts: SessionArtifact[]
+  attachments?: SessionAttachment[]
+  mentionedSkills?: string[]
+  mentionedConnectors?: string[]
+  methodology?: string
+  createdAt: Date | string
+  updatedAt: Date | string
+  completedAt?: Date | string
+  /** Whether this session is starred/pinned */
+  isPinned?: boolean
+  /** Hex color for color-coded star (e.g. "#F43F5E") */
+  starColor?: string
+  /** Space this session belongs to (undefined = default) */
+  spaceId?: string
+}
+
+// ============================================================================
+// Model Tiers — User-configured model selection per tier
+// ============================================================================
+
+/** A provider + model pair used for a specific tier */
+export interface ModelTierConfig {
+  providerId: string
+  provider: LLMProvider
+  model: string
+}
+
+// ============================================================================
+// Spaces — Organize content into separate contexts
+// ============================================================================
+
+/** ID of the space that owns all pre-existing (unassigned) data. */
+export const DEFAULT_SPACE_ID = 'default'
+
+/**
+ * Sentinel ID used when the user wants to view entities across ALL spaces
+ * at once (global thread list, cross-space search). This is a view-only
+ * mode: new entities created while this is active are tagged with
+ * `DEFAULT_SPACE_ID`, not this sentinel.
+ */
+export const ALL_SPACES_ID = '__all__'
+
+/**
+ * Reserved URL segment for the "all spaces" view. Chosen to be
+ * collision-free with `uuidToBase64url()` output, which is always
+ * exactly 22 characters.
+ */
+export const ALL_SPACES_URL_SEGMENT = 'all'
+
+export interface Space {
+  id: string
+  name: string
+  icon?: IconName
+  createdAt: Date | string
+  updatedAt?: Date | string
+}

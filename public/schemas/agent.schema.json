@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentasia.vercel.app/schemas/agent.schema.json",
+  "title": "Agent Definition",
+  "description": "Schema for defining AI agents with their roles, instructions, and configuration",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the agent",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1
+    },
+    "icon": {
+      "type": "string",
+      "description": "Optional icon name for the agent, used for UI representation. Must be a valid icon name from the Devs icon set."
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the agent",
+      "minLength": 1
+    },
+    "desc": {
+      "type": "string",
+      "description": "Brief description of the agent's purpose and capabilities",
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "description": "Brief description of the agent's role and specialization",
+      "minLength": 1
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Detailed instructions for the agent's behavior, capabilities, and approach",
+      "minLength": 1
+    },
+    "temperature": {
+      "type": "number",
+      "description": "Temperature parameter for LLM responses (0.0 to 2.0)",
+      "minimum": 0.0,
+      "maximum": 2.0
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags for categorizing and searching agents",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "examples": {
+      "type": "array",
+      "description": "Example prompts or interactions to demonstrate the agent's capabilities",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of the example",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "description": "Title for the example"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Example prompt to show how to interact with the agent",
+            "minLength": 1
+          }
+        },
+        "required": ["id", "prompt"]
+      }
+    },
+    "i18n": {
+      "type": "object",
+      "description": "Internationalization translations for the agent's name and role",
+      "patternProperties": {
+        "^[a-z]{2}(-[A-Z]{2})?$": {
+          "type": "object",
+          "description": "Translations for a specific locale",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Translated name for this locale",
+              "minLength": 1
+            },
+            "desc": {
+              "type": "string",
+              "description": "Translated description for this locale",
+              "minLength": 1
+            },
+            "examples": {
+              "type": "array",
+              "description": "Translated examples for this locale",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "ID of the example to translate",
+                    "minLength": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Title for the example"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "description": "Example prompt to show how to interact with the agent",
+                    "minLength": 1
+                  }
+                },
+                "required": ["id", "prompt"]
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["id", "name", "role", "instructions"],
+  "additionalProperties": false
+}

@@ -1,0 +1,223 @@
+{
+  "$schema": "../schemas/model-registry.schema.json",
+  "_comment": "This file only contains local/browser-native and Ollama models. Cloud providers (OpenAI, Anthropic, Google, etc.) are sourced from models.dev API",
+  "local": [
+    {
+      "id": "SmolLM2-360M-Instruct-q4f16_1-MLC",
+      "name": "SmolLM2 360M",
+      "capabilities": { "lowCost": true, "fast": true }
+    },
+    {
+      "id": "SmolLM2-1.7B-Instruct-q4f16_1-MLC",
+      "name": "SmolLM2 1.7B",
+      "capabilities": { "lowCost": true, "fast": true }
+    },
+    {
+      "id": "Llama-3.2-1B-Instruct-q4f16_1-MLC",
+      "name": "Llama 3.2 1B",
+      "capabilities": { "lowCost": true, "fast": true }
+    },
+    {
+      "id": "Llama-3.2-3B-Instruct-q4f16_1-MLC",
+      "name": "Llama 3.2 3B",
+      "capabilities": { "lowCost": true }
+    },
+    {
+      "id": "Phi-3.5-mini-instruct-q4f16_1-MLC",
+      "name": "Phi 3.5 Mini",
+      "capabilities": { "lowCost": true }
+    },
+    {
+      "id": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "name": "Qwen2.5 1.5B",
+      "capabilities": { "lowCost": true, "fast": true }
+    }
+  ],
+  "ollama": [
+    {
+      "id": "gemma3:4b",
+      "name": "Gemma3 4B",
+      "capabilities": { "fast": true, "vision": true }
+    },
+    {
+      "id": "gemma3:12b",
+      "name": "Gemma3 12B",
+      "capabilities": { "vision": true }
+    },
+    {
+      "id": "gemma3:27b",
+      "name": "Gemma3 27B",
+      "capabilities": { "vision": true }
+    },
+    {
+      "id": "deepseek-r1:8b",
+      "name": "DeepSeek R1 8B",
+      "capabilities": { "tools": true, "thinking": true }
+    },
+    {
+      "id": "deepseek-r1:70b",
+      "name": "DeepSeek R1 70B",
+      "capabilities": { "tools": true, "thinking": true }
+    },
+    {
+      "id": "qwen3:8b",
+      "name": "Qwen3 8B",
+      "capabilities": { "tools": true, "thinking": true }
+    },
+    {
+      "id": "qwen3:30b",
+      "name": "Qwen3 30B",
+      "capabilities": { "tools": true, "thinking": true }
+    },
+    {
+      "id": "llama3.1:8b",
+      "name": "Llama 3.1 8B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "llama3.1:70b",
+      "name": "Llama 3.1 70B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "llama3.2:3b",
+      "name": "Llama 3.2 3B",
+      "capabilities": { "fast": true, "tools": true }
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral 7B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "qwen2.5-coder:7b",
+      "name": "Qwen2.5 Coder 7B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "qwen2.5-coder:32b",
+      "name": "Qwen2.5 Coder 32B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "qwen3-coder:30b",
+      "name": "Qwen3 Coder 30B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "qwen3-vl:8b",
+      "name": "Qwen3 VL 8B",
+      "capabilities": { "vision": true, "tools": true, "thinking": true }
+    },
+    {
+      "id": "llava:7b",
+      "name": "LLaVA 7B",
+      "capabilities": { "vision": true }
+    },
+    {
+      "id": "llava:34b",
+      "name": "LLaVA 34B",
+      "capabilities": { "vision": true }
+    },
+    {
+      "id": "llama3.2-vision:11b",
+      "name": "Llama 3.2 Vision 11B",
+      "capabilities": { "vision": true }
+    },
+    {
+      "id": "gpt-oss:20b",
+      "name": "GPT-OSS 20B",
+      "capabilities": { "tools": true, "thinking": true }
+    },
+    {
+      "id": "gpt-oss:120b",
+      "name": "GPT-OSS 120B",
+      "capabilities": { "tools": true, "thinking": true }
+    },
+    {
+      "id": "llama4:16x17b",
+      "name": "Llama 4 Scout",
+      "capabilities": { "vision": true, "tools": true }
+    },
+    {
+      "id": "phi4:14b",
+      "name": "Phi-4 14B",
+      "capabilities": {}
+    },
+    {
+      "id": "phi4-mini:3.8b",
+      "name": "Phi-4 Mini",
+      "capabilities": { "fast": true, "tools": true }
+    },
+    {
+      "id": "mistral-small3.2:24b",
+      "name": "Mistral Small 3.2",
+      "capabilities": { "vision": true, "tools": true }
+    },
+    {
+      "id": "mixtral:8x7b",
+      "name": "Mixtral 8x7B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "granite4:3b",
+      "name": "Granite 4 3B",
+      "capabilities": { "fast": true, "tools": true }
+    },
+    {
+      "id": "granite4:1b",
+      "name": "Granite 4 1B",
+      "capabilities": { "fast": true, "tools": true }
+    },
+    {
+      "id": "ministral-3:3b",
+      "name": "Ministral 3 3B",
+      "capabilities": { "fast": true, "vision": true, "tools": true }
+    },
+    {
+      "id": "ministral-3:8b",
+      "name": "Ministral 3 8B",
+      "capabilities": { "vision": true, "tools": true }
+    },
+    {
+      "id": "nemotron-3-nano:30b",
+      "name": "Nemotron 3 Nano",
+      "capabilities": { "tools": true, "thinking": true }
+    },
+    {
+      "id": "devstral-small-2:24b",
+      "name": "Devstral Small 2",
+      "capabilities": { "vision": true, "tools": true }
+    },
+    {
+      "id": "devstral-2:123b",
+      "name": "Devstral 2",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "devstral:24b",
+      "name": "Devstral 24B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "smollm2:1.7b",
+      "name": "SmolLM2 1.7B",
+      "capabilities": { "fast": true, "tools": true }
+    },
+    {
+      "id": "command-r:35b",
+      "name": "Command R 35B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "hermes3:8b",
+      "name": "Hermes 3 8B",
+      "capabilities": { "tools": true }
+    },
+    {
+      "id": "codellama",
+      "name": "Code Llama",
+      "capabilities": {}
+    }
+  ]
+}

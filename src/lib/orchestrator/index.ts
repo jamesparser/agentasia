@@ -1,0 +1,155 @@
+/**
+ * Orchestration Engine v2 — Module Index
+ *
+ * This barrel file exports the entire orchestration engine.
+ * The v2 engine replaces the legacy single-file orchestrator with a modular
+ * architecture that addresses all competitive gaps:
+ *
+ * - **agent-runner**: Iterative agentic loop with tool support
+ * - **task-decomposer**: LLM-driven intelligent task breakdown
+ * - **synthesis-engine**: Dedicated result merger for multi-agent outputs
+ * - **task-queue**: Priority queue with async/background execution
+ * - **engine**: Main orchestration coordinator
+ *
+ * @module lib/orchestrator
+ */
+
+// Main engine
+export {
+  orchestrate,
+  submitBackground,
+  submitBackgroundLegacy,
+  type OrchestrationResult,
+  type OrchestrationOptions,
+} from './engine'
+
+// Agent runner
+export {
+  runAgent,
+  runAgentSingleShot,
+  type AgentRunnerResult,
+} from './agent-runner'
+
+// Task decomposer
+export {
+  decomposeTask,
+  type TaskDecomposition,
+  type DecomposedTask,
+} from './task-decomposer'
+
+// Synthesis engine
+export {
+  synthesizeResults,
+  mergeResults,
+  type SynthesisInput,
+  type SynthesisResult,
+} from './synthesis-engine'
+
+// Task queue
+export { TaskQueue, type QueuedTask, type TaskQueueEvent } from './task-queue'
+
+// Orchestration event bus
+export {
+  on as onOrchestrationEvent,
+  onAny as onAnyOrchestrationEvent,
+  emit as emitOrchestrationEvent,
+  removeAllListeners as removeAllOrchestrationListeners,
+  type OrchestrationEvent,
+  type AgentStartEvent,
+  type AgentStreamingEvent,
+  type AgentToolCallEvent,
+  type AgentCompleteEvent,
+  type PhaseChangeEvent,
+} from './events'
+
+// Team coordinator
+export {
+  SharedTaskList,
+  TeamMailbox,
+  TeamCoordinator,
+  detectTeamFromPrompt,
+  type TeamTask,
+  type TeamMessage,
+  type AgentTeamConfig,
+  type TeamDetectionResult,
+  type TeamTaskInput,
+} from './team-coordinator'
+
+// Scheduler (background queue draining + leader election)
+export {
+  startScheduler,
+  stopScheduler,
+  cancelScheduledTask,
+  isSchedulerLeader,
+  getSchedulerClientId,
+  forceTick,
+} from './scheduler'
+
+// Approval gates (human-in-the-loop)
+export {
+  createDefaultGates,
+  createComprehensiveGates,
+  checkGate,
+  hasPendingGate,
+  hasRejectedGate,
+  approveGate,
+  rejectGate,
+  autoApproveAll,
+  getPendingApprovals,
+} from './approval-gate'
+
+// Service Worker bridge (background notifications + keepalive)
+export {
+  notifyTaskStarted,
+  notifyTaskProgress,
+  notifyTaskCompleted,
+  notifyTaskFailed,
+  notifyTaskCancelled,
+  requestNotificationPermission,
+  isSWBridgeAvailable,
+} from './sw-bridge'
+
+// Background worker manager
+export {
+  initBackgroundWorker,
+  executeInBackground,
+  cancelBackgroundTask,
+  isWorkerReady,
+  shutdownBackgroundWorker,
+} from './background-worker'
+
+// Recovery
+export {
+  detectOrphanedWorkflows,
+  resumeWorkflow,
+  discardWorkflow,
+} from './recovery'
+
+// ============================================================================
+// Legacy compatibility — re-export WorkflowOrchestrator facade
+// ============================================================================
+
+import {
+  orchestrate,
+  runningOrchestrations,
+  type OrchestrationResult,
+} from './engine'
+import type { OrchestrationOptions } from './engine'
+
+/**
+ * Legacy-compatible facade for the v2 orchestration engine.
+ * Maintains the same API surface as the original `WorkflowOrchestrator`
+ * so that `chat.ts` and other consumers don't break.
+ */
+export class WorkflowOrchestrator {
+  /** Exposed for test cleanup */
+  static runningOrchestrations = runningOrchestrations
+
+  static async orchestrateTask(
+    prompt: string,
+    existingTaskId?: string,
+    options?: OrchestrationOptions,
+  ): Promise<OrchestrationResult> {
+    return orchestrate(prompt, existingTaskId, options)
+  }
+}

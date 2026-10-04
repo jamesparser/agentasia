@@ -1,0 +1,81 @@
+{
+  "id": "agentasia",
+  "short_name": "AgentAsia",
+  "name": "AgentAsia · AI that speaks your language",
+  "description": "A personal AI team that speaks your language. Powered by NVIDIA Nemotron on Nebius.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192-maskable.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/devs-mobile-home.webp",
+      "sizes": "405x877",
+      "type": "image/webp",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/devs-mobile-prompt.webp",
+      "sizes": "405x877",
+      "type": "image/webp",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/devs-mobile-generative.webp",
+      "sizes": "405x877",
+      "type": "image/webp",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/devs-mobile-widgets.webp",
+      "sizes": "405x877",
+      "type": "image/webp",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/devs-desktop-home.webp",
+      "sizes": "1644x1558",
+      "type": "image/webp",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/devs-desktop-prompt.webp",
+      "sizes": "1644x1558",
+      "type": "image/webp",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/devs-desktop-generative.webp",
+      "sizes": "1644x1558",
+      "type": "image/webp",
+      "form_factor": "wide"
+    }
+  ],
+  "display": "standalone",
+  "theme_color": "#111111",
+  "background_color": "#000",
+  "start_url": "/",
+  "scope": "/"
+}

@@ -1,0 +1,12 @@
+.DS_Store
+/.github
+/.vscode
+/dist
+/node_modules
+/tests
+/*.md
+/CNAME
+/Dockerfile
+/eslint.config.js
+/playwright.config.js
+/vitest.config.ts

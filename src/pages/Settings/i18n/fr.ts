@@ -1,0 +1,282 @@
+import { en } from './en'
+
+type I18n = Record<(typeof en)[number], string>
+
+export const fr: I18n = {
+  'Platform Settings': 'Paramètres de la plateforme',
+  'Configure AI providers, models and platform defaults for your organization':
+    'Configurez les fournisseurs de LLM, les modèles et les paramètres par défaut de la plateforme pour votre organisation',
+  Appearance: 'Apparence',
+  'Choose your preferred language': 'Choisissez votre langue préférée',
+  'Interface Language': 'Langue de l’interface',
+  'Platform Name': 'Nom de la plateforme',
+  'Secure Storage': 'Stockage sécurisé',
+  'Manage your encryption keys and secure storage':
+    'Gérez vos clés de chiffrement et votre stockage sécurisé',
+  'Master Key': 'Clé maîtresse',
+  'Master key copied to clipboard':
+    'Clé maîtresse copiée dans le presse-papiers',
+  'Failed to copy master key': 'Échec de la copie de la clé maîtresse',
+  'Regenerate Master Key': 'Régénérer la clé maîtresse',
+  'Are you sure you want to regenerate the master key? This will invalidate all existing encrypted data.':
+    'Êtes-vous sûr de vouloir régénérer la clé maîtresse ? Cela invalidera toutes les données chiffrées existantes.',
+  'Master key regenerated successfully': 'Clé maîtresse régénérée avec succès',
+  'Failed to regenerate master key':
+    'Échec de la régénération de la clé maîtresse',
+  'Your master key is used to encrypt all sensitive data stored locally. Keep it safe and secure.':
+    'Votre clé maîtresse est utilisée pour chiffrer toutes les données sensibles stockées localement. Gardez-la en sécurité.',
+  'AI Providers': 'Fournisseurs IA',
+  'Choose your AI provider, manage your API credentials':
+    'Choisissez votre fournisseur IA, gérez vos identifiants API',
+  'Add Provider': 'Ajouter un fournisseur',
+  'No providers configured. Add one to get started.':
+    'Aucun fournisseur configuré. Ajoutez-en un pour commencer.',
+  'Set as Default': 'Définir par défaut',
+  'Secure storage is locked': 'Le stockage sécurisé est verrouillé',
+  'Enter your master password to unlock':
+    'Entrez votre mot de passe maître pour déverrouiller',
+  'Master password': 'Mot de passe maître',
+  Unlock: 'Déverrouiller',
+  'Storage unlocked': 'Stockage déverrouillé',
+  'Invalid password': 'Mot de passe invalide',
+  'Please fill in all required fields':
+    'Veuillez remplir tous les champs obligatoires',
+  'Invalid API key': 'Clé API invalide',
+  'Credential added successfully': 'Identifiants ajoutés avec succès',
+  'Failed to add credential': 'Échec de l’ajout des identifiants',
+  'Credential deleted': 'Identifiants supprimés',
+  'Failed to delete credential': 'Échec de la suppression des identifiants',
+  'Database Management': 'Gestion de base de données',
+  'Export, import, or clear your local database':
+    'Exportez, importez ou effacez votre base de données locale',
+  'Clear database': 'Effacer la base de données',
+  'Are you sure you want to clear all data? This action cannot be undone.':
+    'Êtes-vous sûr de vouloir effacer toutes les données ? Cette action ne peut pas être annulée.',
+  'Database cleared successfully': 'Base de données effacée avec succès',
+  'Failed to clear database': 'Échec de l’effacement de la base de données',
+  'Database repaired successfully': 'Base de données réparée avec succès',
+  'Failed to repair database': 'Échec de la réparation de la base de données',
+  Created: 'Créé',
+  Updated: 'Mis à jour',
+  'Add LLM Provider': 'Ajouter un fournisseur LLM',
+  'Select Provider': 'Sélectionner un fournisseur',
+  'Server URL (Optional)': 'URL du serveur (Optionnel)',
+  'API Key': 'Clé API',
+  'Enter your API key': 'Entrez votre clé API',
+  'Format:': 'Format :',
+  'Base URL': 'URL de base',
+  Model: 'Modèle',
+  'Select a model': 'Sélectionnez un modèle',
+  'Custom Model Name': 'Nom de modèle personnalisé',
+  'Enter model name': 'Entrez le nom du modèle',
+  'Validate & Add': 'Valider et ajouter',
+  'Fetch Available Models': 'Récupérer les modèles disponibles',
+  'Use Fetched Models': 'Utiliser les modèles récupérés',
+  'Manual Input': 'Saisie manuelle',
+  'Model Name': 'Nom du modèle',
+  'Enter the exact name of the model you want to use':
+    'Entrez le nom exact du modèle que vous souhaitez utiliser',
+  'Available Models': 'Modèles disponibles',
+  'Default Provider': 'Fournisseur par défaut',
+  'Provider set as default': 'Fournisseur défini par défaut',
+  'Advanced Settings': 'Paramètres avancés',
+  '{files} files cached ({size})': '{files} fichiers mis en cache ({size})',
+  'Local models cache': 'Cache de modèles locaux',
+  'Clear cache': 'Vider le cache',
+  'Downloaded models are cached for 1 year to avoid re-downloading.':
+    'Les modèles téléchargés sont mis en cache pendant 1 an pour éviter le re-téléchargement.',
+  'Local LLMs run entirely in your browser':
+    'Les LLM locaux s’exécutent entièrement dans votre navigateur.',
+  'No data is sent to external servers. Download happens at first use.':
+    'Aucune donnée n’est envoyée à des serveurs tiers. Le téléchargement a lieu à la première utilisation.',
+  'Requirements:': 'Exigences :',
+  'WebGPU support': 'Support WebGPU',
+  'At least 8GB of RAM': 'Au moins 8 Go de RAM',
+  'Storage space for model files (2-4GB)':
+    'Espace de stockage pour les fichiers de modèle (2-4 Go)',
+  'Your device:': 'Votre appareil :',
+  'WebGPU:': 'WebGPU :',
+  'Brand: {brand}': 'Marque : {brand}',
+  'Model: {model}': 'Modèle : {model}',
+  'Memory: {memory} or more (imprecise)':
+    'Mémoire : {memory} ou plus (imprécis)',
+  'Vendor: {vendor}': 'Fournisseur : {vendor}',
+  'Browser: {browser}': 'Navigateur : {browser}',
+  'Enable Speech-to-Text': 'Activer la synthèse vocale',
+  'Allow voice input using your device microphone in the prompt area':
+    'Autoriser la saisie vocale en utilisant le microphone de votre appareil dans la zone de prompt',
+  'Hide Default Agents': 'Masquer les agents par défaut',
+  'Only show your custom agents in the agent picker and agents page':
+    "Afficher uniquement vos agents personnalisés dans le sélecteur d'agents et la page des agents",
+  Features: 'Fonctionnalités',
+  Voice: 'Voix',
+  'Configure how you interact with agents':
+    'Configurez la façon dont vous interagissez avec les agents',
+  'Auto Memory Learning': 'Apprentissage automatique de la mémoire',
+  'Automatically extract learnable information from conversations to build agent memory':
+    'Extraire automatiquement les informations exploitables des conversations pour construire la mémoire des agents',
+  'Quietly remember durable facts from your conversations in the background, so agents stay personalised over time. Runs invisibly and never appears in replies.': 'Retient discrètement les faits durables de vos conversations en arrière-plan, pour que les agents restent personnalisés dans le temps. S\'exécute de façon invisible et n\'apparaît jamais dans les réponses.',
+  'Quick Reply Suggestions': 'Suggestions de réponse rapide',
+  'Show AI-generated follow-up suggestions after each assistant response':
+    'Afficher des suggestions de suivi générées par l’IA après chaque réponse de l’assistant',
+  'Web Search Grounding': 'Ancrage par recherche web',
+  'Allow AI models to search the web for up-to-date information (supported by Google Gemini and Anthropic Claude)':
+    'Permettre aux modèles IA de rechercher des informations à jour sur le web (pris en charge par Google Gemini et Anthropic Claude)',
+  'Global System Instructions': 'Instructions système globales',
+  "These instructions will be prepended to every agent's instructions":
+    'Ces instructions seront ajoutées au début des instructions de chaque agent',
+  'Enter global instructions that apply to all agents...':
+    "Entrez des instructions globales qui s'appliquent à tous les agents...",
+  'Show Context Panel': 'Afficher le panneau contextuel',
+  'Display the contextual information panel on the right side of the screen':
+    "Afficher le panneau d'informations contextuelles sur le côté droit de l'écran",
+  'Make the platform your own': 'Personnalisez la plateforme',
+  'Share the platform': 'Partager la plateforme',
+  'Export the platform settings to another device or share it with others':
+    'Exportez les paramètres de la plateforme vers un autre appareil ou partagez-les avec d’autres',
+  'Sync your data across devices using peer-to-peer connection':
+    'Synchronisez vos données entre appareils via une connexion pair-à-pair',
+  'Server URL': 'URL du serveur',
+  'URL of your Ollama server': 'URL de votre serveur Ollama',
+  'Get your API key from': 'Obtenez votre clé API depuis',
+  'Enter model name manually': 'Entrez le nom du modèle manuellement',
+  'Fetching available models...': 'Récupération des modèles disponibles...',
+  'Enter the model name manually': 'Entrez le nom du modèle manuellement',
+  'models available': 'modèles disponibles',
+  'This provider is already configured': 'Ce fournisseur est déjà configuré',
+  Computer: 'Ordinateur',
+  'Sandbox runtimes and system resources':
+    'Runtimes sandbox et ressources système',
+  'Sandbox Runtimes': 'Runtimes Sandbox',
+  Running: 'En cours',
+  Executing: 'En exécution',
+  Loading: 'Chargement',
+  Idle: 'Inactif',
+  Error: 'Erreur',
+  Start: 'Démarrer',
+  Stop: 'Arrêter',
+  'Pre-load the {runtime} runtime': 'Pré-charger le runtime {runtime}',
+  'Terminate the {runtime} runtime': 'Terminer le runtime {runtime}',
+  'Run a test snippet in the {runtime} sandbox':
+    'Exécuter un extrait de test dans le sandbox {runtime}',
+  Try: 'Essayer',
+  'Isolated code execution environments running entirely in WebAssembly. Python uses a Web Worker; JavaScript runs in a lightweight QuickJS VM.':
+    'Environnements d\u2019exécution de code isolés fonctionnant entièrement en WebAssembly. Python utilise un Web Worker\u00a0; JavaScript tourne dans une VM QuickJS légère.',
+  CPU: 'CPU',
+  '{used} / {total} cores': '{used} / {total} cœurs',
+  'CPU usage': 'Utilisation CPU',
+  Memory: 'Mémoire',
+  'Memory usage': 'Utilisation mémoire',
+  Storage: 'Stockage',
+  'Storage usage': 'Utilisation stockage',
+  'Device Information': 'Informations sur l\u2019appareil',
+  Device: 'Appareil',
+  'GPU Vendor': 'Fabricant GPU',
+  'GPU Renderer': 'Rendu GPU',
+  WebGPU: 'WebGPU',
+  Supported: 'Supporté',
+  'Not Supported': 'Non supporté',
+  'Local LLM (Browser)': 'LLM local (navigateur)',
+  'Runs AI models entirely in your browser using WebGPU. No data is sent to external servers.':
+    'Exécute des modèles IA entièrement dans votre navigateur via WebGPU. Aucune donnée n\u2019est envoyée à des serveurs externes.',
+  'Default Model': 'Modèle par défaut',
+  'Loaded Model': 'Modèle chargé',
+  'No model loaded': 'Aucun modèle chargé',
+  Unload: 'Décharger',
+  'Unload model to free memory': 'Décharger le modèle pour libérer la mémoire',
+  'WebGPU is not supported on this device. Local LLM inference requires a WebGPU-compatible browser.':
+    'WebGPU n\u2019est pas supporté sur cet appareil. L\u2019inférence LLM locale nécessite un navigateur compatible WebGPU.',
+  'Your device has less than 8GB of RAM. Local inference may be slow or unavailable for larger models.':
+    'Votre appareil dispose de moins de 8 Go de RAM. L\u2019inférence locale peut être lente ou indisponible pour les modèles volumineux.',
+
+  'System Resources': 'Ressources système',
+  Skills: 'Compétences',
+  'Discover, install, and manage specialized skills for your agents':
+    'Découvrez, installez et gérez des compétences spécialisées pour vos agents',
+  'Agent Memory': 'Mémoire des agents',
+  'Pinned Messages': 'Messages épinglés',
+  General: 'Général',
+  Extend: 'Étendre',
+  Monitor: 'Surveiller',
+  Configure: 'Configurer',
+  Personalize: 'Personnaliser',
+  Observe: 'Observer',
+  'How to connect': 'Comment se connecter',
+  'Open {provider}': 'Ouvrir {provider}',
+  "Sign in or create an account on the provider's website.":
+    'Connectez-vous ou créez un compte sur le site du fournisseur.',
+  'Create a new API key in your account dashboard.':
+    'Créez une nouvelle clé API dans le tableau de bord de votre compte.',
+  'Copy the key and come back here to paste it below.':
+    'Copiez la clé et revenez ici pour la coller ci-dessous.',
+  'Enter your credentials': 'Entrez vos identifiants',
+  'Your key is stored locally and encrypted. It never leaves your device.':
+    'Votre clé est stockée localement et chiffrée. Elle ne quitte jamais votre appareil.',
+  Preserve: 'Conserver',
+  'Local Backup': 'Sauvegarde locale',
+  Sync: 'Synchronisation',
+  'Color Scheme': 'Jeu de couleurs',
+  'Choose a color scheme for the interface':
+    "Choisissez un jeu de couleurs pour l'interface",
+  'Presentation theme used for generated PPTX slides':
+    'Thème de présentation utilisé pour les diapositives PPTX générées',
+  Tags: 'Tags',
+  'Customize the labels for your tag colors':
+    'Personnalisez les libellés de vos couleurs de tags',
+  'Reset to default': 'Réinitialiser par défaut',
+  'Sign in with GitHub': 'Se connecter avec GitHub',
+  'Sign in with your GitHub account to use Copilot models from OpenAI, Anthropic, and Google.':
+    'Connectez-vous avec votre compte GitHub pour utiliser les modèles Copilot d’OpenAI, Anthropic et Google.',
+  'Connecting to GitHub...': 'Connexion à GitHub...',
+  'Enter this code on GitHub:': 'Entrez ce code sur GitHub :',
+  'Waiting for authorization...': 'En attente d’autorisation...',
+  'A browser tab has been opened. If not,': 'Un onglet a été ouvert. Sinon,',
+  'click here': 'cliquez ici',
+  'Successfully authenticated!': 'Authentification réussie !',
+  'Authentication failed': 'Échec de l’authentification',
+  'Try again': 'Réessayer',
+  'Requires an active GitHub Copilot subscription.':
+    'Nécessite un abonnement GitHub Copilot actif.',
+  'GitHub OAuth is not configured. Set VITE_GITHUB_CLIENT_ID environment variable.':
+    'GitHub OAuth n’est pas configuré. Définissez la variable d’environnement VITE_GITHUB_CLIENT_ID.',
+  'Paste a token from': 'Collez un jeton depuis',
+  'or a': 'ou un',
+  'fine-grained PAT': 'PAT à granularité fine',
+  'with Copilot Requests permission.': 'avec la permission Copilot Requests.',
+  'Space Identity': 'Identité de l’espace',
+  'Space Name': 'Nom de l’espace',
+  'Space Icon': 'Icône de l’espace',
+  'Enter a name for this space': 'Entrez un nom pour cet espace',
+  'Search icons…': 'Rechercher des icônes…',
+  'No icons found': 'Aucune icône trouvée',
+  'Reset to Default': 'Réinitialiser',
+  Instructions: 'Instructions',
+  "These instructions will be prepended to every agent's instructions in this space":
+    'Ces instructions seront ajoutées au début des instructions de chaque agent dans cet espace',
+  'Danger Zone': 'Zone de danger',
+  'Delete Space': 'Supprimer l’espace',
+  'Permanently delete this space. Conversations and data will be moved to the default space.':
+    'Supprimer définitivement cet espace. Les conversations et les données seront déplacées vers l’espace par défaut.',
+  Cancel: 'Annuler',
+  'Confirm Delete': 'Confirmer la suppression',
+  Advanced: 'Avancé',
+  'HuggingFace Host': 'Hôte HuggingFace',
+  'Custom HuggingFace mirror or proxy URL for enterprise environments (e.g. JFrog Artifactory). Leave empty to use the official servers.':
+    'URL du miroir ou proxy HuggingFace personnalisé pour les environnements d’entreprise (ex. JFrog Artifactory). Laisser vide pour utiliser les serveurs officiels.',
+  'Privacy Mode': 'Mode confidentialité',
+  'Full Privacy Mode': 'Mode confidentialité totale',
+  'When enabled, absolutely no outgoing network calls are allowed. Only local LLM providers (Local, Ollama, LM Studio) are trusted. Data never leaves your device.':
+    'Lorsqu’il est activé, aucun appel réseau sortant n’est autorisé. Seuls les fournisseurs LLM locaux (Local, Ollama, LM Studio) sont approuvés. Les données ne quittent jamais votre appareil.',
+  'Toggle Privacy Mode': 'Activer/Désactiver le mode confidentialité',
+  'Privacy mode is active': 'Le mode confidentialité est actif',
+  'All outgoing network requests are blocked':
+    'Toutes les requêtes réseau sortantes sont bloquées',
+  'Only local/on-device LLM providers are available':
+    'Seuls les fournisseurs LLM locaux sont disponibles',
+  'Cloud providers (OpenAI, Anthropic, etc.) are disabled':
+    'Les fournisseurs cloud (OpenAI, Anthropic, etc.) sont désactivés',
+  'Workspace border indicates privacy mode':
+    'La bordure de l’espace de travail indique le mode confidentialité',
+  Blocked: 'Bloqué',
+  Trusted: 'Approuvé',
+} as const
