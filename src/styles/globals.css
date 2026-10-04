@@ -631,18 +631,23 @@ body {
 
 /* V2 Workspace responsive grid */
 .grid-workspace {
-  grid-template-columns: 1fr;
+  /* minmax(0, 1fr): a plain 1fr track will not shrink below its content, which
+     pushed the task and agent lists past the right edge of phones. */
+  grid-template-columns: minmax(0, 1fr);
+}
+.grid-workspace > * {
+  min-width: 0;
 }
 
 @media (min-width: 768px) {
   .grid-workspace {
-    grid-template-columns: var(--ws-md-cols, 1fr);
+    grid-template-columns: var(--ws-md-cols, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
   .grid-workspace {
-    grid-template-columns: var(--ws-lg-cols, 1fr);
+    grid-template-columns: var(--ws-lg-cols, minmax(0, 1fr));
   }
 }
 

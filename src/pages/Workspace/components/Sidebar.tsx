@@ -3,6 +3,7 @@ import { langs } from '@/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Icon, Title } from '@/components'
 import { useI18n, useUrl } from '@/i18n'
+import { AccountButton as AccountPill } from '@/components/AccountButton'
 import { auth, useAuth } from '@/lib/auth'
 import { SignInDialog } from '@/components/auth/SignInDialog'
 import { openInfoDialog } from '@/components/InfoDialog'
@@ -672,13 +673,17 @@ export const Sidebar = memo(function Sidebar({
         )}
       </ScrollShadow>
 
+      {!isCollapsed && (
+        <AccountPill className="mx-1 mb-1 max-w-none justify-center" />
+      )}
+
       {/* Bottom utility row */}
       <div
         className={`flex ${isCollapsed ? 'flex-col items-center gap-1' : 'items-center gap-1 px-1'}`}
       >
         <NotificationButtonV3 showKbd={!isCollapsed} />
         <ThemeToggleButton showKbd={!isCollapsed} />
-        <AccountButton />
+        {isCollapsed && <AccountButton />}
         <AboutButton showKbd={!isCollapsed} />
         <SettingsButton onPress={onOpenSettings} showKbd={!isCollapsed} />
       </div>
@@ -895,11 +900,12 @@ function MobileDrawerContent({
         <ExpandedNav onFilterChange={onFilterChange} />
       </ScrollShadow>
 
+      <AccountPill className="mx-1 mb-1 max-w-none justify-center" />
+
       {/* Bottom utility row */}
       <div className="flex items-center gap-1 px-1">
         <NotificationButtonV3 />
         <ThemeToggleButton />
-        <AccountButton />
         <AboutButton />
         <SettingsButton onPress={onOpenSettings} />
       </div>

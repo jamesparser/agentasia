@@ -201,7 +201,7 @@ export function CollectionView<T extends object>({
           variant="primary"
           value={inputValue}
           onChange={setInputValue}
-          className="flex-1"
+          className="min-w-0 flex-1 [&_input]:min-w-0"
         >
           <SearchField.Group>
             <SearchField.SearchIcon />
@@ -214,7 +214,7 @@ export function CollectionView<T extends object>({
             />
             <SearchField.ClearButton />
             {showSearchShortcutHint && (
-              <span className="me-1.5">
+              <span className="me-1.5 max-md:hidden">
                 <Kbd variant="light">
                   <Kbd.Abbr keyValue="command" title="Command">
                     ⌘

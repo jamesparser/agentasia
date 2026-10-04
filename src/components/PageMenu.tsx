@@ -31,7 +31,7 @@ export function PageMenu({ supplementalActions }: PageMenuProps = {}) {
   useSettingsShortcut()
 
   return (
-    <div className="absolute top-0 end-0 z-20 flex max-w-full flex-wrap items-center justify-end gap-0">
+    <div className="absolute top-1 end-1 z-20 flex max-w-full flex-wrap items-center justify-end gap-0">
       <AccountButton className="me-1" />
       <ButtonGroup variant="light" isIconOnly className="flex-wrap justify-end">
         {supplementalActions}
