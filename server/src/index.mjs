@@ -350,8 +350,6 @@ const server = http.createServer(async (req, res) => {
         // Agentic path: Nemotron decides when a fact needs the live web, Tavily
         // answers, citations come back with the reply. Falls back to a plain
         // completion when no Tavily key is configured.
-        // Run the Tavily agent loop for BOTH streaming and non-streaming clients.
-        // Streamed replies are synthesized SSE after the tool loop so Live can search.
         const useAgent = searchConfigured(process.env) && body.agentic !== false
         let provider, model, result, agentMeta = null
         if (useAgent) {
