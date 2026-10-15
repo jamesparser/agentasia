@@ -30,7 +30,10 @@ interface MmsVoice {
   lowercase?: boolean
 }
 
-/** App language code to MMS model. Only languages with a published model. */
+/** App language code to MMS model. Only languages with a published model.
+ *  Verified against willwade/mms-tts-multilingual-models-onnx (2026-10-15).
+ *  Japanese (`jpn`) is NOT in that repo — do not map `ja` here or the voice
+ *  404s and the user only sees "no voice". Japanese uses device TTS. */
 export const MMS_VOICES: Record<string, MmsVoice> = {
   km: { dir: 'khm' },
   lo: { dir: 'lao' },

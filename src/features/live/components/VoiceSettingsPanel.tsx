@@ -28,17 +28,11 @@ import {
 } from '../lib'
 import type { STTProviderType, TTSProviderType, TTSVoice } from '../lib/types'
 
-// Group Kokoro voices by language for better UX
+// Kokoro voices are English-only in this build. Do not list language groups
+// with zero voices (the old ja-JP group looked selectable but never spoke).
 const KOKORO_VOICE_GROUPS = [
   { key: 'en-US', label: '🇺🇸 American English' },
   { key: 'en-GB', label: '🇬🇧 British English' },
-  { key: 'ja-JP', label: '🇯🇵 Japanese' },
-  { key: 'zh-CN', label: '🇨🇳 Mandarin Chinese' },
-  { key: 'es-ES', label: '🇪🇸 Spanish' },
-  { key: 'fr-FR', label: '🇫🇷 French' },
-  { key: 'hi-IN', label: '🇮🇳 Hindi' },
-  { key: 'it-IT', label: '🇮🇹 Italian' },
-  { key: 'pt-BR', label: '🇧🇷 Portuguese' },
 ] as const
 
 function getVoicesByLanguage(language: string): TTSVoice[] {

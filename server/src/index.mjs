@@ -12,6 +12,7 @@ import {
   listDynamicProviders,
 } from './model-router.mjs'
 import { webSearch, searchConfigured } from './tools/websearch.mjs'
+import { culturalInsights, qlooConfigured } from './tools/qloo.mjs'
 import { relayMcp, relayAllowed } from './mcp-relay.mjs'
 import { handleSyncUpgrade, pruneIdleRooms } from './sync-relay.mjs'
 import { transcribeAudio, understandSpeech, assemblyConfigured } from './tools/assemblyai.mjs'
@@ -25,6 +26,7 @@ import { listScheduleRuns, startScheduleWorker, runTask } from './schedule-worke
 import { executeScheduledTask } from './schedule-runner.mjs'
 import { authenticate, mintDevToken } from './auth.mjs'
 import { resolvePlan, assertWithinAllowance, recordUsage, assertSearchAllowance, recordSearch, assertAudioAllowance, recordAudio, usageReport, setPlan, assertGlobalSearchBudget, recordGlobalSearch } from './entitlements.mjs'
+import { createFacemodeSession, facemodeConfigured } from './facemode.mjs'
 
 const port = Number(process.env.PORT || 8787)
 // Bind localhost by default: this process is meant to sit behind a tunnel/proxy.
@@ -44,7 +46,7 @@ const host = process.env.BIND_HOST || '127.0.0.1'
  * working provider, and GET /v1/spend / /v1/providers/health leak budget state
  * and key health. /v1/search spends the shared Tavily quota outright.
  */
-const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/models', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search', 'POST /v1/speech/transcribe', 'POST /v1/speech/understand', 'POST /v1/mcp/relay'])
+const PUBLIC_ROUTES = new Set(['GET /healthz', 'POST /v1/chat/completions', 'GET /v1/memory/policy', 'GET /v1/models', 'GET /v1/usage', 'POST /v1/dev/session', 'POST /v1/search', 'POST /v1/culture', 'POST /v1/speech/transcribe', 'POST /v1/speech/understand', 'POST /v1/mcp/relay', 'POST /v1/facemode/session'])
 // Scheduled tasks are per-user: public at the door, but every handler below
 // requires a verified token and only ever touches that caller's own tasks.
 const SCHEDULE_ROUTE = /^\/v1\/(schedules(\/[^/]+(\/run)?)?|schedule-runs)$/
@@ -348,7 +350,9 @@ const server = http.createServer(async (req, res) => {
         // Agentic path: Nemotron decides when a fact needs the live web, Tavily
         // answers, citations come back with the reply. Falls back to a plain
         // completion when no Tavily key is configured.
-        const useAgent = searchConfigured(process.env) && body.agentic !== false && body.stream !== true
+        // Run the Tavily agent loop for BOTH streaming and non-streaming clients.
+        // Streamed replies are synthesized SSE after the tool loop so Live can search.
+        const useAgent = searchConfigured(process.env) && body.agentic !== false
         let provider, model, result, agentMeta = null
         if (useAgent) {
           // Every search the model asks for is metered like a direct /v1/search call:
@@ -368,7 +372,7 @@ const server = http.createServer(async (req, res) => {
             model: body.model,
             useFallback: body.fallback === true,
             search: guardedSearch,
-            route: async (params) => (await routeGatewayChat({ ...body, ...params })).result,
+            route: async (params) => (await routeGatewayChat({ ...body, ...params, stream: false })).result,
           })
           result = turn.result
           model = result?._model || body.model || defaultModelFor(body)
@@ -384,6 +388,46 @@ const server = http.createServer(async (req, res) => {
           provider = routed.provider
           model = routed.model
           result = routed.result
+        }
+
+        // Streaming: if the agent loop already produced a final JSON answer
+        // (tools ran), emit that as SSE so streaming UIs get the searched reply.
+        if (body.stream && agentMeta && result && !result.stream && Array.isArray(result.choices)) {
+          corsHeaders(res, origin)
+          res.writeHead(200, {
+            'content-type': 'text/event-stream; charset=utf-8',
+            'cache-control': 'no-cache, no-transform',
+            connection: 'keep-alive',
+            'x-agentasia-provider': provider || '',
+            'x-agentasia-model': model || '',
+            'x-request-id': requestId,
+          })
+          const msg = result.choices?.[0]?.message || {}
+          const text = msg.content || ''
+          const mk = (content) => 'data: ' + JSON.stringify({
+            id: result.id || requestId,
+            object: 'chat.completion.chunk',
+            created: Math.floor(Date.now() / 1000),
+            model: model || body.model || '',
+            choices: [{ index: 0, delta: content === null ? {} : { content }, finish_reason: null }],
+          }) + '\n\n'
+          res.write(mk(''))
+          for (let i = 0; i < text.length; i += 48) res.write(mk(text.slice(i, i + 48)))
+          res.write('data: ' + JSON.stringify({
+            id: result.id || requestId,
+            object: 'chat.completion.chunk',
+            created: Math.floor(Date.now() / 1000),
+            model: model || body.model || '',
+            choices: [{ index: 0, delta: {}, finish_reason: 'stop' }],
+            agentasia: agentMeta,
+          }) + '\n\n')
+          res.write('data: [DONE]\n\n')
+          res.end()
+          if (result.usage) {
+            await recordSpend(model || body.model || '', result.usage)
+            if (meter) await recordUsage(meter.uid, result.usage)
+          }
+          return
         }
 
         // Streaming: pass the upstream SSE body straight through.
@@ -495,6 +539,35 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    // ── Qloo cultural insights (locale → taste graph) ─
+    // Same metering story as /v1/search: the Qloo key never reaches the browser,
+    // and the shared quota cannot be drained by one account.
+    if (req.method === 'POST' && p === '/v1/culture') {
+      if (!qlooConfigured(process.env)) {
+        return json(res, 503, { error: 'qloo_not_configured', requestId })
+      }
+      let principal
+      try { principal = await authenticate(req) } catch (error) {
+        return json(res, 401, { error: error.code || 'invalid_token', requestId })
+      }
+      if (!principal && process.env.AUTH_REQUIRED === 'true') {
+        return json(res, 401, { error: 'sign_in_required', requestId })
+      }
+      try {
+        const meter = principal || anonPrincipal(req)
+        await assertGlobalSearchBudget()
+        if (meter) await assertSearchAllowance(meter.uid, await resolvePlan(meter.uid))
+        const body = await readJson(req)
+        const out = await culturalInsights(body || {})
+        if (meter) await recordSearch(meter.uid)
+        await recordGlobalSearch()
+        return json(res, 200, out)
+      } catch (error) {
+        if (error.allowance) return json(res, 429, { error: error.message, ...error.allowance, requestId })
+        return json(res, error.statusCode || 502, { error: error.message, requestId })
+      }
+    }
+
     // ── MCP relay: reaches MCP servers that refuse requests from web pages ──
     // Signed in callers only, allow listed hosts only (see mcp-relay.mjs). The
     // user's own key for that server passes through in memory for one request.
@@ -514,6 +587,18 @@ const server = http.createServer(async (req, res) => {
         return res.end(out.body)
       } catch (error) {
         return json(res, error.statusCode || 502, { error: error.message, requestId })
+      }
+    }
+
+    // ── FaceMode + LiveKit session bootstrap ───────────────────────────
+    // Secrets stay on this gateway; the browser receives only a short-lived room token.
+    if (req.method === 'POST' && p === '/v1/facemode/session') {
+      try {
+        if (!facemodeConfigured()) return json(res, 503, { error: 'facemode_not_configured', requestId })
+        const session = await createFacemodeSession()
+        return json(res, 201, { ...session, requestId })
+      } catch (error) {
+        return json(res, 502, { error: error.message, requestId })
       }
     }
 

@@ -1,4 +1,5 @@
 import { Icon } from '@/components'
+import { SettingsModal } from '@/components/SettingsModal'
 import { AgentSelector } from '@/components/PromptArea/AgentSelector'
 import { useI18n } from '@/i18n'
 import localI18n from '../i18n'
@@ -55,10 +56,19 @@ export const LivePage = () => {
   )
   const conversationIdRef = useRef<string | null>(null)
 
-  // Parse agent slug from URL hash
+  // Settings modal via URL hash (same contract as Workspace).
+  // `#settings…` is NOT an agent slug — Live used to treat it as one, which
+  // broke the gear button and language changes.
+  const isSettingsOpen = location.hash.startsWith('#settings')
+  const closeSettings = useCallback(() => {
+    navigate(`${location.pathname}${location.search}`, { replace: true })
+  }, [navigate, location.pathname, location.search])
+
+  // Parse agent slug from URL hash (ignore settings hashes)
   const agentSlug = useMemo(() => {
     const hash = location.hash.replace('#', '')
-    return hash || 'devs'
+    if (!hash || hash === 'settings' || hash.startsWith('settings/')) return 'devs'
+    return hash
   }, [location.hash])
 
   // Load agent from slug
@@ -149,7 +159,10 @@ export const LivePage = () => {
   // with the device voice so the page is never silent.
   const device = useSpeakAloud(lang)
   const speak = async (text: string) => {
-    if (isTTSReady) await speakModel(text)
+    // Kokoro only ships English voices. Non-English must use the device/MMS
+    // path (Japanese, SE Asia, …) or the page claims to speak and stays silent.
+    const kokoroOk = isTTSReady && (lang === 'en' || lang.startsWith('en-'))
+    if (kokoroOk) await speakModel(text)
     else device.speak(text)
   }
   const stopSpeaking = () => {
@@ -433,7 +446,9 @@ export const LivePage = () => {
             radius="full"
             aria-label={t('Settings')}
             title={t('Settings')}
-            onPress={() => navigate(`${location.pathname}#settings`)}
+            onPress={() =>
+              navigate(`${location.pathname}${location.search}#settings`)
+            }
           >
             <Icon name="Settings" size="md" />
           </Button>
@@ -582,6 +597,7 @@ export const LivePage = () => {
 
         </div>
       </div>
+      <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
     </DefaultLayout>
   )
 }

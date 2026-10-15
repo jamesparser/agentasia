@@ -10,6 +10,9 @@ A personal AI agent workspace built for Southeast Asia: 22 regional languages in
 the UI, a naga-themed interface, and inference that runs on
 **NVIDIA Nemotron on Nebius Token Factory**.
 
+With **Qloo**, it also understands your culture: dining, gifts, travel, music,
+and lifestyle recommendations grounded in real local taste, not generic defaults.
+
 <br />
 
 </div>
@@ -20,6 +23,9 @@ the UI, a naga-themed interface, and inference that runs on
 - **22 languages** - full UI localisation across Southeast and South Asian
   scripts, including Thai, Lao, Khmer, Burmese, Sinhala-adjacent Indic scripts,
   Arabic, CJK and the Indonesian archipelago languages.
+- **Cultural insights (Qloo)** - pick a locale and the agent looks up what people
+  in that culture actually like before it recommends food, places, gifts, or
+  entertainment. See `docs/QLOO_CULTURE.md`.
 - **Voice** - speech-to-text across the region; text-to-speech where an engine
   exists, and an honest text-only badge where it does not (see below).
 - **Skills** - discover and install agent skills from skills.sh, SkillsMP and

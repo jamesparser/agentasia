@@ -91,7 +91,7 @@ export function stateFromEvent(e: {
     case 'chat.start':
       return 'thinking'
     case 'tool.start':
-      return e.toolName === 'web_search' ? 'searching' : 'tool'
+      return e.toolName === 'web_search' || e.toolName === 'cultural_insights' ? 'searching' : 'tool'
     case 'tool.end':
       return e.ok === false ? 'refusing' : 'speaking'
     case 'memory.search':

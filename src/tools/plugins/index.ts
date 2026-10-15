@@ -42,6 +42,19 @@ export {
 // Web search (Tavily via the gateway)
 export { webSearchPlugin, WEB_SEARCH_TOOL_DEFINITION } from './web-search'
 
+// Cultural insights (Qloo taste graph via the gateway)
+export {
+  culturalInsightsPlugin,
+  CULTURAL_INSIGHTS_TOOL_DEFINITION,
+} from './cultural-insights'
+export type {
+  CulturalInsightsParams,
+  CulturalInsightsResponse,
+  CulturalInsightsError,
+  CulturalEntity,
+  CulturalIntent,
+} from './cultural-insights'
+
 // Wikipedia tools
 export {
   wikipediaSearchPlugin,
@@ -144,6 +157,7 @@ import {
 } from './knowledge'
 import { wikipediaSearchPlugin, wikipediaArticlePlugin } from './wikipedia'
 import { webSearchPlugin } from './web-search'
+import { culturalInsightsPlugin } from './cultural-insights'
 import {
   wikidataSearchPlugin,
   wikidataEntityPlugin,
@@ -186,6 +200,7 @@ export const corePlugins: ToolPlugin<any, any>[] = [
   getDocumentSummaryPlugin,
   // Research
   webSearchPlugin,
+  culturalInsightsPlugin,
   wikipediaSearchPlugin,
   wikipediaArticlePlugin,
   wikidataSearchPlugin,
@@ -236,6 +251,7 @@ export const pluginsByCategory = {
   ],
   research: [
     webSearchPlugin,
+    culturalInsightsPlugin,
     wikipediaSearchPlugin,
     wikipediaArticlePlugin,
     wikidataSearchPlugin,

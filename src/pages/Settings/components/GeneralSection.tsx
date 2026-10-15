@@ -100,7 +100,7 @@ export function GeneralSection() {
         }}
         className={getHighlightClasses('interface-language', 'max-w-3xs')}
       >
-        {Object.entries(languages).map(([key, name]) => (
+        {Array.from(new Map(Object.entries(languages)).entries()).map(([key, name]) => (
           <SelectItem key={key} textValue={name}>
             {name}
           </SelectItem>

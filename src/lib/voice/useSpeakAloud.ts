@@ -78,7 +78,9 @@ export function pickVoice(
   voices: SpeechSynthesisVoice[],
   language: string,
 ): SpeechSynthesisVoice | null {
-  const wanted = language.toLowerCase()
+  // Accept ja, ja-JP, ja_JP, jp as the same language.
+  const raw = language.toLowerCase().replace('_', '-')
+  const wanted = raw === 'jp' ? 'ja' : raw
   const base = wanted.split('-')[0]
   const norm = (v: SpeechSynthesisVoice) => v.lang.toLowerCase().replace('_', '-')
   // Male first: a voice the name heuristic knows to be female ranks below any
@@ -156,7 +158,7 @@ export function useSpeakAloud(language: string): SpeakAloud {
     engines: ['device'],
   })
   const voice = pickVoice(voices, language)
-  const deviceOk = supported && plan.speakable && Boolean(voice)
+  const deviceOk = supported && (plan.speakable || Boolean(voice)) && Boolean(voice)
   // No voice on this device: fall back to the free in-browser model if one exists.
   const mmsOk = !deviceOk && hasMmsVoice(language)
   const canSpeak = deviceOk || mmsOk
@@ -246,6 +248,15 @@ export function useSpeakAloud(language: string): SpeakAloud {
       }
 
       if (!plan.speakable || !voice) {
+        // Voices load async (voiceschanged). If the list is still empty, say so
+        // instead of claiming the language has no voice on this device.
+        if (voices.length === 0) {
+          warningToast(
+            'Voices are still loading',
+            'Wait a moment and press play again.',
+          )
+          return
+        }
         warningToast(
           'No voice for this language yet',
           'This reply will stay in text. Voice coverage is listed on the About page.',
@@ -267,7 +278,7 @@ export function useSpeakAloud(language: string): SpeakAloud {
       const utterances = chunks.map((piece, i) => {
         const u = new SpeechSynthesisUtterance(piece)
         u.voice = voice
-        u.lang = voice.lang
+        u.lang = voice.lang || (language.split('-')[0] === 'ja' ? 'ja-JP' : language.split('-')[0])
         u.rate = 1
         u.pitch = maleLeaningPitch(voice.name)
         const last = i === chunks.length - 1

@@ -87,6 +87,7 @@ import { PPTX_TOOL_DEFINITIONS } from '@/lib/pptx-tools/types'
 // out of the boot graph (REPORT §4 Phase 1).
 import { getMcpToolDefinitions, registerMcpTools } from '@/features/connectors/lib/mcp-tools'
 import { WEB_SEARCH_TOOL_DEFINITION } from '@/tools/plugins/web-search'
+import { CULTURAL_INSIGHTS_TOOL_DEFINITION } from '@/tools/plugins/cultural-insights'
 import {
   WIKIPEDIA_SEARCH_TOOL_DEFINITION,
   WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
@@ -244,6 +245,7 @@ function getAgentToolDefinitions(_agent: Agent): ToolDefinition[] {
     ...Object.values(PPTX_TOOL_DEFINITIONS),
     // Research tools
     WEB_SEARCH_TOOL_DEFINITION,
+    CULTURAL_INSIGHTS_TOOL_DEFINITION,
     WIKIPEDIA_SEARCH_TOOL_DEFINITION,
     WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
     WIKIDATA_SEARCH_TOOL_DEFINITION,

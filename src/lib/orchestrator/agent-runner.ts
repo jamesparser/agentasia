@@ -55,6 +55,7 @@ import { userSettings } from '@/stores/userStore'
 import { languages } from '@/i18n'
 import { getMcpToolDefinitions, registerMcpTools } from '@/features/connectors/lib/mcp-tools'
 import { WEB_SEARCH_TOOL_DEFINITION } from '@/tools/plugins/web-search'
+import { CULTURAL_INSIGHTS_TOOL_DEFINITION } from '@/tools/plugins/cultural-insights'
 import {
   WIKIPEDIA_SEARCH_TOOL_DEFINITION,
   WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
@@ -188,6 +189,7 @@ async function collectTools(scope?: AgentScope): Promise<ToolDefinition[]> {
     // ...Object.values(PRESENTATION_TOOL_DEFINITIONS),
     ...Object.values(PPTX_TOOL_DEFINITIONS),
     WEB_SEARCH_TOOL_DEFINITION,
+    CULTURAL_INSIGHTS_TOOL_DEFINITION,
     WIKIPEDIA_SEARCH_TOOL_DEFINITION,
     WIKIPEDIA_ARTICLE_TOOL_DEFINITION,
     WIKIDATA_SEARCH_TOOL_DEFINITION,
@@ -322,7 +324,7 @@ async function buildSystemPrompt(
   )
 
   parts.push(
-    `\n\n## Execution Instructions\nYou are an autonomous agent executing a task. You have access to tools — use them proactively.\n\n**Research tools:** When the task involves factual questions, historical dates, names, biographical details, or any verifiable information, you MUST use the available research tools (web_search for anything current, wikipedia_search, wikipedia_article, wikidata_search, arxiv_search, etc.) to look up accurate information rather than relying on your training data alone. Search first, answer second.\n\n**Other tools:** Use knowledge tools to search the user's knowledge base, math tools for calculations, and code tools when code execution is needed.\n\nWhen you have fully addressed all requirements, provide your final deliverable. Be thorough and ensure all requirements are addressed.`,
+    `\n\n## Execution Instructions\nYou are an autonomous agent executing a task. You have access to tools — use them proactively.\n\n**Research tools:** When the task involves factual questions, historical dates, names, biographical details, or any verifiable information, you MUST use the available research tools (web_search for anything current, wikipedia_search, wikipedia_article, wikidata_search, arxiv_search, etc.) to look up accurate information rather than relying on your training data alone. Search first, answer second.\n\n**Culture tools:** When the task involves recommendations, gifts, dining, travel plans, entertainment, or lifestyle ideas, you MUST call cultural_insights with the user's locale first so advice is grounded in Qloo taste data for that culture.\n\n**Other tools:** Use knowledge tools to search the user's knowledge base, math tools for calculations, and code tools when code execution is needed.\n\nWhen you have fully addressed all requirements, provide your final deliverable. Be thorough and ensure all requirements are addressed.`,
   )
 
   return parts.join('\n')

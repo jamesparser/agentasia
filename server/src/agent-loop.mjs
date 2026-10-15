@@ -2,7 +2,16 @@
 // Tavily answers it, and the citations come back with the reply. This is what
 // makes Tavily part of the solution rather than a plugin: a spoken assistant that
 // guesses a price lies out loud, so retrieval has to be in the loop.
+//
+// cultural_insights is the second retrieval tool: Qloo's taste graph grounds
+// recommendations in what people of that culture actually like, so AgentAsia
+// does more than translate.
 import { webSearch, searchConfigured } from './tools/websearch.mjs'
+import {
+  culturalInsights,
+  compactCultureForModel,
+  qlooConfigured,
+} from './tools/qloo.mjs'
 
 export const WEB_SEARCH_TOOL = {
   type: 'function',
@@ -24,11 +33,53 @@ export const WEB_SEARCH_TOOL = {
   },
 }
 
+export const CULTURAL_INSIGHTS_TOOL = {
+  type: 'function',
+  function: {
+    name: 'cultural_insights',
+    description:
+      'Get cultural taste signals from Qloo for a locale and intent (dining, gifts, ' +
+      'music, film, travel, shopping, weekend plans). REQUIRED before recommending ' +
+      'food, places, gifts, entertainment, or lifestyle ideas so advice matches local ' +
+      'culture instead of generic defaults. Pass the user\'s locale when known.',
+    parameters: {
+      type: 'object',
+      properties: {
+        locale: {
+          type: 'string',
+          description: 'BCP-47 / ISO locale such as km, ja, hi, th, id, fil, ko, zh-CN. Defaults to the conversation language.',
+        },
+        intent: {
+          type: 'string',
+          enum: [
+            'dining', 'food', 'restaurants', 'travel', 'trip', 'weekend', 'places',
+            'gifts', 'shopping', 'brands', 'fashion', 'music', 'film', 'movies',
+            'tv', 'shows', 'books', 'podcasts', 'games', 'people', 'general',
+          ],
+          description: 'What kind of cultural taste you need.',
+        },
+        query: {
+          type: 'string',
+          description: 'Optional focus, e.g. "weekend in Bangkok for parents" or "gifts for a Japanese colleague".',
+        },
+        entity_type: {
+          type: 'string',
+          enum: ['place', 'destination', 'brand', 'artist', 'movie', 'tv_show', 'book', 'podcast', 'video_game', 'person'],
+          description: 'Override the entity category. Usually leave unset and let intent decide.',
+        },
+        limit: { type: 'number', description: 'How many entities to return, 3-10. Default 6.' },
+      },
+      required: [],
+    },
+  },
+}
+
 const SYSTEM_ADDENDUM =
-  'You can call web_search. Any claim about the present moment (price, weather, score, ' +
+  'You can call web_search and cultural_insights. Any claim about the present moment (price, weather, score, ' +
   'news, dates) MUST come from a web_search result in this turn, and you must name the ' +
-  'source and the date. If a search fails or nothing is found, say so plainly rather ' +
-  'than guessing.'
+  'source and the date. Any recommendation about food, places, gifts, music, film, or lifestyle ' +
+  'should use cultural_insights first so it fits the user\'s culture (Qloo taste graph). ' +
+  'If a tool fails or nothing is found, say so plainly rather than guessing.'
 
 const MAX_TOOL_ROUNDS = 3
 // Measured on the live API: feeding Tavily's raw payload back for a weather question
@@ -72,12 +123,18 @@ export async function runAgentTurn({
     const e = new Error('messages_required'); e.statusCode = 400; throw e
   }
   const canSearch = searchConfigured(env)
-  const convo = canSearch
+  const canCulture = qlooConfigured(env)
+  const convo = canSearch || canCulture
     ? [{ role: 'system', content: SYSTEM_ADDENDUM }, ...messages]
     : [...messages]
 
-  // web_search only if Tavily is configured; user tools only if they brought them.
-  const offeredTools = [...(canSearch ? [WEB_SEARCH_TOOL] : []), ...(Array.isArray(userTools) ? userTools : [])]
+  // web_search only if Tavily is configured; cultural_insights only if Qloo is
+  // configured; user tools only if they brought them.
+  const offeredTools = [
+    ...(canSearch ? [WEB_SEARCH_TOOL] : []),
+    ...(canCulture ? [CULTURAL_INSIGHTS_TOOL] : []),
+    ...(Array.isArray(userTools) ? userTools : []),
+  ]
   if (!offeredTools.length && !canSearch) { /* plain completion */ }
   const toolLog = []
   const userToolCalls = []
@@ -119,6 +176,18 @@ export async function runAgentTurn({
         } catch (error) {
           out = { error: error.message || 'search_failed' }
         }
+      } else if (fn?.name === 'cultural_insights') {
+        try {
+          out = await culturalInsights({
+            locale: payload.locale || payload.culture || 'en',
+            intent: payload.intent || 'general',
+            entityType: payload.entity_type || payload.entityType,
+            query: payload.query,
+            limit: Math.min(10, Math.max(3, Number(payload.limit) || 6)),
+          }, env)
+        } catch (error) {
+          out = { error: error.message || 'culture_failed', success: false }
+        }
       } else {
         // A tool that belongs to the user's own connector. We do not execute it and
         // never see their credentials: hand it back to the caller (browser-side MCP
@@ -127,23 +196,35 @@ export async function runAgentTurn({
         userToolCalls.push({ callId: call.id, name: fn?.name || 'unnamed', arguments: payload })
         onUserToolCall?.({ name: fn?.name, arguments: payload, callId: call.id })
       }
+      const isCulture = fn?.name === 'cultural_insights'
+      const hits = isCulture
+        ? (Array.isArray(out.entities) ? out.entities.length : 0)
+        : (Array.isArray(out.results) ? out.results.length : 0)
       toolLog.push({
         callId: call.id,
-        query: payload.query || '',
+        query: payload.query || payload.intent || '',
+        tool: fn?.name || 'web_search',
         ok: !out.error,
         error: out.error || null,
-        hits: Array.isArray(out.results) ? out.results.length : 0,
+        hits,
         userTool: !!out.pending_user_tool,
         answer: out.answer || null,
-        sources: (out.results || []).slice(0, 5).map((r) => ({
-          title: r.title, url: r.url, publishedDate: r.publishedDate || null,
-        })),
+        sources: isCulture
+          ? (out.entities || []).slice(0, 5).map((e) => ({
+              title: e.name || 'cultural pick',
+              url: e.properties?.website || (e.id ? `https://qloo.com` : ''),
+              publishedDate: null,
+            }))
+          : (out.results || []).slice(0, 5).map((r) => ({
+              title: r.title, url: r.url, publishedDate: r.publishedDate || null,
+            })),
         retrievedAt: out.retrievedAt || null,
       })
+      const modelView = isCulture ? compactCultureForModel(out) : compactSearchForModel(out)
       convo.push({
         role: 'tool',
         tool_call_id: call.id,
-        content: JSON.stringify(compactSearchForModel(out)).slice(0, TOOL_MESSAGE_CAP),
+        content: JSON.stringify(modelView).slice(0, TOOL_MESSAGE_CAP),
       })
     }
   }
@@ -159,8 +240,9 @@ export async function runAgentTurn({
     // UI contract: render these as a citation card and read them aloud as
     // "per <source>, <date>" - the reason the naga can be trusted with numbers.
     citations: searched.flatMap((t) => t.sources.map((s) => ({ ...s, query: t.query, retrievedAt: t.retrievedAt }))),
-    searchTrace: toolLog.map(({ query, ok, error, hits, userTool }) => ({ query, ok, error, hits, userTool: !!userTool })),
+    searchTrace: toolLog.map(({ query, ok, error, hits, userTool, tool }) => ({ query, ok, error, hits, userTool: !!userTool, tool })),
     searchAvailable: canSearch,
+    cultureAvailable: canCulture,
     // Client executes these against ITS OWN MCP connection and may send a second
     // turn with the results; the gateway remains stateless about user data.
     userToolCalls,

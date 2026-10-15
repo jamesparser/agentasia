@@ -14,7 +14,7 @@ export const PLAN_ALLOWANCE = {
   // Daily caps. Monthly equivalents (x30): free 750, pro 5,000, smallBusiness
   // 20,000, enterprise 35,000 requests. Sized from the per request cost on
   // Token Factory plus Tavily, see docs/PRICING.md.
-  free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 25, dailySearches: 25, dailyAudio: 10, dailyTokens: 40_000, maxTokens: 1500 },
+  free: { model: 'nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B', dailyRequests: 25, dailySearches: 25, dailyAudio: 10, dailyTokens: 80_000, maxTokens: 2800 },
   pro: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 170, dailySearches: 40, dailyAudio: 60, dailyTokens: 510_000, maxTokens: 4000 },
   smallBusiness: { model: 'nvidia/nemotron-3-super-120b-a12b', dailyRequests: 670, dailySearches: 160, dailyAudio: 240, dailyTokens: 2_000_000, maxTokens: 6000 },
   enterprise: { model: 'nvidia/Nemotron-3-Ultra-550b-a55b', dailyRequests: 1170, dailySearches: 300, dailyAudio: 600, dailyTokens: 3_500_000, maxTokens: 8000 },

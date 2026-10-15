@@ -1,7 +1,6 @@
 # AgentAsia, "Naga" · Nebius × NVIDIA Global AI Hackathon 2026
 
-> Draft submission copy. Anything marked **[pending]** depends on work not yet done
-> or on the live Token Factory key. Do not submit until those are real.
+> Submission copy for Nebius × NVIDIA. Speech stack matches **what ships**: AssemblyAI (gateway) in, Kokoro male EN / device voices out. Video URL still to be attached on DevPost.
 
 **Track:** Best Apps and Agents
 **One-liner:** *Naga is the browser app that speaks your language, cites its sources
@@ -43,15 +42,14 @@ every piece is an MCP server. Default = **user's own Composio URL** (free, cappe
 bill surprise); power users may point at Pipedream/Zapier/self-hosted instead.
 
 **Built with:** Nebius Token Factory · NVIDIA Nemotron 3 (Nano 30B-A3B is the free
-tier; Super 120B-A12B and Ultra 550B are selectable by plan) · Parakeet ASR, run
-on-device in the browser · Tavily · MCP · Vercel + Cloudflare Pages (frontend)
+tier; Super 120B-A12B and Ultra 550B are selectable by plan) · AssemblyAI speech-to-text via the gateway (default) · Tavily · MCP · Vercel + Cloudflare Pages (frontend)
 
 **Not claimed as built:** Nemotron 3.5 ASR Streaming 0.6B and Magpie TTS
 Multilingual are the *planned* paid-tier voice ends. They are not wired: there is
-no NIM client in this repo. What ships today is on-device ASR (Parakeet/Whisper
-class, plus the browser engine where it works) and text-to-speech from the
-operating system's own voices, with Kokoro/Supertonic in Live mode. The hero demo
-therefore speaks Japanese through system voices, not Magpie.
+no NIM client in this repo. What ships today is **AssemblyAI cloud ASR through
+the AgentAsia gateway** (browser/device dictation as alternates) and
+text-to-speech with **Kokoro male English** (WASM) or device voices in other
+languages. The hero demo speaks through those voices, not Magpie.
 
 ---
 
@@ -75,8 +73,7 @@ always-on private assistant, in two faces of one core:
 
 **Runtime flow (the part that must be on screen in the video):**
 
-1. Speech → **NVIDIA Nemotron 3.5 ASR Streaming 0.6B** (40 locales, 80 ms chunk,
-   word-boosting for "Naga" and user coin/agent names).
+1. Speech → **AssemblyAI** via `POST /v1/speech/transcribe` on the AgentAsia gateway (default). Browser/device dictation remains available as a fallback.
 2. Text → **Nebius Token Factory** `POST /v1/chat/completions` → `nvidia/nemotron-3-nano-30b-a3b`
    (free tier). Hard work-mode turns escalate to **Super 120B-A12B**; Ultra is
    reserved for enterprise/dedicated endpoints.
@@ -84,8 +81,7 @@ always-on private assistant, in two faces of one core:
    is **not** recalled from weights: it is fetched at runtime through **Tavily**,
    returned with source + timestamp, and read aloud with attribution.
 4. Recall and persistence → **Mem0**, keyed to the signed-in `uid`.
-5. Output → **Magpie TTS Multilingual** (paid/demo) or in-browser
-   **Kokoro/Supertonic** (free tier, $0 to us).
+5. Output → **Kokoro** male English voice (`am_adam`, ~90 MB WASM, device voice while it loads) or the **device/OS voice** in other languages. Magpie TTS Multilingual remains a planned paid-tier lane.
 6. The **face is the status light**: Mouth gold + jaw synced to the TTS waveform,
    Eyes cyan tracking the text, Hood magenta flaring while Tavily runs, Claws
    amber closing on an MCP tool call, Crest-gem sapphire brightening on a memory
@@ -117,7 +113,7 @@ telling a judge: it is the plan table the app reads at runtime.
 | Runs itself, i.e. automation | A **Scheduled Tasks** section ships in Settings. Honest state: the gateway's `/v1/schedules` routes answer 401 (admin-token only) and the scheduler is off server-side, so today a task runs while the window is open, not overnight |
 | Persistent memory | Memory and learnings stay in the user's own browser store (encrypted at rest, exportable), shown as the naga's guarded crest gem. Mem0 is BYOK and optional, not a server-side profile: there is no `uid` in the anonymous deployment, so nothing is keyed to one |
 | Reusable skills + tool access | Skills + MCP (`ToolTransport = 'builtin' \| 'mcp'`) + connectors, plus Tavily as a real tool call with citations |
-| NVIDIA open source model | Two, in the build: Nemotron 3 chat/reasoning on Token Factory, and Parakeet ASR running on-device. Nemotron 3.5 ASR and Magpie TTS are planned paid-tier lanes, not shipped |
+| NVIDIA open source model | Nemotron 3 chat/reasoning on Token Factory (shipped). Speech in is AssemblyAI via the gateway; English speech out is Kokoro. Nemotron 3.5 ASR and Magpie TTS are planned paid-tier lanes, not shipped |
 | Nebius | Every cloud text turn is a Token Factory runtime call, verifiable in the response headers |
 
 ## 3. Testing instructions **[partly pending: judge logins + demo video]**
